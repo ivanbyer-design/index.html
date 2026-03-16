@@ -138,6 +138,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .mc-vl{font-size:22px;font-weight:700;color:var(--t);letter-spacing:-0.02em;}
 .mc-vl.green{color:var(--green);}
 .mc-vl.red{color:var(--red);}
+.mc-vl.amber{color:#cb912f;}
+.mc-vl.gold{color:#b8860b;}
 .mc-sub{font-size:12px;color:var(--ts);margin-top:2px;}
 
 /* CHART */
@@ -236,7 +238,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 <div class="sb" id="sb">
   <div class="sb-hdr">
     <div class="ws">
-      <div class="ws-ic">L</div>
+      <div class="ws-ic" style="font-size:16px;">∞</div>
       <div class="ws-nm">Life OS</div>
     </div>
     <button class="ic-btn" onclick="toggleDark()" title="Toggle dark mode">◑</button>
@@ -245,7 +247,7 @@ textarea.fi{resize:vertical;min-height:52px;}
     <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:var(--r);background:var(--bg-in);color:var(--ts);font-size:13px;">🔍 Search</div>
   </div>
   <div class="sb-sec">Workspace</div>
-  <div class="ni on" id="ni-home" onclick="go('home',this)"><span class="ni-ic">🏠</span><span class="ni-lb">Home</span></div>
+  <div class="ni on" id="ni-home" onclick="go('home',this)"><span class="ni-ic">∞</span><span class="ni-lb">Home</span></div>
   <div class="sb-div"></div>
   <div class="sb-sec">Life Sectors</div>
   <div class="ni" id="ni-finance" onclick="go('finance',this)"><span class="ni-ic">💰</span><span class="ni-lb">Finance</span></div>
@@ -265,7 +267,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="bc"><span id="bc-ic">🏠</span><span class="bc-sep">/</span><span class="bc-cur" id="bc-ttl">Home</span></div>
+    <div class="bc"><span id="bc-ic">∞</span><span class="bc-sep">/</span><span class="bc-cur" id="bc-ttl">Home</span></div>
     <div class="tb-acts">
       <button class="tb-btn pri" id="new-btn" style="display:none;" onclick="triggerAdd()">+ New</button>
     </div>
@@ -276,7 +278,7 @@ textarea.fi{resize:vertical;min-height:52px;}
     <!-- HOME -->
     <div class="panel on" id="p-home">
       <div class="page-cover cf"></div>
-      <span class="page-icon">🏠</span>
+      <span class="page-icon">∞</span>
       <div class="page-title">My Life OS</div>
       <div class="page-sub" id="home-date"></div>
       <button class="mob-menu-below" onclick="openSB()">☰ Menu</button>
@@ -540,7 +542,7 @@ function openSB(){G('sb').classList.add('open');G('sb-overlay').classList.add('o
 function closeSB(){G('sb').classList.remove('open');G('sb-overlay').classList.remove('open');}
 
 // NAV
-const PM={home:{ic:'🏠',ttl:'Home'},finance:{ic:'💰',ttl:'Finance'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},bills:{ic:'🧾',ttl:'Bills'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'}};
+const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},bills:{ic:'🧾',ttl:'Bills'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'}};
 function go(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -757,10 +759,10 @@ function renderHome(){
   const tdH=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
   const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
   G('home-metrics').innerHTML=`
-    <div class="mc"><div class="mc-lb">Net balance</div><div class="mc-vl ${net>=0?'green':'red'}">${fmtS(net)}</div><div class="mc-sub">${fmt(inc)} in · ${fmt(exp)} out</div></div>
-    <div class="mc"><div class="mc-lb">Open tasks</div><div class="mc-vl">${open}</div><div class="mc-sub">${S.todos.filter(t=>t.p==='high'&&!t.done).length} high priority</div></div>
+    <div class="mc"><div class="mc-lb">Net balance</div><div class="mc-vl ${net>0?'green':net<0?'red':''}">${fmtS(net)}</div><div class="mc-sub">${fmt(inc)} in · ${fmt(exp)} out</div></div>
+    <div class="mc"><div class="mc-lb">Open tasks</div><div class="mc-vl ${open>0?'amber':'gold'}">${open}</div><div class="mc-sub">${S.todos.filter(t=>t.p==='high'&&!t.done).length} high priority</div></div>
     <div class="mc"><div class="mc-lb">Habits today</div><div class="mc-vl ${tdH===S.habits.length&&S.habits.length?'green':''}">${tdH} / ${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(tdH/S.habits.length*100):0}% done</div></div>
-    <div class="mc"><div class="mc-lb">Bills unpaid</div><div class="mc-vl ${unp>0?'red':''}">${fmt(unp)}</div><div class="mc-sub">${S.bills.filter(b=>b.s==='Unpaid').length} outstanding</div></div>
+    <div class="mc"><div class="mc-lb">Bills unpaid</div><div class="mc-vl ${unp>0?'red':'green'}">${fmt(unp)}</div><div class="mc-sub">${S.bills.filter(b=>b.s==='Unpaid').length} outstanding</div></div>
     <div class="mc"><div class="mc-lb">Active goals</div><div class="mc-vl">${S.goals.length}</div><div class="mc-sub">${S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length} complete</div></div>
     <div class="mc"><div class="mc-lb">Trades logged</div><div class="mc-vl">${S.trades.length}</div><div class="mc-sub">${S.trades.filter(t=>t.st==='Open').length} open positions</div></div>`;
   const att=[];
@@ -851,7 +853,7 @@ const manifest={
   theme_color:'#191919',
   orientation:'portrait-primary',
   icons:[
-    {src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="%23191919"/><text x="256" y="340" font-size="280" text-anchor="middle" font-family="system-ui">🏠</text></svg>',sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}
+    {src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="%23191919"/><text x="256" y="340" font-size="320" text-anchor="middle" font-family="system-ui" fill="white">∞</text></svg>',sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}
   ]
 };
 const mBlob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
