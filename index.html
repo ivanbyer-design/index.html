@@ -110,6 +110,29 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .page-sub{font-size:14px;color:var(--ts);margin-bottom:4px;}
 .panel{display:none;}.panel.on{display:block;}
 .divider{height:1px;background:var(--bd);margin:20px 0;}
+
+/* WEEKLY CALENDAR */
+.week-cal{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:10px 0;}
+.week-days{display:grid;grid-template-columns:repeat(7,1fr);}
+.week-day{border-right:1px solid var(--bd);padding:0;}
+.week-day:last-child{border-right:none;}
+.wd-hdr{padding:8px 6px 6px;text-align:center;border-bottom:1px solid var(--bd);background:var(--bg-h);}
+.wd-name{font-size:10px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
+.wd-num{font-size:18px;font-weight:700;color:var(--t);line-height:1.2;margin-top:2px;}
+.wd-num.today-num{color:var(--blue);border-bottom:2px solid var(--blue);}
+.wd-body{padding:6px;min-height:90px;}
+.wd-today{background:var(--bbg);}
+.wd-event{font-size:10px;padding:2px 5px;border-radius:3px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
+.wd-event.finance-in{background:var(--gbg);color:var(--green);}
+.wd-event.finance-out{background:var(--rbg);color:var(--red);}
+.wd-event.todo{background:var(--abg);color:var(--amber);}
+.wd-event.bill{background:var(--rbg);color:var(--red);}
+.wd-event.habit{background:var(--bbg);color:var(--blue);}
+.wd-more{font-size:10px;color:var(--ts);padding:1px 4px;}
+.week-legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--bd);background:var(--bg-h);}
+.wl-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ts);}
+.wl-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+@media(max-width:768px){.wd-name{font-size:9px;}.wd-num{font-size:14px;}.wd-body{min-height:60px;padding:4px;}.wd-event{font-size:9px;}}
 .bh2{font-size:19px;font-weight:600;color:var(--t);margin:22px 0 8px;letter-spacing:-0.01em;}
 .bh3{font-size:15px;font-weight:600;color:var(--t);margin:14px 0 8px;}
 
@@ -282,6 +305,9 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div class="page-title">My Life OS</div>
       <div class="page-sub" id="home-date"></div>
       <button class="mob-menu-below" onclick="openSB()">☰ Menu</button>
+      <div class="bh2">📅 Weekly snapshot</div>
+      <div id="home-weekly"></div>
+      <div class="divider"></div>
       <div class="bh2">📊 Daily snapshot</div>
       <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 20px;" id="home-metrics"></div>
       <div class="divider"></div>
@@ -751,7 +777,69 @@ function renderHabits(){
 }
 
 // ── HOME ──
+function renderWeekly(){
+  // Build Mon–Sun of current week
+  const now=new Date();
+  const dow=now.getDay();
+  const mondayOffset=dow===0?-6:1-dow;
+  const weekDays=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(now);
+    d.setDate(now.getDate()+mondayOffset+i);
+    weekDays.push(d);
+  }
+  const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  const cols=weekDays.map((d,i)=>{
+    const dk=d.toISOString().split('T')[0];
+    const isToday=dk===today;
+    const events=[];
+
+    // Finance entries that day
+    const dayInc=S.finance.filter(f=>f.dt===dk&&f.t==='income');
+    const dayExp=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
+    if(dayInc.length){const tot=dayInc.reduce((s,f)=>s+f.a,0);events.push({cls:'finance-in',label:'+'+fmt(tot)});}
+    if(dayExp.length){const tot=dayExp.reduce((s,f)=>s+f.a,0);events.push({cls:'finance-out',label:'-'+fmt(tot)});}
+
+    // Bills due that day
+    S.bills.filter(b=>b.d===dk).forEach(b=>events.push({cls:'bill',label:'🧾 '+b.n}));
+
+    // Todos due that day
+    S.todos.filter(t=>!t.done&&t.d===dk).forEach(t=>events.push({cls:'todo',label:'✓ '+t.t}));
+
+    // Habit completion
+    if(S.habits.length){
+      const done=S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
+      events.push({cls:'habit',label:'🔄 '+done+'/'+S.habits.length+' habits'});
+    }
+
+    const visible=events.slice(0,3);
+    const extra=events.length-3;
+    return`<div class="week-day">
+      <div class="wd-hdr ${isToday?'wd-today':''}">
+        <div class="wd-name">${dayNames[i]}</div>
+        <div class="wd-num ${isToday?'today-num':''}">${d.getDate()}</div>
+      </div>
+      <div class="wd-body ${isToday?'wd-today':''}">
+        ${visible.map(e=>`<div class="wd-event ${e.cls}">${e.label}</div>`).join('')}
+        ${extra>0?`<div class="wd-more">+${extra} more</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  G('home-weekly').innerHTML=`<div class="week-cal">
+    <div class="week-days">${cols}</div>
+    <div class="week-legend">
+      <div class="wl-item"><div class="wl-dot" style="background:#e4f5f0;border:1px solid var(--green);"></div>Income</div>
+      <div class="wl-item"><div class="wl-dot" style="background:#fce8e6;border:1px solid var(--red);"></div>Expense / Bill</div>
+      <div class="wl-item"><div class="wl-dot" style="background:#fef4dc;border:1px solid var(--amber);"></div>Task due</div>
+      <div class="wl-item"><div class="wl-dot" style="background:#e7f3f8;border:1px solid var(--blue);"></div>Habits</div>
+    </div>
+  </div>`;
+}
+
 function renderHome(){
+  renderWeekly();
   const inc=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
   const exp=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
   const net=inc-exp;
