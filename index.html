@@ -740,9 +740,13 @@ function go(id,el){
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
   G('p-'+id).classList.add('on');
   if(el)el.classList.add('on');
-  G('bc-ic').textContent=PM[id].ic;G('bc-ttl').textContent=PM[id].ttl;
+  G('bc-ic').textContent=PM[id]?PM[id].ic:'📝';
+  G('bc-ttl').textContent=PM[id]?PM[id].ttl:id;
   G('new-btn').style.display=id==='home'?'none':'flex';
-  closeSB();renderAll();
+  closeSB();
+  renderAll();
+  // Force chart resize after panel is visible
+  setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},50);
 }
 function triggerAdd(){
   const a=document.querySelector('.panel.on');if(!a)return;
@@ -776,7 +780,7 @@ function quickFin(){
   const d=G('qf-d').value.trim(),a=parseFloat(G('qf-a').value);
   if(!d||!a)return;
   S.finance.push({d,a,t:G('qf-t').value,c:'Other',dt:today,id:Date.now()});
-  G('qf-d').value='';G('qf-a').value='';save();renderHome();
+  G('qf-d').value='';G('qf-a').value='';save();renderFinance();renderHome();
 }
 function delFin(id){S.finance=S.finance.filter(f=>f.id!==id);save();renderFinance();renderHome();}
 function renderFinance(){
@@ -1195,6 +1199,8 @@ function doImport(e){
 // ── RENDER ALL ──
 function renderAll(){renderFinance();renderTrades();renderGoals();renderBills();renderTodos();renderHabits();renderHome();renderRecurring();}
 renderAll();
+setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},150);
+window.addEventListener('resize',()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});});
 
 // ── AUTO BACKUP ──
 function autoBackup(){
