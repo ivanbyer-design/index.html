@@ -140,6 +140,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .wd-event.finance-in{background:var(--gbg);color:var(--green);}
 .wd-event.finance-out{background:var(--rbg);color:var(--red);}
 .wd-event.todo{background:var(--abg);color:var(--amber);}
+.wd-event.todo-high{background:var(--rbg);color:var(--red);font-weight:600;}
 .wd-event.bill{background:var(--rbg);color:var(--red);}
 .wd-event.habit{background:var(--bbg);color:var(--blue);}
 .week-day.is-today .wd-event.habit{background:rgba(51,126,169,0.2);color:#fff;}
@@ -942,7 +943,21 @@ function renderTodos(){
   };
   const rl=(items,el)=>{
     if(!items.length){G(el).innerHTML='<div class="empty">None</div>';return;}
-    G(el).innerHTML=[...items].sort((a,b)=>po[a.p]-po[b.p]).map(renderTask).join('');
+    const sorted=[...items].sort((a,b)=>po[a.p]-po[b.p]);
+    // Group by category
+    const cats=[...new Set(sorted.map(t=>t.c))];
+    let html='';
+    cats.forEach(cat=>{
+      const catItems=sorted.filter(t=>t.c===cat);
+      html+=`<div style="margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;padding:6px 4px 4px;border-bottom:1px solid var(--bd);margin-bottom:2px;display:flex;align-items:center;gap:6px;">
+          <span class="tag blue" style="font-size:10px;padding:1px 7px;">${cat}</span>
+          <span style="color:var(--th);">${catItems.length} task${catItems.length>1?'s':''}</span>
+        </div>
+        ${catItems.map(renderTask).join('')}
+      </div>`;
+    });
+    G(el).innerHTML=html;
   };
   rl(act,'td-active');rl(done,'td-done');
 }
@@ -1011,13 +1026,23 @@ function renderWeekly(){
     const events=[];
 
     // Regular todos due this day
-    S.todos.filter(t=>!t.done&&t.d===dk).forEach(t=>events.push({cls:'todo',label:t.t}));
+    S.todos.filter(t=>!t.done&&t.d===dk).forEach(t=>events.push({
+      cls:t.p==='high'?'todo-high':'todo',
+      label:t.t,
+      cat:t.c,
+      pri:t.p
+    }));
     // Recurring tasks for this day of week
     const dow=d.getDay();
     (S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).forEach(r=>{
       const doneKey='rdone-'+r.id+'-'+dk;
       const isDone=S.hlog&&S.hlog[doneKey];
-      if(!isDone)events.push({cls:'todo',label:'↻ '+r.t});
+      if(!isDone)events.push({
+        cls:r.p==='high'?'todo-high':'todo',
+        label:'↻ '+r.t,
+        cat:r.c,
+        pri:r.p
+      });
     });
     // Bills due this day
     S.bills.filter(b=>b.d===dk).forEach(b=>events.push({cls:'bill',label:'🧾 '+b.n}));
@@ -1035,7 +1060,7 @@ function renderWeekly(){
         <div class="wd-num">${d.getDate()}</div>
       </div>
       <div class="wd-body">
-        ${visible.map(e=>`<div class="wd-event ${e.cls}">${e.label}</div>`).join('')}
+        ${visible.map(e=>`<div class="wd-event ${e.cls}" title="${e.cat||''}">${e.label}${e.cat?`<span style="opacity:0.65;font-size:9px;margin-left:3px;">${e.cat}</span>`:''}</div>`).join('')}
         ${extra>0?`<div class="wd-more">+${extra} more</div>`:''}
       </div>
     </div>`;
@@ -1046,9 +1071,10 @@ function renderWeekly(){
       <div class="week-days">${cols}</div>
     </div>
     <div class="week-legend">
-      <div class="wl-item"><div class="wl-dot" style="background:#fef4dc;border:1px solid var(--amber);"></div>Task / recurring</div>
-      <div class="wl-item"><div class="wl-dot" style="background:#fce8e6;border:1px solid var(--red);"></div>Bill due</div>
-      <div class="wl-item"><div class="wl-dot" style="background:#e7f3f8;border:1px solid var(--blue);"></div>Habits</div>
+      <div class="wl-item"><div class="wl-dot" style="background:var(--rbg);border:1px solid var(--red);"></div>High priority</div>
+      <div class="wl-item"><div class="wl-dot" style="background:var(--abg);border:1px solid var(--amber);"></div>Task / recurring</div>
+      <div class="wl-item"><div class="wl-dot" style="background:var(--rbg);border:1px solid var(--red);"></div>Bill due</div>
+      <div class="wl-item"><div class="wl-dot" style="background:var(--bbg);border:1px solid var(--blue);"></div>Habits</div>
     </div>
   </div>`;
 
