@@ -330,6 +330,44 @@ textarea.fi{resize:vertical;min-height:52px;}
 .day-pill span{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--bd);background:var(--bg-in);color:var(--ts);transition:all .1s;}
 .day-pill input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff;}
 .day-pill span:hover{border-color:var(--blue);color:var(--blue);}
+
+/* SUBTASKS */
+.subtask-list{padding:4px 0 2px 22px;border-left:2px solid var(--bd);margin:4px 0 2px 8px;}
+.subtask-row{display:flex;align-items:center;gap:6px;padding:3px 0;}
+.subtask-row input[type=checkbox]{width:13px;height:13px;flex-shrink:0;accent-color:var(--blue);}
+.subtask-text{font-size:13px;color:var(--t);}
+.subtask-text.done{text-decoration:line-through;color:var(--ts);}
+.subtask-del{background:none;border:none;cursor:pointer;color:var(--th);font-size:11px;padding:0 3px;}
+.subtask-del:hover{color:var(--red);}
+.add-subtask-row{display:flex;gap:4px;margin-top:4px;padding-left:22px;}
+.subtask-inp{font-family:var(--font);font-size:12px;padding:4px 8px;border-radius:var(--r);border:1px solid var(--bd);background:var(--bg-in);color:var(--t);flex:1;}
+.subtask-inp:focus{outline:none;border-color:var(--blue);}
+.subtask-toggle{font-size:11px;color:var(--ts);cursor:pointer;padding:2px 6px;border-radius:var(--r);border:none;background:transparent;font-family:var(--font);}
+.subtask-toggle:hover{background:var(--bg-h);color:var(--t);}
+
+/* SIDEBAR DRAG — always on */
+.ni.draggable-ni{cursor:grab;}
+.ni.draggable-ni:active{cursor:grabbing;}
+.ni.sb-drag-over{border-top:2px solid var(--blue);}
+.ni.sb-dragging{opacity:0.35;}
+.sb-drag-grip{color:var(--th);font-size:11px;cursor:grab;padding:0 3px;flex-shrink:0;opacity:0;}
+.ni:hover .sb-drag-grip{opacity:1;}
+
+/* CUSTOM PAGES */
+.cp-block{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin:8px 0;position:relative;}
+.cp-block-del{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--th);font-size:13px;padding:2px 5px;border-radius:var(--r);}
+.cp-block-del:hover{color:var(--red);background:var(--rbg);}
+.cp-block textarea{font-family:var(--font);font-size:14px;color:var(--t);background:transparent;border:none;width:100%;resize:vertical;min-height:80px;line-height:1.7;}
+.cp-block textarea:focus{outline:none;}
+.cp-block textarea::placeholder{color:var(--th);}
+.cp-add-block-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.cp-add-btn{font-family:var(--font);font-size:12px;padding:6px 14px;border-radius:var(--r);border:1px dashed var(--bd2);background:transparent;color:var(--ts);cursor:pointer;}
+.cp-add-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
+.new-page-modal input{font-family:var(--font);font-size:15px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--bd);background:var(--bg-in);color:var(--t);width:100%;}
+.new-page-modal input:focus{outline:none;border-color:var(--blue);}
+.icon-picker{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.icon-opt{font-size:20px;padding:6px 10px;border-radius:var(--r);cursor:pointer;border:2px solid transparent;}
+.icon-opt:hover,.icon-opt.sel{border-color:var(--blue);background:var(--bbg);}
 </style>
 </head>
 <body>
@@ -351,12 +389,19 @@ textarea.fi{resize:vertical;min-height:52px;}
   <div class="ni on" id="ni-home" onclick="go('home',this)"><span class="ni-ic">∞</span><span class="ni-lb">Home</span></div>
   <div class="sb-div"></div>
   <div class="sb-sec">Life Sectors</div>
-  <div class="ni" id="ni-finance" draggable="false" onclick="go('finance',this)"><span class="ni-ic">💰</span><span class="ni-lb" id="sbl-finance">Finance</span></div>
-  <div class="ni" id="ni-trades" draggable="false" onclick="go('trades',this)"><span class="ni-ic">📈</span><span class="ni-lb" id="sbl-trades">Trades & Backtests</span></div>
-  <div class="ni" id="ni-goals" draggable="false" onclick="go('goals',this)"><span class="ni-ic">🎯</span><span class="ni-lb" id="sbl-goals">Goals</span></div>
-  <div class="ni" id="ni-bills" draggable="false" onclick="go('bills',this)"><span class="ni-ic">🧾</span><span class="ni-lb" id="sbl-bills">Bills</span></div>
-  <div class="ni" id="ni-todos" draggable="false" onclick="go('todos',this)"><span class="ni-ic">✅</span><span class="ni-lb" id="sbl-todos">Admin & Todos</span></div>
-  <div class="ni" id="ni-habits" draggable="false" onclick="go('habits',this)"><span class="ni-ic">🔄</span><span class="ni-lb" id="sbl-habits">Habits</span></div>
+  <div class="ni draggable-ni" id="ni-finance" draggable="true" onclick="go('finance',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">💰</span><span class="ni-lb" id="sbl-finance">Finance</span></div>
+  <div class="ni draggable-ni" id="ni-trades" draggable="true" onclick="go('trades',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">📈</span><span class="ni-lb" id="sbl-trades">Trades & Backtests</span></div>
+  <div class="ni draggable-ni" id="ni-goals" draggable="true" onclick="go('goals',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🎯</span><span class="ni-lb" id="sbl-goals">Goals</span></div>
+  <div class="ni draggable-ni" id="ni-bills" draggable="true" onclick="go('bills',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🧾</span><span class="ni-lb" id="sbl-bills">Bills</span></div>
+  <div class="ni draggable-ni" id="ni-todos" draggable="true" onclick="go('todos',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">✅</span><span class="ni-lb" id="sbl-todos">Admin & Todos</span></div>
+  <div class="ni draggable-ni" id="ni-habits" draggable="true" onclick="go('habits',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🔄</span><span class="ni-lb" id="sbl-habits">Habits</span></div>
+  <div class="sb-div" id="sb-custom-div"></div>
+  <div id="sb-custom-pages"></div>
+  <div style="padding:4px 8px 2px;">
+    <div class="ni" onclick="openNewPageModal()" style="color:var(--ts);font-size:13px;border:1px dashed var(--bd2);margin:2px 6px;justify-content:center;gap:6px;">
+      <span>＋</span><span class="ni-lb" style="flex:0;">New page</span>
+    </div>
+  </div>
   <div class="sb-div"></div>
   <div class="sb-ft">
     <div class="ni" style="color:var(--th);font-size:13px;" onclick="exportData()"><span class="ni-ic">⬇️</span><span class="ni-lb">Export backup</span></div>
@@ -571,6 +616,11 @@ textarea.fi{resize:vertical;min-height:52px;}
           <select class="fi" id="td-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
           <input class="fi" type="date" id="td-d" style="max-width:150px;">
           <button class="btn pri" onclick="addTodo()">Add task</button>
+        </div>
+        <div style="margin-top:4px;padding-left:2px;">
+          <div style="font-size:11px;color:var(--ts);margin-bottom:4px;font-weight:500;">Subtasks (optional — press Enter to add)</div>
+          <div id="td-subtask-preview" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
+          <input class="fi" type="text" id="td-st-inp" placeholder="Add subtask..." style="margin-top:4px;font-size:12px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPendingSubtask();}">
         </div>
       </div>
       <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:6px;">
@@ -828,10 +878,20 @@ function renderBills(){
 }
 
 // ── TODOS ──
+let pendingSubtasks=[];
+function addPendingSubtask(){
+  const inp=G('td-st-inp');const txt=inp.value.trim();if(!txt)return;
+  pendingSubtasks.push({t:txt,done:false,id:Date.now()});
+  inp.value='';renderPendingSubtasks();
+}
+function renderPendingSubtasks(){
+  const el=G('td-subtask-preview');if(!el)return;
+  el.innerHTML=pendingSubtasks.map((s,i)=>`<span style="display:inline-flex;align-items:center;gap:3px;background:var(--bbg);color:var(--blue);font-size:11px;padding:2px 8px;border-radius:20px;">${s.t}<button onclick="pendingSubtasks.splice(${i},1);renderPendingSubtasks();" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:10px;padding:0 0 0 3px;">✕</button></span>`).join('');
+}
 function addTodo(){
   const t=G('td-t').value.trim();if(!t)return;
-  S.todos.push({t,c:G('td-c').value,p:G('td-p').value,d:G('td-d').value,done:false,dd:null,id:Date.now()});
-  G('td-t').value='';save();renderTodos();
+  S.todos.push({t,c:G('td-c').value,p:G('td-p').value,d:G('td-d').value,done:false,dd:null,subtasks:[...pendingSubtasks],id:Date.now()});
+  G('td-t').value='';pendingSubtasks=[];renderPendingSubtasks();save();renderTodos();
 }
 function quickTodo(){
   const t=G('qt-t').value.trim();if(!t)return;
@@ -845,11 +905,60 @@ function renderTodos(){
   G('td-sum').innerHTML=`<div class="sum-item"><div class="sum-lb">Open tasks</div><div class="sum-vl">${act.length}</div></div><div class="sum-item"><div class="sum-lb">High priority</div><div class="sum-vl dn">${act.filter(t=>t.p==='high').length}</div></div><div class="sum-item"><div class="sum-lb">Done today</div><div class="sum-vl up">${S.todos.filter(t=>t.dd===today).length}</div></div><div class="sum-item"><div class="sum-lb">Total done</div><div class="sum-vl">${done.length}</div></div>`;
   G('td-ac').textContent='('+act.length+')';G('td-dc').textContent='('+done.length+')';
   const po={high:0,med:1,low:2},pl={high:'🔴 High',med:'🟡 Med',low:'⚪ Low'};
+  const renderTask=(t)=>{
+    const subs=t.subtasks||[];
+    const doneSubs=subs.filter(s=>s.done).length;
+    const subPct=subs.length?Math.round(doneSubs/subs.length*100):null;
+    const subHtml=subs.length?`
+      <div class="subtask-list" id="stl-${t.id}">
+        ${subs.map(s=>`<div class="subtask-row">
+          <input type="checkbox" ${s.done?'checked':''} onchange="togSubtask(${t.id},${s.id},this.checked)">
+          <span class="subtask-text ${s.done?'done':''}">${s.t}</span>
+          <button class="subtask-del" onclick="delSubtask(${t.id},${s.id})">✕</button>
+        </div>`).join('')}
+        <div class="add-subtask-row">
+          <input class="subtask-inp" id="sti-${t.id}" placeholder="Add subtask..." onkeydown="if(event.key==='Enter'){event.preventDefault();addSubtask(${t.id});}">
+          <button class="subtask-toggle" onclick="addSubtask(${t.id})">＋</button>
+        </div>
+      </div>`:
+      `<div style="padding-top:4px;"><input class="subtask-inp" id="sti-${t.id}" placeholder="＋ Add subtask..." style="display:none;" onkeydown="if(event.key==='Enter'){event.preventDefault();addSubtask(${t.id});}"></div>`;
+    return`<div class="ci" style="flex-direction:column;align-items:stretch;padding:7px 4px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <input type="checkbox" ${t.done?'checked':''} onchange="togTodo(${t.id})" style="margin-top:3px;width:14px;height:14px;flex-shrink:0;accent-color:var(--blue);">
+        <div style="flex:1;">
+          <div class="ci-lb ${t.done?'done':''}">${t.t}${subPct!==null?`<span style="font-size:10px;color:var(--ts);margin-left:6px;">${doneSubs}/${subs.length}</span>`:''}</div>
+          <div class="ci-meta">${tag(t.c,'blue')}${tag(pl[t.p],PC[t.p])}${t.d?`<span style="font-size:11px;color:var(--ts);">📅 ${t.d}</span>`:''}
+            ${!subs.length?`<button class="subtask-toggle" onclick="showSubInp(${t.id})">＋ subtask</button>`:''}</div>
+        </div>
+        <button class="del" onclick="delTodo(${t.id})">✕</button>
+      </div>
+      ${subHtml}
+    </div>`;
+  };
   const rl=(items,el)=>{
     if(!items.length){G(el).innerHTML='<div class="empty">None</div>';return;}
-    G(el).innerHTML=[...items].sort((a,b)=>po[a.p]-po[b.p]).map(t=>`<div class="ci"><input type="checkbox" ${t.done?'checked':''} onchange="togTodo(${t.id})"><div style="flex:1;"><div class="ci-lb ${t.done?'done':''}">${t.t}</div><div class="ci-meta">${tag(t.c,'blue')}${tag(pl[t.p],PC[t.p])}${t.d?`<span style="font-size:11px;color:var(--ts);">📅 ${t.d}</span>`:''}</div></div><button class="del" onclick="delTodo(${t.id})">✕</button></div>`).join('');
+    G(el).innerHTML=[...items].sort((a,b)=>po[a.p]-po[b.p]).map(renderTask).join('');
   };
   rl(act,'td-active');rl(done,'td-done');
+}
+
+
+function showSubInp(tid){const el=document.getElementById('sti-'+tid);if(el){el.style.display='block';el.focus();}}
+function addSubtask(tid){
+  const inp=document.getElementById('sti-'+tid);if(!inp)return;
+  const txt=inp.value.trim();if(!txt)return;
+  const t=S.todos.find(t=>t.id===tid);
+  if(t){if(!t.subtasks)t.subtasks=[];t.subtasks.push({t:txt,done:false,id:Date.now()});inp.value='';save();renderTodos();}
+}
+function togSubtask(tid,sid,checked){
+  const t=S.todos.find(t=>t.id===tid);
+  if(t&&t.subtasks){const s=t.subtasks.find(s=>s.id===sid);if(s)s.done=checked;}
+  save();renderTodos();
+}
+function delSubtask(tid,sid){
+  const t=S.todos.find(t=>t.id===tid);
+  if(t&&t.subtasks)t.subtasks=t.subtasks.filter(s=>s.id!==sid);
+  save();renderTodos();
 }
 
 // ── HABITS ──
@@ -1503,6 +1612,178 @@ function renderRecurring(){
     </div>`).join('');
 }
 
+
+// ── CUSTOM PAGES ──
+if(!S.customPages)S.customPages=[];
+
+function openNewPageModal(){
+  G('new-page-modal-wrap').classList.add('open');
+  setTimeout(()=>{const n=G('np-name');if(n){n.focus();}},100);
+}
+function selectIcon(el){
+  document.querySelectorAll('#np-icon-picker .icon-opt').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function createCustomPage(){
+  const name=G('np-name').value.trim();
+  if(!name)return;
+  const iconEl=document.querySelector('#np-icon-picker .icon-opt.sel');
+  const icon=iconEl?iconEl.textContent:'📝';
+  const id='cp-'+ Date.now();
+  S.customPages.push({id,name,icon,blocks:[]});
+  save();
+  G('new-page-modal-wrap').classList.remove('open');
+  G('np-name').value='';
+  renderCustomPages();
+  // Navigate to new page
+  goCustomPage(id);
+}
+function delCustomPage(id){
+  if(!confirm('Delete this page and all its content?'))return;
+  S.customPages=S.customPages.filter(p=>p.id!==id);
+  save();renderCustomPages();
+  // Go home if we were on deleted page
+  if(document.querySelector('.panel.on')?.id==='p-'+id) go('home',G('ni-home'));
+}
+function goCustomPage(id){
+  const page=S.customPages.find(p=>p.id===id);if(!page)return;
+  // Ensure panel exists
+  let panel=G('p-'+id);
+  if(!panel){
+    panel=document.createElement('div');
+    panel.className='panel';
+    panel.id='p-'+id;
+    G('content').appendChild(panel);
+  }
+  renderCustomPagePanel(id);
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  panel.classList.add('on');
+  const ni=G('ni-'+id);if(ni)ni.classList.add('on');
+  G('bc-ic').textContent=page.icon;
+  G('bc-ttl').textContent=page.name;
+  G('new-btn').style.display='none';
+  closeSB();
+}
+function renderCustomPagePanel(id){
+  const page=S.customPages.find(p=>p.id===id);if(!page)return;
+  let panel=G('p-'+id);
+  if(!panel){panel=document.createElement('div');panel.className='panel';panel.id='p-'+id;G('content').appendChild(panel);}
+  const coverColors=['cf','ct','cg','cb2','cto','ch'];
+  const cc=coverColors[S.customPages.indexOf(page)%coverColors.length];
+  panel.innerHTML=`
+    <button class="mob-menu-float" onclick="openSB()">☰</button>
+    <div class="page-cover ${cc}"></div>
+    <span class="page-icon" style="font-size:44px;display:block;margin-bottom:6px;">${page.icon}</span>
+    <div class="page-title" style="outline:none;" contenteditable="true" onblur="renameCustomPage('${id}',this.textContent)">${page.name}</div>
+    <div class="page-sub" style="color:var(--ts);font-size:14px;margin-bottom:12px;">Custom page</div>
+    <div id="cp-blocks-${id}">
+      ${(page.blocks||[]).map((b,bi)=>renderCustomBlock(id,b,bi)).join('')}
+    </div>
+    <div class="cp-add-block-row">
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','text')">＋ Text block</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','checklist')">☑ Checklist</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','heading')">H Heading</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','divider')">— Divider</button>
+    </div>
+    <div class="divider"></div>
+    <button class="btn" style="color:var(--red);border-color:var(--red);font-size:12px;" onclick="delCustomPage('${id}')">🗑 Delete this page</button>
+  `;
+}
+function renderCustomBlock(pageId,b,bi){
+  if(b.type==='heading')return`<div class="cp-block"><button class="cp-block-del" onclick="delCustomBlock('${pageId}',${bi})">✕</button><div contenteditable="true" class="bh2" style="outline:none;margin:0;" onblur="saveCustomBlock('${pageId}',${bi},'t',this.textContent)">${b.t||'Heading'}</div></div>`;
+  if(b.type==='divider')return`<div class="cp-block" style="padding:6px 0;display:flex;align-items:center;gap:8px;background:transparent;border:none;"><hr style="flex:1;border:none;border-top:1px solid var(--bd);"><button class="cp-block-del" style="position:static;" onclick="delCustomBlock('${pageId}',${bi})">✕</button></div>`;
+  if(b.type==='checklist'){
+    const items=b.items||[];
+    return`<div class="cp-block"><button class="cp-block-del" onclick="delCustomBlock('${pageId}',${bi})">✕</button>
+      ${items.map((it,ii)=>`<div class="subtask-row"><input type="checkbox" ${it.done?'checked':''} onchange="togCPCheck('${pageId}',${bi},${ii},this.checked)"><span class="subtask-text ${it.done?'done':''}">${it.t}</span><button class="subtask-del" onclick="delCPCheck('${pageId}',${bi},${ii})">✕</button></div>`).join('')}
+      <div class="add-subtask-row"><input class="subtask-inp" placeholder="＋ Add item..." onkeydown="if(event.key==='Enter'){event.preventDefault();addCPCheck('${pageId}',${bi},this);}"><button class="subtask-toggle" onclick="addCPCheck('${pageId}',${bi},this.previousElementSibling)">＋</button></div>
+    </div>`;
+  }
+  return`<div class="cp-block"><button class="cp-block-del" onclick="delCustomBlock('${pageId}',${bi})">✕</button><textarea placeholder="Start writing..." onblur="saveCustomBlock('${pageId}',${bi},'t',this.value)">${b.t||''}</textarea></div>`;
+}
+function addCustomBlock(pageId,type){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page)return;
+  if(!page.blocks)page.blocks=[];
+  page.blocks.push({type,t:'',items:[]});
+  save();renderCustomPagePanel(pageId);
+}
+function delCustomBlock(pageId,bi){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page)return;
+  page.blocks.splice(bi,1);save();renderCustomPagePanel(pageId);
+}
+function saveCustomBlock(pageId,bi,key,val){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page||!page.blocks[bi])return;
+  page.blocks[bi][key]=val;save();
+}
+function togCPCheck(pageId,bi,ii,checked){
+  const page=S.customPages.find(p=>p.id===pageId);
+  if(page&&page.blocks[bi]&&page.blocks[bi].items[ii])page.blocks[bi].items[ii].done=checked;
+  save();renderCustomPagePanel(pageId);
+}
+function addCPCheck(pageId,bi,inp){
+  const txt=inp.value.trim();if(!txt)return;
+  const page=S.customPages.find(p=>p.id===pageId);
+  if(page&&page.blocks[bi]){if(!page.blocks[bi].items)page.blocks[bi].items=[];page.blocks[bi].items.push({t:txt,done:false});inp.value='';}
+  save();renderCustomPagePanel(pageId);
+}
+function delCPCheck(pageId,bi,ii){
+  const page=S.customPages.find(p=>p.id===pageId);
+  if(page&&page.blocks[bi])page.blocks[bi].items.splice(ii,1);
+  save();renderCustomPagePanel(pageId);
+}
+function renameCustomPage(id,name){
+  const page=S.customPages.find(p=>p.id===id);
+  if(page&&name.trim()){page.name=name.trim();save();renderCustomPages();}
+}
+function renderCustomPages(){
+  if(!S.customPages)S.customPages=[];
+  const sb=G('sb-custom-pages');
+  const div=G('sb-custom-div');
+  if(sb){
+    sb.innerHTML=S.customPages.map(p=>`
+      <div class="ni" id="ni-${p.id}" onclick="goCustomPage('${p.id}')">
+        <span class="ni-ic">${p.icon}</span>
+        <span class="ni-lb">${p.name}</span>
+      </div>`).join('');
+  }
+  if(div)div.style.display=S.customPages.length?'block':'none';
+}
+
+// ── SIDEBAR DRAG (always on) ──
+(function initSBDrag(){
+  let dragId=null;
+  const coreIds=['finance','trades','goals','bills','todos','habits'];
+  function setupDrag(){
+    coreIds.forEach(id=>{
+      const el=G('ni-'+id);if(!el)return;
+      el.ondragstart=e=>{dragId=id;el.classList.add('sb-dragging');e.dataTransfer.effectAllowed='move';};
+      el.ondragend=e=>{el.classList.remove('sb-dragging');document.querySelectorAll('.sb-drag-over').forEach(n=>n.classList.remove('sb-drag-over'));};
+      el.ondragover=e=>{e.preventDefault();if(dragId&&dragId!==id){document.querySelectorAll('.sb-drag-over').forEach(n=>n.classList.remove('sb-drag-over'));el.classList.add('sb-drag-over');}};
+      el.ondrop=e=>{
+        e.preventDefault();
+        if(!dragId||dragId===id)return;
+        const src=G('ni-'+dragId),tgt=G('ni-'+id);
+        if(src&&tgt){
+          const p=tgt.parentElement;
+          const els=Array.from(p.querySelectorAll('.ni[id^="ni-"]'));
+          if(els.indexOf(src)<els.indexOf(tgt))p.insertBefore(src,tgt.nextSibling);
+          else p.insertBefore(src,tgt);
+          // Persist order
+          const newOrder=Array.from(p.querySelectorAll('.ni[id^="ni-"]'))
+            .map(n=>n.id.replace('ni-','')).filter(x=>coreIds.includes(x));
+          if(typeof EC!=='undefined'){EC.order=newOrder;saveEC();}
+        }
+        document.querySelectorAll('.sb-drag-over').forEach(n=>n.classList.remove('sb-drag-over'));
+      };
+    });
+  }
+  setupDrag();
+})();
+
+// Init custom pages
+renderCustomPages();
+
 </script>
 
 <!-- EDIT MODE BAR -->
@@ -1526,5 +1807,39 @@ function renderRecurring(){
   </div>
 </div>
 
+
+<!-- NEW PAGE MODAL -->
+<div class="edit-modal-wrap" id="new-page-modal-wrap" onclick="if(event.target===this)G('new-page-modal-wrap').classList.remove('open')">
+  <div class="edit-modal new-page-modal">
+    <div class="em-hdr"><span class="em-ttl">Create new page</span><button class="em-close" onclick="G('new-page-modal-wrap').classList.remove('open')">✕</button></div>
+    <div class="em-body">
+      <div class="em-label">Page name</div>
+      <input class="em-inp" id="np-name" placeholder="e.g. Journal, Reading List, Budget 2026..." autocomplete="off">
+      <div class="em-label" style="margin-top:12px;">Icon</div>
+      <div class="icon-picker" id="np-icon-picker">
+        <span class="icon-opt sel" onclick="selectIcon(this)">📝</span>
+        <span class="icon-opt" onclick="selectIcon(this)">📌</span>
+        <span class="icon-opt" onclick="selectIcon(this)">💡</span>
+        <span class="icon-opt" onclick="selectIcon(this)">📚</span>
+        <span class="icon-opt" onclick="selectIcon(this)">🗂️</span>
+        <span class="icon-opt" onclick="selectIcon(this)">💼</span>
+        <span class="icon-opt" onclick="selectIcon(this)">🏋️</span>
+        <span class="icon-opt" onclick="selectIcon(this)">🍎</span>
+        <span class="icon-opt" onclick="selectIcon(this)">✈️</span>
+        <span class="icon-opt" onclick="selectIcon(this)">💰</span>
+        <span class="icon-opt" onclick="selectIcon(this)">🎯</span>
+        <span class="icon-opt" onclick="selectIcon(this)">🔑</span>
+        <span class="icon-opt" onclick="selectIcon(this)">📊</span>
+        <span class="icon-opt" onclick="selectIcon(this)">🧠</span>
+        <span class="icon-opt" onclick="selectIcon(this)">⚡</span>
+        <span class="icon-opt" onclick="selectIcon(this)">🌿</span>
+      </div>
+    </div>
+    <div class="em-footer">
+      <button class="em-btn" onclick="G('new-page-modal-wrap').classList.remove('open')">Cancel</button>
+      <button class="em-btn pri" onclick="createCustomPage()">Create page</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
