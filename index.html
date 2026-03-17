@@ -258,6 +258,64 @@ textarea.fi{resize:vertical;min-height:52px;}
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px;}
+
+/* ── EDIT MODE ── */
+.edit-mode .editable-block{position:relative;outline:2px dashed var(--blue);outline-offset:3px;border-radius:var(--rl);}
+.edit-mode .editable-block:hover{outline-color:var(--amber);}
+.block-edit-bar{display:none;position:absolute;top:-28px;right:0;z-index:10;background:var(--blue);border-radius:var(--r) var(--r) 0 0;padding:2px 6px;gap:4px;align-items:center;}
+.edit-mode .editable-block:hover .block-edit-bar{display:flex;}
+.block-edit-btn{background:none;border:none;cursor:pointer;color:#fff;font-size:12px;padding:2px 5px;border-radius:2px;font-family:var(--font);}
+.block-edit-btn:hover{background:rgba(255,255,255,0.2);}
+.edit-mode .bh2,.edit-mode .bh3,.edit-mode .page-title,.edit-mode .chart-ttl,.edit-mode .nf-ttl,.edit-mode .db-ttl{cursor:pointer;border-radius:var(--r);padding:2px 6px;margin-left:-6px;transition:background .15s;}
+.edit-mode .bh2:hover,.edit-mode .bh3:hover,.edit-mode .page-title:hover,.edit-mode .chart-ttl:hover,.edit-mode .nf-ttl:hover,.edit-mode .db-ttl:hover{background:var(--abg);}
+.edit-mode-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--blue);color:#fff;padding:10px 20px;font-size:13px;font-weight:500;align-items:center;justify-content:space-between;gap:12px;}
+.edit-mode-bar.show{display:flex;}
+.edit-mode-bar .hint{font-size:12px;opacity:0.8;}
+.exit-edit-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;padding:6px 16px;border-radius:20px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;}
+.exit-edit-btn:hover{background:rgba(255,255,255,0.35);}
+
+/* EDIT MODAL */
+.edit-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.edit-modal-wrap.open{display:flex;}
+.edit-modal{background:var(--bg-card);border-radius:var(--rl);width:100%;max-width:460px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.18);}
+.em-hdr{padding:16px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.em-ttl{font-size:15px;font-weight:600;color:var(--t);}
+.em-close{background:none;border:none;cursor:pointer;color:var(--ts);font-size:18px;padding:2px 6px;border-radius:var(--r);}
+.em-close:hover{background:var(--bg-h);color:var(--t);}
+.em-body{padding:16px 20px;}
+.em-label{font-size:11px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;margin-top:14px;}
+.em-label:first-child{margin-top:0;}
+.em-inp{font-family:var(--font);font-size:14px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--bd);background:var(--bg-in);color:var(--t);width:100%;}
+.em-inp:focus{outline:none;border-color:var(--blue);}
+.em-footer{padding:12px 20px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px;}
+.em-btn{font-family:var(--font);font-size:13px;font-weight:500;padding:7px 18px;border-radius:var(--r);border:1px solid var(--bd2);background:transparent;color:var(--t);cursor:pointer;}
+.em-btn:hover{background:var(--bg-h);}
+.em-btn.pri{background:var(--t);color:var(--ti);border-color:var(--t);}
+.em-btn.pri:hover{opacity:0.85;}
+.em-btn.danger{color:var(--red);border-color:var(--red);}
+.em-btn.danger:hover{background:var(--rbg);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-row-lbl{font-size:14px;color:var(--t);}
+.tog-sw{position:relative;width:36px;height:20px;flex-shrink:0;}
+.tog-sw input{opacity:0;width:0;height:0;}
+.tog-sl{position:absolute;inset:0;background:var(--bg-tag);border-radius:20px;cursor:pointer;transition:.2s;}
+.tog-sl:before{content:'';position:absolute;height:14px;width:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+.tog-sw input:checked+.tog-sl{background:var(--blue);}
+.tog-sw input:checked+.tog-sl:before{transform:translateX(16px);}
+
+/* SIDEBAR REORDER */
+.sb-drag-handle{display:none;color:var(--th);font-size:12px;cursor:grab;padding:0 4px;margin-left:-4px;}
+.edit-mode .sb-drag-handle{display:inline-block;}
+.ni.drag-over{border-top:2px solid var(--blue);}
+.ni.dragging{opacity:0.4;}
+
+/* NOTE BLOCKS */
+.custom-note{background:var(--abg);border-left:3px solid var(--amber);border-radius:0 var(--r) var(--r) 0;padding:10px 14px;margin:8px 0;font-size:14px;color:var(--t);line-height:1.6;position:relative;}
+.edit-mode .custom-note{outline:1px dashed var(--amber);cursor:pointer;}
+.note-del{display:none;position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;color:var(--ts);font-size:12px;}
+.edit-mode .note-del{display:block;}
+.note-del:hover{color:var(--red);}
 </style>
 </head>
 <body>
@@ -279,12 +337,12 @@ textarea.fi{resize:vertical;min-height:52px;}
   <div class="ni on" id="ni-home" onclick="go('home',this)"><span class="ni-ic">∞</span><span class="ni-lb">Home</span></div>
   <div class="sb-div"></div>
   <div class="sb-sec">Life Sectors</div>
-  <div class="ni" id="ni-finance" onclick="go('finance',this)"><span class="ni-ic">💰</span><span class="ni-lb">Finance</span></div>
-  <div class="ni" id="ni-trades" onclick="go('trades',this)"><span class="ni-ic">📈</span><span class="ni-lb">Trades & Backtests</span></div>
-  <div class="ni" id="ni-goals" onclick="go('goals',this)"><span class="ni-ic">🎯</span><span class="ni-lb">Goals</span></div>
-  <div class="ni" id="ni-bills" onclick="go('bills',this)"><span class="ni-ic">🧾</span><span class="ni-lb">Bills</span></div>
-  <div class="ni" id="ni-todos" onclick="go('todos',this)"><span class="ni-ic">✅</span><span class="ni-lb">Admin & Todos</span></div>
-  <div class="ni" id="ni-habits" onclick="go('habits',this)"><span class="ni-ic">🔄</span><span class="ni-lb">Habits</span></div>
+  <div class="ni" id="ni-finance" draggable="false" onclick="go('finance',this)"><span class="ni-ic">💰</span><span class="ni-lb" id="sbl-finance">Finance</span></div>
+  <div class="ni" id="ni-trades" draggable="false" onclick="go('trades',this)"><span class="ni-ic">📈</span><span class="ni-lb" id="sbl-trades">Trades & Backtests</span></div>
+  <div class="ni" id="ni-goals" draggable="false" onclick="go('goals',this)"><span class="ni-ic">🎯</span><span class="ni-lb" id="sbl-goals">Goals</span></div>
+  <div class="ni" id="ni-bills" draggable="false" onclick="go('bills',this)"><span class="ni-ic">🧾</span><span class="ni-lb" id="sbl-bills">Bills</span></div>
+  <div class="ni" id="ni-todos" draggable="false" onclick="go('todos',this)"><span class="ni-ic">✅</span><span class="ni-lb" id="sbl-todos">Admin & Todos</span></div>
+  <div class="ni" id="ni-habits" draggable="false" onclick="go('habits',this)"><span class="ni-ic">🔄</span><span class="ni-lb" id="sbl-habits">Habits</span></div>
   <div class="sb-div"></div>
   <div class="sb-ft">
     <div class="ni" style="color:var(--th);font-size:13px;" onclick="exportData()"><span class="ni-ic">⬇️</span><span class="ni-lb">Export backup</span></div>
@@ -311,16 +369,16 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div class="page-title">My Life OS</div>
       <div class="page-sub" id="home-date"></div>
       <button class="mob-menu-below" onclick="openSB()">☰ Menu</button>
-      <div class="bh2">📅 Weekly snapshot</div>
+      <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
       <div id="home-weekly"></div>
       <div class="divider"></div>
-      <div class="bh2">📊 Daily snapshot</div>
+      <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📊 Daily snapshot</div>
       <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 20px;" id="home-metrics"></div>
       <div class="divider"></div>
-      <div class="bh2">🔔 Needs attention</div>
+      <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
       <div id="home-attn" style="margin-top:6px;"></div>
       <div class="divider"></div>
-      <div class="bh2">⚡ Quick log</div>
+      <div class="bh2 editable-hdr" data-hdr="home-qlog-hdr" id="hdr-home-qlog">⚡ Quick log</div>
       <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
         <div class="nf" style="margin:0;">
           <div class="nf-ttl">💰 Log finance</div>
@@ -347,7 +405,7 @@ textarea.fi{resize:vertical;min-height:52px;}
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover cf"></div>
       <span class="page-icon">💰</span>
-      <div class="page-title">Finance</div>
+      <div class="page-title editable-hdr" data-hdr="finance-title" id="hdr-finance-title">Finance</div>
       <div class="page-sub">Track daily income and expenses</div>
       <div class="summary-bar" id="f-sum"></div>
       <div class="chart-box">
@@ -386,7 +444,7 @@ textarea.fi{resize:vertical;min-height:52px;}
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover ct"></div>
       <span class="page-icon">📈</span>
-      <div class="page-title">Trades & Backtests</div>
+      <div class="page-title editable-hdr" data-hdr="trades-title" id="hdr-trades-title">Trades & Backtests</div>
       <div class="page-sub">Live trade journal and strategy backtests</div>
       <div class="summary-bar" id="t-sum"></div>
       <div class="chart-box">
@@ -434,7 +492,7 @@ textarea.fi{resize:vertical;min-height:52px;}
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover cg"></div>
       <span class="page-icon">🎯</span>
-      <div class="page-title">Goals</div>
+      <div class="page-title editable-hdr" data-hdr="goals-title" id="hdr-goals-title">Goals</div>
       <div class="page-sub">Big objectives and their action steps</div>
       <div class="summary-bar" id="g-sum"></div>
       <div class="nf">
@@ -454,7 +512,7 @@ textarea.fi{resize:vertical;min-height:52px;}
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover cb2"></div>
       <span class="page-icon">🧾</span>
-      <div class="page-title">Bills</div>
+      <div class="page-title editable-hdr" data-hdr="bills-title" id="hdr-bills-title">Bills</div>
       <div class="page-sub">Recurring payments and due dates</div>
       <div class="summary-bar" id="b-sum"></div>
       <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;">
@@ -487,7 +545,7 @@ textarea.fi{resize:vertical;min-height:52px;}
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover cto"></div>
       <span class="page-icon">✅</span>
-      <div class="page-title">Admin & Todos</div>
+      <div class="page-title editable-hdr" data-hdr="todos-title" id="hdr-todos-title">Admin & Todos</div>
       <div class="page-sub">Tasks, errands, tickets, paperwork</div>
       <div class="summary-bar" id="td-sum"></div>
       <div class="nf">
@@ -511,7 +569,7 @@ textarea.fi{resize:vertical;min-height:52px;}
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover ch"></div>
       <span class="page-icon">🔄</span>
-      <div class="page-title">Daily Habits</div>
+      <div class="page-title editable-hdr" data-hdr="habits-title" id="hdr-habits-title">Daily Habits</div>
       <div class="page-sub" id="h-date"></div>
       <div class="summary-bar" id="h-sum"></div>
       <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px;">
@@ -957,6 +1015,381 @@ const mURL=URL.createObjectURL(mBlob);
 const mLink=document.createElement('link');
 mLink.rel='manifest';mLink.href=mURL;
 document.head.appendChild(mLink);
+
+// ══════════════════════════════════════════
+// ── EDIT MODE ENGINE ──
+// ══════════════════════════════════════════
+
+// Load saved customizations
+let EC = {labels:{}, hidden:{}, notes:{}, order:['finance','trades','goals','bills','todos','habits']};
+try{const d=localStorage.getItem('lifeOS_edit');if(d)EC=Object.assign(EC,JSON.parse(d));}catch(e){}
+const saveEC=()=>{try{localStorage.setItem('lifeOS_edit',JSON.stringify(EC));}catch(e){}};
+
+let editMode = false;
+
+// ── Apply saved labels on load ──
+function applyCustomLabels(){
+  Object.keys(EC.labels).forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=EC.labels[id];
+  });
+  // Sync sidebar labels with page titles
+  const syncMap={
+    'hdr-finance-title':'sbl-finance',
+    'hdr-trades-title':'sbl-trades',
+    'hdr-goals-title':'sbl-goals',
+    'hdr-bills-title':'sbl-bills',
+    'hdr-todos-title':'sbl-todos',
+    'hdr-habits-title':'sbl-habits',
+  };
+  Object.keys(syncMap).forEach(titleId=>{
+    const sblId=syncMap[titleId];
+    if(EC.labels[titleId]){
+      const sbl=document.getElementById(sblId);
+      if(sbl)sbl.textContent=EC.labels[titleId];
+    }
+  });
+  // Apply sidebar order
+  applySidebarOrder();
+  // Apply hidden blocks
+  applyHiddenBlocks();
+  // Apply custom notes
+  renderAllNotes();
+}
+
+// ── Apply hidden blocks ──
+function applyHiddenBlocks(){
+  Object.keys(EC.hidden).forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display=EC.hidden[id]?'none':'';
+  });
+}
+
+// ── Apply sidebar order ──
+function applySidebarOrder(){
+  const container=document.querySelector('.sb-ft')?.parentElement;
+  if(!container) return;
+  const navItems={};
+  ['finance','trades','goals','bills','todos','habits'].forEach(id=>{
+    navItems[id]=document.getElementById('ni-'+id);
+  });
+  // Find insertion point (after the Life Sectors label)
+  const secLabel=Array.from(document.querySelectorAll('.sb-sec')).find(el=>el.textContent.includes('Life'));
+  if(!secLabel) return;
+  let after=secLabel;
+  EC.order.forEach(id=>{
+    const el=navItems[id];
+    if(el){
+      after.insertAdjacentElement('afterend',el);
+      after=el;
+    }
+  });
+}
+
+// ── LONG PRESS detection ──
+let longPressTimer=null;
+let longPressTarget=null;
+
+function attachLongPress(){
+  document.querySelectorAll('.editable-hdr').forEach(el=>{
+    el.addEventListener('mousedown', e=>startLongPress(e,el));
+    el.addEventListener('touchstart', e=>startLongPress(e,el),{passive:true});
+    el.addEventListener('mouseup', cancelLongPress);
+    el.addEventListener('mouseleave', cancelLongPress);
+    el.addEventListener('touchend', cancelLongPress);
+    el.addEventListener('touchmove', cancelLongPress);
+  });
+  // Long press on page title activates edit mode
+  document.querySelectorAll('.page-title.editable-hdr, .bh2.editable-hdr, .bh3.editable-hdr').forEach(el=>{
+    el.addEventListener('click', e=>{
+      if(editMode) openRenameModal(el);
+    });
+  });
+}
+
+function startLongPress(e,el){
+  cancelLongPress();
+  longPressTimer=setTimeout(()=>{
+    longPressTarget=el;
+    if(!editMode) enterEditMode();
+    else openRenameModal(el);
+    // Haptic feedback on supported devices
+    if(navigator.vibrate) navigator.vibrate(40);
+  },600);
+}
+function cancelLongPress(){
+  if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}
+}
+
+// ── ENTER / EXIT EDIT MODE ──
+function enterEditMode(){
+  editMode=true;
+  document.body.classList.add('edit-mode');
+  G('edit-bar').classList.add('show');
+  attachBlockToggles();
+  attachSidebarDrag();
+  showToast('✏️ Edit mode — long-press any header to rename');
+}
+function exitEditMode(){
+  editMode=false;
+  document.body.classList.remove('edit-mode');
+  G('edit-bar').classList.remove('show');
+  saveEC();
+  showToast('✓ Changes saved');
+}
+
+// ── RENAME MODAL ──
+function openRenameModal(el){
+  const currentText=el.textContent.trim();
+  const elId=el.id;
+  G('em-ttl').textContent='Rename';
+  G('em-body').innerHTML=`
+    <div class="em-label">New name</div>
+    <input class="em-inp" id="em-rename-inp" value="${currentText}" placeholder="Enter name..." autocomplete="off">
+    <div style="margin-top:16px;">
+      <div class="em-label">Block visibility</div>
+      <div class="toggle-row">
+        <span class="toggle-row-lbl">Show this block</span>
+        <label class="tog-sw"><input type="checkbox" id="em-vis-tog" checked><span class="tog-sl"></span></label>
+      </div>
+    </div>`;
+  G('em-footer').innerHTML=`
+    <button class="em-btn" onclick="closeEditModal()">Cancel</button>
+    <button class="em-btn pri" onclick="saveRename('${elId}')">Save</button>`;
+  G('edit-modal-wrap').classList.add('open');
+  setTimeout(()=>{const inp=G('em-rename-inp');if(inp){inp.focus();inp.select();}},100);
+}
+
+function saveRename(elId){
+  const inp=G('em-rename-inp');
+  if(!inp) return;
+  const newName=inp.value.trim();
+  if(newName){
+    const el=document.getElementById(elId);
+    if(el){
+      el.textContent=newName;
+      EC.labels[elId]=newName;
+      // Sync sidebar label if this is a page title
+      const syncMap={
+        'hdr-finance-title':'sbl-finance','hdr-trades-title':'sbl-trades',
+        'hdr-goals-title':'sbl-goals','hdr-bills-title':'sbl-bills',
+        'hdr-todos-title':'sbl-todos','hdr-habits-title':'sbl-habits',
+      };
+      if(syncMap[elId]){
+        const sbl=G(syncMap[elId]);
+        if(sbl)sbl.textContent=newName;
+        EC.labels[syncMap[elId]]=newName;
+        // Also update PM nav map display
+        const pageKey=elId.replace('hdr-','').replace('-title','');
+        if(PM[pageKey]) PM[pageKey].ttl=newName;
+        // Update breadcrumb if on that page
+        if(G('bc-ttl').textContent===PM[pageKey]?.ttl||true) {
+          const active=document.querySelector('.panel.on');
+          if(active&&active.id==='p-'+pageKey) G('bc-ttl').textContent=newName;
+        }
+      }
+    }
+  }
+  saveEC();
+  closeEditModal();
+  showToast('✓ Renamed');
+}
+
+// ── BLOCK TOGGLES ──
+// Adds toggle buttons next to each major section
+const toggleableBlocks = [
+  {id:'home-weekly',       label:'Weekly calendar',     panel:'p-home'},
+  {id:'home-metrics',      label:'Daily snapshot cards', panel:'p-home'},
+  {id:'home-attn',         label:'Needs attention',      panel:'p-home'},
+  {id:'f-sum',             label:'Finance summary bar',  panel:'p-finance'},
+  {id:'t-sum',             label:'Trades summary bar',   panel:'p-trades'},
+  {id:'g-sum',             label:'Goals summary bar',    panel:'p-goals'},
+  {id:'b-sum',             label:'Bills summary bar',    panel:'p-bills'},
+  {id:'td-sum',            label:'Tasks summary bar',    panel:'p-todos'},
+  {id:'h-sum',             label:'Habits summary bar',   panel:'p-habits'},
+];
+
+function attachBlockToggles(){
+  // Show toggle panel button in edit bar
+  const bar=G('edit-bar');
+  if(!bar.querySelector('.toggle-blocks-btn')){
+    const btn=document.createElement('button');
+    btn.className='exit-edit-btn toggle-blocks-btn';
+    btn.style.background='rgba(255,255,255,0.15)';
+    btn.textContent='⊞ Blocks';
+    btn.onclick=openBlocksModal;
+    bar.insertBefore(btn, bar.querySelector('.exit-edit-btn'));
+  }
+}
+
+function openBlocksModal(){
+  G('em-ttl').textContent='Toggle blocks';
+  const activePanel=document.querySelector('.panel.on')?.id||'';
+  const relevant=toggleableBlocks.filter(b=>!b.panel||b.panel===activePanel||activePanel==='p-home');
+  G('em-body').innerHTML=`
+    <div class="em-label">Show / hide blocks on this page</div>
+    ${relevant.map(b=>{
+      const hidden=EC.hidden[b.id];
+      return`<div class="toggle-row">
+        <span class="toggle-row-lbl">${b.label}</span>
+        <label class="tog-sw"><input type="checkbox" ${!hidden?'checked':''} onchange="toggleBlock('${b.id}',this.checked)"><span class="tog-sl"></span></label>
+      </div>`;
+    }).join('')}
+    <div class="em-label" style="margin-top:16px;">Add custom note</div>
+    <input class="em-inp" id="em-note-inp" placeholder="Type your note here..." autocomplete="off">
+    <select class="em-inp" id="em-note-page" style="margin-top:6px;">
+      <option value="p-home">Home</option>
+      <option value="p-finance">Finance</option>
+      <option value="p-trades">Trades</option>
+      <option value="p-goals">Goals</option>
+      <option value="p-bills">Bills</option>
+      <option value="p-todos">Admin & Todos</option>
+      <option value="p-habits">Habits</option>
+    </select>`;
+  if(activePanel) G('em-note-page').value=activePanel;
+  G('em-footer').innerHTML=`
+    <button class="em-btn" onclick="closeEditModal()">Close</button>
+    <button class="em-btn pri" onclick="addCustomNote()">Add note</button>`;
+  G('edit-modal-wrap').classList.add('open');
+}
+
+function toggleBlock(id, visible){
+  EC.hidden[id]=!visible;
+  const el=G(id);
+  if(el)el.style.display=visible?'':'none';
+  // Also hide/show surrounding divider if it exists
+  const parent=el?.parentElement;
+  if(parent){
+    const dividers=parent.querySelectorAll('.divider');
+    // just save, cosmetic
+  }
+  saveEC();
+}
+
+// ── CUSTOM NOTES ──
+function addCustomNote(){
+  const txt=G('em-note-inp')?.value.trim();
+  const pageId=G('em-note-page')?.value||'p-home';
+  if(!txt)return;
+  if(!EC.notes[pageId])EC.notes[pageId]=[];
+  EC.notes[pageId].push({id:'note-'+Date.now(),txt});
+  saveEC();
+  renderAllNotes();
+  closeEditModal();
+  showToast('✓ Note added');
+}
+
+function renderAllNotes(){
+  // Remove existing note containers
+  document.querySelectorAll('.custom-notes-container').forEach(el=>el.remove());
+  Object.keys(EC.notes).forEach(pageId=>{
+    const panel=G(pageId);
+    if(!panel||!EC.notes[pageId]?.length) return;
+    let container=panel.querySelector('.custom-notes-container');
+    if(!container){
+      container=document.createElement('div');
+      container.className='custom-notes-container';
+      // Insert after the page subtitle
+      const sub=panel.querySelector('.page-sub')||panel.querySelector('.mob-menu-float')||panel.firstElementChild;
+      sub?.insertAdjacentElement('afterend',container);
+    }
+    container.innerHTML=EC.notes[pageId].map(n=>`
+      <div class="custom-note" id="${n.id}">
+        ${n.txt}
+        <button class="note-del" onclick="deleteNote('${pageId}','${n.id}')">✕ remove</button>
+      </div>`).join('');
+  });
+}
+
+function deleteNote(pageId, noteId){
+  if(!EC.notes[pageId])return;
+  EC.notes[pageId]=EC.notes[pageId].filter(n=>n.id!==noteId);
+  saveEC();
+  renderAllNotes();
+}
+
+// ── SIDEBAR DRAG TO REORDER ──
+let dragSrc=null;
+function attachSidebarDrag(){
+  ['finance','trades','goals','bills','todos','habits'].forEach(id=>{
+    const el=G('ni-'+id);
+    if(!el) return;
+    el.setAttribute('draggable','true');
+    // Add drag handle visual
+    if(!el.querySelector('.sb-drag-handle')){
+      const handle=document.createElement('span');
+      handle.className='sb-drag-handle';
+      handle.textContent='⠿';
+      el.insertBefore(handle,el.firstChild);
+    }
+    el.addEventListener('dragstart',e=>{
+      dragSrc=el;
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    el.addEventListener('dragend',e=>{
+      el.classList.remove('dragging');
+      document.querySelectorAll('.ni').forEach(n=>n.classList.remove('drag-over'));
+    });
+    el.addEventListener('dragover',e=>{
+      e.preventDefault();
+      if(dragSrc&&dragSrc!==el){
+        document.querySelectorAll('.ni').forEach(n=>n.classList.remove('drag-over'));
+        el.classList.add('drag-over');
+      }
+    });
+    el.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(dragSrc&&dragSrc!==el){
+        const parent=el.parentElement;
+        const els=Array.from(parent.querySelectorAll('.ni[id^="ni-"]'));
+        const srcIdx=els.indexOf(dragSrc);
+        const tgtIdx=els.indexOf(el);
+        if(srcIdx>tgtIdx) el.parentElement.insertBefore(dragSrc,el);
+        else el.parentElement.insertBefore(dragSrc,el.nextSibling);
+        // Save new order
+        const newOrder=Array.from(parent.querySelectorAll('.ni[id^="ni-"]')).map(n=>n.id.replace('ni-',''));
+        EC.order=newOrder;
+        saveEC();
+        showToast('✓ Order saved');
+      }
+      document.querySelectorAll('.ni').forEach(n=>n.classList.remove('drag-over'));
+    });
+  });
+}
+
+// ── MODAL HELPERS ──
+function closeEditModal(e){
+  if(e&&e.target!==G('edit-modal-wrap')) return;
+  G('edit-modal-wrap').classList.remove('open');
+}
+
+// ── INIT ──
+applyCustomLabels();
+attachLongPress();
+
 </script>
+
+<!-- EDIT MODE BAR -->
+<div class="edit-mode-bar" id="edit-bar">
+  <div>
+    <div style="font-size:14px;font-weight:600;">✏️ Edit Mode</div>
+    <div class="hint">Long-press any header to rename · click blocks to toggle · drag sidebar items to reorder</div>
+  </div>
+  <button class="exit-edit-btn" onclick="exitEditMode()">Done</button>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="edit-modal-wrap" id="edit-modal-wrap" onclick="closeEditModal(event)">
+  <div class="edit-modal" id="edit-modal">
+    <div class="em-hdr">
+      <span class="em-ttl" id="em-ttl">Edit block</span>
+      <button class="em-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="em-body" id="em-body"></div>
+    <div class="em-footer" id="em-footer"></div>
+  </div>
+</div>
+
 </body>
 </html>
