@@ -444,12 +444,24 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
       <div id="home-attn" style="margin-top:6px;"></div>
       <div class="divider"></div>
-      <div class="bh2 editable-hdr" data-hdr="home-qlog-hdr" id="hdr-home-qlog">⚡ Quick task</div>
-      <div class="nf" style="margin-top:10px;">
-        <div class="fr">
-          <input class="fi" type="text" id="qt-t" placeholder="Task description">
-          <select class="fi" id="qt-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
-          <button class="btn pri" onclick="quickTodo()">Add</button>
+      <div class="bh2 editable-hdr" data-hdr="home-qlog-hdr" id="hdr-home-qlog">⚡ Quick log</div>
+      <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
+        <div class="nf" style="margin:0;">
+          <div class="nf-ttl">💰 Log finance</div>
+          <div class="fr">
+            <input class="fi" type="text" id="qf-d" placeholder="Description">
+            <input class="fi" type="number" id="qf-a" placeholder="Amount" step="0.01">
+            <select class="fi" id="qf-t"><option value="income">Income</option><option value="expense">Expense</option></select>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:4px;"><button class="btn pri" onclick="quickFin()">Add</button></div>
+        </div>
+        <div class="nf" style="margin:0;">
+          <div class="nf-ttl">✅ Quick task</div>
+          <div class="fr">
+            <input class="fi" type="text" id="qt-t" placeholder="Task description">
+            <select class="fi" id="qt-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:4px;"><button class="btn pri" onclick="quickTodo()">Add</button></div>
         </div>
       </div>
     </div>
