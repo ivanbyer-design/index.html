@@ -60,6 +60,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .sb-div{height:1px;background:var(--bd);margin:8px 10px;}
 .sb-ft{margin-top:auto;padding:8px;}
 
+
+/* SIDEBAR COLLAPSE */
+.sb{transition:width .22s ease,transform .22s ease;}
+.sb.collapsed{width:0;overflow:hidden;border-right:none;}
+.main{transition:margin-left .22s ease;}
+.sb-toggle-btn{width:28px;height:28px;border-radius:var(--r);border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ts);font-size:16px;flex-shrink:0;}
+.sb-toggle-btn:hover{background:var(--bg-h);color:var(--t);}
+
 /* MOBILE MENU BUTTONS */
 .mob-menu-below{display:none;margin:12px 0 0;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--rl);border:1px solid var(--bd);background:var(--bg-card);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:500;color:var(--t);width:100%;}
 .mob-menu-below:hover{background:var(--bg-h);}
@@ -316,6 +324,12 @@ textarea.fi{resize:vertical;min-height:52px;}
 .note-del{display:none;position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;color:var(--ts);font-size:12px;}
 .edit-mode .note-del{display:block;}
 .note-del:hover{color:var(--red);}
+/* DAY PILLS */
+.day-pill{display:inline-flex;align-items:center;cursor:pointer;}
+.day-pill input{display:none;}
+.day-pill span{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--bd);background:var(--bg-in);color:var(--ts);transition:all .1s;}
+.day-pill input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff;}
+.day-pill span:hover{border-color:var(--blue);color:var(--blue);}
 </style>
 </head>
 <body>
@@ -354,6 +368,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
+    <button class="sb-toggle-btn" id="sb-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar">◀</button>
     <div class="bc"><span id="bc-ic">∞</span><span class="bc-sep">/</span><span class="bc-cur" id="bc-ttl">Home</span></div>
     <div class="tb-acts">
       <button class="tb-btn pri" id="new-btn" style="display:none;" onclick="triggerAdd()">+ New</button>
@@ -372,8 +387,8 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
       <div id="home-weekly"></div>
       <div class="divider"></div>
-      <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📊 Daily snapshot</div>
-      <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 20px;" id="home-metrics"></div>
+      <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📋 Today's tasks</div>
+      <div id="home-daily-tasks" style="margin:10px 0;"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
       <div id="home-attn" style="margin-top:6px;"></div>
@@ -562,6 +577,32 @@ textarea.fi{resize:vertical;min-height:52px;}
         <div><div class="bh3">Active <span id="td-ac" style="font-size:12px;font-weight:400;color:var(--ts);"></span></div><div id="td-active"></div></div>
         <div><div class="bh3">Completed <span id="td-dc" style="font-size:12px;font-weight:400;color:var(--ts);"></span></div><div id="td-done"></div></div>
       </div>
+      <div class="divider"></div>
+      <div class="bh3">🔁 Recurring tasks</div>
+      <div class="nf" style="margin-top:8px;">
+        <div class="nf-ttl">＋ New recurring task</div>
+        <div class="fr">
+          <input class="fi" type="text" id="rt-t" placeholder="Task name">
+          <select class="fi" id="rt-c" style="max-width:120px;"><option>Admin</option><option>Legal</option><option>Financial</option><option>Medical</option><option>Errand</option><option>Personal</option></select>
+          <select class="fi" id="rt-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
+        </div>
+        <div class="fr" style="margin-top:4px;">
+          <div style="flex:1;">
+            <div style="font-size:11px;color:var(--ts);margin-bottom:4px;font-weight:500;">Repeat on days</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;" id="rt-days-sel">
+              <label class="day-pill"><input type="checkbox" value="0"><span>Sun</span></label>
+              <label class="day-pill"><input type="checkbox" value="1"><span>Mon</span></label>
+              <label class="day-pill"><input type="checkbox" value="2"><span>Tue</span></label>
+              <label class="day-pill"><input type="checkbox" value="3"><span>Wed</span></label>
+              <label class="day-pill"><input type="checkbox" value="4"><span>Thu</span></label>
+              <label class="day-pill"><input type="checkbox" value="5"><span>Fri</span></label>
+              <label class="day-pill"><input type="checkbox" value="6"><span>Sat</span></label>
+            </div>
+          </div>
+          <button class="btn pri" onclick="addRecurring()" style="align-self:flex-end;margin-bottom:0;">Save</button>
+        </div>
+      </div>
+      <div id="rt-list"></div>
     </div>
 
     <!-- HABITS -->
@@ -855,12 +896,18 @@ function renderWeekly(){
     const isToday=dk===today;
     const events=[];
 
-    const dayInc=S.finance.filter(f=>f.dt===dk&&f.t==='income');
-    const dayExp=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
-    if(dayInc.length){const tot=dayInc.reduce((s,f)=>s+f.a,0);events.push({cls:'finance-in',label:'+'+fmt(tot)});}
-    if(dayExp.length){const tot=dayExp.reduce((s,f)=>s+f.a,0);events.push({cls:'finance-out',label:'-'+fmt(tot)});}
+    // Regular todos due this day
+    S.todos.filter(t=>!t.done&&t.d===dk).forEach(t=>events.push({cls:'todo',label:t.t}));
+    // Recurring tasks for this day of week
+    const dow=d.getDay();
+    (S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).forEach(r=>{
+      const doneKey='rdone-'+r.id+'-'+dk;
+      const isDone=S.hlog&&S.hlog[doneKey];
+      if(!isDone)events.push({cls:'todo',label:'↻ '+r.t});
+    });
+    // Bills due this day
     S.bills.filter(b=>b.d===dk).forEach(b=>events.push({cls:'bill',label:'🧾 '+b.n}));
-    S.todos.filter(t=>!t.done&&t.d===dk).forEach(t=>events.push({cls:'todo',label:'✓ '+t.t}));
+    // Habit completion count
     if(S.habits.length){
       const done=S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
       events.push({cls:'habit',label:'🔄 '+done+'/'+S.habits.length});
@@ -885,9 +932,8 @@ function renderWeekly(){
       <div class="week-days">${cols}</div>
     </div>
     <div class="week-legend">
-      <div class="wl-item"><div class="wl-dot" style="background:#e4f5f0;border:1px solid var(--green);"></div>Income</div>
-      <div class="wl-item"><div class="wl-dot" style="background:#fce8e6;border:1px solid var(--red);"></div>Expense / Bill</div>
-      <div class="wl-item"><div class="wl-dot" style="background:#fef4dc;border:1px solid var(--amber);"></div>Task due</div>
+      <div class="wl-item"><div class="wl-dot" style="background:#fef4dc;border:1px solid var(--amber);"></div>Task / recurring</div>
+      <div class="wl-item"><div class="wl-dot" style="background:#fce8e6;border:1px solid var(--red);"></div>Bill due</div>
       <div class="wl-item"><div class="wl-dot" style="background:#e7f3f8;border:1px solid var(--blue);"></div>Habits</div>
     </div>
   </div>`;
@@ -906,24 +952,66 @@ function renderWeekly(){
 
 function renderHome(){
   renderWeekly();
-  const inc=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
-  const exp=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
-  const net=inc-exp;
-  const open=S.todos.filter(t=>!t.done).length;
+
+  // ── TODAY'S TASK LIST (resets daily) ──
+  const dow=new Date().getDay();
+  const todayTodos=S.todos.filter(t=>!t.done&&t.d===today);
+  const todayRecurring=(S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).map(r=>{
+    const doneKey='rdone-'+r.id+'-'+today;
+    return{...r,isDone:!!(S.hlog&&S.hlog[doneKey]),isRecurring:true};
+  });
+  const allTodayTasks=[...todayTodos,...todayRecurring];
+  const doneCount=allTodayTasks.filter(t=>t.done||t.isDone).length;
+  const totalCount=allTodayTasks.length;
+  const pct=totalCount?Math.round(doneCount/totalCount*100):0;
+
+  const dailyEl=G('home-daily-tasks');
+  if(dailyEl){
+    if(!allTodayTasks.length){
+      dailyEl.innerHTML='<div class="callout def" style="margin:0;"><span class="co-ic">📋</span><span class="co-tx" style="color:var(--ts);">No tasks for today — add some in Admin & Todos or set up recurring tasks.</span></div>';
+    } else {
+      const progressBar=totalCount?`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div class="prog" style="flex:1;"><div class="pf ${pct===100?'g':''}" style="width:${pct}%;"></div></div>
+        <span style="font-size:12px;color:var(--ts);white-space:nowrap;">${doneCount}/${totalCount} done · ${pct}%</span>
+      </div>`:'';
+      const priOrder={high:0,med:1,low:2};
+      const taskItems=allTodayTasks.sort((a,b)=>priOrder[a.p||'med']-priOrder[b.p||'med']).map(t=>{
+        const isDone=t.isDone||t.done;
+        const isRec=t.isRecurring;
+        const pid=isRec?('r-'+t.id):t.id;
+        return`<div class="ci" style="padding:6px 4px;">
+          <input type="checkbox" ${isDone?'checked':''} onchange="toggleDailyTask('${pid}',${isRec?'true':'false'},this.checked)" style="width:15px;height:15px;accent-color:var(--blue);flex-shrink:0;margin-top:2px;">
+          <div style="flex:1;">
+            <div class="ci-lb ${isDone?'done':''}">${isRec?'↻ ':''}<strong>${t.t}</strong></div>
+            <div class="ci-meta"><span class="tag blue">${t.c||'Admin'}</span><span class="tag ${t.p==='high'?'red':t.p==='low'?'gray':'amber'}">${t.p==='high'?'🔴 High':t.p==='low'?'⚪ Low':'🟡 Med'}</span>${isRec?'<span class="tag gray">Recurring</span>':''}</div>
+          </div>
+        </div>`;
+      }).join('');
+      dailyEl.innerHTML=`<div style="background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;">${progressBar}${taskItems}</div>`;
+    }
+  }
+
+  // ── NEEDS ATTENTION ──
   const tdH=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
   const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
-  G('home-metrics').innerHTML=`
-    <div class="mc"><div class="mc-lb">Net balance</div><div class="mc-vl ${net>0?'green':net<0?'red':''}">${fmtS(net)}</div><div class="mc-sub">${fmt(inc)} in · ${fmt(exp)} out</div></div>
-    <div class="mc"><div class="mc-lb">Open tasks</div><div class="mc-vl ${open>0?'amber':'gold'}">${open}</div><div class="mc-sub">${S.todos.filter(t=>t.p==='high'&&!t.done).length} high priority</div></div>
-    <div class="mc"><div class="mc-lb">Habits today</div><div class="mc-vl ${tdH===S.habits.length&&S.habits.length?'green':''}">${tdH} / ${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(tdH/S.habits.length*100):0}% done</div></div>
-    <div class="mc"><div class="mc-lb">Bills unpaid</div><div class="mc-vl ${unp>0?'red':'green'}">${fmt(unp)}</div><div class="mc-sub">${S.bills.filter(b=>b.s==='Unpaid').length} outstanding</div></div>
-    <div class="mc"><div class="mc-lb">Active goals</div><div class="mc-vl">${S.goals.length}</div><div class="mc-sub">${S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length} complete</div></div>
-    <div class="mc"><div class="mc-lb">Trades logged</div><div class="mc-vl">${S.trades.length}</div><div class="mc-sub">${S.trades.filter(t=>t.st==='Open').length} open positions</div></div>`;
   const att=[];
   S.todos.filter(t=>!t.done&&t.p==='high').slice(0,3).forEach(t=>att.push(`<div class="callout amber"><span class="co-ic">⚠️</span><span class="co-tx"><strong>High priority:</strong> ${t.t}</span></div>`));
   S.bills.filter(b=>b.s==='Unpaid').slice(0,3).forEach(b=>att.push(`<div class="callout red"><span class="co-ic">🧾</span><span class="co-tx"><strong>Unpaid bill:</strong> ${b.n} — ${fmt(b.a)} due ${b.d||'no date'}</span></div>`));
   if(S.habits.length&&tdH<S.habits.length)att.push(`<div class="callout green"><span class="co-ic">🔄</span><span class="co-tx"><strong>Habits remaining:</strong> ${S.habits.filter(h=>!(S.hlog&&S.hlog[today+'-'+h.id])).map(h=>h.n).join(', ')}</span></div>`);
   G('home-attn').innerHTML=att.length?att.join(''):`<div class="callout green"><span class="co-ic">✅</span><span class="co-tx">All clear — no urgent items right now.</span></div>`;
+}
+
+function toggleDailyTask(id,isRecurring,checked){
+  if(isRecurring){
+    const rid=id.replace('r-','');
+    const doneKey='rdone-'+rid+'-'+today;
+    if(!S.hlog)S.hlog={};
+    S.hlog[doneKey]=checked;
+  } else {
+    const t=S.todos.find(t=>t.id==id);
+    if(t){t.done=checked;t.dd=checked?today:null;}
+  }
+  save();renderHome();
 }
 
 // ── EXPORT / IMPORT ──
@@ -940,7 +1028,7 @@ function doImport(e){
 }
 
 // ── RENDER ALL ──
-function renderAll(){renderFinance();renderTrades();renderGoals();renderBills();renderTodos();renderHabits();renderHome();}
+function renderAll(){renderFinance();renderTrades();renderGoals();renderBills();renderTodos();renderHabits();renderHome();renderRecurring();}
 renderAll();
 
 // ── AUTO BACKUP ──
@@ -1367,6 +1455,53 @@ function closeEditModal(e){
 // ── INIT ──
 applyCustomLabels();
 attachLongPress();
+
+
+// ── SIDEBAR TOGGLE ──
+let sbCollapsed = localStorage.getItem('lifeOS_sbcollapsed')==='1';
+function toggleSidebar(){
+  sbCollapsed=!sbCollapsed;
+  const sb=G('sb');
+  const btn=G('sb-toggle-btn');
+  if(sbCollapsed){sb.classList.add('collapsed');btn.textContent='▶';}
+  else{sb.classList.remove('collapsed');btn.textContent='◀';}
+  localStorage.setItem('lifeOS_sbcollapsed',sbCollapsed?'1':'0');
+}
+// Apply on load
+(()=>{if(sbCollapsed){const sb=G('sb');const btn=G('sb-toggle-btn');if(sb)sb.classList.add('collapsed');if(btn)btn.textContent='▶';}})();
+
+// ── RECURRING TASKS ──
+if(!S.recurring)S.recurring=[];
+
+function addRecurring(){
+  const t=G('rt-t').value.trim();if(!t)return;
+  const days=Array.from(document.querySelectorAll('#rt-days-sel input:checked')).map(el=>parseInt(el.value));
+  if(!days.length){showToast('Pick at least one day');return;}
+  S.recurring.push({t,c:G('rt-c').value,p:G('rt-p').value,days,id:Date.now()});
+  G('rt-t').value='';
+  document.querySelectorAll('#rt-days-sel input').forEach(el=>el.checked=false);
+  save();renderRecurring();renderHome();
+}
+function delRecurring(id){S.recurring=S.recurring.filter(r=>r.id!==id);save();renderRecurring();renderHome();}
+
+function renderRecurring(){
+  if(!S.recurring)S.recurring=[];
+  const list=G('rt-list');if(!list)return;
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  if(!S.recurring.length){list.innerHTML='<div class="empty">No recurring tasks yet</div>';return;}
+  list.innerHTML=S.recurring.map(r=>`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:9px 4px;border-bottom:1px solid var(--bd);">
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--t);">↻ ${r.t}</div>
+        <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
+          <span class="tag blue">${r.c}</span>
+          <span class="tag ${r.p==='high'?'red':r.p==='low'?'gray':'amber'}">${r.p==='high'?'🔴 High':r.p==='low'?'⚪ Low':'🟡 Med'}</span>
+          ${r.days.sort().map(d=>`<span class="tag gray">${dayNames[d]}</span>`).join('')}
+        </div>
+      </div>
+      <button class="del" onclick="delRecurring(${r.id})">✕</button>
+    </div>`).join('');
+}
 
 </script>
 
