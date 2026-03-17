@@ -71,9 +71,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 /* MOBILE MENU BUTTONS */
 .mob-menu-below{display:none;margin:12px 0 0;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--rl);border:1px solid var(--bd);background:var(--bg-card);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:500;color:var(--t);width:100%;}
 .mob-menu-below:hover{background:var(--bg-h);}
+.mob-menu-pill{display:none;margin:8px 0 0;padding:4px 12px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-in);cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;color:var(--ts);}
+.mob-menu-pill:hover{background:var(--bg-h);color:var(--t);}
 .mob-menu-float{display:none;margin:0 0 16px;padding:8px 14px;border-radius:var(--rl);border:1px solid var(--bd);background:var(--bg-card);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:500;color:var(--ts);}
 .mob-menu-float:hover{background:var(--bg-h);color:var(--t);}
-@media(max-width:768px){.mob-menu-below{display:flex;}.mob-menu-float{display:block;}}
+@media(max-width:768px){.mob-menu-below{display:flex;}.mob-menu-float{display:block;}.mob-menu-pill{display:inline-block;}}
 .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99;}
 @media(max-width:768px){
   .sb{position:fixed;top:0;left:0;height:100%;z-index:100;transform:translateX(-100%);box-shadow:4px 0 20px rgba(0,0,0,0.15);}
@@ -429,9 +431,12 @@ textarea.fi{resize:vertical;min-height:52px;}
       <span class="page-icon">∞</span>
       <div class="page-title">My Life OS</div>
       <div class="page-sub" id="home-date"></div>
-      <button class="mob-menu-below" onclick="openSB()">☰ Menu</button>
+      <button class="mob-menu-pill" onclick="openSB()">☰</button>
       <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
       <div id="home-weekly"></div>
+      <div class="divider"></div>
+      <div class="bh2 editable-hdr" data-hdr="home-fin-hdr" id="hdr-home-fin">📊 Daily snapshot</div>
+      <div id="home-fin-snapshot" style="margin:10px 0;"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📋 Today's tasks</div>
       <div id="home-daily-tasks" style="margin:10px 0;"></div>
@@ -439,24 +444,12 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
       <div id="home-attn" style="margin-top:6px;"></div>
       <div class="divider"></div>
-      <div class="bh2 editable-hdr" data-hdr="home-qlog-hdr" id="hdr-home-qlog">⚡ Quick log</div>
-      <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
-        <div class="nf" style="margin:0;">
-          <div class="nf-ttl">💰 Log finance</div>
-          <div class="fr">
-            <input class="fi" type="text" id="qf-d" placeholder="Description">
-            <input class="fi" type="number" id="qf-a" placeholder="Amount" step="0.01">
-            <select class="fi" id="qf-t"><option value="income">Income</option><option value="expense">Expense</option></select>
-          </div>
-          <div style="display:flex;justify-content:flex-end;"><button class="btn pri" onclick="quickFin()">Add</button></div>
-        </div>
-        <div class="nf" style="margin:0;">
-          <div class="nf-ttl">✅ Quick task</div>
-          <div class="fr">
-            <input class="fi" type="text" id="qt-t" placeholder="Task description">
-            <select class="fi" id="qt-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
-          </div>
-          <div style="display:flex;justify-content:flex-end;"><button class="btn pri" onclick="quickTodo()">Add</button></div>
+      <div class="bh2 editable-hdr" data-hdr="home-qlog-hdr" id="hdr-home-qlog">⚡ Quick task</div>
+      <div class="nf" style="margin-top:10px;">
+        <div class="fr">
+          <input class="fi" type="text" id="qt-t" placeholder="Task description">
+          <select class="fi" id="qt-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
+          <button class="btn pri" onclick="quickTodo()">Add</button>
         </div>
       </div>
     </div>
@@ -1092,6 +1085,26 @@ function renderWeekly(){
 
 function renderHome(){
   renderWeekly();
+
+  // ── DAILY SNAPSHOT ──
+  const finEl=G('home-fin-snapshot');
+  if(finEl){
+    const inc=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    const exp=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+    const net=inc-exp;
+    const open=S.todos.filter(t=>!t.done).length;
+    const tdH=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
+    const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
+    finEl.innerHTML=`
+      <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+        <div class="mc"><div class="mc-lb">Net balance</div><div class="mc-vl ${net>0?'green':net<0?'red':''}">${fmtS(net)}</div><div class="mc-sub">${fmt(inc)} in · ${fmt(exp)} out</div></div>
+        <div class="mc"><div class="mc-lb">Open tasks</div><div class="mc-vl ${open>0?'amber':'gold'}">${open}</div><div class="mc-sub">${S.todos.filter(t=>t.p==='high'&&!t.done).length} high priority</div></div>
+        <div class="mc"><div class="mc-lb">Habits today</div><div class="mc-vl ${tdH===S.habits.length&&S.habits.length?'green':''}">${tdH} / ${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(tdH/S.habits.length*100):0}% done</div></div>
+        <div class="mc"><div class="mc-lb">Bills unpaid</div><div class="mc-vl ${unp>0?'red':'green'}">${fmt(unp)}</div><div class="mc-sub">${S.bills.filter(b=>b.s==='Unpaid').length} outstanding</div></div>
+        <div class="mc"><div class="mc-lb">Active goals</div><div class="mc-vl">${S.goals.length}</div><div class="mc-sub">${S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length} complete</div></div>
+        <div class="mc"><div class="mc-lb">Trades logged</div><div class="mc-vl">${S.trades.length}</div><div class="mc-sub">${S.trades.filter(t=>t.st==='Open').length} open positions</div></div>
+      </div>`;
+  }
 
   // ── TODAY'S TASK LIST (resets daily) ──
   const dow=new Date().getDay();
