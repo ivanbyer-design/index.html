@@ -651,6 +651,11 @@ textarea.fi{resize:vertical;min-height:52px;}
           </div>
           <button class="btn pri" onclick="addRecurring()" style="align-self:flex-end;margin-bottom:0;">Save</button>
         </div>
+        <div style="margin-top:8px;">
+          <div style="font-size:11px;color:var(--ts);margin-bottom:4px;font-weight:500;">Subtasks (optional — press Enter to add)</div>
+          <div id="rt-subtask-preview" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;"></div>
+          <input class="fi" type="text" id="rt-st-inp" placeholder="Add subtask..." style="font-size:12px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPendingRtSubtask();}">
+        </div>
       </div>
       <div id="rt-list"></div>
     </div>
@@ -1582,34 +1587,79 @@ function toggleSidebar(){
 // ── RECURRING TASKS ──
 if(!S.recurring)S.recurring=[];
 
+let pendingRtSubtasks=[];
+function addPendingRtSubtask(){
+  const inp=G('rt-st-inp');const txt=inp.value.trim();if(!txt)return;
+  pendingRtSubtasks.push({t:txt,done:false,id:Date.now()});
+  inp.value='';renderPendingRtSubtasks();
+}
+function renderPendingRtSubtasks(){
+  const el=G('rt-subtask-preview');if(!el)return;
+  el.innerHTML=pendingRtSubtasks.map((s,i)=>`<span style="display:inline-flex;align-items:center;gap:3px;background:var(--bbg);color:var(--blue);font-size:11px;padding:2px 8px;border-radius:20px;">${s.t}<button onclick="pendingRtSubtasks.splice(${i},1);renderPendingRtSubtasks();" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:10px;padding:0 0 0 3px;">✕</button></span>`).join('');
+}
 function addRecurring(){
   const t=G('rt-t').value.trim();if(!t)return;
   const days=Array.from(document.querySelectorAll('#rt-days-sel input:checked')).map(el=>parseInt(el.value));
   if(!days.length){showToast('Pick at least one day');return;}
-  S.recurring.push({t,c:G('rt-c').value,p:G('rt-p').value,days,id:Date.now()});
+  S.recurring.push({t,c:G('rt-c').value,p:G('rt-p').value,days,subtasks:[...pendingRtSubtasks],id:Date.now()});
   G('rt-t').value='';
+  pendingRtSubtasks=[];renderPendingRtSubtasks();
   document.querySelectorAll('#rt-days-sel input').forEach(el=>el.checked=false);
   save();renderRecurring();renderHome();
 }
 function delRecurring(id){S.recurring=S.recurring.filter(r=>r.id!==id);save();renderRecurring();renderHome();}
 
+function addRtSubtask(rid){
+  const inp=document.getElementById('rsti-'+rid);if(!inp)return;
+  const txt=inp.value.trim();if(!txt)return;
+  const r=S.recurring.find(r=>r.id===rid);
+  if(r){if(!r.subtasks)r.subtasks=[];r.subtasks.push({t:txt,done:false,id:Date.now()});inp.value='';}
+  save();renderRecurring();
+}
+function togRtSubtask(rid,sid,checked){
+  const r=S.recurring.find(r=>r.id===rid);
+  if(r&&r.subtasks){const s=r.subtasks.find(s=>s.id===sid);if(s)s.done=checked;}
+  save();renderRecurring();
+}
+function delRtSubtask(rid,sid){
+  const r=S.recurring.find(r=>r.id===rid);
+  if(r&&r.subtasks)r.subtasks=r.subtasks.filter(s=>s.id!==sid);
+  save();renderRecurring();
+}
 function renderRecurring(){
   if(!S.recurring)S.recurring=[];
   const list=G('rt-list');if(!list)return;
   const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   if(!S.recurring.length){list.innerHTML='<div class="empty">No recurring tasks yet</div>';return;}
-  list.innerHTML=S.recurring.map(r=>`
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:9px 4px;border-bottom:1px solid var(--bd);">
-      <div>
-        <div style="font-size:14px;font-weight:500;color:var(--t);">↻ ${r.t}</div>
-        <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
-          <span class="tag blue">${r.c}</span>
-          <span class="tag ${r.p==='high'?'red':r.p==='low'?'gray':'amber'}">${r.p==='high'?'🔴 High':r.p==='low'?'⚪ Low':'🟡 Med'}</span>
-          ${r.days.sort().map(d=>`<span class="tag gray">${dayNames[d]}</span>`).join('')}
-        </div>
+  list.innerHTML=S.recurring.map(r=>{
+    const subs=r.subtasks||[];
+    const doneSubs=subs.filter(s=>s.done).length;
+    const subHtml=`<div class="subtask-list">
+      ${subs.map(s=>`<div class="subtask-row">
+        <input type="checkbox" ${s.done?'checked':''} onchange="togRtSubtask(${r.id},${s.id},this.checked)">
+        <span class="subtask-text ${s.done?'done':''}">${s.t}</span>
+        <button class="subtask-del" onclick="delRtSubtask(${r.id},${s.id})">✕</button>
+      </div>`).join('')}
+      <div class="add-subtask-row">
+        <input class="subtask-inp" id="rsti-${r.id}" placeholder="＋ Add subtask..." onkeydown="if(event.key==='Enter'){event.preventDefault();addRtSubtask(${r.id});}">
+        <button class="subtask-toggle" onclick="addRtSubtask(${r.id})">＋</button>
       </div>
-      <button class="del" onclick="delRecurring(${r.id})">✕</button>
-    </div>`).join('');
+    </div>`;
+    return`<div style="padding:9px 4px;border-bottom:1px solid var(--bd);">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:500;color:var(--t);">↻ ${r.t}${subs.length?` <span style="font-size:11px;color:var(--ts);font-weight:400;">${doneSubs}/${subs.length} subtasks</span>`:''}</div>
+          <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
+            <span class="tag blue">${r.c}</span>
+            <span class="tag ${r.p==='high'?'red':r.p==='low'?'gray':'amber'}">${r.p==='high'?'🔴 High':r.p==='low'?'⚪ Low':'🟡 Med'}</span>
+            ${r.days.sort().map(d=>`<span class="tag gray">${dayNames[d]}</span>`).join('')}
+          </div>
+        </div>
+        <button class="del" onclick="delRecurring(${r.id})">✕</button>
+      </div>
+      ${subHtml}
+    </div>`;
+  }).join('');
 }
 
 
@@ -1630,7 +1680,9 @@ function createCustomPage(){
   const iconEl=document.querySelector('#np-icon-picker .icon-opt.sel');
   const icon=iconEl?iconEl.textContent:'📝';
   const id='cp-'+ Date.now();
-  S.customPages.push({id,name,icon,blocks:[]});
+  const coverIdx=S.customPages.length%6;
+  const cover=['cf','ct','cg','cb2','cto','ch'][coverIdx];
+  S.customPages.push({id,name,icon,cover,sub:'',blocks:[]});
   save();
   G('new-page-modal-wrap').classList.remove('open');
   G('np-name').value='';
@@ -1669,43 +1721,139 @@ function renderCustomPagePanel(id){
   const page=S.customPages.find(p=>p.id===id);if(!page)return;
   let panel=G('p-'+id);
   if(!panel){panel=document.createElement('div');panel.className='panel';panel.id='p-'+id;G('content').appendChild(panel);}
-  const coverColors=['cf','ct','cg','cb2','cto','ch'];
-  const cc=coverColors[S.customPages.indexOf(page)%coverColors.length];
+  const cc=page.cover||'cf';
   panel.innerHTML=`
     <button class="mob-menu-float" onclick="openSB()">☰</button>
-    <div class="page-cover ${cc}"></div>
-    <span class="page-icon" style="font-size:44px;display:block;margin-bottom:6px;">${page.icon}</span>
-    <div class="page-title" style="outline:none;" contenteditable="true" onblur="renameCustomPage('${id}',this.textContent)">${page.name}</div>
-    <div class="page-sub" style="color:var(--ts);font-size:14px;margin-bottom:12px;">Custom page</div>
-    <div id="cp-blocks-${id}">
+    <div class="page-cover ${cc}" id="cp-cover-${id}" style="cursor:pointer;" title="Click to change cover" onclick="changeCPCover('${id}')"></div>
+    <span class="page-icon" style="font-size:44px;display:block;margin-bottom:6px;cursor:pointer;" title="Click to change icon" onclick="changeCPIcon('${id}')">${page.icon}</span>
+    <div class="page-title" style="outline:none;cursor:text;" contenteditable="true" onblur="renameCustomPage('${id}',this.textContent)">${page.name}</div>
+    <div class="page-sub" style="color:var(--ts);font-size:14px;margin-bottom:4px;" contenteditable="true" onblur="renameCPSub('${id}',this.textContent)">${page.sub||'Click to add a subtitle...'}</div>
+    <div id="cp-blocks-${id}" style="margin-top:12px;">
       ${(page.blocks||[]).map((b,bi)=>renderCustomBlock(id,b,bi)).join('')}
     </div>
-    <div class="cp-add-block-row">
-      <button class="cp-add-btn" onclick="addCustomBlock('${id}','text')">＋ Text block</button>
-      <button class="cp-add-btn" onclick="addCustomBlock('${id}','checklist')">☑ Checklist</button>
+    <div class="cp-add-block-row" style="margin-top:16px;">
+      <div style="font-size:10px;font-weight:600;color:var(--th);text-transform:uppercase;letter-spacing:0.06em;width:100%;margin-bottom:6px;">Add block</div>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','text')">＋ Text</button>
       <button class="cp-add-btn" onclick="addCustomBlock('${id}','heading')">H Heading</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','heading2')">H2 Subheading</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','checklist')">☑ Checklist</button>
       <button class="cp-add-btn" onclick="addCustomBlock('${id}','divider')">— Divider</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','callout')">💡 Callout</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','metric-row')">📊 Metric cards</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','summary-bar')">📋 Summary bar</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','finance-log')">💰 Finance log</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','task-log')">✅ Task list</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','habit-tracker')">🔄 Habit tracker</button>
+      <button class="cp-add-btn" onclick="addCustomBlock('${id}','weekly-cal')">📅 Weekly calendar</button>
     </div>
     <div class="divider"></div>
     <button class="btn" style="color:var(--red);border-color:var(--red);font-size:12px;" onclick="delCustomPage('${id}')">🗑 Delete this page</button>
   `;
+  // Wire live blocks after render
+  setTimeout(()=>initCPLiveBlocks(id),50);
 }
 function renderCustomBlock(pageId,b,bi){
-  if(b.type==='heading')return`<div class="cp-block"><button class="cp-block-del" onclick="delCustomBlock('${pageId}',${bi})">✕</button><div contenteditable="true" class="bh2" style="outline:none;margin:0;" onblur="saveCustomBlock('${pageId}',${bi},'t',this.textContent)">${b.t||'Heading'}</div></div>`;
-  if(b.type==='divider')return`<div class="cp-block" style="padding:6px 0;display:flex;align-items:center;gap:8px;background:transparent;border:none;"><hr style="flex:1;border:none;border-top:1px solid var(--bd);"><button class="cp-block-del" style="position:static;" onclick="delCustomBlock('${pageId}',${bi})">✕</button></div>`;
+  const del=`<button class="cp-block-del" onclick="delCustomBlock('${pageId}',${bi})">✕</button>`;
+  const moveUp=bi>0?`<button class="cp-block-del" style="right:32px;" title="Move up" onclick="moveCPBlock('${pageId}',${bi},-1)">↑</button>`:'';
+  const moveDown=`<button class="cp-block-del" style="right:54px;" title="Move down" onclick="moveCPBlock('${pageId}',${bi},1)">↓</button>`;
+  const ctrl=moveDown+moveUp+del;
+
+  if(b.type==='heading')return`<div class="cp-block">${ctrl}<div contenteditable="true" class="bh2" style="outline:none;margin:0;" onblur="saveCustomBlock('${pageId}',${bi},'t',this.textContent)">${b.t||'Heading'}</div></div>`;
+  if(b.type==='heading2')return`<div class="cp-block">${ctrl}<div contenteditable="true" class="bh3" style="outline:none;margin:0;" onblur="saveCustomBlock('${pageId}',${bi},'t',this.textContent)">${b.t||'Subheading'}</div></div>`;
+  if(b.type==='divider')return`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;margin:4px 0;">${ctrl}<hr style="flex:1;border:none;border-top:1px solid var(--bd);"></div>`;
+  if(b.type==='callout'){
+    const colors={blue:'blue',green:'green',amber:'amber',red:'red',def:'def'};
+    const clr=b.color||'blue';
+    return`<div class="cp-block" style="padding:0;">${ctrl}
+      <div class="callout ${clr}" style="margin:0;border-radius:var(--rl);">
+        <span contenteditable="true" style="font-size:18px;flex-shrink:0;cursor:text;" onblur="saveCustomBlock('${pageId}',${bi},'icon',this.textContent)">${b.icon||'💡'}</span>
+        <div contenteditable="true" class="co-tx" style="outline:none;flex:1;" onblur="saveCustomBlock('${pageId}',${bi},'t',this.textContent)">${b.t||'Add your note here...'}</div>
+      </div>
+      <div style="display:flex;gap:4px;padding:6px 14px 10px;flex-wrap:wrap;">
+        ${['blue','green','amber','red','def'].map(cl=>`<span onclick="saveCustomBlock('${pageId}',${bi},'color','${cl}');renderCustomPagePanel('${pageId}')" style="width:16px;height:16px;border-radius:50%;cursor:pointer;border:2px solid ${cl===clr?'var(--t)':'transparent'};background:var(--${cl==='def'?'bg-a':cl+'bg'});display:inline-block;"></span>`).join('')}
+      </div>
+    </div>`;
+  }
   if(b.type==='checklist'){
     const items=b.items||[];
-    return`<div class="cp-block"><button class="cp-block-del" onclick="delCustomBlock('${pageId}',${bi})">✕</button>
+    const label=b.label||'';
+    return`<div class="cp-block">${ctrl}
+      ${label?`<div contenteditable="true" class="bh3" style="outline:none;margin:0 0 8px;" onblur="saveCustomBlock('${pageId}',${bi},'label',this.textContent)">${label}</div>`:''}
       ${items.map((it,ii)=>`<div class="subtask-row"><input type="checkbox" ${it.done?'checked':''} onchange="togCPCheck('${pageId}',${bi},${ii},this.checked)"><span class="subtask-text ${it.done?'done':''}">${it.t}</span><button class="subtask-del" onclick="delCPCheck('${pageId}',${bi},${ii})">✕</button></div>`).join('')}
       <div class="add-subtask-row"><input class="subtask-inp" placeholder="＋ Add item..." onkeydown="if(event.key==='Enter'){event.preventDefault();addCPCheck('${pageId}',${bi},this);}"><button class="subtask-toggle" onclick="addCPCheck('${pageId}',${bi},this.previousElementSibling)">＋</button></div>
     </div>`;
   }
-  return`<div class="cp-block"><button class="cp-block-del" onclick="delCustomBlock('${pageId}',${bi})">✕</button><textarea placeholder="Start writing..." onblur="saveCustomBlock('${pageId}',${bi},'t',this.value)">${b.t||''}</textarea></div>`;
+  if(b.type==='metric-row'){
+    // Editable metric cards
+    const metrics=b.metrics||[{label:'Metric 1',value:'—'},{label:'Metric 2',value:'—'},{label:'Metric 3',value:'—'}];
+    return`<div class="cp-block">${ctrl}
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
+        ${metrics.map((m,mi)=>`<div class="mc">
+          <div contenteditable="true" class="mc-lb" style="outline:none;" onblur="saveCPMetric('${pageId}',${bi},${mi},'label',this.textContent)">${m.label}</div>
+          <div contenteditable="true" class="mc-vl" style="outline:none;" onblur="saveCPMetric('${pageId}',${bi},${mi},'value',this.textContent)">${m.value}</div>
+        </div>`).join('')}
+      </div>
+      <button class="subtask-toggle" onclick="addCPMetric('${pageId}',${bi})" style="margin-top:8px;">＋ Add metric</button>
+    </div>`;
+  }
+  if(b.type==='summary-bar'){
+    const items=b.items||[{label:'Item 1',value:'—'},{label:'Item 2',value:'—'}];
+    return`<div class="cp-block">${ctrl}
+      <div class="summary-bar" style="margin:0;">
+        ${items.map((it,ii)=>`<div class="sum-item">
+          <div contenteditable="true" class="sum-lb" style="outline:none;" onblur="saveCPSumItem('${pageId}',${bi},${ii},'label',this.textContent)">${it.label}</div>
+          <div contenteditable="true" class="sum-vl" style="outline:none;" onblur="saveCPSumItem('${pageId}',${bi},${ii},'value',this.textContent)">${it.value}</div>
+        </div>`).join('')}
+      </div>
+      <button class="subtask-toggle" onclick="addCPSumItem('${pageId}',${bi})" style="margin-top:8px;">＋ Add item</button>
+    </div>`;
+  }
+  if(b.type==='finance-log'){
+    // Live finance entries table
+    return`<div class="cp-block" id="cpb-fl-${pageId}-${bi}">${ctrl}
+      <div class="bh3" style="margin:0 0 8px;">💰 Finance entries</div>
+      <div id="cpfl-${pageId}-${bi}"></div>
+    </div>`;
+  }
+  if(b.type==='task-log'){
+    return`<div class="cp-block" id="cpb-tl-${pageId}-${bi}">${ctrl}
+      <div class="bh3" style="margin:0 0 8px;">✅ Active tasks</div>
+      <div id="cptl-${pageId}-${bi}"></div>
+    </div>`;
+  }
+  if(b.type==='habit-tracker'){
+    return`<div class="cp-block" id="cpb-ht-${pageId}-${bi}">${ctrl}
+      <div class="bh3" style="margin:0 0 8px;">🔄 Today's habits</div>
+      <div id="cpht-${pageId}-${bi}"></div>
+    </div>`;
+  }
+  if(b.type==='weekly-cal'){
+    return`<div class="cp-block" id="cpb-wc-${pageId}-${bi}" style="padding:12px;">${ctrl}
+      <div class="bh3" style="margin:0 0 8px;">📅 Weekly calendar</div>
+      <div id="cpwc-${pageId}-${bi}"></div>
+    </div>`;
+  }
+  // Default: text
+  return`<div class="cp-block">${ctrl}<textarea placeholder="Start writing..." style="min-height:${b.h||80}px;" onblur="saveCustomBlock('${pageId}',${bi},'t',this.value)">${b.t||''}</textarea></div>`;
 }
 function addCustomBlock(pageId,type){
   const page=S.customPages.find(p=>p.id===pageId);if(!page)return;
   if(!page.blocks)page.blocks=[];
-  page.blocks.push({type,t:'',items:[]});
+  const defaults={
+    text:{type,t:'',h:80},
+    heading:{type,t:'New heading'},
+    heading2:{type,t:'New subheading'},
+    checklist:{type,label:'',items:[]},
+    divider:{type},
+    callout:{type,t:'Add your note here...',icon:'💡',color:'blue'},
+    'metric-row':{type,metrics:[{label:'Metric 1',value:'—'},{label:'Metric 2',value:'—'},{label:'Metric 3',value:'—'}]},
+    'summary-bar':{type,items:[{label:'Item 1',value:'—'},{label:'Item 2',value:'—'},{label:'Item 3',value:'—'}]},
+    'finance-log':{type},
+    'task-log':{type},
+    'habit-tracker':{type},
+    'weekly-cal':{type},
+  };
+  page.blocks.push(defaults[type]||{type,t:'',items:[]});
   save();renderCustomPagePanel(pageId);
 }
 function delCustomBlock(pageId,bi){
@@ -1783,6 +1931,131 @@ function renderCustomPages(){
 
 // Init custom pages
 renderCustomPages();
+
+
+// ── CUSTOM PAGE RICH HELPERS ──
+function moveCPBlock(pageId,bi,dir){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page)return;
+  const nb=bi+dir;if(nb<0||nb>=page.blocks.length)return;
+  const tmp=page.blocks[bi];page.blocks[bi]=page.blocks[nb];page.blocks[nb]=tmp;
+  save();renderCustomPagePanel(pageId);
+}
+function renameCPSub(id,sub){
+  const page=S.customPages.find(p=>p.id===id);
+  if(page&&sub.trim()!=='Click to add a subtitle...'){page.sub=sub.trim();save();}
+}
+function saveCPMetric(pageId,bi,mi,key,val){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page||!page.blocks[bi])return;
+  if(!page.blocks[bi].metrics)page.blocks[bi].metrics=[{label:'Metric 1',value:'—'},{label:'Metric 2',value:'—'},{label:'Metric 3',value:'—'}];
+  if(page.blocks[bi].metrics[mi])page.blocks[bi].metrics[mi][key]=val;
+  save();
+}
+function addCPMetric(pageId,bi){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page||!page.blocks[bi])return;
+  if(!page.blocks[bi].metrics)page.blocks[bi].metrics=[];
+  page.blocks[bi].metrics.push({label:'New metric',value:'—'});
+  save();renderCustomPagePanel(pageId);
+}
+function saveCPSumItem(pageId,bi,ii,key,val){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page||!page.blocks[bi])return;
+  if(!page.blocks[bi].items)page.blocks[bi].items=[];
+  if(page.blocks[bi].items[ii])page.blocks[bi].items[ii][key]=val;
+  save();
+}
+function addCPSumItem(pageId,bi){
+  const page=S.customPages.find(p=>p.id===pageId);if(!page||!page.blocks[bi])return;
+  if(!page.blocks[bi].items)page.blocks[bi].items=[];
+  page.blocks[bi].items.push({label:'New item',value:'—'});
+  save();renderCustomPagePanel(pageId);
+}
+
+// Cover color picker
+const cpCovers=['cf','ct','cg','cb2','cto','ch'];
+const cpCoverNames=['Midnight Blue','Ocean Teal','Forest Green','Violet Dusk','Crimson Dusk','Deep Forest'];
+function changeCPCover(id){
+  const page=S.customPages.find(p=>p.id===id);if(!page)return;
+  const cur=page.cover||'cf';
+  const idx=cpCovers.indexOf(cur);
+  page.cover=cpCovers[(idx+1)%cpCovers.length];
+  save();renderCustomPagePanel(id);
+}
+// Icon picker — cycle through icon options
+const cpIcons=['📝','📌','💡','📚','🗂️','💼','🏋️','🍎','✈️','💰','🎯','🔑','📊','🧠','⚡','🌿','🎵','🏠','🔬','🛠️','📷','🎨','🧘','💊','🚀'];
+function changeCPIcon(id){
+  const page=S.customPages.find(p=>p.id===id);if(!page)return;
+  const cur=page.icon||'📝';
+  const idx=cpIcons.indexOf(cur);
+  page.icon=cpIcons[(idx+1)%cpIcons.length];
+  save();renderCustomPagePanel(id);
+}
+
+// Wire live data blocks after page renders
+function initCPLiveBlocks(id){
+  const page=S.customPages.find(p=>p.id===id);if(!page)return;
+  (page.blocks||[]).forEach((b,bi)=>{
+    if(b.type==='finance-log'){
+      const el=document.getElementById('cpfl-'+id+'-'+bi);
+      if(el){
+        const items=[...S.finance].reverse().slice(0,8);
+        if(!items.length){el.innerHTML='<div class="empty">No finance entries</div>';return;}
+        el.innerHTML=items.map(f=>`<div class="row-item" style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px;">
+          <span>${f.d}</span><span class="tag gray">${f.c}</span>
+          <span style="font-weight:600;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</span>
+        </div>`).join('');
+      }
+    }
+    if(b.type==='task-log'){
+      const el=document.getElementById('cptl-'+id+'-'+bi);
+      if(el){
+        const act=S.todos.filter(t=>!t.done).slice(0,8);
+        if(!act.length){el.innerHTML='<div class="empty">No active tasks</div>';return;}
+        const po={high:0,med:1,low:2};
+        el.innerHTML=act.sort((a,b2)=>po[a.p]-po[b2.p]).map(t=>`<div class="ci" style="padding:5px 2px;">
+          <input type="checkbox" onchange="togTodo(${t.id})" style="width:13px;height:13px;accent-color:var(--blue);flex-shrink:0;">
+          <div style="flex:1;font-size:13px;">${t.t}</div>
+          <span class="tag ${t.p==='high'?'red':t.p==='low'?'gray':'amber'}" style="font-size:10px;">${t.p==='high'?'High':t.p==='low'?'Low':'Med'}</span>
+        </div>`).join('');
+      }
+    }
+    if(b.type==='habit-tracker'){
+      const el=document.getElementById('cpht-'+id+'-'+bi);
+      if(el){
+        if(!S.habits.length){el.innerHTML='<div class="empty">No habits set up</div>';return;}
+        el.innerHTML=S.habits.map(h=>{
+          const on=!!(S.hlog&&S.hlog[today+'-'+h.id]);
+          return`<div class="hr"><input type="checkbox" ${on?'checked':''} onchange="togHabit(${h.id})" style="width:14px;height:14px;accent-color:var(--green);flex-shrink:0;">
+            <div style="flex:1;font-size:13px;${on?'text-decoration:line-through;color:var(--ts);':''}">${h.n}</div>
+            ${h.streak>0?`<span style="font-size:11px;color:var(--amber);">🔥 ${h.streak}d</span>`:''}
+          </div>`;
+        }).join('');
+      }
+    }
+    if(b.type==='weekly-cal'){
+      const el=document.getElementById('cpwc-'+id+'-'+bi);
+      if(el){
+        // Render mini weekly calendar
+        const dayNames=['S','M','T','W','T','F','S'];
+        const days=[];
+        for(let i=-1;i<=5;i++){const d=new Date();d.setDate(d.getDate()+i);days.push(d);}
+        el.innerHTML=`<div style="display:flex;gap:2px;overflow-x:auto;">
+          ${days.map(d=>{
+            const dk=d.toISOString().split('T')[0];
+            const isTd=dk===today;
+            const tasks=S.todos.filter(t=>!t.done&&t.d===dk).length;
+            const dow=d.getDay();
+            const recTasks=(S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).length;
+            const total=tasks+recTasks;
+            return`<div style="flex:1;min-width:36px;text-align:center;padding:6px 3px;border-radius:var(--r);background:${isTd?'var(--blue)':'var(--bg-in)'};">
+              <div style="font-size:9px;font-weight:600;color:${isTd?'rgba(255,255,255,0.8)':'var(--ts)'};">${dayNames[d.getDay()]}</div>
+              <div style="font-size:16px;font-weight:700;color:${isTd?'#fff':'var(--t)'};">${d.getDate()}</div>
+              ${total?`<div style="font-size:9px;color:${isTd?'rgba(255,255,255,0.8)':'var(--ts)'};">${total} task${total>1?'s':''}</div>`:''}
+            </div>`;
+          }).join('')}
+        </div>`;
+      }
+    }
+  });
+}
 
 </script>
 
