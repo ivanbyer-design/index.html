@@ -371,6 +371,60 @@ textarea.fi{resize:vertical;min-height:52px;}
 .icon-picker{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
 .icon-opt{font-size:20px;padding:6px 10px;border-radius:var(--r);cursor:pointer;border:2px solid transparent;}
 .icon-opt:hover,.icon-opt.sel{border-color:var(--blue);background:var(--bbg);}
+
+/* BOTTOM NAV — mobile only */
+.bottom-nav{display:none;}
+@media(max-width:768px){
+  .bottom-nav{
+    display:flex;
+    position:fixed;bottom:0;left:0;right:0;
+    height:60px;
+    background:var(--bg-card);
+    border-top:1px solid var(--bd);
+    z-index:150;
+    align-items:stretch;
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+  }
+  .bn-item{
+    flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:2px;cursor:pointer;
+    padding:6px 2px 8px;
+    border:none;background:transparent;
+    color:var(--ts);font-family:var(--font);
+    transition:color .12s;
+    -webkit-tap-highlight-color:transparent;
+    position:relative;
+  }
+  .bn-item.on{color:var(--blue);}
+  .bn-item.on::after{
+    content:'';position:absolute;top:0;left:20%;right:20%;
+    height:2px;background:var(--blue);border-radius:0 0 2px 2px;
+  }
+  .bn-icon{font-size:20px;line-height:1;}
+  .bn-label{font-size:9px;font-weight:500;letter-spacing:0.03em;white-space:nowrap;}
+  /* Hide sidebar toggle and floating buttons on mobile — bottom nav replaces them */
+  .mob-menu-pill{display:none!important;}
+  .mob-menu-float{display:none!important;}
+  .mob-menu-below{display:none!important;}
+  /* Hide sidebar on mobile completely — bottom nav is the nav */
+  .sb{display:none!important;}
+  .sb-overlay{display:none!important;}
+  /* Extra scroll padding so content clears bottom nav */
+  .content{padding-bottom:76px!important;}
+  /* Topbar cleaner on mobile */
+  .topbar{padding:0 14px;}
+  .sb-toggle-btn{display:none!important;}
+}
+
+/* CLICKABLE METRIC CARDS */
+.mc-link{cursor:pointer;position:relative;transition:background .12s,transform .1s;}
+.mc-link:hover{background:var(--bg-h);transform:translateY(-1px);}
+.mc-link:active{transform:translateY(0);}
+.mc-arr{position:absolute;top:10px;right:10px;font-size:12px;color:var(--th);opacity:0;}
+.mc-link:hover .mc-arr{opacity:1;}
+.mc{position:relative;}
 </style>
 </head>
 <body>
@@ -745,8 +799,19 @@ function go(id,el){
   G('new-btn').style.display=id==='home'?'none':'flex';
   closeSB();
   renderAll();
-  // Force chart resize after panel is visible
+  updateBN(id);
   setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},50);
+}
+
+function updateBN(id){
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('on'));
+  const bn=G('bn-'+id);
+  if(bn)bn.classList.add('on');
+}
+
+function navToPage(id){
+  const ni=G('ni-'+id);
+  go(id,ni);
 }
 function triggerAdd(){
   const a=document.querySelector('.panel.on');if(!a)return;
@@ -1113,12 +1178,12 @@ function renderHome(){
     const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
     finEl.innerHTML=`
       <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
-        <div class="mc"><div class="mc-lb">Net balance</div><div class="mc-vl ${net>0?'green':net<0?'red':''}">${fmtS(net)}</div><div class="mc-sub">${fmt(inc)} in · ${fmt(exp)} out</div></div>
-        <div class="mc"><div class="mc-lb">Open tasks</div><div class="mc-vl ${open>0?'amber':'gold'}">${open}</div><div class="mc-sub">${S.todos.filter(t=>t.p==='high'&&!t.done).length} high priority</div></div>
-        <div class="mc"><div class="mc-lb">Habits today</div><div class="mc-vl ${tdH===S.habits.length&&S.habits.length?'green':''}">${tdH} / ${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(tdH/S.habits.length*100):0}% done</div></div>
-        <div class="mc"><div class="mc-lb">Bills unpaid</div><div class="mc-vl ${unp>0?'red':'green'}">${fmt(unp)}</div><div class="mc-sub">${S.bills.filter(b=>b.s==='Unpaid').length} outstanding</div></div>
-        <div class="mc"><div class="mc-lb">Active goals</div><div class="mc-vl">${S.goals.length}</div><div class="mc-sub">${S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length} complete</div></div>
-        <div class="mc"><div class="mc-lb">Trades logged</div><div class="mc-vl">${S.trades.length}</div><div class="mc-sub">${S.trades.filter(t=>t.st==='Open').length} open positions</div></div>
+        <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Finance"><div class="mc-lb">Net balance</div><div class="mc-vl ${net>0?'green':net<0?'red':''}">${fmtS(net)}</div><div class="mc-sub">${fmt(inc)} in · ${fmt(exp)} out</div><div class="mc-arr">→</div></div>
+        <div class="mc mc-link" onclick="navToPage('todos')" title="Go to Todos"><div class="mc-lb">Open tasks</div><div class="mc-vl ${open>0?'amber':'gold'}">${open}</div><div class="mc-sub">${S.todos.filter(t=>t.p==='high'&&!t.done).length} high priority</div><div class="mc-arr">→</div></div>
+        <div class="mc mc-link" onclick="navToPage('habits')" title="Go to Habits"><div class="mc-lb">Habits today</div><div class="mc-vl ${tdH===S.habits.length&&S.habits.length?'green':''}">${tdH} / ${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(tdH/S.habits.length*100):0}% done</div><div class="mc-arr">→</div></div>
+        <div class="mc mc-link" onclick="navToPage('bills')" title="Go to Bills"><div class="mc-lb">Bills unpaid</div><div class="mc-vl ${unp>0?'red':'green'}">${fmt(unp)}</div><div class="mc-sub">${S.bills.filter(b=>b.s==='Unpaid').length} outstanding</div><div class="mc-arr">→</div></div>
+        <div class="mc mc-link" onclick="navToPage('goals')" title="Go to Goals"><div class="mc-lb">Active goals</div><div class="mc-vl">${S.goals.length}</div><div class="mc-sub">${S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length} complete</div><div class="mc-arr">→</div></div>
+        <div class="mc mc-link" onclick="navToPage('trades')" title="Go to Trades"><div class="mc-lb">Trades logged</div><div class="mc-vl">${S.trades.length}</div><div class="mc-sub">${S.trades.filter(t=>t.st==='Open').length} open positions</div><div class="mc-arr">→</div></div>
       </div>`;
   }
 
@@ -2115,6 +2180,39 @@ function initCPLiveBlocks(id){
 }
 
 </script>
+
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bn-item on" id="bn-home" onclick="go('home',this);updateBN('home')">
+    <span class="bn-icon">∞</span>
+    <span class="bn-label">Home</span>
+  </button>
+  <button class="bn-item" id="bn-finance" onclick="go('finance',document.getElementById('ni-finance'));updateBN('finance')">
+    <span class="bn-icon">💰</span>
+    <span class="bn-label">Finance</span>
+  </button>
+  <button class="bn-item" id="bn-trades" onclick="go('trades',document.getElementById('ni-trades'));updateBN('trades')">
+    <span class="bn-icon">📈</span>
+    <span class="bn-label">Trades</span>
+  </button>
+  <button class="bn-item" id="bn-goals" onclick="go('goals',document.getElementById('ni-goals'));updateBN('goals')">
+    <span class="bn-icon">🎯</span>
+    <span class="bn-label">Goals</span>
+  </button>
+  <button class="bn-item" id="bn-bills" onclick="go('bills',document.getElementById('ni-bills'));updateBN('bills')">
+    <span class="bn-icon">🧾</span>
+    <span class="bn-label">Bills</span>
+  </button>
+  <button class="bn-item" id="bn-todos" onclick="go('todos',document.getElementById('ni-todos'));updateBN('todos')">
+    <span class="bn-icon">✅</span>
+    <span class="bn-label">Todos</span>
+  </button>
+  <button class="bn-item" id="bn-habits" onclick="go('habits',document.getElementById('ni-habits'));updateBN('habits')">
+    <span class="bn-icon">🔄</span>
+    <span class="bn-label">Habits</span>
+  </button>
+</nav>
 
 <!-- EDIT MODE BAR -->
 <div class="edit-mode-bar" id="edit-bar">
