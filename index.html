@@ -131,7 +131,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .week-day{width:140px;flex-shrink:0;border-right:1px solid var(--bd);scroll-snap-align:start;}
 .week-day:last-child{border-right:none;}
 .week-day.is-today{background:var(--bbg);}
-.wd-hdr{padding:10px 8px 8px;text-align:center;border-bottom:1px solid var(--bd);}
+.wd-hdr{padding:10px 8px 8px;text-align:center;border-bottom:1px solid var(--bd);transition:opacity .1s;}.wd-hdr:hover{opacity:0.85;}.wd-body:hover{background:rgba(0,0,0,0.02);}
 .week-day.is-today .wd-hdr{background:var(--blue);}
 .wd-name{font-size:10px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
 .week-day.is-today .wd-name{color:rgba(255,255,255,0.8);}
@@ -425,6 +425,26 @@ textarea.fi{resize:vertical;min-height:52px;}
 .mc-arr{position:absolute;top:10px;right:10px;font-size:12px;color:var(--th);opacity:0;}
 .mc-link:hover .mc-arr{opacity:1;}
 .mc{position:relative;}
+
+/* DAILY DETAIL PANEL */
+.day-detail-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ts);cursor:pointer;padding:4px 0;margin-bottom:16px;border:none;background:transparent;font-family:var(--font);}
+.day-detail-back:hover{color:var(--t);}
+.day-section{margin:16px 0 8px;}
+.day-section-hdr{font-size:11px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;padding-bottom:6px;border-bottom:1px solid var(--bd);margin-bottom:8px;}
+.day-empty{font-size:13px;color:var(--th);padding:8px 0;}
+.day-stat-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.day-stat{background:var(--bg-in);border-radius:var(--r);padding:10px 14px;flex:1;min-width:100px;}
+.day-stat-lb{font-size:10px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.day-stat-vl{font-size:18px;font-weight:700;color:var(--t);}
+.day-stat-vl.up{color:var(--green);}
+.day-stat-vl.dn{color:var(--red);}
+.day-task-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd);}
+.day-task-row:last-child{border-bottom:none;}
+.day-task-row input[type=checkbox]{width:14px;height:14px;flex-shrink:0;margin-top:2px;accent-color:var(--blue);}
+.day-task-txt{font-size:13px;color:var(--t);flex:1;}
+.day-task-txt.done{text-decoration:line-through;color:var(--ts);}
+.day-fin-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px;}
+.day-fin-row:last-child{border-bottom:none;}
 </style>
 </head>
 <body>
@@ -1129,13 +1149,14 @@ function renderWeekly(){
     const visible=events.slice(0,4);
     const extra=events.length-4;
     return`<div class="week-day${isToday?' is-today':''}" ${isToday?'id="cal-today"':''}>
-      <div class="wd-hdr">
+      <div class="wd-hdr" onclick="openDayDetail('${dk}')" style="cursor:pointer;" title="Open ${dk}">
         <div class="wd-name">${dayNames[d.getDay()]}</div>
         <div class="wd-num">${d.getDate()}</div>
       </div>
-      <div class="wd-body">
+      <div class="wd-body" onclick="openDayDetail('${dk}')" style="cursor:pointer;">
         ${visible.map(e=>`<div class="wd-event ${e.cls}" title="${e.cat||''}">${e.label}${e.cat?`<span style="opacity:0.65;font-size:9px;margin-left:3px;">${e.cat}</span>`:''}</div>`).join('')}
         ${extra>0?`<div class="wd-more">+${extra} more</div>`:''}
+        <div style="font-size:9px;color:${isToday?'rgba(255,255,255,0.5)':'var(--th)'};margin-top:4px;text-align:right;">tap to view</div>
       </div>
     </div>`;
   }).join('');
@@ -1274,21 +1295,64 @@ function autoBackup(){
   if(!hasData)return;
   if(lastBackup===today)return;
   localStorage.setItem('lifeOS_lastBackup',today);
-  setTimeout(()=>{
-    const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-    a.download='life-os-backup-'+today+'.json';a.click();
-    showBackupToast();
-  },2000);
+  setTimeout(()=>{triggerBackupDownload('auto');},2000);
 }
-function showBackupToast(){
+
+function triggerBackupDownload(src){
+  const hasData=S.finance.length||S.trades.length||S.goals.length||S.bills.length||S.todos.length||S.habits.length;
+  if(!hasData)return;
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='life-os-backup-'+today+'.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  if(src==='auto')showBackupToast('✓ Daily backup saved');
+  if(src==='close')showBackupToast('✓ Backup saved on exit');
+  if(src==='bg')showBackupToast('✓ Backup saved');
+}
+
+function showBackupToast(msg){
   const t=document.createElement('div');
   t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--t);color:var(--ti);padding:10px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:300;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
-  t.textContent='✓ Daily backup saved to your device';
+  t.textContent=msg||'✓ Backup saved';
   document.body.appendChild(t);
   setTimeout(()=>t.remove(),3500);
 }
+
 autoBackup();
+
+// ── BACKUP ON CLOSE (desktop) ──
+window.addEventListener('beforeunload',()=>{
+  const hasData=S.finance.length||S.trades.length||S.goals.length||S.bills.length||S.todos.length||S.habits.length;
+  if(!hasData)return;
+  triggerBackupDownload('close');
+});
+
+// ── BACKUP ON HIDE (mobile — app goes to background) ──
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'){
+    const hasData=S.finance.length||S.trades.length||S.goals.length||S.bills.length||S.todos.length||S.habits.length;
+    if(!hasData)return;
+    // Use sendBeacon to persist data reliably on mobile background
+    // Also trigger download as fallback (works when coming back to app)
+    localStorage.setItem('lifeOS_v3',JSON.stringify(S));
+    localStorage.setItem('lifeOS_lastHiddenBackup',today);
+  }
+});
+
+// ── ON RETURN: if hidden backup was made today but no file, trigger download ──
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    const lastHidden=localStorage.getItem('lifeOS_lastHiddenBackup');
+    const lastFile=localStorage.getItem('lifeOS_lastBackup');
+    if(lastHidden===today&&lastFile!==today+'_exit'){
+      localStorage.setItem('lifeOS_lastBackup',today+'_exit');
+      triggerBackupDownload('bg');
+    }
+  }
+});
 
 // ── PWA: INSTALL PROMPT ──
 let deferredPrompt=null;
@@ -2177,6 +2241,166 @@ function initCPLiveBlocks(id){
       }
     }
   });
+}
+
+
+// ── DAILY DETAIL PAGE ──
+let _prevPage = 'home';
+
+function openDayDetail(dk){
+  // Track where we came from
+  const activePanel = document.querySelector('.panel.on');
+  _prevPage = activePanel ? activePanel.id.replace('p-','') : 'home';
+
+  // Build and show the panel
+  renderDayDetail(dk);
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni,.bn-item').forEach(n=>n.classList.remove('on'));
+  G('p-day-detail').classList.add('on');
+
+  const dateObj = new Date(dk+'T00:00:00');
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  G('bc-ic').textContent = '📅';
+  G('bc-ttl').textContent = dayNames[dateObj.getDay()]+', '+monthNames[dateObj.getMonth()]+' '+dateObj.getDate();
+  G('new-btn').style.display='none';
+  closeSB();
+}
+
+function renderDayDetail(dk){
+  const dateObj = new Date(dk+'T00:00:00');
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dow = dateObj.getDay();
+  const isToday = dk === today;
+  const isPast = dk < today;
+
+  // Gather everything for this day
+  const todos = S.todos.filter(t=>t.d===dk);
+  const recurringDue = (S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).map(r=>{
+    const doneKey='rdone-'+r.id+'-'+dk;
+    return{...r, isDone:!!(S.hlog&&S.hlog[doneKey]), isRecurring:true};
+  });
+  const bills = S.bills.filter(b=>b.d===dk);
+  const finEntries = S.finance.filter(f=>f.dt===dk);
+  const finInc = finEntries.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  const finExp = finEntries.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const habitsDone = S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
+
+  const allTasks = [...todos, ...recurringDue];
+  const doneTasks = allTasks.filter(t=>t.done||t.isDone).length;
+  const taskPct = allTasks.length ? Math.round(doneTasks/allTasks.length*100) : 0;
+
+  const priOrder = {high:0,med:1,low:2};
+  const priCls = {high:'red',med:'amber',low:'gray'};
+  const priLabel = {high:'🔴 High',med:'🟡 Med',low:'⚪ Low'};
+
+  const el = G('day-detail-content');
+  if(!el) return;
+
+  el.innerHTML = `
+    <button class="day-detail-back" onclick="go(_prevPage,G('ni-'+_prevPage))">← Back</button>
+
+    <div style="margin-bottom:20px;">
+      <div style="font-size:11px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;">${isToday?'Today · ':''}${dayNames[dow]}</div>
+      <div style="font-size:32px;font-weight:700;color:var(--t);letter-spacing:-0.02em;">${monthNames[dateObj.getMonth()]} ${dateObj.getDate()}</div>
+      ${allTasks.length ? `<div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+        <div class="prog" style="flex:1;max-width:200px;"><div class="pf ${taskPct===100?'g':''}" style="width:${taskPct}%;"></div></div>
+        <span style="font-size:12px;color:var(--ts);">${doneTasks}/${allTasks.length} tasks · ${taskPct}%</span>
+      </div>` : ''}
+    </div>
+
+    <div class="day-stat-row">
+      <div class="day-stat"><div class="day-stat-lb">Tasks</div><div class="day-stat-vl ${doneTasks===allTasks.length&&allTasks.length?'up':''}">${doneTasks}/${allTasks.length}</div></div>
+      <div class="day-stat"><div class="day-stat-lb">Income</div><div class="day-stat-vl up">${finInc>0?'+':' '}${fmt(finInc)}</div></div>
+      <div class="day-stat"><div class="day-stat-lb">Expenses</div><div class="day-stat-vl dn">${finExp>0?'-':' '}${fmt(finExp)}</div></div>
+      <div class="day-stat"><div class="day-stat-lb">Habits</div><div class="day-stat-vl ${habitsDone===S.habits.length&&S.habits.length?'up':''}">${habitsDone}/${S.habits.length}</div></div>
+    </div>
+
+    ${allTasks.length ? `
+    <div class="day-section">
+      <div class="day-section-hdr">✅ Tasks for this day</div>
+      ${[...allTasks].sort((a,b)=>priOrder[a.p||'med']-priOrder[b.p||'med']).map(t=>{
+        const isDone = t.done||t.isDone;
+        const isRec = t.isRecurring;
+        const pid = isRec?('r-'+t.id):t.id;
+        return`<div class="day-task-row">
+          <input type="checkbox" ${isDone?'checked':''} onchange="toggleDailyTask('${pid}',${isRec?'true':'false'},this.checked)">
+          <div style="flex:1;">
+            <div class="day-task-txt ${isDone?'done':''}">${isRec?'↻ ':''}${t.t}</div>
+            <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;">
+              <span class="tag blue">${t.c||'Admin'}</span>
+              <span class="tag ${priCls[t.p||'med']}">${priLabel[t.p||'med']}</span>
+              ${isRec?'<span class="tag gray">Recurring</span>':''}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>` : `<div class="day-section"><div class="day-section-hdr">✅ Tasks</div><div class="day-empty">No tasks for this day</div></div>`}
+
+    ${bills.length ? `
+    <div class="day-section">
+      <div class="day-section-hdr">🧾 Bills due</div>
+      ${bills.map(b=>`<div class="day-task-row">
+        <span style="font-size:16px;">🧾</span>
+        <div style="flex:1;"><div class="day-task-txt">${b.n}</div><div style="font-size:11px;color:var(--ts);margin-top:2px;">${b.f}</div></div>
+        <span style="font-weight:600;font-size:13px;${b.s==='Unpaid'?'color:var(--red)':b.s==='Paid'?'color:var(--green)':'color:var(--blue)'};">${fmt(b.a)}</span>
+        <span class="tag ${b.s==='Paid'?'green':b.s==='Unpaid'?'red':'blue'}" style="margin-left:6px;">${b.s}</span>
+      </div>`).join('')}
+    </div>` : ''}
+
+    ${S.habits.length ? `
+    <div class="day-section">
+      <div class="day-section-hdr">🔄 Habits</div>
+      ${S.habits.map(h=>{
+        const on=!!(S.hlog&&S.hlog[dk+'-'+h.id]);
+        return`<div class="day-task-row">
+          <input type="checkbox" ${on?'checked':''} ${dk!==today?'disabled':''} onchange="togHabit(${h.id})" style="accent-color:var(--green);">
+          <div class="day-task-txt ${on?'done':''}">${h.n}${h.t?` <span style="font-size:11px;color:var(--ts);">⏰ ${h.t}</span>`:''}</div>
+          ${h.streak>0?`<span style="font-size:11px;color:var(--amber);">🔥 ${h.streak}d</span>`:''}
+        </div>`;
+      }).join('')}
+    </div>` : ''}
+
+    ${finEntries.length ? `
+    <div class="day-section">
+      <div class="day-section-hdr">💰 Finance entries</div>
+      ${finEntries.map(f=>`<div class="day-fin-row">
+        <span style="color:var(--t);">${f.d}</span>
+        <span class="tag gray">${f.c}</span>
+        <span style="font-weight:600;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</span>
+      </div>`).join('')}
+      <div style="display:flex;justify-content:flex-end;gap:16px;padding-top:8px;font-size:13px;">
+        <span style="color:var(--green);font-weight:600;">+${fmt(finInc)}</span>
+        <span style="color:var(--red);font-weight:600;">-${fmt(finExp)}</span>
+        <span style="color:var(--t);font-weight:700;">Net ${fmtS(finInc-finExp)}</span>
+      </div>
+    </div>` : `<div class="day-section"><div class="day-section-hdr">💰 Finance</div><div class="day-empty">No entries for this day</div></div>`}
+
+    ${isToday ? `
+    <div class="divider"></div>
+    <div class="bh3">＋ Log for today</div>
+    <div class="nf" style="margin-top:8px;">
+      <div class="nf-ttl">💰 Finance entry</div>
+      <div class="fr">
+        <input class="fi" type="text" id="dd-fin-d" placeholder="Description">
+        <input class="fi" type="number" id="dd-fin-a" placeholder="Amount" step="0.01" style="max-width:120px;">
+        <select class="fi" id="dd-fin-t" style="max-width:110px;"><option value="income">Income</option><option value="expense">Expense</option></select>
+        <button class="btn pri" onclick="ddAddFin()">Add</button>
+      </div>
+    </div>` : ''}
+  `;
+}
+
+function ddAddFin(){
+  const d=G('dd-fin-d').value.trim(),a=parseFloat(G('dd-fin-a').value);
+  if(!d||!a)return;
+  S.finance.push({d,a,t:G('dd-fin-t').value,c:'Other',dt:today,id:Date.now()});
+  G('dd-fin-d').value='';G('dd-fin-a').value='';
+  save();renderFinance();renderHome();
+  // Re-render the day detail
+  renderDayDetail(today);
+  showBackupToast('✓ Entry saved');
 }
 
 </script>
