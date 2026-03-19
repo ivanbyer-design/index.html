@@ -772,6 +772,12 @@ textarea.fi{resize:vertical;min-height:52px;}
       </div>
     </div>
 
+    <!-- DAILY DETAIL -->
+    <div class="panel" id="p-day-detail">
+      <button class="mob-menu-float" onclick="openSB()">☰</button>
+      <div id="day-detail-content" style="padding-bottom:20px;"></div>
+    </div>
+
   </div>
 </div>
 </div>
@@ -2268,139 +2274,196 @@ function openDayDetail(dk){
 }
 
 function renderDayDetail(dk){
-  const dateObj = new Date(dk+'T00:00:00');
-  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const dow = dateObj.getDay();
-  const isToday = dk === today;
-  const isPast = dk < today;
+  const dateObj=new Date(dk+'T00:00:00');
+  const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dow=dateObj.getDay();
+  const isToday=dk===today;
 
-  // Gather everything for this day
-  const todos = S.todos.filter(t=>t.d===dk);
-  const recurringDue = (S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).map(r=>{
+  // Gather data
+  const todos=S.todos.filter(t=>t.d===dk);
+  const recurringDue=(S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).map(r=>{
     const doneKey='rdone-'+r.id+'-'+dk;
-    return{...r, isDone:!!(S.hlog&&S.hlog[doneKey]), isRecurring:true};
+    return{...r,isDone:!!(S.hlog&&S.hlog[doneKey]),isRecurring:true};
   });
-  const bills = S.bills.filter(b=>b.d===dk);
-  const finEntries = S.finance.filter(f=>f.dt===dk);
-  const finInc = finEntries.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
-  const finExp = finEntries.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
-  const habitsDone = S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
+  const bills=S.bills.filter(b=>b.d===dk);
+  const finEntries=S.finance.filter(f=>f.dt===dk);
+  const finInc=finEntries.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  const finExp=finEntries.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const habitsDone=S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
+  const allTasks=[...todos,...recurringDue];
+  const doneTasks=allTasks.filter(t=>t.done||t.isDone).length;
+  const taskPct=allTasks.length?Math.round(doneTasks/allTasks.length*100):0;
+  const priOrder={high:0,med:1,low:2};
+  const priCls={high:'red',med:'amber',low:'gray'};
+  const priLabel={high:'🔴 High',med:'🟡 Med',low:'⚪ Low'};
 
-  const allTasks = [...todos, ...recurringDue];
-  const doneTasks = allTasks.filter(t=>t.done||t.isDone).length;
-  const taskPct = allTasks.length ? Math.round(doneTasks/allTasks.length*100) : 0;
+  // Morning / night routines — pull from habits tagged as morning/night
+  const morningHabits=S.habits.filter(h=>h.t&&parseInt(h.t.split(':')[0])<12);
+  const nightHabits=S.habits.filter(h=>h.t&&parseInt(h.t.split(':')[0])>=18);
+  const otherHabits=S.habits.filter(h=>!h.t||(parseInt(h.t.split(':')[0])>=12&&parseInt(h.t.split(':')[0])<18));
 
-  const priOrder = {high:0,med:1,low:2};
-  const priCls = {high:'red',med:'amber',low:'gray'};
-  const priLabel = {high:'🔴 High',med:'🟡 Med',low:'⚪ Low'};
+  const el=G('day-detail-content');
+  if(!el)return;
 
-  const el = G('day-detail-content');
-  if(!el) return;
+  const habitRow=(h)=>{
+    const on=!!(S.hlog&&S.hlog[dk+'-'+h.id]);
+    const canCheck=isToday;
+    return`<div class="day-task-row">
+      <input type="checkbox" ${on?'checked':''} ${!canCheck?'disabled':''} onchange="togHabit(${h.id})" style="accent-color:var(--green);">
+      <div style="flex:1;"><div class="day-task-txt ${on?'done':''}">${h.n}</div>${h.t?`<div style="font-size:11px;color:var(--ts);">⏰ ${h.t}</div>`:''}</div>
+      ${h.streak>0?`<span style="font-size:11px;color:var(--amber);">🔥 ${h.streak}d</span>`:''}
+    </div>`;
+  };
 
-  el.innerHTML = `
+  el.innerHTML=`
     <button class="day-detail-back" onclick="go(_prevPage,G('ni-'+_prevPage))">← Back</button>
 
+    <!-- HEADER -->
     <div style="margin-bottom:20px;">
       <div style="font-size:11px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;">${isToday?'Today · ':''}${dayNames[dow]}</div>
-      <div style="font-size:32px;font-weight:700;color:var(--t);letter-spacing:-0.02em;">${monthNames[dateObj.getMonth()]} ${dateObj.getDate()}</div>
-      ${allTasks.length ? `<div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
-        <div class="prog" style="flex:1;max-width:200px;"><div class="pf ${taskPct===100?'g':''}" style="width:${taskPct}%;"></div></div>
-        <span style="font-size:12px;color:var(--ts);">${doneTasks}/${allTasks.length} tasks · ${taskPct}%</span>
-      </div>` : ''}
+      <div style="font-size:32px;font-weight:700;color:var(--t);letter-spacing:-0.02em;">${monthNames[dateObj.getMonth()]} ${dateObj.getDate()}, ${dateObj.getFullYear()}</div>
     </div>
 
-    <div class="day-stat-row">
-      <div class="day-stat"><div class="day-stat-lb">Tasks</div><div class="day-stat-vl ${doneTasks===allTasks.length&&allTasks.length?'up':''}">${doneTasks}/${allTasks.length}</div></div>
-      <div class="day-stat"><div class="day-stat-lb">Income</div><div class="day-stat-vl up">${finInc>0?'+':' '}${fmt(finInc)}</div></div>
-      <div class="day-stat"><div class="day-stat-lb">Expenses</div><div class="day-stat-vl dn">${finExp>0?'-':' '}${fmt(finExp)}</div></div>
-      <div class="day-stat"><div class="day-stat-lb">Habits</div><div class="day-stat-vl ${habitsDone===S.habits.length&&S.habits.length?'up':''}">${habitsDone}/${S.habits.length}</div></div>
+    <!-- SNAPSHOT CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px;" class="metrics-grid">
+      <div class="mc"><div class="mc-lb">Tasks</div><div class="mc-vl ${doneTasks===allTasks.length&&allTasks.length?'green':allTasks.length?'':'green'}">${doneTasks}/${allTasks.length}</div><div class="mc-sub">${taskPct}% complete</div></div>
+      <div class="mc"><div class="mc-lb">Habits</div><div class="mc-vl ${habitsDone===S.habits.length&&S.habits.length?'green':''}">${habitsDone}/${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(habitsDone/S.habits.length*100):0}% done</div></div>
+      <div class="mc"><div class="mc-lb">Net</div><div class="mc-vl ${(finInc-finExp)>0?'green':(finInc-finExp)<0?'red':''}">${fmtS(finInc-finExp)}</div><div class="mc-sub">${fmt(finInc)} in · ${fmt(finExp)} out</div></div>
+      <div class="mc"><div class="mc-lb">Bills due</div><div class="mc-vl ${bills.length>0?'red':'green'}">${bills.length}</div><div class="mc-sub">${bills.filter(b=>b.s==='Unpaid').length} unpaid</div></div>
+      <div class="mc"><div class="mc-lb">High priority</div><div class="mc-vl ${allTasks.filter(t=>t.p==='high').length>0?'red':''}">${allTasks.filter(t=>t.p==='high').length}</div><div class="mc-sub">tasks today</div></div>
+      <div class="mc"><div class="mc-lb">Finance entries</div><div class="mc-vl">${finEntries.length}</div><div class="mc-sub">${finEntries.length?'logged':'nothing yet'}</div></div>
     </div>
 
-    ${allTasks.length ? `
-    <div class="day-section">
-      <div class="day-section-hdr">✅ Tasks for this day</div>
-      ${[...allTasks].sort((a,b)=>priOrder[a.p||'med']-priOrder[b.p||'med']).map(t=>{
-        const isDone = t.done||t.isDone;
-        const isRec = t.isRecurring;
-        const pid = isRec?('r-'+t.id):t.id;
-        return`<div class="day-task-row">
-          <input type="checkbox" ${isDone?'checked':''} onchange="toggleDailyTask('${pid}',${isRec?'true':'false'},this.checked)">
-          <div style="flex:1;">
-            <div class="day-task-txt ${isDone?'done':''}">${isRec?'↻ ':''}${t.t}</div>
-            <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;">
-              <span class="tag blue">${t.c||'Admin'}</span>
-              <span class="tag ${priCls[t.p||'med']}">${priLabel[t.p||'med']}</span>
-              ${isRec?'<span class="tag gray">Recurring</span>':''}
+    ${allTasks.length?`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div class="prog" style="flex:1;"><div class="pf ${taskPct===100?'g':''}" style="width:${taskPct}%;"></div></div>
+      <span style="font-size:12px;color:var(--ts);white-space:nowrap;">${doneTasks}/${allTasks.length} tasks done</span>
+    </div>`:''}
+
+    <!-- TABS -->
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--bd);margin-bottom:16px;" id="dd-tabs">
+      <button class="dd-tab on" onclick="switchDDTab('tasks',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--blue);border-bottom:2px solid var(--blue);margin-bottom:-2px;cursor:pointer;">✅ Tasks</button>
+      <button class="dd-tab" onclick="switchDDTab('morning',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;">🌅 Morning</button>
+      <button class="dd-tab" onclick="switchDDTab('night',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;">🌙 Night</button>
+      <button class="dd-tab" onclick="switchDDTab('finance',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;">💰 Finance</button>
+    </div>
+
+    <!-- TAB: TASKS -->
+    <div id="dd-tab-tasks">
+      ${allTasks.length?[...allTasks].sort((a,b)=>priOrder[a.p||'med']-priOrder[b.p||'med']).map(t=>{
+        const isDone=t.done||t.isDone;
+        const isRec=t.isRecurring;
+        const pid=isRec?('r-'+t.id):t.id;
+        const subs=t.subtasks||[];
+        const doneSubs=subs.filter(s=>s.done).length;
+        return`<div class="day-task-row" style="flex-direction:column;align-items:stretch;">
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <input type="checkbox" ${isDone?'checked':''} onchange="toggleDailyTask('${pid}',${isRec},this.checked);renderDayDetail('${dk}')" style="margin-top:2px;accent-color:var(--blue);">
+            <div style="flex:1;">
+              <div class="day-task-txt ${isDone?'done':''}">${isRec?'↻ ':''}${t.t}${subs.length?` <span style="font-size:10px;color:var(--ts);">${doneSubs}/${subs.length}</span>`:''}</div>
+              <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;">
+                <span class="tag blue">${t.c||'Admin'}</span>
+                <span class="tag ${priCls[t.p||'med']}">${priLabel[t.p||'med']}</span>
+                ${isRec?'<span class="tag gray">Recurring</span>':''}
+              </div>
             </div>
           </div>
+          ${subs.length?`<div class="subtask-list" style="margin-top:4px;">${subs.map(s=>`<div class="subtask-row"><input type="checkbox" ${s.done?'checked':''} disabled><span class="subtask-text ${s.done?'done':''}">${s.t}</span></div>`).join('')}</div>`:''}
         </div>`;
-      }).join('')}
-    </div>` : `<div class="day-section"><div class="day-section-hdr">✅ Tasks</div><div class="day-empty">No tasks for this day</div></div>`}
+      }).join(''):`<div class="day-empty">No tasks due on this day</div>`}
+      ${bills.length?`<div class="day-section-hdr" style="margin-top:16px;">🧾 Bills due</div>${bills.map(b=>`<div class="day-task-row">
+        <span style="font-size:15px;">🧾</span>
+        <div style="flex:1;"><div class="day-task-txt">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.f}</div></div>
+        <span style="font-weight:600;font-size:13px;color:${b.s==='Unpaid'?'var(--red)':b.s==='Paid'?'var(--green)':'var(--blue)'};">${fmt(b.a)}</span>
+        <span class="tag ${b.s==='Paid'?'green':b.s==='Unpaid'?'red':'blue'}" style="margin-left:4px;">${b.s}</span>
+      </div>`).join('')}`:''}
+      ${isToday?`<div class="divider"></div>
+      <div class="nf" style="margin-top:0;">
+        <div class="nf-ttl">＋ Quick task for today</div>
+        <div class="fr">
+          <input class="fi" type="text" id="dd-qt-t" placeholder="Task description">
+          <select class="fi" id="dd-qt-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
+          <button class="btn pri" onclick="ddAddTask('${dk}')">Add</button>
+        </div>
+      </div>`:''}
+    </div>
 
-    ${bills.length ? `
-    <div class="day-section">
-      <div class="day-section-hdr">🧾 Bills due</div>
-      ${bills.map(b=>`<div class="day-task-row">
-        <span style="font-size:16px;">🧾</span>
-        <div style="flex:1;"><div class="day-task-txt">${b.n}</div><div style="font-size:11px;color:var(--ts);margin-top:2px;">${b.f}</div></div>
-        <span style="font-weight:600;font-size:13px;${b.s==='Unpaid'?'color:var(--red)':b.s==='Paid'?'color:var(--green)':'color:var(--blue)'};">${fmt(b.a)}</span>
-        <span class="tag ${b.s==='Paid'?'green':b.s==='Unpaid'?'red':'blue'}" style="margin-left:6px;">${b.s}</span>
-      </div>`).join('')}
-    </div>` : ''}
+    <!-- TAB: MORNING ROUTINE -->
+    <div id="dd-tab-morning" style="display:none;">
+      <div class="callout blue" style="margin-bottom:12px;"><span class="co-ic">🌅</span><span class="co-tx">Morning habits are those with a time set before 12:00 PM. Set a time on your habits to have them appear here.</span></div>
+      ${morningHabits.length?morningHabits.map(habitRow).join(''):`<div class="day-empty">No morning habits set. Go to Habits and add a time (e.g. 7:00) to a habit to add it here.</div>`}
+      ${otherHabits.length&&!morningHabits.length?`<div class="day-section-hdr" style="margin-top:16px;">All habits (no time set)</div>${otherHabits.map(habitRow).join('')}`:''}
+      <div class="divider"></div>
+      <div style="font-size:13px;font-weight:500;color:var(--t);margin-bottom:8px;">📝 Morning notes</div>
+      <textarea class="fi" placeholder="How do you want today to go? Intentions, goals, mindset..." style="min-height:100px;" onblur="saveDDNote('morning-${dk}',this.value)">${localStorage.getItem('dd-note-morning-'+dk)||''}</textarea>
+    </div>
 
-    ${S.habits.length ? `
-    <div class="day-section">
-      <div class="day-section-hdr">🔄 Habits</div>
-      ${S.habits.map(h=>{
-        const on=!!(S.hlog&&S.hlog[dk+'-'+h.id]);
-        return`<div class="day-task-row">
-          <input type="checkbox" ${on?'checked':''} ${dk!==today?'disabled':''} onchange="togHabit(${h.id})" style="accent-color:var(--green);">
-          <div class="day-task-txt ${on?'done':''}">${h.n}${h.t?` <span style="font-size:11px;color:var(--ts);">⏰ ${h.t}</span>`:''}</div>
-          ${h.streak>0?`<span style="font-size:11px;color:var(--amber);">🔥 ${h.streak}d</span>`:''}
-        </div>`;
-      }).join('')}
-    </div>` : ''}
+    <!-- TAB: NIGHT ROUTINE -->
+    <div id="dd-tab-night" style="display:none;">
+      <div class="callout amber" style="margin-bottom:12px;"><span class="co-ic">🌙</span><span class="co-tx">Night habits are those with a time set at or after 6:00 PM.</span></div>
+      ${nightHabits.length?nightHabits.map(habitRow).join(''):`<div class="day-empty">No night habits set. Go to Habits and add a time (e.g. 21:00) to a habit to add it here.</div>`}
+      <div class="divider"></div>
+      <div style="font-size:13px;font-weight:500;color:var(--t);margin-bottom:8px;">📝 End of day reflection</div>
+      <textarea class="fi" placeholder="How did today go? Wins, lessons, gratitude..." style="min-height:100px;" onblur="saveDDNote('night-${dk}',this.value)">${localStorage.getItem('dd-note-night-'+dk)||''}</textarea>
+    </div>
 
-    ${finEntries.length ? `
-    <div class="day-section">
-      <div class="day-section-hdr">💰 Finance entries</div>
-      ${finEntries.map(f=>`<div class="day-fin-row">
-        <span style="color:var(--t);">${f.d}</span>
-        <span class="tag gray">${f.c}</span>
-        <span style="font-weight:600;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</span>
-      </div>`).join('')}
-      <div style="display:flex;justify-content:flex-end;gap:16px;padding-top:8px;font-size:13px;">
-        <span style="color:var(--green);font-weight:600;">+${fmt(finInc)}</span>
-        <span style="color:var(--red);font-weight:600;">-${fmt(finExp)}</span>
-        <span style="color:var(--t);font-weight:700;">Net ${fmtS(finInc-finExp)}</span>
+    <!-- TAB: FINANCE -->
+    <div id="dd-tab-finance" style="display:none;">
+      ${finEntries.length?`
+        ${finEntries.map(f=>`<div class="day-fin-row" style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;">
+          <span style="color:var(--t);flex:1;">${f.d}</span>
+          <span class="tag gray">${f.c}</span>
+          <span style="font-weight:600;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</span>
+        </div>`).join('')}
+        <div style="display:flex;justify-content:flex-end;gap:16px;padding:10px 0;font-size:13px;border-top:1px solid var(--bd);margin-top:4px;">
+          <span style="color:var(--green);font-weight:600;">+${fmt(finInc)}</span>
+          <span style="color:var(--red);font-weight:600;">-${fmt(finExp)}</span>
+          <span style="color:var(--t);font-weight:700;">Net ${fmtS(finInc-finExp)}</span>
+        </div>`:`<div class="day-empty">No finance entries for this day</div>`}
+      <div class="divider"></div>
+      <div class="nf" style="margin-top:0;">
+        <div class="nf-ttl">＋ Log finance entry</div>
+        <div class="fr">
+          <input class="fi" type="text" id="dd-fin-d" placeholder="Description">
+          <input class="fi" type="number" id="dd-fin-a" placeholder="Amount" step="0.01" style="max-width:120px;">
+          <select class="fi" id="dd-fin-t" style="max-width:110px;"><option value="income">Income</option><option value="expense">Expense</option></select>
+          <button class="btn pri" onclick="ddAddFin('${dk}')">Add</button>
+        </div>
       </div>
-    </div>` : `<div class="day-section"><div class="day-section-hdr">💰 Finance</div><div class="day-empty">No entries for this day</div></div>`}
-
-    ${isToday ? `
-    <div class="divider"></div>
-    <div class="bh3">＋ Log for today</div>
-    <div class="nf" style="margin-top:8px;">
-      <div class="nf-ttl">💰 Finance entry</div>
-      <div class="fr">
-        <input class="fi" type="text" id="dd-fin-d" placeholder="Description">
-        <input class="fi" type="number" id="dd-fin-a" placeholder="Amount" step="0.01" style="max-width:120px;">
-        <select class="fi" id="dd-fin-t" style="max-width:110px;"><option value="income">Income</option><option value="expense">Expense</option></select>
-        <button class="btn pri" onclick="ddAddFin()">Add</button>
-      </div>
-    </div>` : ''}
+    </div>
   `;
 }
 
-function ddAddFin(){
+function switchDDTab(tab,btn){
+  document.querySelectorAll('.dd-tab').forEach(b=>{b.style.color='var(--ts)';b.style.borderBottom='2px solid transparent';b.style.marginBottom='-2px';});
+  btn.style.color='var(--blue)';btn.style.borderBottom='2px solid var(--blue)';btn.style.marginBottom='-2px';
+  ['tasks','morning','night','finance'].forEach(t=>{
+    const el=G('dd-tab-'+t);if(el)el.style.display=t===tab?'block':'none';
+  });
+}
+
+function saveDDNote(key,val){
+  localStorage.setItem('dd-note-'+key,val);
+}
+
+
+function ddAddFin(dk){
   const d=G('dd-fin-d').value.trim(),a=parseFloat(G('dd-fin-a').value);
   if(!d||!a)return;
-  S.finance.push({d,a,t:G('dd-fin-t').value,c:'Other',dt:today,id:Date.now()});
+  const dt=dk||today;
+  S.finance.push({d,a,t:G('dd-fin-t').value,c:'Other',dt,id:Date.now()});
   G('dd-fin-d').value='';G('dd-fin-a').value='';
-  save();renderFinance();renderHome();
-  // Re-render the day detail
-  renderDayDetail(today);
+  save();renderFinance();renderHome();renderDayDetail(dt);
   showBackupToast('✓ Entry saved');
+}
+
+function ddAddTask(dk){
+  const t=G('dd-qt-t').value.trim();if(!t)return;
+  const dt=dk||today;
+  S.todos.push({t,c:'Admin',p:G('dd-qt-p').value,d:dt,done:false,dd:null,subtasks:[],id:Date.now()});
+  G('dd-qt-t').value='';
+  save();renderTodos();renderHome();renderDayDetail(dt);
+  showBackupToast('✓ Task added');
 }
 
 </script>
