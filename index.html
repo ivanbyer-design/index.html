@@ -792,7 +792,8 @@ textarea.fi{resize:vertical;min-height:52px;}
 <input type="file" id="imp-file" accept=".json" style="display:none;" onchange="doImport(event)">
 
 <script>
-const today=new Date().toISOString().split('T')[0];
+const localDate=d=>{const D=d||new Date();return D.getFullYear()+'-'+String(D.getMonth()+1).padStart(2,'0')+'-'+String(D.getDate()).padStart(2,'0');};
+const today=localDate();
 const G=id=>document.getElementById(id);
 G('home-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 G('h-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
@@ -880,7 +881,7 @@ function renderFinance(){
   const net=inc-exp;
   G('f-sum').innerHTML=`<div class="sum-item"><div class="sum-lb">Income</div><div class="sum-vl up">${fmt(inc)}</div></div><div class="sum-item"><div class="sum-lb">Expenses</div><div class="sum-vl dn">${fmt(exp)}</div></div><div class="sum-item"><div class="sum-lb">Net</div><div class="sum-vl ${net>=0?'up':'dn'}">${fmtS(net)}</div></div><div class="sum-item"><div class="sum-lb">Entries</div><div class="sum-vl">${S.finance.length}</div></div>`;
   const days=[],i7=[],e7=[];
-  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().split('T')[0]);}
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(localDate(d));}
   days.forEach(d=>{i7.push(S.finance.filter(f=>f.dt===d&&f.t==='income').reduce((s,f)=>s+f.a,0));e7.push(S.finance.filter(f=>f.dt===d&&f.t==='expense').reduce((s,f)=>s+f.a,0));});
   mkChart('fc',{type:'bar',data:{labels:days.map(d=>d.slice(5)),datasets:[{label:'Income',data:i7,backgroundColor:'rgba(15,123,108,0.75)',borderRadius:3,borderSkipped:false},{label:'Expense',data:e7,backgroundColor:'rgba(199,55,47,0.65)',borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:GC},ticks:{callback:v=>'$'+v,font:{size:10}}}}}});
   let items=[...S.finance];
@@ -1090,13 +1091,13 @@ function addHabit(){
 function togHabit(id){
   const k=today+'-'+id;if(!S.hlog)S.hlog={};S.hlog[k]=!S.hlog[k];
   const h=S.habits.find(h=>h.id===id);
-  if(h){let s=0;const d=new Date(today);for(let i=0;i<365;i++){const k2=d.toISOString().split('T')[0]+'-'+id;if(S.hlog[k2]){s++;d.setDate(d.getDate()-1);}else break;}h.streak=s;}
+  if(h){let s=0;const d=new Date(today);for(let i=0;i<365;i++){const k2=localDate(d)+'-'+id;if(S.hlog[k2]){s++;d.setDate(d.getDate()-1);}else break;}h.streak=s;}
   save();renderHabits();
 }
 function delHabit(id){S.habits=S.habits.filter(h=>h.id!==id);save();renderHabits();}
 function renderHabits(){
   if(!S.hlog)S.hlog={};
-  const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().split('T')[0]);}
+  const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(localDate(d));}
   const td=S.habits.filter(h=>S.hlog[today+'-'+h.id]).length;
   const best=S.habits.reduce((m,h)=>Math.max(m,h.streak||0),0);
   let ws=0;S.habits.forEach(h=>{ws+=days.filter(d=>S.hlog[d+'-'+h.id]).length/7*100;});
@@ -1106,7 +1107,7 @@ function renderHabits(){
   G('h-ghdr').innerHTML=`<div style="flex:1;">Habit</div>`+days.map(d=>`<div style="width:18px;text-align:center;">${d.slice(8)}</div>`).join('');
   G('h-grid').innerHTML=S.habits.length?S.habits.map(h=>`<div class="hr"><div style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h.n}</div><div style="display:flex;gap:4px;">${days.map(d=>`<div class="hdot ${S.hlog[d+'-'+h.id]?'on':'off'}"></div>`).join('')}</div></div>`).join(''):'<div class="empty">No habits yet</div>';
   const wl=[],wd=[];
-  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const dk=d.toISOString().split('T')[0];wl.push(dk.slice(5));const dn=S.habits.filter(h=>S.hlog[dk+'-'+h.id]).length;wd.push(S.habits.length?Math.round(dn/S.habits.length*100):0);}
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const dk=localDate(d);wl.push(dk.slice(5));const dn=S.habits.filter(h=>S.hlog[dk+'-'+h.id]).length;wd.push(S.habits.length?Math.round(dn/S.habits.length*100):0);}
   mkChart('hc',{type:'bar',data:{labels:wl,datasets:[{data:wd,backgroundColor:wd.map(v=>v>=80?'rgba(15,123,108,0.8)':v>=50?'rgba(203,145,47,0.75)':'rgba(199,55,47,0.65)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:GC},max:100,ticks:{callback:v=>v+'%',font:{size:10}}}}}});
 }
 
@@ -1121,7 +1122,7 @@ function renderWeekly(){
   }
 
   const cols=days.map(d=>{
-    const dk=d.toISOString().split('T')[0];
+    const dk=localDate(d);
     const isToday=dk===today;
     const events=[];
 
@@ -2231,7 +2232,7 @@ function initCPLiveBlocks(id){
         for(let i=-1;i<=5;i++){const d=new Date();d.setDate(d.getDate()+i);days.push(d);}
         el.innerHTML=`<div style="display:flex;gap:2px;overflow-x:auto;">
           ${days.map(d=>{
-            const dk=d.toISOString().split('T')[0];
+            const dk=localDate(d);
             const isTd=dk===today;
             const tasks=S.todos.filter(t=>!t.done&&t.d===dk).length;
             const dow=d.getDay();
