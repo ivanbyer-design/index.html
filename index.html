@@ -121,7 +121,52 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .panel{display:none;}.panel.on{display:block;}
 .divider{height:1px;background:var(--bd);margin:20px 0;}
 
-/* WEEKLY CALENDAR */
+/* HOME HERO */
+.home-hero{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:36px 20px 28px;
+  text-align:center;
+  border-bottom:1px solid var(--bd);
+  margin-bottom:24px;
+  position:relative;
+}
+.home-hero-inf{
+  font-size:72px;line-height:1;font-weight:300;
+  color:var(--t);
+  letter-spacing:-2px;
+  margin-bottom:8px;
+  opacity:0.9;
+}
+.home-hero-title{
+  font-size:22px;font-weight:600;color:var(--t);
+  letter-spacing:-0.01em;
+  margin-bottom:4px;
+}
+.home-hero-date{
+  font-size:13px;color:var(--ts);
+}
+@media(max-width:768px){
+  .home-hero{padding:24px 16px 20px;}
+  .home-hero-inf{font-size:56px;}
+  .home-hero-title{font-size:18px;}
+}
+
+/* WEEKLY SUMMARY ROW */
+.week-summary{
+  display:flex;border-top:1px solid var(--bd);padding:10px 12px;
+  gap:0;background:var(--bg-h);flex-wrap:wrap;
+}
+.ws-cell{
+  flex:1;min-width:80px;
+  text-align:center;padding:4px 8px;
+}
+.ws-cell+.ws-cell{border-left:1px solid var(--bd);}
+.ws-cell-lb{font-size:9px;font-weight:600;color:var(--th);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+.ws-cell-vl{font-size:14px;font-weight:700;color:var(--t);}
+.ws-cell-vl.up{color:var(--green);}
+.ws-cell-vl.dn{color:var(--red);}
+.ws-cell-vl.amb{color:var(--amber);}
+
 .week-cal{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:10px 0;}
 .week-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;}
 .week-scroll::-webkit-scrollbar{height:4px;}
@@ -137,7 +182,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .week-day.is-today .wd-name{color:rgba(255,255,255,0.8);}
 .wd-num{font-size:22px;font-weight:700;color:var(--t);line-height:1.2;margin-top:2px;}
 .week-day.is-today .wd-num{color:#fff;}
-.wd-body{padding:8px;min-height:100px;}
+.wd-body{padding:8px;min-height:130px;overflow:hidden;}
 .wd-event{font-size:11px;padding:3px 6px;border-radius:3px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
 .wd-event.finance-in{background:var(--gbg);color:var(--green);}
 .wd-event.finance-out{background:var(--rbg);color:var(--red);}
@@ -503,15 +548,16 @@ textarea.fi{resize:vertical;min-height:52px;}
 
     <!-- HOME -->
     <div class="panel on" id="p-home">
-      <div class="page-cover cf"></div>
-      <span class="page-icon">∞</span>
-      <div class="page-title">My Life OS</div>
-      <div class="page-sub" id="home-date"></div>
+      <div class="home-hero">
+        <div class="home-hero-inf">∞</div>
+        <div class="home-hero-title">My Life OS</div>
+        <div class="home-hero-date" id="home-date"></div>
+      </div>
       <button class="mob-menu-pill" onclick="openSB()">☰</button>
       <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
       <div id="home-weekly"></div>
       <div class="divider"></div>
-      <div class="bh2 editable-hdr" data-hdr="home-fin-hdr" id="hdr-home-fin">📊 Daily snapshot</div>
+      <div class="bh2 editable-hdr" data-hdr="home-fin-hdr" id="hdr-home-fin">📊 Monthly snapshot — <span id="home-month-label"></span></div>
       <div id="home-fin-snapshot" style="margin:10px 0;"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📋 Today's tasks</div>
@@ -1140,53 +1186,102 @@ function renderWeekly(){
   const cols=days.map(d=>{
     const dk=localDate(d);
     const isToday=dk===today;
-    const events=[];
-
-    // Regular todos due this day
-    S.todos.filter(t=>!t.done&&t.d===dk).forEach(t=>events.push({
-      cls:t.p==='high'?'todo-high':'todo',
-      label:t.t,
-      cat:t.c,
-      pri:t.p
-    }));
-    // Recurring tasks for this day of week
     const dow=d.getDay();
-    (S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).forEach(r=>{
-      const doneKey='rdone-'+r.id+'-'+dk;
-      const isDone=S.hlog&&S.hlog[doneKey];
-      if(!isDone)events.push({
-        cls:r.p==='high'?'todo-high':'todo',
-        label:'↻ '+r.t,
-        cat:r.c,
-        pri:r.p
-      });
-    });
-    // Bills due this day
-    S.bills.filter(b=>b.d===dk).forEach(b=>events.push({cls:'bill',label:'🧾 '+b.n}));
-    // Habit completion count
-    if(S.habits.length){
-      const done=S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
-      events.push({cls:'habit',label:'🔄 '+done+'/'+S.habits.length});
-    }
 
-    const visible=events.slice(0,4);
-    const extra=events.length-4;
-    return`<div class="week-day${isToday?' is-today':''}" ${isToday?'id="cal-today"':''}>
-      <div class="wd-hdr" onclick="openDayDetail('${dk}')" style="cursor:pointer;" title="Open ${dk}">
+    // Daily summary data
+    const dayTodos=S.todos.filter(t=>!t.done&&t.d===dk);
+    const dayRecurring=(S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).filter(r=>{
+      const doneKey='rdone-'+r.id+'-'+dk;
+      return!(S.hlog&&S.hlog[doneKey]);
+    });
+    const dayAllTasks=[...dayTodos,...dayRecurring];
+    const dayDoneTasks=S.todos.filter(t=>t.done&&t.dd===dk).length;
+    const dayTotalTasks=dayAllTasks.length+dayDoneTasks;
+    const dayBills=S.bills.filter(b=>b.d===dk);
+    const dayInc=S.finance.filter(f=>f.dt===dk&&f.t==='income').reduce((s,f)=>s+f.a,0);
+    const dayExp=S.finance.filter(f=>f.dt===dk&&f.t==='expense').reduce((s,f)=>s+f.a,0);
+    const dayNet=dayInc-dayExp;
+    const dayHabitDone=S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
+    const dayHabitTotal=S.habits.length;
+    const dayHabitPct=dayHabitTotal?Math.round(dayHabitDone/dayHabitTotal*100):0;
+
+    // Past day — show completed count differently
+    const isPast=dk<today;
+    const dayCompletedTodos=S.todos.filter(t=>t.done&&t.dd===dk).length;
+
+    return`<div class="week-day${isToday?' is-today':''}" ${isToday?'id="cal-today"':''} onclick="openDayDetail('${dk}')" style="cursor:pointer;">
+      <div class="wd-hdr">
         <div class="wd-name">${dayNames[d.getDay()]}</div>
         <div class="wd-num">${d.getDate()}</div>
       </div>
-      <div class="wd-body" onclick="openDayDetail('${dk}')" style="cursor:pointer;">
-        ${visible.map(e=>`<div class="wd-event ${e.cls}" title="${e.cat||''}">${e.label}${e.cat?`<span style="opacity:0.65;font-size:9px;margin-left:3px;">${e.cat}</span>`:''}</div>`).join('')}
-        ${extra>0?`<div class="wd-more">+${extra} more</div>`:''}
-        <div style="font-size:9px;color:${isToday?'rgba(255,255,255,0.5)':'var(--th)'};margin-top:4px;text-align:right;">tap to view</div>
+      <div class="wd-body">
+
+        ${dayHabitTotal>0?`
+        <div style="margin-bottom:5px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+            <span style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--th)'};text-transform:uppercase;letter-spacing:0.05em;">Habits</span>
+            <span style="font-size:9px;font-weight:600;color:${dayHabitPct===100?'var(--green)':isToday?'rgba(255,255,255,0.8)':'var(--ts)'};">${dayHabitDone}/${dayHabitTotal}</span>
+          </div>
+          <div style="height:3px;background:${isToday?'rgba(255,255,255,0.2)':'var(--bg-tag)'};border-radius:2px;overflow:hidden;">
+            <div style="height:100%;width:${dayHabitPct}%;background:${dayHabitPct===100?'var(--green)':isToday?'rgba(255,255,255,0.8)':'var(--blue)'};border-radius:2px;"></div>
+          </div>
+        </div>`:''}
+
+        ${dayAllTasks.length>0||dayCompletedTodos>0?`
+        <div style="margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--th)'};text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Tasks</div>
+          ${dayAllTasks.slice(0,3).map(t=>`
+            <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;">
+              <div style="width:5px;height:5px;border-radius:50%;flex-shrink:0;background:${t.p==='high'?'var(--red)':t.p==='low'?'var(--ts)':'var(--amber)'};"></div>
+              <span style="font-size:9px;color:${isToday?'rgba(255,255,255,0.9)':'var(--t)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${t.isRecurring?'↻ ':''}${t.t||t.label||''}</span>
+            </div>`).join('')}
+          ${dayAllTasks.length>3?`<div style="font-size:9px;color:${isToday?'rgba(255,255,255,0.5)':'var(--th)'};">+${dayAllTasks.length-3} more</div>`:''}
+          ${isPast&&dayCompletedTodos>0?`<div style="font-size:9px;color:var(--green);">✓ ${dayCompletedTodos} done</div>`:''}
+        </div>`:'<div style="font-size:9px;color:'+(isToday?'rgba(255,255,255,0.4)':'var(--th)')+';">No tasks</div>'}
+
+        ${dayBills.length>0?`
+        <div style="margin-bottom:3px;">
+          ${dayBills.slice(0,2).map(b=>`<div style="font-size:9px;color:var(--red);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🧾 ${b.n}</div>`).join('')}
+          ${dayBills.length>2?`<div style="font-size:9px;color:var(--red);">+${dayBills.length-2} bills</div>`:''}
+        </div>`:''}
+
+        ${(dayInc>0||dayExp>0)?`
+        <div style="margin-top:3px;padding-top:3px;border-top:1px solid ${isToday?'rgba(255,255,255,0.15)':'var(--bd)'};">
+          <span style="font-size:9px;font-weight:600;color:${dayNet>=0?'var(--green)':'var(--red)'};">${dayNet>=0?'+':''}${dayNet===0?'$0':fmt(Math.abs(dayNet))}</span>
+        </div>`:'' }
+
       </div>
     </div>`;
   }).join('');
 
+  // ── WEEKLY SUMMARY ──
+  // Compute totals across the 14-day window for the current week (Mon–Sun containing today)
+  const wkStart=new Date();wkStart.setDate(wkStart.getDate()-wkStart.getDay()+1); // this Monday
+  const wkDates=[];
+  for(let i=0;i<7;i++){const d=new Date(wkStart);d.setDate(wkStart.getDate()+i);wkDates.push(localDate(d));}
+
+  const wkInc=S.finance.filter(f=>wkDates.includes(f.dt)&&f.t==='income').reduce((s,f)=>s+f.a,0);
+  const wkExp=S.finance.filter(f=>wkDates.includes(f.dt)&&f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const wkNet=wkInc-wkExp;
+  const wkTasks=S.todos.filter(t=>wkDates.includes(t.d));
+  const wkDoneTasks=wkTasks.filter(t=>t.done).length;
+  const wkHabitDays=wkDates.filter(dk=>dk<=today);
+  let wkHabitSum=0;
+  wkHabitDays.forEach(dk=>{const done=S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;wkHabitSum+=S.habits.length?Math.round(done/S.habits.length*100):0;});
+  const wkHabitAvg=wkHabitDays.length?Math.round(wkHabitSum/wkHabitDays.length):0;
+  const wkBills=S.bills.filter(b=>wkDates.includes(b.d));
+
   G('home-weekly').innerHTML=`<div class="week-cal">
     <div class="week-scroll" id="week-scroll">
       <div class="week-days">${cols}</div>
+    </div>
+    <div class="week-summary">
+      <div class="ws-cell"><div class="ws-cell-lb">Wk income</div><div class="ws-cell-vl up">${wkInc>0?'+':' '}${fmt(wkInc)}</div></div>
+      <div class="ws-cell"><div class="ws-cell-lb">Wk expenses</div><div class="ws-cell-vl dn">${wkExp>0?'-':' '}${fmt(wkExp)}</div></div>
+      <div class="ws-cell"><div class="ws-cell-lb">Wk net</div><div class="ws-cell-vl ${wkNet>0?'up':wkNet<0?'dn':''}">${fmtS(wkNet)}</div></div>
+      <div class="ws-cell"><div class="ws-cell-lb">Tasks</div><div class="ws-cell-vl ${wkDoneTasks===wkTasks.length&&wkTasks.length?'up':'amb'}">${wkDoneTasks}/${wkTasks.length}</div></div>
+      <div class="ws-cell"><div class="ws-cell-lb">Habit avg</div><div class="ws-cell-vl ${wkHabitAvg>=80?'up':wkHabitAvg>=50?'amb':'dn'}">${wkHabitAvg}%</div></div>
+      <div class="ws-cell"><div class="ws-cell-lb">Bills due</div><div class="ws-cell-vl ${wkBills.length>0?'dn':''}">${wkBills.length}</div></div>
     </div>
     <div class="week-legend">
       <div class="wl-item"><div class="wl-dot" style="background:var(--rbg);border:1px solid var(--red);"></div>High priority</div>
@@ -1211,24 +1306,159 @@ function renderWeekly(){
 function renderHome(){
   renderWeekly();
 
-  // ── DAILY SNAPSHOT ──
+  // ── MONTHLY SNAPSHOT ──
   const finEl=G('home-fin-snapshot');
   if(finEl){
-    const inc=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
-    const exp=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
-    const net=inc-exp;
-    const open=S.todos.filter(t=>!t.done).length;
-    const tdH=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
-    const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
+    const now=new Date();
+    const curYear=now.getFullYear();
+    const curMonth=now.getMonth();
+    const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const monthLabel=monthNames[curMonth]+' '+curYear;
+    const mlEl=G('home-month-label');
+    if(mlEl)mlEl.textContent=monthLabel;
+
+    // Month prefix for filtering e.g. "2026-03"
+    const mPrefix=curYear+'-'+String(curMonth+1).padStart(2,'0');
+
+    // Finance this month
+    const mFin=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPrefix));
+    const mInc=mFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    const mExp=mFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+    const mNet=mInc-mExp;
+
+    // Last month for comparison
+    const lmDate=new Date(curYear,curMonth-1,1);
+    const lmPrefix=lmDate.getFullYear()+'-'+String(lmDate.getMonth()+1).padStart(2,'0');
+    const lmFin=S.finance.filter(f=>f.dt&&f.dt.startsWith(lmPrefix));
+    const lmInc=lmFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    const lmExp=lmFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+    const lmNet=lmInc-lmExp;
+    const netDelta=mNet-lmNet;
+
+    // Tasks this month
+    const mTodos=S.todos.filter(t=>t.d&&t.d.startsWith(mPrefix));
+    const mDone=mTodos.filter(t=>t.done).length;
+    const mTaskPct=mTodos.length?Math.round(mDone/mTodos.length*100):0;
+
+    // Habits this month — avg daily completion rate
+    const daysInMonth=new Date(curYear,curMonth+1,0).getDate();
+    const daysPassed=Math.min(now.getDate(),daysInMonth);
+    let habitSum=0;
+    for(let d=1;d<=daysPassed;d++){
+      const dk=mPrefix+'-'+String(d).padStart(2,'0');
+      const done=S.habits.filter(h=>S.hlog&&S.hlog[dk+'-'+h.id]).length;
+      habitSum+=S.habits.length?done/S.habits.length*100:0;
+    }
+    const mHabitAvg=daysPassed?Math.round(habitSum/daysPassed):0;
+
+    // Bills this month
+    const mBillsUnpaid=S.bills.filter(b=>b.s==='Unpaid').length;
+    const mBillsTotal=S.bills.reduce((s,b)=>s+b.a,0);
+
+    // Goals progress
+    const goalsComplete=S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length;
+    const goalAvgPct=S.goals.length?Math.round(S.goals.reduce((s,g)=>{const d=g.todos.filter(t=>t.done).length,n=g.todos.length;return s+(n?d/n*100:0);},0)/S.goals.length):0;
+
+    // Trades this month P&L
+    const mTrades=S.trades.filter(t=>t.dt&&t.dt.startsWith(mPrefix));
+    const mClosedTrades=mTrades.filter(t=>{if(!t.x||t.st==='Open')return false;const p=t.dir==='Long'?(t.x-t.e)*t.sz:(t.e-t.x)*t.sz;return p!==null;});
+    const mTradePnl=mClosedTrades.reduce((s,t)=>s+(t.dir==='Long'?(t.x-t.e)*t.sz:(t.e-t.x)*t.sz),0);
+
+    // Daily bar chart data — income vs expense by day of month
+    const barInc=[],barExp=[],barLabels=[];
+    for(let d=1;d<=daysInMonth;d++){
+      const dk=mPrefix+'-'+String(d).padStart(2,'0');
+      barLabels.push(d);
+      barInc.push(S.finance.filter(f=>f.dt===dk&&f.t==='income').reduce((s,f)=>s+f.a,0));
+      barExp.push(S.finance.filter(f=>f.dt===dk&&f.t==='expense').reduce((s,f)=>s+f.a,0));
+    }
+
     finEl.innerHTML=`
-      <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
-        <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Finance"><div class="mc-lb">Net balance</div><div class="mc-vl ${net>0?'green':net<0?'red':''}">${fmtS(net)}</div><div class="mc-sub">${fmt(inc)} in · ${fmt(exp)} out</div><div class="mc-arr">→</div></div>
-        <div class="mc mc-link" onclick="navToPage('todos')" title="Go to Todos"><div class="mc-lb">Open tasks</div><div class="mc-vl ${open>0?'amber':'gold'}">${open}</div><div class="mc-sub">${S.todos.filter(t=>t.p==='high'&&!t.done).length} high priority</div><div class="mc-arr">→</div></div>
-        <div class="mc mc-link" onclick="navToPage('habits')" title="Go to Habits"><div class="mc-lb">Habits today</div><div class="mc-vl ${tdH===S.habits.length&&S.habits.length?'green':''}">${tdH} / ${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(tdH/S.habits.length*100):0}% done</div><div class="mc-arr">→</div></div>
-        <div class="mc mc-link" onclick="navToPage('bills')" title="Go to Bills"><div class="mc-lb">Bills unpaid</div><div class="mc-vl ${unp>0?'red':'green'}">${fmt(unp)}</div><div class="mc-sub">${S.bills.filter(b=>b.s==='Unpaid').length} outstanding</div><div class="mc-arr">→</div></div>
-        <div class="mc mc-link" onclick="navToPage('goals')" title="Go to Goals"><div class="mc-lb">Active goals</div><div class="mc-vl">${S.goals.length}</div><div class="mc-sub">${S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length} complete</div><div class="mc-arr">→</div></div>
-        <div class="mc mc-link" onclick="navToPage('trades')" title="Go to Trades"><div class="mc-lb">Trades logged</div><div class="mc-vl">${S.trades.length}</div><div class="mc-sub">${S.trades.filter(t=>t.st==='Open').length} open positions</div><div class="mc-arr">→</div></div>
+      <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px;">
+        <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Finance">
+          <div class="mc-lb">Monthly income</div>
+          <div class="mc-vl up">${fmt(mInc)}</div>
+          <div class="mc-sub">${mFin.filter(f=>f.t==='income').length} entries</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Finance">
+          <div class="mc-lb">Monthly expenses</div>
+          <div class="mc-vl dn">${fmt(mExp)}</div>
+          <div class="mc-sub">${mFin.filter(f=>f.t==='expense').length} entries</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Finance">
+          <div class="mc-lb">Net this month</div>
+          <div class="mc-vl ${mNet>0?'green':mNet<0?'red':''}">${fmtS(mNet)}</div>
+          <div class="mc-sub" style="color:${netDelta>=0?'var(--green)':'var(--red)'};">${netDelta>=0?'↑':'↓'} ${fmtS(netDelta)} vs last month</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc mc-link" onclick="navToPage('todos')" title="Go to Todos">
+          <div class="mc-lb">Tasks this month</div>
+          <div class="mc-vl ${mTaskPct===100&&mTodos.length?'green':mTodos.length?'amber':''}">${mDone}/${mTodos.length}</div>
+          <div class="mc-sub">${mTaskPct}% complete</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc mc-link" onclick="navToPage('habits')" title="Go to Habits">
+          <div class="mc-lb">Habit avg this month</div>
+          <div class="mc-vl ${mHabitAvg>=80?'green':mHabitAvg>=50?'amber':'red'}">${mHabitAvg}%</div>
+          <div class="mc-sub">avg daily completion</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc mc-link" onclick="navToPage('bills')" title="Go to Bills">
+          <div class="mc-lb">Bills status</div>
+          <div class="mc-vl ${mBillsUnpaid>0?'red':'green'}">${fmt(mBillsTotal)}</div>
+          <div class="mc-sub">${mBillsUnpaid} unpaid · ${S.bills.filter(b=>b.s==='Auto-pay').length} auto</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc mc-link" onclick="navToPage('goals')" title="Go to Goals">
+          <div class="mc-lb">Goals progress</div>
+          <div class="mc-vl">${goalAvgPct}%</div>
+          <div class="mc-sub">${goalsComplete}/${S.goals.length} complete</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc mc-link" onclick="navToPage('trades')" title="Go to Trades">
+          <div class="mc-lb">Trades P&amp;L — month</div>
+          <div class="mc-vl ${mTradePnl>0?'green':mTradePnl<0?'red':''}">${mClosedTrades.length?fmtS(mTradePnl):'—'}</div>
+          <div class="mc-sub">${mTrades.length} trades this month</div>
+          <div class="mc-arr">→</div>
+        </div>
+        <div class="mc">
+          <div class="mc-lb">Last month net</div>
+          <div class="mc-vl ${lmNet>0?'green':lmNet<0?'red':''}">${fmtS(lmNet)}</div>
+          <div class="mc-sub">${monthNames[lmDate.getMonth()]} ${lmDate.getFullYear()}</div>
+        </div>
+      </div>
+      <div class="chart-box" style="margin:0;">
+        <div class="chart-ttl">Daily income vs expenses — ${monthLabel}</div>
+        <div class="legend">
+          <div class="li"><div class="ld" style="background:#0f7b6c;"></div>Income</div>
+          <div class="li"><div class="ld" style="background:#c7372f;"></div>Expense</div>
+        </div>
+        <div class="cw" style="height:160px;"><canvas id="mc-chart"></canvas></div>
       </div>`;
+
+    // Render monthly chart
+    setTimeout(()=>{
+      mkChart('mc-chart',{
+        type:'bar',
+        data:{
+          labels:barLabels,
+          datasets:[
+            {label:'Income',data:barInc,backgroundColor:'rgba(15,123,108,0.75)',borderRadius:2,borderSkipped:false},
+            {label:'Expense',data:barExp,backgroundColor:'rgba(199,55,47,0.65)',borderRadius:2,borderSkipped:false}
+          ]
+        },
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:true,maxTicksLimit:15}},
+            y:{grid:{color:'rgba(128,128,128,0.08)'},ticks:{callback:v=>v>0?'$'+v:'',font:{size:10}}}
+          }
+        }
+      });
+    },50);
   }
 
   // ── TODAY'S TASK LIST (resets daily) ──
