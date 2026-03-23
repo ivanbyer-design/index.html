@@ -790,6 +790,14 @@ textarea.fi{resize:vertical;min-height:52px;}
 .cp-block{box-shadow:var(--sh);}
 .cp-add-btn{border-radius:20px;font-weight:500;}
 .icon-opt{transition:all .12s;}
+
+/* FINANCE TABS */
+.fin-tabs{display:flex;gap:0;border-bottom:2px solid var(--bd);margin:16px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.fin-tabs::-webkit-scrollbar{display:none;}
+.fin-tab{font-family:var(--font);font-size:13px;font-weight:600;padding:10px 18px;border:none;background:transparent;color:var(--ts);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;-webkit-tap-highlight-color:transparent;}
+.fin-tab:hover{color:var(--t);}
+.fin-tab.on{color:var(--blue);border-bottom-color:var(--blue);}
+@media(max-width:768px){.fin-tab{padding:10px 12px;font-size:12px;}}
 </style>
 </head>
 <body>
@@ -813,10 +821,9 @@ textarea.fi{resize:vertical;min-height:52px;}
   <div class="ni on" id="ni-home" onclick="go('home',this)"><span class="ni-ic">∞</span><span class="ni-lb">Home</span></div>
   <div class="sb-div"></div>
   <div class="sb-sec">Life Sectors</div>
-  <div class="ni draggable-ni" id="ni-finance" draggable="true" onclick="go('finance',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">💰</span><span class="ni-lb" id="sbl-finance">Finance</span></div>
+  <div class="ni draggable-ni" id="ni-finance" draggable="true" onclick="go('finance',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">💰</span><span class="ni-lb" id="sbl-finance">Finance & Bills</span></div>
   <div class="ni draggable-ni" id="ni-trades" draggable="true" onclick="go('trades',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">📈</span><span class="ni-lb" id="sbl-trades">Trades & Backtests</span></div>
   <div class="ni draggable-ni" id="ni-goals" draggable="true" onclick="go('goals',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🎯</span><span class="ni-lb" id="sbl-goals">Goals</span></div>
-  <div class="ni draggable-ni" id="ni-bills" draggable="true" onclick="go('bills',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🧾</span><span class="ni-lb" id="sbl-bills">Bills</span></div>
   <div class="ni draggable-ni" id="ni-todos" draggable="true" onclick="go('todos',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">✅</span><span class="ni-lb" id="sbl-todos">Admin & Todos</span></div>
   <div class="ni draggable-ni" id="ni-habits" draggable="true" onclick="go('habits',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🔄</span><span class="ni-lb" id="sbl-habits">Habits</span></div>
   <div class="ni draggable-ni" id="ni-projects" draggable="true" onclick="go('projects',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🚀</span><span class="ni-lb" id="sbl-projects">Projects</span></div>
@@ -868,6 +875,12 @@ textarea.fi{resize:vertical;min-height:52px;}
       </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
 
+      <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📋 Today's tasks</div>
+      <div id="home-daily-tasks" style="margin:10px 0;"></div>
+      <div class="divider"></div>
+      <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
+      <div id="home-attn" style="margin-top:6px;"></div>
+      <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
       <div id="home-weekly"></div>
       <div class="divider"></div>
@@ -876,12 +889,6 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-fin-hdr" id="hdr-home-fin">📊 Monthly snapshot — <span id="home-month-label"></span></div>
       <div id="home-fin-snapshot" style="margin:10px 0;"></div>
-      <div class="divider"></div>
-      <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📋 Today's tasks</div>
-      <div id="home-daily-tasks" style="margin:10px 0;"></div>
-      <div class="divider"></div>
-      <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
-      <div id="home-attn" style="margin-top:6px;"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-qlog-hdr" id="hdr-home-qlog">⚡ Quick log</div>
       <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
@@ -905,43 +912,138 @@ textarea.fi{resize:vertical;min-height:52px;}
       </div>
     </div>
 
-    <!-- FINANCE -->
+    <!-- FINANCE DASHBOARD (merged Finance + Bills + Other Payments) -->
     <div class="panel" id="p-finance">
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover cf"></div>
       <span class="page-icon">💰</span>
       <div class="page-title editable-hdr" data-hdr="finance-title" id="hdr-finance-title">Finance</div>
-      <div class="page-sub">Track daily income and expenses</div>
+      <div class="page-sub">Income, expenses, bills & payments — all in one place</div>
+
+      <!-- SUMMARY BAR (dynamic) -->
       <div class="summary-bar" id="f-sum"></div>
-      <div class="chart-box">
-        <div class="chart-ttl">Income vs Expenses — last 7 days</div>
-        <div class="legend">
-          <div class="li"><div class="ld" style="background:#0f7b6c;"></div>Income</div>
-          <div class="li"><div class="ld" style="background:#c7372f;"></div>Expense</div>
-        </div>
-        <div class="cw" style="height:190px;"><canvas id="fc"></canvas></div>
+
+      <!-- FINANCE TABS -->
+      <div class="fin-tabs" id="fin-tabs">
+        <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">📊 Overview</button>
+        <button class="fin-tab"   id="ftab-entries"    onclick="switchFinTab('entries',this)">📋 Transactions</button>
+        <button class="fin-tab"   id="ftab-bills"      onclick="switchFinTab('bills',this)">🧾 Bills</button>
+        <button class="fin-tab"   id="ftab-payments"   onclick="switchFinTab('payments',this)">💳 Other Payments</button>
       </div>
-      <div class="nf">
-        <div class="nf-ttl">＋ New entry</div>
-        <div class="fr">
-          <input class="fi" type="text" id="fi-d" placeholder="Description">
-          <input class="fi" type="number" id="fi-a" placeholder="Amount" step="0.01" style="max-width:130px;">
-          <select class="fi" id="fi-t" style="max-width:120px;"><option value="income">Income</option><option value="expense">Expense</option></select>
-          <select class="fi" id="fi-c" style="max-width:140px;"><option>Salary</option><option>Freelance</option><option>Investment</option><option>Side income</option><option>Food</option><option>Transport</option><option>Housing</option><option>Utilities</option><option>Entertainment</option><option>Healthcare</option><option>Shopping</option><option>Other</option></select>
-          <input class="fi" type="date" id="fi-dt" style="max-width:150px;">
-          <button class="btn pri" onclick="addFin()">Save</button>
+
+      <!-- TAB: OVERVIEW -->
+      <div id="ftab-overview-body">
+        <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 10px;">
+          <div class="chart-box" style="margin:0;">
+            <div class="chart-ttl">Income vs Expenses — last 7 days</div>
+            <div class="legend">
+              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
+              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
+            </div>
+            <div class="cw" style="height:180px;"><canvas id="fc"></canvas></div>
+          </div>
+          <div class="chart-box" style="margin:0;">
+            <div class="chart-ttl">Bills breakdown</div>
+            <div class="cw" style="height:180px;"><canvas id="bc"></canvas></div>
+          </div>
         </div>
-      </div>
-      <div class="db-hdr">
-        <div class="db-ttl">📋 All entries</div>
-        <div class="db-acts">
-          <button class="db-btn" id="ff-all" onclick="filtF('all')" style="font-weight:600;">All</button>
-          <button class="db-btn" id="ff-income" onclick="filtF('income')">Income</button>
-          <button class="db-btn" id="ff-expense" onclick="filtF('expense')">Expense</button>
+        <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px;">
+          <div class="chart-box" style="margin:0;">
+            <div class="chart-ttl">Bill payment status</div>
+            <div class="cw" style="height:160px;"><canvas id="bsc"></canvas></div>
+          </div>
+          <div class="chart-box" style="margin:0;">
+            <div class="chart-ttl">Other payments status</div>
+            <div class="cw" style="height:160px;"><canvas id="opc"></canvas></div>
+          </div>
         </div>
+        <!-- Upcoming / overdue alerts -->
+        <div id="fin-alerts" style="margin-bottom:10px;"></div>
+        <!-- Recent transactions snapshot -->
+        <div class="db-hdr"><div class="db-ttl">🕐 Recent transactions</div></div>
+        <table class="nt"><thead><tr><th>Description</th><th>Category</th><th>Type</th><th>Amount</th><th>Date</th></tr></thead><tbody id="f-recent-tb"></tbody></table>
       </div>
-      <table class="nt"><thead><tr><th>Description</th><th>Category</th><th>Type</th><th>Amount</th><th>Date</th><th style="width:28px;"></th></tr></thead><tbody id="f-tb"></tbody></table>
-      <div class="add-row" onclick="G('fi-d').focus()">＋ New entry</div>
+
+      <!-- TAB: TRANSACTIONS -->
+      <div id="ftab-entries-body" style="display:none;">
+        <div class="nf">
+          <div class="nf-ttl">＋ New entry</div>
+          <div class="fr">
+            <input class="fi" type="text" id="fi-d" placeholder="Description">
+            <input class="fi" type="number" id="fi-a" placeholder="Amount" step="0.01" style="max-width:130px;">
+            <select class="fi" id="fi-t" style="max-width:120px;"><option value="income">Income</option><option value="expense">Expense</option></select>
+            <select class="fi" id="fi-c" style="max-width:140px;"><option>Salary</option><option>Freelance</option><option>Investment</option><option>Side income</option><option>Food</option><option>Transport</option><option>Housing</option><option>Utilities</option><option>Entertainment</option><option>Healthcare</option><option>Shopping</option><option>Other</option></select>
+            <input class="fi" type="date" id="fi-dt" style="max-width:150px;">
+            <button class="btn pri" onclick="addFin()">Save</button>
+          </div>
+        </div>
+        <div class="db-hdr">
+          <div class="db-ttl">📋 All entries</div>
+          <div class="db-acts">
+            <button class="db-btn" id="ff-all" onclick="filtF('all')" style="font-weight:700;">All</button>
+            <button class="db-btn" id="ff-income" onclick="filtF('income')">Income</button>
+            <button class="db-btn" id="ff-expense" onclick="filtF('expense')">Expense</button>
+          </div>
+        </div>
+        <table class="nt"><thead><tr><th>Description</th><th>Category</th><th>Type</th><th>Amount</th><th>Date</th><th style="width:28px;"></th></tr></thead><tbody id="f-tb"></tbody></table>
+        <div class="add-row" onclick="G('fi-d').focus()">＋ New entry</div>
+      </div>
+
+      <!-- TAB: BILLS -->
+      <div id="ftab-bills-body" style="display:none;">
+        <div class="summary-bar" id="b-sum" style="margin-top:14px;"></div>
+        <div class="nf">
+          <div class="nf-ttl">＋ Add bill</div>
+          <div class="fr">
+            <input class="fi" type="text" id="bl-n" placeholder="Bill name">
+            <input class="fi" type="number" id="bl-a" placeholder="Amount" step="0.01" style="max-width:130px;">
+            <select class="fi" id="bl-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
+            <select class="fi" id="bl-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
+            <input class="fi" type="date" id="bl-d" style="max-width:150px;">
+            <select class="fi" id="bl-s" style="max-width:120px;"><option>Unpaid</option><option>Paid</option><option>Auto-pay</option></select>
+            <button class="btn pri" onclick="addBill()">Save</button>
+          </div>
+        </div>
+        <div class="db-hdr">
+          <div class="db-ttl">📋 All bills</div>
+          <div class="db-acts">
+            <button class="db-btn" onclick="sortBills('due')">By due date</button>
+            <button class="db-btn" onclick="sortBills('amt')">By amount</button>
+          </div>
+        </div>
+        <table class="nt"><thead><tr><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th style="width:28px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
+        <div class="add-row" onclick="G('bl-n').focus()">＋ Add bill</div>
+      </div>
+
+      <!-- TAB: OTHER PAYMENTS -->
+      <div id="ftab-payments-body" style="display:none;">
+        <div class="summary-bar" id="op-sum" style="margin-top:14px;"></div>
+        <div class="nf">
+          <div class="nf-ttl">＋ Log payment</div>
+          <div class="fr">
+            <input class="fi" type="text" id="op-n" placeholder="Payment name / description">
+            <input class="fi" type="number" id="op-a" placeholder="Amount" step="0.01" style="max-width:130px;">
+            <select class="fi" id="op-cat" style="max-width:140px;">
+              <option>Medical</option><option>Legal</option><option>Tax</option><option>Education</option><option>Home repair</option><option>Car</option><option>Family</option><option>Travel</option><option>Gift</option><option>Charity</option><option>Other</option>
+            </select>
+            <input class="fi" type="date" id="op-due" style="max-width:150px;" placeholder="Due date">
+            <select class="fi" id="op-s" style="max-width:120px;"><option value="pending">Pending</option><option value="paid">Paid</option><option value="overdue">Overdue</option><option value="scheduled">Scheduled</option></select>
+            <input class="fi" type="text" id="op-note" placeholder="Notes (optional)" style="max-width:200px;">
+            <button class="btn pri" onclick="addOtherPayment()">Save</button>
+          </div>
+        </div>
+        <div class="db-hdr">
+          <div class="db-ttl">💳 All payments</div>
+          <div class="db-acts">
+            <button class="db-btn" id="opf-all" onclick="filtOP('all')" style="font-weight:700;">All</button>
+            <button class="db-btn" id="opf-pending" onclick="filtOP('pending')">Pending</button>
+            <button class="db-btn" id="opf-paid" onclick="filtOP('paid')">Paid</button>
+            <button class="db-btn" id="opf-overdue" onclick="filtOP('overdue')">Overdue</button>
+          </div>
+        </div>
+        <table class="nt"><thead><tr><th>Payment</th><th>Category</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Notes</th><th style="width:28px;"></th></tr></thead><tbody id="op-tb"></tbody></table>
+        <div class="add-row" onclick="G('op-n').focus()">＋ Log payment</div>
+      </div>
     </div>
 
     <!-- TRADES -->
@@ -1010,39 +1112,6 @@ textarea.fi{resize:vertical;min-height:52px;}
         </div>
       </div>
       <div id="g-list"></div>
-    </div>
-
-    <!-- BILLS -->
-    <div class="panel" id="p-bills">
-      <button class="mob-menu-float" onclick="openSB()">☰</button>
-      <div class="page-cover cb2"></div>
-      <span class="page-icon">🧾</span>
-      <div class="page-title editable-hdr" data-hdr="bills-title" id="hdr-bills-title">Bills</div>
-      <div class="page-sub">Recurring payments and due dates</div>
-      <div class="summary-bar" id="b-sum"></div>
-      <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;">
-        <div class="chart-box" style="margin:0;"><div class="chart-ttl">Spending breakdown</div><div class="cw" style="height:170px;"><canvas id="bc"></canvas></div></div>
-        <div class="chart-box" style="margin:0;"><div class="chart-ttl">Payment status</div><div class="cw" style="height:170px;"><canvas id="bsc"></canvas></div></div>
-      </div>
-      <div class="nf">
-        <div class="nf-ttl">＋ Add bill</div>
-        <div class="fr">
-          <input class="fi" type="text" id="bl-n" placeholder="Bill name">
-          <input class="fi" type="number" id="bl-a" placeholder="Amount" step="0.01" style="max-width:130px;">
-          <select class="fi" id="bl-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
-          <input class="fi" type="date" id="bl-d" style="max-width:150px;">
-          <select class="fi" id="bl-s" style="max-width:120px;"><option>Unpaid</option><option>Paid</option><option>Auto-pay</option></select>
-          <button class="btn pri" onclick="addBill()">Save</button>
-        </div>
-      </div>
-      <div class="db-hdr">
-        <div class="db-ttl">📋 All bills</div>
-        <div class="db-acts">
-          <button class="db-btn" onclick="sortBills('due')">By due date</button>
-          <button class="db-btn" onclick="sortBills('amt')">By amount</button>
-        </div>
-      </div>
-      <table class="nt"><thead><tr><th>Bill</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th style="width:28px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
     </div>
 
     <!-- TODOS -->
@@ -1256,8 +1325,9 @@ G('h-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',mo
 document.querySelectorAll('input[type=date]').forEach(el=>{if(!el.value)el.value=today;});
 
 // STATE
-let S={finance:[],trades:[],backtests:[],goals:[],bills:[],todos:[],habits:[],hlog:{},projects:[]};
+let S={finance:[],trades:[],backtests:[],goals:[],bills:[],todos:[],habits:[],hlog:{},projects:[],otherPayments:[]};
 try{const d=localStorage.getItem('lifeOS_v3');if(d)S=Object.assign(S,JSON.parse(d));}catch(e){}
+if(!S.otherPayments)S.otherPayments=[];
 const save=()=>{try{localStorage.setItem('lifeOS_v3',JSON.stringify(S));}catch(e){}};
 
 // DARK MODE
@@ -1271,7 +1341,7 @@ function openSB(){G('sb').classList.add('open');G('sb-overlay').classList.add('o
 function closeSB(){G('sb').classList.remove('open');G('sb-overlay').classList.remove('open');}
 
 // NAV
-const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},bills:{ic:'🧾',ttl:'Bills'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'}};
+const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'}};
 function go(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1299,7 +1369,7 @@ function navToPage(id){
 function triggerAdd(){
   const a=document.querySelector('.panel.on');if(!a)return;
   const id=a.id.replace('p-','');
-  const m={finance:'fi-d',trades:'tr-s',goals:'gl-t',bills:'bl-n',todos:'td-t',habits:'h-new'};
+  const m={finance:'fi-d',trades:'tr-s',goals:'gl-t',todos:'td-t',habits:'h-new'};
   if(m[id]){G(m[id]).focus();G(m[id]).scrollIntoView({behavior:'smooth',block:'center'});}
 }
 function toggleSec(h){h.querySelector('.tg-arr').classList.toggle('open');h.nextElementSibling.classList.toggle('open');}
@@ -1315,9 +1385,21 @@ const GC='rgba(128,128,128,0.08)';
 let charts={};
 const mkChart=(id,cfg)=>{if(charts[id])charts[id].destroy();const el=G(id);if(el)charts[id]=new Chart(el,cfg);};
 
+// ── FINANCE TABS ──
+let activeFinTab='overview';
+function switchFinTab(tab,btn){
+  activeFinTab=tab;
+  document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
+  btn.classList.add('on');
+  ['overview','entries','bills','payments'].forEach(t=>{
+    const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
+  });
+  if(tab==='overview')setTimeout(()=>{['fc','bc','bsc','opc'].forEach(id=>{if(charts[id])try{charts[id].resize();}catch(e){}});},50);
+}
+
 // ── FINANCE ──
 let ff='all';
-function filtF(f){ff=f;['all','income','expense'].forEach(x=>G('ff-'+x).style.fontWeight=x===f?'700':'400');renderFinance();}
+function filtF(f){ff=f;['all','income','expense'].forEach(x=>{const el=G('ff-'+x);if(el)el.style.fontWeight=x===f?'700':'400';});renderFinance();}
 function addFin(){
   const d=G('fi-d').value.trim(),a=parseFloat(G('fi-a').value);
   if(!d||!a)return;
@@ -1331,23 +1413,106 @@ function quickFin(){
   G('qf-d').value='';G('qf-a').value='';save();renderFinance();renderHome();
 }
 function delFin(id){S.finance=S.finance.filter(f=>f.id!==id);save();renderFinance();renderHome();}
+
+// ── OTHER PAYMENTS ──
+let opFilter='all';
+function filtOP(f){opFilter=f;['all','pending','paid','overdue'].forEach(x=>{const el=G('opf-'+x);if(el)el.style.fontWeight=x===f?'700':'400';});renderFinance();}
+function addOtherPayment(){
+  const n=G('op-n').value.trim(),a=parseFloat(G('op-a').value)||0;
+  if(!n)return;
+  S.otherPayments.push({n,a,cat:G('op-cat').value,due:G('op-due').value,s:G('op-s').value,note:G('op-note').value.trim(),id:Date.now()});
+  G('op-n').value='';G('op-a').value='';G('op-note').value='';
+  save();renderFinance();renderHome();showBackupToast('✓ Payment saved');
+}
+function delOtherPayment(id){S.otherPayments=S.otherPayments.filter(p=>p.id!==id);save();renderFinance();renderHome();}
+function cycleOP(id){
+  const p=S.otherPayments.find(p=>p.id===id);
+  if(p){const states=['pending','paid','overdue','scheduled'];p.s=states[(states.indexOf(p.s)+1)%states.length];save();renderFinance();}
+}
+
 function renderFinance(){
   const inc=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
   const exp=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
   const net=inc-exp;
-  G('f-sum').innerHTML=`<div class="sum-item"><div class="sum-lb">Income</div><div class="sum-vl up">${fmt(inc)}</div></div><div class="sum-item"><div class="sum-lb">Expenses</div><div class="sum-vl dn">${fmt(exp)}</div></div><div class="sum-item"><div class="sum-lb">Net</div><div class="sum-vl ${net>=0?'up':'dn'}">${fmtS(net)}</div></div><div class="sum-item"><div class="sum-lb">Entries</div><div class="sum-vl">${S.finance.length}</div></div>`;
+  const billsTotal=S.bills.reduce((s,b)=>s+b.a,0);
+  const opTotal=S.otherPayments.filter(p=>p.s!=='paid').reduce((s,p)=>s+p.a,0);
+  const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
+
+  // Master summary bar
+  const fsum=G('f-sum');
+  if(fsum)fsum.innerHTML=`
+    <div class="sum-item"><div class="sum-lb">Total income</div><div class="sum-vl up">${fmt(inc)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Total expenses</div><div class="sum-vl dn">${fmt(exp)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Net</div><div class="sum-vl ${net>=0?'up':'dn'}">${fmtS(net)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Bills / mo</div><div class="sum-vl">${fmt(billsTotal)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Payments due</div><div class="sum-vl ${opTotal>0?'dn':''}">${fmt(opTotal)}</div></div>`;
+
+  // ── OVERVIEW TAB ──
+  // 7-day bar chart
   const days=[],i7=[],e7=[];
   for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(localDate(d));}
-  days.forEach(d=>{i7.push(S.finance.filter(f=>f.dt===d&&f.t==='income').reduce((s,f)=>s+f.a,0));e7.push(S.finance.filter(f=>f.dt===d&&f.t==='expense').reduce((s,f)=>s+f.a,0));});
-  mkChart('fc',{type:'bar',data:{labels:days.map(d=>d.slice(5)),datasets:[{label:'Income',data:i7,backgroundColor:'rgba(15,123,108,0.75)',borderRadius:3,borderSkipped:false},{label:'Expense',data:e7,backgroundColor:'rgba(199,55,47,0.65)',borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:GC},ticks:{callback:v=>'$'+v,font:{size:10}}}}}});
-  let items=[...S.finance];
+  days.forEach(d=>{
+    i7.push(S.finance.filter(f=>f.dt===d&&f.t==='income').reduce((s,f)=>s+f.a,0));
+    e7.push(S.finance.filter(f=>f.dt===d&&f.t==='expense').reduce((s,f)=>s+f.a,0));
+  });
+  const GC='rgba(128,128,128,0.07)';
+  if(activeFinTab==='overview'){
+    mkChart('fc',{type:'bar',data:{labels:days.map(d=>d.slice(5)),datasets:[
+      {label:'Income',data:i7,backgroundColor:'rgba(10,124,110,0.78)',borderRadius:4,borderSkipped:false},
+      {label:'Expense',data:e7,backgroundColor:'rgba(192,52,44,0.68)',borderRadius:4,borderSkipped:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:GC},ticks:{callback:v=>'$'+v,font:{size:10}}}}}});
+
+    // Bills doughnut
+    const clrs=['rgba(10,124,110,0.82)','rgba(45,120,164,0.82)','rgba(197,140,30,0.82)','rgba(192,52,44,0.72)','rgba(138,95,174,0.82)','rgba(112,110,107,0.6)'];
+    if(S.bills.length){
+      mkChart('bc',{type:'doughnut',data:{labels:S.bills.map(b=>b.n),datasets:[{data:S.bills.map(b=>b.a),backgroundColor:clrs.slice(0,S.bills.length),borderWidth:0,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:8,boxWidth:10}}}}});
+      const paid=S.bills.filter(b=>b.s==='Paid').reduce((s,b)=>s+b.a,0);
+      const auto=S.bills.filter(b=>b.s==='Auto-pay').reduce((s,b)=>s+b.a,0);
+      mkChart('bsc',{type:'doughnut',data:{labels:['Paid','Unpaid','Auto-pay'],datasets:[{data:[paid,unp,auto],backgroundColor:['rgba(10,124,110,0.8)','rgba(192,52,44,0.72)','rgba(45,120,164,0.8)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:6,boxWidth:10}}}}});
+    }
+    // Other payments doughnut
+    const opPaid=S.otherPayments.filter(p=>p.s==='paid').length;
+    const opPend=S.otherPayments.filter(p=>p.s==='pending').length;
+    const opOver=S.otherPayments.filter(p=>p.s==='overdue').length;
+    const opSched=S.otherPayments.filter(p=>p.s==='scheduled').length;
+    if(S.otherPayments.length){
+      mkChart('opc',{type:'doughnut',data:{labels:['Paid','Pending','Overdue','Scheduled'],datasets:[{data:[opPaid,opPend,opOver,opSched],backgroundColor:['rgba(10,124,110,0.8)','rgba(197,140,30,0.75)','rgba(192,52,44,0.72)','rgba(45,120,164,0.8)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:6,boxWidth:10}}}}});
+    }
+
+    // Alerts
+    const alertEl=G('fin-alerts');
+    if(alertEl){
+      const alerts=[];
+      S.bills.filter(b=>b.s==='Unpaid').forEach(b=>alerts.push(`<div class="callout amber" style="margin:4px 0;padding:10px 14px;"><span class="co-ic">🧾</span><span class="co-tx"><strong>${b.n}</strong> — ${fmt(b.a)} unpaid${b.d?' (due '+b.d+')':''}</span></div>`));
+      S.otherPayments.filter(p=>p.s==='overdue').forEach(p=>alerts.push(`<div class="callout red" style="margin:4px 0;padding:10px 14px;"><span class="co-ic">⚠️</span><span class="co-tx"><strong>${p.n}</strong> — ${fmt(p.a)} overdue${p.due?' ('+p.due+')':''}</span></div>`));
+      S.otherPayments.filter(p=>p.s==='pending'&&p.due&&p.due<=today).forEach(p=>alerts.push(`<div class="callout amber" style="margin:4px 0;padding:10px 14px;"><span class="co-ic">💳</span><span class="co-tx"><strong>${p.n}</strong> — ${fmt(p.a)} due today</span></div>`));
+      alertEl.innerHTML=alerts.length?'<div style="margin-bottom:6px;font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;">⚡ Action needed</div>'+alerts.join(''):'';
+    }
+
+    // Recent 8 transactions
+    const rtb=G('f-recent-tb');
+    if(rtb){
+      const recent=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt)).slice(0,8);
+      rtb.innerHTML=recent.length?recent.map(f=>`<tr><td>${f.d}</td><td>${tag(f.c,'gray')}</td><td>${tag(f.t==='income'?'Income':'Expense',f.t==='income'?'green':'red')}</td><td style="font-weight:700;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td><td style="font-size:12px;color:var(--ts);">${f.dt}</td></tr>`).join(''):`<tr><td colspan="5"><div class="empty">No entries yet</div></td></tr>`;
+    }
+  }
+
+  // ── TRANSACTIONS TAB ──
+  let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
   if(ff==='income')items=items.filter(f=>f.t==='income');
   else if(ff==='expense')items=items.filter(f=>f.t==='expense');
   const tb=G('f-tb');
-  if(!items.length){tb.innerHTML=`<tr><td colspan="6"><div class="empty">No entries yet</div></td></tr>`;return;}
-  tb.innerHTML=items.reverse().map(f=>`<tr><td><strong>${f.d}</strong></td><td>${tag(f.c,'gray')}</td><td>${tag(f.t,f.t==='income'?'green':'red')}</td><td style="font-weight:600;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td><td style="color:var(--ts);font-size:12px;">${f.dt}</td><td><button class="del" onclick="delFin(${f.id})">✕</button></td></tr>`).join('');
-}
+  if(tb){
+    if(!items.length){tb.innerHTML=`<tr><td colspan="6"><div class="empty">No entries yet</div></td></tr>`;}
+    else tb.innerHTML=items.map(f=>`<tr><td>${f.d}</td><td>${tag(f.c,'gray')}</td><td>${tag(f.t==='income'?'Income':'Expense',f.t==='income'?'green':'red')}</td><td style="font-weight:700;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td><td style="font-size:12px;color:var(--ts);">${f.dt}</td><td><button class="del" onclick="delFin(${f.id})">✕</button></td></tr>`).join('');
+  }
 
+  // ── BILLS TAB ──
+  renderBills();
+
+  // ── OTHER PAYMENTS TAB ──
+  renderOtherPayments();
+}
 // ── TRADES ──
 function addTrade(){
   const s=G('tr-s').value.trim();if(!s)return;
@@ -1418,26 +1583,66 @@ let billSort='due';
 function sortBills(s){billSort=s;renderBills();}
 function addBill(){
   const n=G('bl-n').value.trim();if(!n)return;
-  S.bills.push({n,a:parseFloat(G('bl-a').value)||0,f:G('bl-f').value,d:G('bl-d').value,s:G('bl-s').value,id:Date.now()});
-  G('bl-n').value='';G('bl-a').value='';save();renderBills();renderHome();
+  S.bills.push({n,a:parseFloat(G('bl-a').value)||0,f:G('bl-f').value,cat:G('bl-cat')?G('bl-cat').value:'Other',d:G('bl-d').value,s:G('bl-s').value,id:Date.now()});
+  G('bl-n').value='';G('bl-a').value='';save();renderFinance();renderHome();
 }
-function delBill(id){S.bills=S.bills.filter(b=>b.id!==id);save();renderBills();renderHome();}
+function delBill(id){S.bills=S.bills.filter(b=>b.id!==id);save();renderFinance();renderHome();}
 function cycleBill(id){const b=S.bills.find(b=>b.id===id);if(b){const s=['Unpaid','Paid','Auto-pay'];b.s=s[(s.indexOf(b.s)+1)%3];save();renderBills();}}
 function renderBills(){
   const tot=S.bills.reduce((s,b)=>s+b.a,0);
   const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
   const auto=S.bills.filter(b=>b.s==='Auto-pay').reduce((s,b)=>s+b.a,0);
   const paid=S.bills.filter(b=>b.s==='Paid').reduce((s,b)=>s+b.a,0);
-  G('b-sum').innerHTML=`<div class="sum-item"><div class="sum-lb">Monthly total</div><div class="sum-vl">${fmt(tot)}</div></div><div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl dn">${fmt(unp)}</div></div><div class="sum-item"><div class="sum-lb">Paid</div><div class="sum-vl up">${fmt(paid)}</div></div><div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(auto)}</div></div>`;
-  const clrs=['rgba(15,123,108,0.8)','rgba(51,126,169,0.8)','rgba(203,145,47,0.8)','rgba(199,55,47,0.7)','rgba(144,101,176,0.8)','rgba(120,119,116,0.6)','rgba(15,123,108,0.5)','rgba(51,126,169,0.5)'];
-  if(S.bills.length){
-    mkChart('bc',{type:'doughnut',data:{labels:S.bills.map(b=>b.n),datasets:[{data:S.bills.map(b=>b.a),backgroundColor:clrs.slice(0,S.bills.length),borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false}}}});
-    mkChart('bsc',{type:'doughnut',data:{labels:['Paid','Unpaid','Auto-pay'],datasets:[{data:[paid,unp,auto],backgroundColor:['rgba(15,123,108,0.8)','rgba(199,55,47,0.7)','rgba(51,126,169,0.8)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:6}}}}});
-  }
-  const srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:a.d.localeCompare(b.d));
+  const bsum=G('b-sum');
+  if(bsum)bsum.innerHTML=`
+    <div class="sum-item"><div class="sum-lb">Monthly total</div><div class="sum-vl">${fmt(tot)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl dn">${fmt(unp)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Paid</div><div class="sum-vl up">${fmt(paid)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(auto)}</div></div>`;
+  const srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:(a.d||'').localeCompare(b.d||''));
   const tb=G('bl-tb');
-  if(!S.bills.length){tb.innerHTML=`<tr><td colspan="6"><div class="empty">No bills tracked</div></td></tr>`;return;}
-  tb.innerHTML=srt.map(b=>`<tr><td><strong>${b.n}</strong></td><td style="font-weight:600;">${fmt(b.a)}</td><td>${tag(b.f,'gray')}</td><td style="font-size:12px;color:var(--ts);">${b.d||'—'}</td><td><span class="tag ${SC[b.s]||'gray'}" style="cursor:pointer;" onclick="cycleBill(${b.id})" title="Click to change">${b.s}</span></td><td><button class="del" onclick="delBill(${b.id})">✕</button></td></tr>`).join('');
+  if(!tb)return;
+  if(!S.bills.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty">No bills tracked — add one above</div></td></tr>`;return;}
+  tb.innerHTML=srt.map(b=>`<tr>
+    <td><strong>${b.n}</strong></td>
+    <td>${tag(b.cat||'Other','gray')}</td>
+    <td style="font-weight:700;">${fmt(b.a)}</td>
+    <td>${tag(b.f,'gray')}</td>
+    <td style="font-size:12px;color:var(--ts);">${b.d||'—'}</td>
+    <td><span class="tag ${SC[b.s]||'gray'}" style="cursor:pointer;" onclick="cycleBill(${b.id})" title="Click to cycle status">${b.s}</span></td>
+    <td><button class="del" onclick="delBill(${b.id})">✕</button></td>
+  </tr>`).join('');
+}
+
+// ── OTHER PAYMENTS ──
+function renderOtherPayments(){
+  const ops=S.otherPayments||[];
+  const total=ops.reduce((s,p)=>s+p.a,0);
+  const pending=ops.filter(p=>p.s==='pending').reduce((s,p)=>s+p.a,0);
+  const overdue=ops.filter(p=>p.s==='overdue').reduce((s,p)=>s+p.a,0);
+  const paidAmt=ops.filter(p=>p.s==='paid').reduce((s,p)=>s+p.a,0);
+  const opsum=G('op-sum');
+  if(opsum)opsum.innerHTML=`
+    <div class="sum-item"><div class="sum-lb">Total</div><div class="sum-vl">${fmt(total)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Pending</div><div class="sum-vl amb">${fmt(pending)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Overdue</div><div class="sum-vl dn">${fmt(overdue)}</div></div>
+    <div class="sum-item"><div class="sum-lb">Paid</div><div class="sum-vl up">${fmt(paidAmt)}</div></div>`;
+  const OPS={pending:'amber',paid:'green',overdue:'red',scheduled:'blue'};
+  const OPL={pending:'Pending',paid:'Paid',overdue:'Overdue',scheduled:'Scheduled'};
+  let items=[...ops].sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
+  if(opFilter!=='all')items=items.filter(p=>p.s===opFilter);
+  const tb=G('op-tb');
+  if(!tb)return;
+  if(!items.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty">${opFilter==='all'?'No payments logged yet — add one above':'No '+opFilter+' payments'}</div></td></tr>`;return;}
+  tb.innerHTML=items.map(p=>`<tr>
+    <td><strong>${p.n}</strong></td>
+    <td>${tag(p.cat||'Other','gray')}</td>
+    <td style="font-weight:700;">${fmt(p.a)}</td>
+    <td style="font-size:12px;color:var(--ts);">${p.due||'—'}</td>
+    <td><span class="tag ${OPS[p.s]||'gray'}" style="cursor:pointer;" onclick="cycleOP(${p.id})" title="Click to cycle status">${OPL[p.s]||p.s}</span></td>
+    <td style="font-size:12px;color:var(--ts);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.note||'—'}</td>
+    <td><button class="del" onclick="delOtherPayment(${p.id})">✕</button></td>
+  </tr>`).join('');
 }
 
 // ── TODOS ──
@@ -1794,7 +1999,7 @@ function renderHome(){
         <div class="hero-stat-vl ${habitsTotal?habitsDoneToday===habitsTotal?'up':'amb':''}">${habitsTotal?habitsDoneToday+'/'+habitsTotal:'—'}</div>
         <div class="hero-stat-sub">${habitsTotal?Math.round(habitsDoneToday/habitsTotal*100)+'% done':'No habits set'}</div>
       </div>
-      <div class="hero-stat" onclick="navToPage('bills')">
+      <div class="hero-stat" onclick="navToPage('finance')">
         <div class="hero-stat-lb">Unpaid bills</div>
         <div class="hero-stat-vl ${unpaidBills>0?'dn':''}">${unpaidBills||'✓'}</div>
         <div class="hero-stat-sub">${unpaidBills?unpaidBills+' overdue':'All clear'}</div>
@@ -1901,7 +2106,7 @@ function renderHome(){
           <div class="mc-sub">avg daily completion</div>
           <div class="mc-arr">→</div>
         </div>
-        <div class="mc mc-link" onclick="navToPage('bills')" title="Go to Bills">
+        <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Bills">
           <div class="mc-lb">Bills status</div>
           <div class="mc-vl ${mBillsUnpaid>0?'red':'green'}">${fmt(mBillsTotal)}</div>
           <div class="mc-sub">${mBillsUnpaid} unpaid · ${S.bills.filter(b=>b.s==='Auto-pay').length} auto</div>
@@ -2354,7 +2559,7 @@ function logProjExpense(id){
 }
 
 // ── RENDER ALL ──
-function renderAll(){renderFinance();renderTrades();renderGoals();renderBills();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();}
+function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();}
 renderAll();
 setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},150);
 window.addEventListener('resize',()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});});
@@ -2831,7 +3036,7 @@ function applyCustomLabels(){
     'hdr-finance-title':'sbl-finance',
     'hdr-trades-title':'sbl-trades',
     'hdr-goals-title':'sbl-goals',
-    'hdr-bills-title':'sbl-bills',
+    
     'hdr-todos-title':'sbl-todos',
     'hdr-habits-title':'sbl-habits',
   };
@@ -2965,7 +3170,7 @@ function saveRename(elId){
       // Sync sidebar label if this is a page title
       const syncMap={
         'hdr-finance-title':'sbl-finance','hdr-trades-title':'sbl-trades',
-        'hdr-goals-title':'sbl-goals','hdr-bills-title':'sbl-bills',
+        'hdr-goals-title':'sbl-goals',
         'hdr-todos-title':'sbl-todos','hdr-habits-title':'sbl-habits',
       };
       if(syncMap[elId]){
@@ -2997,7 +3202,7 @@ const toggleableBlocks = [
   {id:'f-sum',             label:'Finance summary bar',  panel:'p-finance'},
   {id:'t-sum',             label:'Trades summary bar',   panel:'p-trades'},
   {id:'g-sum',             label:'Goals summary bar',    panel:'p-goals'},
-  {id:'b-sum',             label:'Bills summary bar',    panel:'p-bills'},
+  {id:'b-sum',             label:'Bills summary bar',    panel:'p-finance'},
   {id:'td-sum',            label:'Tasks summary bar',    panel:'p-todos'},
   {id:'h-sum',             label:'Habits summary bar',   panel:'p-habits'},
 ];
@@ -3032,10 +3237,9 @@ function openBlocksModal(){
     <input class="em-inp" id="em-note-inp" placeholder="Type your note here..." autocomplete="off">
     <select class="em-inp" id="em-note-page" style="margin-top:6px;">
       <option value="p-home">Home</option>
-      <option value="p-finance">Finance</option>
+      <option value="p-finance">Finance & Bills</option>
       <option value="p-trades">Trades</option>
       <option value="p-goals">Goals</option>
-      <option value="p-bills">Bills</option>
       <option value="p-todos">Admin & Todos</option>
       <option value="p-habits">Habits</option>
     </select>`;
@@ -3729,7 +3933,7 @@ function renderDayDetail(dk){
       <div class="mc mc-link" onclick="go('todos',G('ni-todos'))" title="Go to Todos"><div class="mc-lb">Tasks</div><div class="mc-vl ${doneTasks===allTasks.length&&allTasks.length?'green':allTasks.length?'':'green'}">${doneTasks}/${allTasks.length}</div><div class="mc-sub">${taskPct}% complete</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('habits',G('ni-habits'))" title="Go to Habits"><div class="mc-lb">Habits</div><div class="mc-vl ${habitsDone===S.habits.length&&S.habits.length?'green':''}">${habitsDone}/${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(habitsDone/S.habits.length*100):0}% done</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('finance',G('ni-finance'))" title="Go to Finance"><div class="mc-lb">Net</div><div class="mc-vl ${(finInc-finExp)>0?'green':(finInc-finExp)<0?'red':''}">${fmtS(finInc-finExp)}</div><div class="mc-sub">${fmt(finInc)} in · ${fmt(finExp)} out</div><div class="mc-arr">→</div></div>
-      <div class="mc mc-link" onclick="go('bills',G('ni-bills'))" title="Go to Bills"><div class="mc-lb">Bills due</div><div class="mc-vl ${bills.length>0?'red':'green'}">${bills.length}</div><div class="mc-sub">${bills.filter(b=>b.s==='Unpaid').length} unpaid</div><div class="mc-arr">→</div></div>
+      <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Bills"><div class="mc-lb">Bills due</div><div class="mc-vl ${bills.length>0?'red':'green'}">${bills.length}</div><div class="mc-sub">${bills.filter(b=>b.s==='Unpaid').length} unpaid</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('todos',G('ni-todos'))" title="Go to Todos"><div class="mc-lb">High priority</div><div class="mc-vl ${allTasks.filter(t=>t.p==='high').length>0?'red':''}">${allTasks.filter(t=>t.p==='high').length}</div><div class="mc-sub">tasks today</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('finance',G('ni-finance'))" title="Go to Finance"><div class="mc-lb">Finance entries</div><div class="mc-vl">${finEntries.length}</div><div class="mc-sub">${finEntries.length?'logged':'nothing yet'}</div><div class="mc-arr">→</div></div>
     </div>
@@ -3885,10 +4089,6 @@ function ddAddTask(dk){
   <button class="bn-item" id="bn-goals" onclick="go('goals',document.getElementById('ni-goals'));updateBN('goals')">
     <span class="bn-icon">🎯</span>
     <span class="bn-label">Goals</span>
-  </button>
-  <button class="bn-item" id="bn-bills" onclick="go('bills',document.getElementById('ni-bills'));updateBN('bills')">
-    <span class="bn-icon">🧾</span>
-    <span class="bn-label">Bills</span>
   </button>
   <button class="bn-item" id="bn-todos" onclick="go('todos',document.getElementById('ni-todos'));updateBN('todos')">
     <span class="bn-icon">✅</span>
