@@ -799,11 +799,29 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fin-tab.on{color:var(--blue);border-bottom-color:var(--blue);}
 @media(max-width:768px){.fin-tab{padding:10px 12px;font-size:12px;}}
 
-/* FINANCE DASHBOARD — MONTH NAV */
-.fd-month-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0 14px;gap:12px;}
-.fd-month-label{font-size:20px;font-weight:800;color:var(--t);letter-spacing:-0.02em;flex:1;text-align:center;}
-.fd-nav-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--bd);background:var(--bg-card);color:var(--t);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:background .12s,box-shadow .12s,transform .1s;flex-shrink:0;}
-.fd-nav-btn:hover{background:var(--bg-h);transform:scale(1.08);box-shadow:var(--sh-md);}
+/* FINANCE PERIOD SELECTOR */
+.fd-period-bar{display:flex;align-items:center;gap:6px;padding:16px 0 14px;flex-wrap:wrap;}
+.fd-period-btn{font-family:var(--font);font-size:13px;font-weight:600;padding:7px 18px;border-radius:20px;border:1.5px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.fd-period-btn:hover{border-color:var(--blue);color:var(--blue);}
+.fd-period-btn.on{background:var(--t);color:var(--ti);border-color:var(--t);box-shadow:var(--sh);}
+.fd-period-nav{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.fd-month-label{font-size:15px;font-weight:700;color:var(--t);letter-spacing:-0.01em;white-space:nowrap;}
+@media(max-width:768px){.fd-period-bar{gap:5px;padding:12px 0 10px;}.fd-period-btn{padding:6px 14px;font-size:12px;}.fd-month-label{font-size:13px;}}
+
+/* FINANCE OWED SECTION */
+.fd-owed-section{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:16px;box-shadow:var(--sh);}
+.fd-owed-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd);}
+.fd-owed-item:last-child{border-bottom:none;}
+.fd-owed-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.fd-owed-icon.bill{background:var(--abg);}
+.fd-owed-icon.debt{background:var(--rbg);}
+.fd-owed-info{flex:1;min-width:0;}
+.fd-owed-name{font-size:13px;font-weight:700;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fd-owed-meta{font-size:11px;color:var(--ts);margin-top:1px;display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.fd-owed-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;}
+.fd-owed-amount{font-size:13.5px;font-weight:800;color:var(--red);}
+.fd-nav-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:var(--bg-card);color:var(--t);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:background .12s,transform .1s;flex-shrink:0;}
+.fd-nav-btn:hover{background:var(--bg-h);transform:scale(1.08);}
 
 /* FINANCE DASHBOARD — KPI CARDS */
 .fd-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
@@ -1092,37 +1110,25 @@ textarea.fi{resize:vertical;min-height:52px;}
       <!-- TAB: OVERVIEW -->
       <div id="ftab-overview-body">
 
-        <!-- MONTH NAVIGATOR -->
-        <div class="fd-month-nav">
-          <button class="fd-nav-btn" onclick="finNavMonth(-1)">←</button>
-          <div class="fd-month-label" id="fd-month-label">March 2026</div>
-          <button class="fd-nav-btn" onclick="finNavMonth(1)">→</button>
+        <!-- PERIOD SELECTOR -->
+        <div class="fd-period-bar">
+          <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
+          <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
+          <button class="fd-period-btn" id="fpb-yearly" onclick="setFinPeriod('yearly',this)">Yearly</button>
+          <div class="fd-period-nav">
+            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
+            <div class="fd-month-label" id="fd-month-label">March 2026</div>
+            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
+          </div>
         </div>
 
         <!-- KPI CARDS -->
         <div class="fd-kpi-grid" id="fd-kpis"></div>
 
-        <!-- MONTHLY CALENDAR — above chart -->
-        <div class="fd-cal-wrap">
-          <div class="fd-cal-top-bar">
-            <div class="fd-cal-month-title" id="fd-cal-month-title">March 2026</div>
-            <div class="fd-cal-legend">
-              <span><span class="fd-cal-dot-legend income"></span>Income</span>
-              <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-              <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-              <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-            </div>
-          </div>
-          <div class="fd-cal-header">
-            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-          </div>
-          <div class="fd-cal-grid" id="fd-cal-grid"></div>
-        </div>
-
-        <!-- MONTHLY BAR CHART — below calendar -->
+        <!-- PERIOD CHART -->
         <div class="chart-box" style="margin:0 0 16px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow — <span id="fd-chart-month"></span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
             <div class="legend" style="margin:0;">
               <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
               <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
@@ -1131,24 +1137,35 @@ textarea.fi{resize:vertical;min-height:52px;}
           <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
         </div>
 
-        <!-- BILLS + DEBTS TWO-COL -->
-        <div class="fd-two-panel">
-          <!-- UNPAID BILLS -->
-          <div class="fd-panel-box">
-            <div class="fd-panel-hdr">
-              <div class="fd-panel-title">🧾 Unpaid bills</div>
-              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">All bills →</button>
+        <!-- MONTHLY CALENDAR (only visible in monthly mode) -->
+        <div id="fd-cal-section">
+          <div class="fd-cal-wrap">
+            <div class="fd-cal-top-bar">
+              <div class="fd-cal-month-title" id="fd-cal-month-title">March 2026</div>
+              <div class="fd-cal-legend">
+                <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+              </div>
             </div>
-            <div id="fd-unpaid-bills"></div>
-          </div>
-          <!-- OUTSTANDING DEBTS -->
-          <div class="fd-panel-box">
-            <div class="fd-panel-hdr">
-              <div class="fd-panel-title">💸 Outstanding debts</div>
-              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">All debts →</button>
+            <div class="fd-cal-header">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
             </div>
-            <div id="fd-active-debts"></div>
+            <div class="fd-cal-grid" id="fd-cal-grid"></div>
           </div>
+        </div>
+
+        <!-- UNIFIED MONEY OWED (bills + debts) -->
+        <div class="fd-owed-section">
+          <div class="fd-panel-hdr" style="margin-bottom:10px;">
+            <div class="fd-panel-title">💳 Money owed</div>
+            <div style="display:flex;gap:8px;">
+              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
+              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+            </div>
+          </div>
+          <div id="fd-owed-list"></div>
         </div>
 
       </div>
@@ -1670,205 +1687,273 @@ function markDebtPaid(id){
   if(p){p.s='paid';save();renderFinance();renderHome();showBackupToast('✓ Debt marked paid');}
 }
 
-// ── FINANCE CALENDAR STATE ──
+// ── FINANCE PERIOD STATE ──
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const CAT_ICONS={'Housing':'🏠','Utilities':'💡','Insurance':'🛡️','Subscriptions':'📱','Transport':'🚗','Healthcare':'🏥','Other':'🧾','Medical':'🏥','Legal':'⚖️','Tax':'🏛️','Education':'📚','Home repair':'🔧','Car':'🚗','Family':'👨‍👩‍👧','Travel':'✈️','Gift':'🎁','Charity':'❤️'};
 let finCalYear=new Date().getFullYear();
-let finCalMonth=new Date().getMonth(); // 0-indexed
+let finCalMonth=new Date().getMonth();
+let finPeriod='monthly'; // 'monthly' | 'quarterly' | 'yearly'
+let finPeriodOffset=0;   // offset from current: 0=now, -1=last, etc.
 
-function finNavMonth(dir){
-  finCalMonth+=dir;
-  if(finCalMonth>11){finCalMonth=0;finCalYear++;}
-  if(finCalMonth<0){finCalMonth=11;finCalYear--;}
+function setFinPeriod(p,btn){
+  finPeriod=p;
+  finPeriodOffset=0;
+  document.querySelectorAll('.fd-period-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  // Show/hide calendar section
+  const calSec=G('fd-cal-section');
+  if(calSec)calSec.style.display=p==='monthly'?'block':'none';
   renderFinOverview();
 }
 
-const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const CAT_ICONS={'Housing':'🏠','Utilities':'💡','Insurance':'🛡️','Subscriptions':'📱','Transport':'🚗','Healthcare':'🏥','Other':'🧾','Medical':'🏥','Legal':'⚖️','Tax':'🏛️','Education':'📚','Home repair':'🔧','Car':'🚗','Family':'👨‍👩‍👧','Travel':'✈️','Gift':'🎁','Charity':'❤️'};
+function finNavPeriod(dir){
+  finPeriodOffset+=dir;
+  if(finPeriod==='monthly'){
+    finCalMonth+=dir;
+    if(finCalMonth>11){finCalMonth=0;finCalYear++;}
+    if(finCalMonth<0){finCalMonth=11;finCalYear--;}
+  }
+  renderFinOverview();
+}
+
+// Legacy alias kept for any stale references
+function finNavMonth(dir){finNavPeriod(dir);}
+
+// Compute period date range and label
+function getFinPeriodRange(){
+  const now=new Date();
+  if(finPeriod==='monthly'){
+    const y=finCalYear, m=finCalMonth;
+    const start=y+'-'+String(m+1).padStart(2,'0')+'-01';
+    const end=y+'-'+String(m+1).padStart(2,'0')+'-'+String(new Date(y,m+1,0).getDate()).padStart(2,'0');
+    return{start,end,label:MONTH_NAMES[m]+' '+y,y,m};
+  }
+  if(finPeriod==='quarterly'){
+    const base=new Date(now.getFullYear(), Math.floor(now.getMonth()/3)*3, 1);
+    base.setMonth(base.getMonth()+finPeriodOffset*3);
+    const qStart=new Date(base.getFullYear(), Math.floor(base.getMonth()/3)*3, 1);
+    const qEnd=new Date(qStart.getFullYear(), qStart.getMonth()+3, 0);
+    const qNum=Math.floor(qStart.getMonth()/3)+1;
+    return{
+      start:localDate(qStart), end:localDate(qEnd),
+      label:'Q'+qNum+' '+qStart.getFullYear(),
+      y:qStart.getFullYear(), m:qStart.getMonth(),
+      months:[qStart.getMonth(), qStart.getMonth()+1, qStart.getMonth()+2].map(mo=>({y:qStart.getFullYear(),m:mo}))
+    };
+  }
+  // yearly
+  const y=now.getFullYear()+finPeriodOffset;
+  return{start:y+'-01-01', end:y+'-12-31', label:''+y, y, months:Array.from({length:12},(_,i)=>({y,m:i}))};
+}
 
 function renderFinOverview(){
-  const y=finCalYear, m=finCalMonth;
-  const mPrefix=y+'-'+String(m+1).padStart(2,'0');
   const GC='rgba(128,128,128,0.07)';
+  const range=getFinPeriodRange();
 
-  // ── MONTH LABEL (also update chart title) ──
-  const lbl=G('fd-month-label');
-  if(lbl)lbl.textContent=MONTH_NAMES[m]+' '+y;
-  const calMonthTitle=G('fd-cal-month-title');
-  if(calMonthTitle)calMonthTitle.textContent=MONTH_NAMES[m]+' '+y;
-  const chartMonth=G('fd-chart-month');
-  if(chartMonth)chartMonth.textContent=MONTH_NAMES[m]+' '+y;
+  // Period label
+  const lbl=G('fd-month-label'); if(lbl)lbl.textContent=range.label;
+  const calLbl=G('fd-cal-month-title'); if(calLbl)calLbl.textContent=range.label;
 
-  // ── DATA FOR THIS MONTH ──
-  const mFin=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPrefix));
-  const mInc=mFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
-  const mExp=mFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
-  const mNet=mInc-mExp;
-  const savingsRate=mInc>0?Math.round((mNet/mInc)*100):0;
+  // Ensure calendar visibility matches period
+  const calSec=G('fd-cal-section');
+  if(calSec)calSec.style.display=finPeriod==='monthly'?'block':'none';
 
-  // Last month for delta
-  const lmDate=new Date(y,m-1,1);
-  const lmPrefix=lmDate.getFullYear()+'-'+String(lmDate.getMonth()+1).padStart(2,'0');
-  const lmInc=S.finance.filter(f=>f.dt&&f.dt.startsWith(lmPrefix)&&f.t==='income').reduce((s,f)=>s+f.a,0);
-  const lmExp=S.finance.filter(f=>f.dt&&f.dt.startsWith(lmPrefix)&&f.t==='expense').reduce((s,f)=>s+f.a,0);
-  const lmNet=lmInc-lmExp;
-  const netDelta=mNet-lmNet;
-  const incDelta=mInc-lmInc;
+  // Finance data for period
+  const pFin=S.finance.filter(f=>f.dt&&f.dt>=range.start&&f.dt<=range.end);
+  const pInc=pFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  const pExp=pFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const pNet=pInc-pExp;
+  const savingsRate=pInc>0?Math.round((pNet/pInc)*100):0;
+
+  // Previous period for delta
+  let prevInc=0, prevExp=0;
+  if(finPeriod==='monthly'){
+    const pd=new Date(range.y, range.m-1, 1);
+    const pp=pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0');
+    const prevFin=S.finance.filter(f=>f.dt&&f.dt.startsWith(pp));
+    prevInc=prevFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    prevExp=prevFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  } else if(finPeriod==='quarterly'){
+    const pd=new Date(range.y, range.m-3, 1);
+    const prevRange=getFinPeriodRangeFor('quarterly', pd.getFullYear(), pd.getMonth());
+    const prevFin=S.finance.filter(f=>f.dt&&f.dt>=prevRange.start&&f.dt<=prevRange.end);
+    prevInc=prevFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    prevExp=prevFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  } else {
+    const prevFin=S.finance.filter(f=>f.dt&&f.dt.startsWith(String(range.y-1)));
+    prevInc=prevFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    prevExp=prevFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  }
+  const incDelta=pInc-prevInc, netDelta=pNet-(prevInc-prevExp);
+  const periodLabel=finPeriod==='monthly'?'mo':finPeriod==='quarterly'?'qtr':'yr';
 
   // ── KPI CARDS ──
   const kpiEl=G('fd-kpis');
   if(kpiEl)kpiEl.innerHTML=`
     <div class="fd-kpi income">
       <div class="fd-kpi-label">Income</div>
-      <div class="fd-kpi-value up">${fmt(mInc)}</div>
-      <div class="fd-kpi-sub">
-        <span class="fd-kpi-badge ${incDelta>=0?'up':'dn'}">${incDelta>=0?'↑':'↓'} ${fmt(Math.abs(incDelta))} vs last mo</span>
-      </div>
+      <div class="fd-kpi-value up">${fmt(pInc)}</div>
+      <div class="fd-kpi-sub"><span class="fd-kpi-badge ${incDelta>=0?'up':'dn'}">${incDelta>=0?'↑':'↓'} ${fmt(Math.abs(incDelta))} vs last ${periodLabel}</span></div>
     </div>
     <div class="fd-kpi expense">
       <div class="fd-kpi-label">Expenses</div>
-      <div class="fd-kpi-value dn">${fmt(mExp)}</div>
-      <div class="fd-kpi-sub">${mFin.filter(f=>f.t==='expense').length} transactions</div>
+      <div class="fd-kpi-value dn">${fmt(pExp)}</div>
+      <div class="fd-kpi-sub">${pFin.filter(f=>f.t==='expense').length} transactions</div>
     </div>
     <div class="fd-kpi net">
       <div class="fd-kpi-label">Net</div>
-      <div class="fd-kpi-value ${mNet>=0?'up':'dn'}">${fmtS(mNet)}</div>
-      <div class="fd-kpi-sub">
-        <span class="fd-kpi-badge ${netDelta>=0?'up':'dn'}">${netDelta>=0?'↑':'↓'} ${fmt(Math.abs(netDelta))} vs last mo</span>
-      </div>
+      <div class="fd-kpi-value ${pNet>=0?'up':'dn'}">${fmtS(pNet)}</div>
+      <div class="fd-kpi-sub"><span class="fd-kpi-badge ${netDelta>=0?'up':'dn'}">${netDelta>=0?'↑':'↓'} ${fmt(Math.abs(netDelta))} vs last ${periodLabel}</span></div>
     </div>
     <div class="fd-kpi savings">
       <div class="fd-kpi-label">Savings rate</div>
-      <div class="fd-kpi-value ${savingsRate>=20?'up':savingsRate>=0?'':'dn'}">${mInc>0?savingsRate+'%':'—'}</div>
-      <div class="fd-kpi-sub">${savingsRate>=30?'🔥 Excellent':savingsRate>=20?'👍 On track':savingsRate>=0?'📊 Low':'⚠️ Negative'}</div>
+      <div class="fd-kpi-value ${savingsRate>=20?'up':''}">${pInc>0?savingsRate+'%':'—'}</div>
+      <div class="fd-kpi-sub">${savingsRate>=30?'🔥 Excellent':savingsRate>=20?'👍 On track':savingsRate>0?'📊 Low':'⚠️ Negative'}</div>
     </div>`;
 
-  // ── MONTHLY BAR CHART ──
-  const daysInMonth=new Date(y,m+1,0).getDate();
-  const barLabels=[],barInc=[],barExp=[];
-  for(let d=1;d<=daysInMonth;d++){
-    const dk=mPrefix+'-'+String(d).padStart(2,'0');
-    barLabels.push(d);
-    barInc.push(S.finance.filter(f=>f.dt===dk&&f.t==='income').reduce((s,f)=>s+f.a,0));
-    barExp.push(S.finance.filter(f=>f.dt===dk&&f.t==='expense').reduce((s,f)=>s+f.a,0));
+  // ── CHART ──
+  const chartTtl=G('fd-chart-title');
+  if(finPeriod==='monthly'){
+    const y=range.y, m=range.m, daysInMonth=new Date(y,m+1,0).getDate();
+    const mPrefix=y+'-'+String(m+1).padStart(2,'0');
+    const labels=[],inc=[],exp=[];
+    for(let d=1;d<=daysInMonth;d++){
+      const dk=mPrefix+'-'+String(d).padStart(2,'0');
+      labels.push(d);
+      inc.push(S.finance.filter(f=>f.dt===dk&&f.t==='income').reduce((s,f)=>s+f.a,0));
+      exp.push(S.finance.filter(f=>f.dt===dk&&f.t==='expense').reduce((s,f)=>s+f.a,0));
+    }
+    if(chartTtl)chartTtl.textContent='Daily cash flow — '+range.label;
+    mkChart('fc',{type:'bar',data:{labels,datasets:[
+      {label:'Income',data:inc,backgroundColor:'rgba(10,124,110,0.78)',borderRadius:4,borderSkipped:false},
+      {label:'Expense',data:exp,backgroundColor:'rgba(192,52,44,0.68)',borderRadius:4,borderSkipped:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:v=>`${MONTH_NAMES[m]} ${v[0].label}`,label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},autoSkip:true,maxTicksLimit:16,maxRotation:0}},y:{grid:{color:GC},ticks:{callback:v=>v>0?'$'+v:'',font:{size:9}}}}}});
+  } else {
+    // Quarterly or Yearly — monthly bars
+    const months=range.months||[];
+    const labels=months.map(({y:my,m:mm})=>MONTH_NAMES[mm].slice(0,3)+(finPeriod==='yearly'?' '+my:''));
+    const inc=months.map(({y:my,m:mm})=>{
+      const pfx=my+'-'+String(mm+1).padStart(2,'0');
+      return S.finance.filter(f=>f.dt&&f.dt.startsWith(pfx)&&f.t==='income').reduce((s,f)=>s+f.a,0);
+    });
+    const exp=months.map(({y:my,m:mm})=>{
+      const pfx=my+'-'+String(mm+1).padStart(2,'0');
+      return S.finance.filter(f=>f.dt&&f.dt.startsWith(pfx)&&f.t==='expense').reduce((s,f)=>s+f.a,0);
+    });
+    if(chartTtl)chartTtl.textContent=(finPeriod==='quarterly'?'Monthly breakdown — ':'Monthly breakdown — ')+range.label;
+    mkChart('fc',{type:'bar',data:{labels,datasets:[
+      {label:'Income',data:inc,backgroundColor:'rgba(10,124,110,0.78)',borderRadius:5,borderSkipped:false},
+      {label:'Expense',data:exp,backgroundColor:'rgba(192,52,44,0.68)',borderRadius:5,borderSkipped:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:GC},ticks:{callback:v=>v>0?'$'+v:'',font:{size:10}}}}}});
   }
-  mkChart('fc',{type:'bar',data:{labels:barLabels,datasets:[
-    {label:'Income',data:barInc,backgroundColor:'rgba(10,124,110,0.78)',borderRadius:4,borderSkipped:false},
-    {label:'Expense',data:barExp,backgroundColor:'rgba(192,52,44,0.68)',borderRadius:4,borderSkipped:false}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:v=>`${MONTH_NAMES[m]} ${v[0].label}`,label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},autoSkip:true,maxTicksLimit:16,maxRotation:0}},y:{grid:{color:GC},ticks:{callback:v=>v>0?'$'+v:'',font:{size:9}}}}}});
 
-  // ── UNPAID BILLS PANEL ──
-  const billsEl=G('fd-unpaid-bills');
-  if(billsEl){
-    const unpaid=S.bills.filter(b=>b.s==='Unpaid').sort((a,b)=>(a.d||'9999').localeCompare(b.d||'9999'));
-    if(!unpaid.length){
-      billsEl.innerHTML=`<div class="fd-empty-row">✅ All bills paid</div>`;
-    } else {
-      const tot=unpaid.reduce((s,b)=>s+b.a,0);
-      billsEl.innerHTML=`
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
-          <span style="font-size:11px;font-weight:600;color:var(--ts);">${unpaid.length} unpaid</span>
-          <span style="font-size:15px;font-weight:800;color:var(--red);">${fmt(tot)}</span>
-        </div>
-        ${unpaid.map(b=>{
-          const nxt=nextBillDue(b);
-          const isOvd=nxt&&nxt<today;
-          return`<div class="fd-debt-row">
-            <div class="fd-debt-icon">${CAT_ICONS[b.cat||'Other']||'🧾'}</div>
-            <div class="fd-debt-info">
-              <div class="fd-debt-name">${b.n}</div>
-              <div class="fd-debt-meta">${b.cat||'Other'} · ${b.f}${nxt?` · <span style="color:${isOvd?'var(--red)':'var(--ts)'};">${isOvd?'⚠️ overdue':'due'} ${nxt}</span>`:''}</div>
-            </div>
-            <div class="fd-debt-right">
-              <div class="fd-debt-amount">${fmt(b.a)}</div>
-              <button class="fd-pay-btn" onclick="markBillPaid(${b.id});event.stopPropagation()">✓ Pay</button>
-            </div>
-          </div>`;
-        }).join('')}`;
+  // ── MONTHLY CALENDAR with recurring bills ──
+  if(finPeriod==='monthly'){
+    const y=range.y, m=range.m;
+    const mPrefix=y+'-'+String(m+1).padStart(2,'0');
+    const daysInMonth=new Date(y,m+1,0).getDate();
+    const calEl=G('fd-cal-grid');
+    if(calEl){
+      const firstDay=new Date(y,m,1).getDay();
+      const startOffset=(firstDay+6)%7;
+      let html='';
+      for(let i=0;i<startOffset;i++) html+=`<div class="fd-cal-day empty"><div class="fd-cal-day-top"><div class="fd-cal-num"></div></div></div>`;
+      for(let d=1;d<=daysInMonth;d++){
+        const dk=mPrefix+'-'+String(d).padStart(2,'0');
+        const dayIncItems=S.finance.filter(f=>f.dt===dk&&f.t==='income');
+        const dayExpItems=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
+        const dayBillItems=billsDueOn(dk);   // ← recurring-aware
+        const dayDebtItems=(S.otherPayments||[]).filter(p=>p.due===dk);
+        const dayInc=dayIncItems.reduce((s,f)=>s+f.a,0);
+        const dayExp=dayExpItems.reduce((s,f)=>s+f.a,0);
+        const dayNet=dayInc-dayExp;
+        const isToday=dk===today;
+        const hasData=dayInc||dayExp||dayBillItems.length||dayDebtItems.length;
+
+        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}$${Math.round(Math.abs(dayNet)).toLocaleString()}</div>`:'';
+
+        const allEntries=[];
+        dayIncItems.forEach(f=>allEntries.push({type:'income',label:'↑ '+f.d,amount:f.a}));
+        dayExpItems.forEach(f=>allEntries.push({type:'expense',label:'↓ '+f.d,amount:f.a}));
+        dayBillItems.forEach(b=>allEntries.push({type:'bill',label:'🧾 '+b.n,amount:b.a}));
+        dayDebtItems.forEach(p=>allEntries.push({type:'debt',label:'💸 '+p.n,amount:p.a}));
+
+        const shown=allEntries.slice(0,3);
+        const hidden=allEntries.length-3;
+        const chips=shown.map(e=>`<div class="fd-cal-entry ${e.type}" title="${e.label}">${e.label}</div>`).join('');
+        const more=hidden>0?`<div class="fd-cal-entry more">+${hidden} more</div>`:'';
+
+        html+=`<div class="fd-cal-day${isToday?' is-today':''}${hasData?' has-data':''}" onclick="openFdDayModal('${dk}')">
+          <div class="fd-cal-day-top"><div class="fd-cal-num">${d}</div>${netBadge}</div>
+          <div class="fd-cal-day-entries">${chips}${more}</div>
+        </div>`;
+      }
+      calEl.innerHTML=html;
     }
   }
 
-  // ── OUTSTANDING DEBTS PANEL ──
-  const debtsEl=G('fd-active-debts');
-  if(debtsEl){
+  // ── UNIFIED MONEY OWED (bills + debts) ──
+  const owedEl=G('fd-owed-list');
+  if(owedEl){
     const OPS={pending:'amber',overdue:'red',scheduled:'blue'};
     const OPL={pending:'Pending',overdue:'Overdue',scheduled:'Scheduled'};
-    const active=(S.otherPayments||[]).filter(p=>p.s!=='paid').sort((a,b)=>{
+    const unpaidBills=S.bills.filter(b=>b.s==='Unpaid').sort((a,b)=>(nextBillDue(a)||'9999').localeCompare(nextBillDue(b)||'9999'));
+    const activeDebts=(S.otherPayments||[]).filter(p=>p.s!=='paid').sort((a,b)=>{
       const ord={overdue:0,pending:1,scheduled:2};
       return(ord[a.s]||9)-(ord[b.s]||9)||(a.due||'9999').localeCompare(b.due||'9999');
     });
-    if(!active.length){
-      debtsEl.innerHTML=`<div class="fd-empty-row">✅ No outstanding debts</div>`;
+    const total=unpaidBills.reduce((s,b)=>s+b.a,0)+activeDebts.reduce((s,p)=>s+p.a,0);
+
+    if(!unpaidBills.length&&!activeDebts.length){
+      owedEl.innerHTML=`<div class="fd-empty-row">✅ Nothing owed — you're all clear!</div>`;
     } else {
-      const tot=active.reduce((s,p)=>s+p.a,0);
-      debtsEl.innerHTML=`
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
-          <span style="font-size:11px;font-weight:600;color:var(--ts);">${active.length} outstanding</span>
-          <span style="font-size:15px;font-weight:800;color:var(--red);">${fmt(tot)}</span>
-        </div>
-        ${active.map(p=>{
-          return`<div class="fd-debt-row">
-            <div class="fd-debt-icon">${CAT_ICONS[p.cat||'Other']||'💸'}</div>
-            <div class="fd-debt-info">
-              <div class="fd-debt-name">${p.n}</div>
-              <div class="fd-debt-meta">${tag(OPL[p.s]||p.s,OPS[p.s]||'gray')} ${p.cat?'· '+p.cat:''} ${p.due?'· due '+p.due:''}</div>
-            </div>
-            <div class="fd-debt-right">
-              <div class="fd-debt-amount">${fmt(p.a)}</div>
-              <button class="fd-pay-btn" onclick="markDebtPaid(${p.id});event.stopPropagation()">✓ Paid</button>
-            </div>
-          </div>`;
-        }).join('')}`;
+      let rows='';
+      unpaidBills.forEach(b=>{
+        const nxt=nextBillDue(b);
+        const isOvd=nxt&&nxt<today;
+        rows+=`<div class="fd-owed-item">
+          <div class="fd-owed-icon bill">${CAT_ICONS[b.cat||'Other']||'🧾'}</div>
+          <div class="fd-owed-info">
+            <div class="fd-owed-name">${b.n}</div>
+            <div class="fd-owed-meta">${tag('Bill','amber')} ${tag(b.f,'gray')} ${nxt?`<span style="color:${isOvd?'var(--red)':'var(--ts)'};">${isOvd?'⚠️ overdue':'due'} ${nxt}</span>`:''}</div>
+          </div>
+          <div class="fd-owed-right">
+            <div class="fd-owed-amount">${fmt(b.a)}</div>
+            <button class="fd-pay-btn" onclick="markBillPaid(${b.id})">✓ Pay</button>
+          </div>
+        </div>`;
+      });
+      activeDebts.forEach(p=>{
+        rows+=`<div class="fd-owed-item">
+          <div class="fd-owed-icon debt">${CAT_ICONS[p.cat||'Other']||'💸'}</div>
+          <div class="fd-owed-info">
+            <div class="fd-owed-name">${p.n}</div>
+            <div class="fd-owed-meta">${tag(OPL[p.s]||p.s,OPS[p.s]||'gray')} ${p.cat?tag(p.cat,'gray'):''} ${p.due?`<span style="color:var(--ts);">due ${p.due}</span>`:''}</div>
+          </div>
+          <div class="fd-owed-right">
+            <div class="fd-owed-amount">${fmt(p.a)}</div>
+            <button class="fd-pay-btn" onclick="markDebtPaid(${p.id})">✓ Paid</button>
+          </div>
+        </div>`;
+      });
+      owedEl.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+          <span style="font-size:11.5px;font-weight:600;color:var(--ts);">${unpaidBills.length} bill${unpaidBills.length!==1?'s':''} · ${activeDebts.length} debt${activeDebts.length!==1?'s':''}</span>
+          <span style="font-size:16px;font-weight:800;color:var(--red);letter-spacing:-0.02em;">${fmt(total)} owed</span>
+        </div>${rows}`;
     }
   }
+}
 
-  // ── MONTHLY CALENDAR ──
-  const calEl=G('fd-cal-grid');
-  if(calEl){
-    const firstDay=new Date(y,m,1).getDay();
-    const startOffset=(firstDay+6)%7; // Mon-first
-    let html='';
-    for(let i=0;i<startOffset;i++) html+=`<div class="fd-cal-day empty"><div class="fd-cal-day-top"><div class="fd-cal-num"></div></div></div>`;
-
-    for(let d=1;d<=daysInMonth;d++){
-      const dk=mPrefix+'-'+String(d).padStart(2,'0');
-      const dayIncItems=S.finance.filter(f=>f.dt===dk&&f.t==='income');
-      const dayExpItems=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
-      const dayBillItems=billsDueOn(dk);
-      const dayDebtItems=(S.otherPayments||[]).filter(p=>p.due===dk);
-      const dayInc=dayIncItems.reduce((s,f)=>s+f.a,0);
-      const dayExp=dayExpItems.reduce((s,f)=>s+f.a,0);
-      const dayNet=dayInc-dayExp;
-      const isToday=dk===today;
-      const hasData=dayInc||dayExp||dayBillItems.length||dayDebtItems.length;
-
-      // Net badge
-      const netBadge=hasData&&(dayInc||dayExp)
-        ? `<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}$${Math.round(Math.abs(dayNet)).toLocaleString()}</div>`
-        : '';
-
-      // Build inline entry chips — show up to 3, then "+N more"
-      const allEntries=[];
-      dayIncItems.forEach(f=>allEntries.push({type:'income',label:'↑ '+f.d,amount:f.a}));
-      dayExpItems.forEach(f=>allEntries.push({type:'expense',label:'↓ '+f.d,amount:f.a}));
-      dayBillItems.forEach(b=>allEntries.push({type:'bill',label:'🧾 '+b.n,amount:b.a}));
-      dayDebtItems.forEach(p=>allEntries.push({type:'debt',label:'💸 '+p.n,amount:p.a}));
-
-      const maxShow=3;
-      const shown=allEntries.slice(0,maxShow);
-      const hidden=allEntries.length-maxShow;
-
-      const entryChips=shown.map(e=>`<div class="fd-cal-entry ${e.type}" title="${e.label} — $${e.amount.toLocaleString()}">${e.label}</div>`).join('');
-      const moreChip=hidden>0?`<div class="fd-cal-entry more">+${hidden} more</div>`:'';
-
-      html+=`<div class="fd-cal-day${isToday?' is-today':''}${hasData?' has-data':''}" onclick="openFdDayModal('${dk}')">
-        <div class="fd-cal-day-top">
-          <div class="fd-cal-num">${d}</div>
-          ${netBadge}
-        </div>
-        <div class="fd-cal-day-entries">${entryChips}${moreChip}</div>
-      </div>`;
-    }
-    calEl.innerHTML=html;
+// Helper for quarterly prev-period calc
+function getFinPeriodRangeFor(period, y, m){
+  if(period==='quarterly'){
+    const qStart=new Date(y, Math.floor(m/3)*3, 1);
+    const qEnd=new Date(y, qStart.getMonth()+3, 0);
+    return{start:localDate(qStart), end:localDate(qEnd), y:qStart.getFullYear(), m:qStart.getMonth(),
+      months:[0,1,2].map(i=>({y:qStart.getFullYear(),m:qStart.getMonth()+i}))};
   }
+  return{start:y+'-01-01',end:y+'-12-31',y,months:Array.from({length:12},(_,i)=>({y,m:i}))};
 }
 
 // ── FINANCE DAY MODAL ──
