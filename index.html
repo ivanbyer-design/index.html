@@ -823,6 +823,56 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-nav-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:var(--bg-card);color:var(--t);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:background .12s,transform .1s;flex-shrink:0;}
 .fd-nav-btn:hover{background:var(--bg-h);transform:scale(1.08);}
 
+/* ── FINANCE QUICK-ADD MODAL ── */
+.fqa-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.52);z-index:500;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);}
+.fqa-wrap.open{display:flex;}
+.fqa-modal{background:var(--bg-card);border-radius:22px 22px 0 0;width:100%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 -12px 48px rgba(0,0,0,0.22);border:1px solid var(--bd);animation:slideUp .2s ease;overflow:hidden;}
+@media(min-width:600px){.fqa-wrap{align-items:center;}.fqa-modal{border-radius:20px;max-height:85vh;}}
+.fqa-handle{width:36px;height:4px;background:var(--bd2);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.fqa-hdr{padding:14px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.fqa-title{font-size:18px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
+.fqa-close{background:var(--bg-in);border:none;color:var(--ts);font-size:15px;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;}
+.fqa-close:hover{background:var(--bg-a);color:var(--t);}
+
+/* TYPE TABS */
+.fqa-type-tabs{display:flex;gap:8px;padding:14px 20px 0;flex-shrink:0;}
+.fqa-type-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px;border-radius:14px;border:1.5px solid var(--bd);background:transparent;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;color:var(--ts);transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.fqa-type-tab:hover{border-color:var(--blue);color:var(--t);background:var(--bbg);}
+.fqa-type-tab.on{border-color:var(--blue);background:var(--bbg);color:var(--blue);}
+.fqa-type-icon{font-size:22px;line-height:1;}
+
+/* BODY */
+.fqa-body{flex:1;overflow-y:auto;padding:16px 20px 28px;-webkit-overflow-scrolling:touch;}
+.fqa-form{display:flex;flex-direction:column;gap:10px;}
+
+/* INCOME/EXPENSE TOGGLE */
+.fqa-ie-toggle{display:flex;background:var(--bg-in);border-radius:12px;padding:4px;gap:4px;}
+.fqa-ie-btn{flex:1;padding:9px;border-radius:9px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:700;color:var(--ts);cursor:pointer;transition:all .15s;}
+.fqa-ie-btn:hover{color:var(--t);}
+
+/* BIG AMOUNT INPUT */
+.fqa-amount-wrap{display:flex;align-items:center;background:var(--bg-in);border:1.5px solid var(--bd);border-radius:14px;padding:0 16px;transition:border-color .15s;}
+.fqa-amount-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,120,164,0.12);}
+.fqa-currency{font-size:28px;font-weight:800;color:var(--ts);line-height:1;flex-shrink:0;margin-right:4px;}
+.fqa-amount-inp{flex:1;font-family:var(--font);font-size:34px;font-weight:800;color:var(--t);background:transparent;border:none;outline:none;padding:14px 0;letter-spacing:-0.02em;min-width:0;}
+.fqa-amount-inp::placeholder{color:var(--th);}
+
+/* FIELDS */
+.fqa-fi{font-family:var(--font);font-size:14px;padding:10px 13px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg-in);color:var(--t);width:100%;transition:border-color .15s;-webkit-appearance:none;}
+.fqa-fi:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,120,164,0.12);}
+.fqa-row{display:flex;gap:8px;align-items:flex-start;}
+.fqa-lbl{font-size:10.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;display:block;margin-bottom:5px;}
+
+/* TODAY BUTTON */
+.fqa-today-btn{font-family:var(--font);font-size:12px;font-weight:700;padding:10px 14px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg-in);color:var(--ts);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .12s;}
+.fqa-today-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* SAVE BUTTON */
+.fqa-save-btn{font-family:var(--font);font-size:15px;font-weight:700;padding:14px;border-radius:14px;border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;letter-spacing:-0.01em;box-shadow:var(--sh-md);transition:opacity .15s,transform .1s;}
+.fqa-save-btn:hover{opacity:0.88;transform:translateY(-1px);}
+.fqa-save-btn:active{transform:translateY(0);}
+@media(max-width:600px){.fqa-amount-inp{font-size:28px;}.fqa-currency{font-size:24px;}.fqa-fi{font-size:16px!important;}}
+
 /* FINANCE DASHBOARD — KPI CARDS */
 .fd-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
 @media(max-width:768px){.fd-kpi-grid{grid-template-columns:repeat(2,1fr);gap:8px;}}
@@ -1110,6 +1160,25 @@ textarea.fi{resize:vertical;min-height:52px;}
       <!-- TAB: OVERVIEW -->
       <div id="ftab-overview-body">
 
+        <!-- MONTHLY CALENDAR (top — only visible in monthly mode) -->
+        <div id="fd-cal-section" style="margin-top:16px;">
+          <div class="fd-cal-wrap">
+            <div class="fd-cal-top-bar">
+              <div class="fd-cal-month-title" id="fd-cal-month-title">March 2026</div>
+              <div class="fd-cal-legend">
+                <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+              </div>
+            </div>
+            <div class="fd-cal-header">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="fd-cal-grid" id="fd-cal-grid"></div>
+          </div>
+        </div>
+
         <!-- PERIOD SELECTOR -->
         <div class="fd-period-bar">
           <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
@@ -1135,25 +1204,6 @@ textarea.fi{resize:vertical;min-height:52px;}
             </div>
           </div>
           <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
-        </div>
-
-        <!-- MONTHLY CALENDAR (only visible in monthly mode) -->
-        <div id="fd-cal-section">
-          <div class="fd-cal-wrap">
-            <div class="fd-cal-top-bar">
-              <div class="fd-cal-month-title" id="fd-cal-month-title">March 2026</div>
-              <div class="fd-cal-legend">
-                <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-              </div>
-            </div>
-            <div class="fd-cal-header">
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-            </div>
-            <div class="fd-cal-grid" id="fd-cal-grid"></div>
-          </div>
         </div>
 
         <!-- UNIFIED MONEY OWED (bills + debts) -->
@@ -1577,8 +1627,112 @@ function navToPage(id){
 function triggerAdd(){
   const a=document.querySelector('.panel.on');if(!a)return;
   const id=a.id.replace('p-','');
-  const m={finance:'fi-d',trades:'tr-s',goals:'gl-t',todos:'td-t',habits:'h-new'};
+  if(id==='finance'){openFinQuickAdd();return;}
+  const m={trades:'tr-s',goals:'gl-t',todos:'td-t',habits:'h-new'};
   if(m[id]){G(m[id]).focus();G(m[id]).scrollIntoView({behavior:'smooth',block:'center'});}
+}
+
+// ── FINANCE QUICK-ADD MODAL ──
+let fqaIEType='expense'; // 'income' | 'expense'
+
+function openFinQuickAdd(){
+  // Pre-set today's date
+  const dateFields=['fqa-date','fqab-due','fqad-due'];
+  dateFields.forEach(id=>{const el=G(id);if(el&&!el.value)el.value=today;});
+  // Rebuild category dropdown for current type
+  fqaBuildCats();
+  // Reset to transaction tab
+  fqaSwitchType('transaction',G('fqat-transaction'));
+  // Reset IE to expense
+  fqaSetIE('expense');
+  G('fqa-wrap').classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>{const el=G('fqa-amount');if(el)el.focus();},80);
+}
+function closeFinQuickAdd(){
+  G('fqa-wrap').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function fqaSwitchType(type, btn){
+  document.querySelectorAll('.fqa-type-tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  ['transaction','bill','debt'].forEach(t=>{
+    const el=G('fqa-'+t);
+    if(el)el.style.display=t===type?'flex':'none';
+  });
+  // Focus amount field for this type
+  const amtMap={transaction:'fqa-amount',bill:'fqab-amount',debt:'fqad-amount'};
+  setTimeout(()=>{const el=G(amtMap[type]);if(el)el.focus();},50);
+}
+
+function fqaSetIE(type){
+  fqaIEType=type;
+  const expBtn=G('fqa-btn-expense');
+  const incBtn=G('fqa-btn-income');
+  if(expBtn){expBtn.style.background=type==='expense'?'var(--red)':'transparent';expBtn.style.color=type==='expense'?'#fff':'var(--ts)';}
+  if(incBtn){incBtn.style.background=type==='income'?'var(--green)':'transparent';incBtn.style.color=type==='income'?'#fff':'var(--ts)';}
+  fqaBuildCats();
+  // Update amount field border color hint
+  const wrap=G('fqa-amount')?.parentElement;
+  if(wrap)wrap.style.borderColor=type==='income'?'var(--green)':'var(--red)';
+}
+
+function fqaBuildCats(){
+  const sel=G('fqa-cat');
+  if(!sel)return;
+  const cats=getAllCats(fqaIEType);
+  sel.innerHTML=cats.map(c=>`<option>${c}</option>`).join('')+'<option value="__new__">＋ New category…</option>';
+}
+
+function fqaHandleCat(){
+  const sel=G('fqa-cat');
+  if(!sel||sel.value!=='__new__')return;
+  const name=prompt('New category name:');
+  if(name&&name.trim()){
+    const n=addCustomCategory(fqaIEType,name);
+    fqaBuildCats();
+    sel.value=n;
+  } else {
+    sel.value=getAllCats(fqaIEType)[0];
+  }
+}
+
+function fqaSaveTransaction(){
+  const amt=parseFloat(G('fqa-amount').value);
+  const desc=G('fqa-desc').value.trim();
+  if(!amt||!desc){G(!amt?'fqa-amount':'fqa-desc').focus();return;}
+  const cat=G('fqa-cat').value==='__new__'?getAllCats(fqaIEType)[0]:G('fqa-cat').value;
+  const biz=G('fqa-biz').value;
+  const dt=G('fqa-date').value||today;
+  S.finance.push({d:desc,a:amt,t:fqaIEType,c:cat,biz,dt,id:Date.now()});
+  save();renderFinance();renderHome();
+  showBackupToast('✓ '+(fqaIEType==='income'?'Income':'Expense')+' saved');
+  // Clear for next entry — keep type + date
+  G('fqa-amount').value='';G('fqa-desc').value='';
+  G('fqa-amount').focus();
+}
+
+function fqaSaveBill(){
+  const amt=parseFloat(G('fqab-amount').value);
+  const name=G('fqab-name').value.trim();
+  if(!amt||!name){G(!amt?'fqab-amount':'fqab-name').focus();return;}
+  S.bills.push({n:name,a:amt,f:G('fqab-freq').value,cat:G('fqab-cat').value,d:G('fqab-due').value,s:G('fqab-status').value,id:Date.now()});
+  save();renderFinance();renderHome();
+  showBackupToast('✓ Bill saved');
+  G('fqab-amount').value='';G('fqab-name').value='';
+  G('fqab-amount').focus();
+}
+
+function fqaSaveDebt(){
+  const amt=parseFloat(G('fqad-amount').value);
+  const name=G('fqad-name').value.trim();
+  if(!amt||!name){G(!amt?'fqad-amount':'fqad-name').focus();return;}
+  S.otherPayments.push({n:name,a:amt,cat:G('fqad-cat').value,due:G('fqad-due').value,s:G('fqad-status').value,note:G('fqad-note').value.trim(),id:Date.now()});
+  save();renderFinance();renderHome();
+  showBackupToast('✓ Debt saved');
+  G('fqad-amount').value='';G('fqad-name').value='';
+  G('fqad-amount').focus();
 }
 function toggleSec(h){h.querySelector('.tg-arr').classList.toggle('open');h.nextElementSibling.classList.toggle('open');}
 
@@ -2142,14 +2296,27 @@ function renderFinance(){
       </div>
     </div>`;
 
-  // Summary bar
+  // Summary bar — current quarter stats
   const fsum=G('f-sum');
-  if(fsum)fsum.innerHTML=`
-    <div class="sum-item"><div class="sum-lb">All-time income</div><div class="sum-vl up">${fmt(inc)}</div></div>
-    <div class="sum-item"><div class="sum-lb">All-time expenses</div><div class="sum-vl dn">${fmt(exp)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Net</div><div class="sum-vl ${net>=0?'up':'dn'}">${fmtS(net)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Bills / mo</div><div class="sum-vl">${fmt(billsTotal)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Debts outstanding</div><div class="sum-vl ${opTotal>0?'dn':''}">${fmt(opTotal)}</div></div>`;
+  if(fsum){
+    const now=new Date();
+    const qStartMonth=Math.floor(now.getMonth()/3)*3;
+    const qStart=now.getFullYear()+'-'+String(qStartMonth+1).padStart(2,'0')+'-01';
+    const qEndDate=new Date(now.getFullYear(), qStartMonth+3, 0);
+    const qEnd=localDate(qEndDate);
+    const qNum=Math.floor(now.getMonth()/3)+1;
+    const qLabel='Q'+qNum+' '+now.getFullYear();
+    const qFin=S.finance.filter(f=>f.dt&&f.dt>=qStart&&f.dt<=qEnd);
+    const qInc=qFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    const qExp=qFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+    const qNet=qInc-qExp;
+    fsum.innerHTML=`
+      <div class="sum-item"><div class="sum-lb">${qLabel} income</div><div class="sum-vl up">${fmt(qInc)}</div></div>
+      <div class="sum-item"><div class="sum-lb">${qLabel} expenses</div><div class="sum-vl dn">${fmt(qExp)}</div></div>
+      <div class="sum-item"><div class="sum-lb">${qLabel} net</div><div class="sum-vl ${qNet>=0?'up':'dn'}">${fmtS(qNet)}</div></div>
+      <div class="sum-item"><div class="sum-lb">Bills / mo</div><div class="sum-vl">${fmt(billsTotal)}</div></div>
+      <div class="sum-item"><div class="sum-lb">Debts outstanding</div><div class="sum-vl ${opTotal>0?'dn':''}">${fmt(opTotal)}</div></div>`;
+  }
 
   // ── OVERVIEW TAB ──
   if(activeFinTab==='overview') renderFinOverview();
@@ -4867,6 +5034,122 @@ function ddAddTask(dk){
     <span class="bn-label">Projects</span>
   </button>
 </nav>
+
+<!-- FINANCE QUICK-ADD MODAL -->
+<div class="fqa-wrap" id="fqa-wrap" onclick="if(event.target===this)closeFinQuickAdd()">
+  <div class="fqa-modal" id="fqa-modal">
+    <div class="fqa-handle"></div>
+    <div class="fqa-hdr">
+      <div class="fqa-title">Quick add</div>
+      <button class="fqa-close" onclick="closeFinQuickAdd()">✕</button>
+    </div>
+
+    <!-- TYPE TABS -->
+    <div class="fqa-type-tabs">
+      <button class="fqa-type-tab on" id="fqat-transaction" onclick="fqaSwitchType('transaction',this)">
+        <span class="fqa-type-icon">💸</span><span>Transaction</span>
+      </button>
+      <button class="fqa-type-tab" id="fqat-bill" onclick="fqaSwitchType('bill',this)">
+        <span class="fqa-type-icon">🧾</span><span>Bill</span>
+      </button>
+      <button class="fqa-type-tab" id="fqat-debt" onclick="fqaSwitchType('debt',this)">
+        <span class="fqa-type-icon">💳</span><span>Debt</span>
+      </button>
+    </div>
+
+    <div class="fqa-body">
+
+      <!-- TRANSACTION FORM -->
+      <div id="fqa-transaction" class="fqa-form">
+        <!-- Income / Expense toggle -->
+        <div class="fqa-ie-toggle">
+          <button class="fqa-ie-btn" id="fqa-btn-expense" onclick="fqaSetIE('expense')" style="background:var(--red);color:#fff;">Expense</button>
+          <button class="fqa-ie-btn" id="fqa-btn-income" onclick="fqaSetIE('income')">Income</button>
+        </div>
+        <!-- Amount — big and prominent -->
+        <div class="fqa-amount-wrap">
+          <span class="fqa-currency">$</span>
+          <input class="fqa-amount-inp" id="fqa-amount" type="number" placeholder="0.00" step="0.01" inputmode="decimal">
+        </div>
+        <!-- Description -->
+        <input class="fqa-fi" id="fqa-desc" type="text" placeholder="Description (e.g. Groceries, Salary…)" onkeydown="if(event.key==='Enter')fqaSaveTransaction()">
+        <!-- Row: category + biz/personal -->
+        <div class="fqa-row">
+          <select class="fqa-fi" id="fqa-cat" onchange="fqaHandleCat()" style="flex:1;"></select>
+          <select class="fqa-fi" id="fqa-biz" style="max-width:140px;">
+            <option value="personal">👤 Personal</option>
+            <option value="business">💼 Business</option>
+          </select>
+        </div>
+        <!-- Row: date -->
+        <div class="fqa-row">
+          <input class="fqa-fi" id="fqa-date" type="date" style="flex:1;">
+          <button class="fqa-today-btn" onclick="G('fqa-date').value=today">Today</button>
+        </div>
+        <button class="fqa-save-btn" onclick="fqaSaveTransaction()">Save transaction</button>
+      </div>
+
+      <!-- BILL FORM -->
+      <div id="fqa-bill" class="fqa-form" style="display:none;">
+        <div class="fqa-amount-wrap">
+          <span class="fqa-currency">$</span>
+          <input class="fqa-amount-inp" id="fqab-amount" type="number" placeholder="0.00" step="0.01" inputmode="decimal">
+        </div>
+        <input class="fqa-fi" id="fqab-name" type="text" placeholder="Bill name (e.g. Rent, Netflix…)" onkeydown="if(event.key==='Enter')fqaSaveBill()">
+        <div class="fqa-row">
+          <select class="fqa-fi" id="fqab-freq" style="flex:1;">
+            <option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option>
+          </select>
+          <select class="fqa-fi" id="fqab-cat" style="flex:1;">
+            <option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Transport</option><option>Healthcare</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fqa-row">
+          <div style="flex:1;">
+            <label class="fqa-lbl">Due date</label>
+            <input class="fqa-fi" id="fqab-due" type="date" style="width:100%;">
+          </div>
+          <div style="flex:1;">
+            <label class="fqa-lbl">Status</label>
+            <select class="fqa-fi" id="fqab-status" style="width:100%;">
+              <option>Unpaid</option><option>Paid</option><option>Auto-pay</option>
+            </select>
+          </div>
+        </div>
+        <button class="fqa-save-btn" onclick="fqaSaveBill()">Save bill</button>
+      </div>
+
+      <!-- DEBT FORM -->
+      <div id="fqa-debt" class="fqa-form" style="display:none;">
+        <div class="fqa-amount-wrap">
+          <span class="fqa-currency">$</span>
+          <input class="fqa-amount-inp" id="fqad-amount" type="number" placeholder="0.00" step="0.01" inputmode="decimal">
+        </div>
+        <input class="fqa-fi" id="fqad-name" type="text" placeholder="Debt name (e.g. Medical bill, Tax…)" onkeydown="if(event.key==='Enter')fqaSaveDebt()">
+        <div class="fqa-row">
+          <select class="fqa-fi" id="fqad-cat" style="flex:1;">
+            <option>Medical</option><option>Legal</option><option>Tax</option><option>Education</option><option>Home repair</option><option>Car</option><option>Family</option><option>Travel</option><option>Other</option>
+          </select>
+          <select class="fqa-fi" id="fqad-status" style="flex:1;">
+            <option value="pending">Pending</option><option value="overdue">Overdue</option><option value="scheduled">Scheduled</option>
+          </select>
+        </div>
+        <div class="fqa-row">
+          <div style="flex:1;">
+            <label class="fqa-lbl">Due date</label>
+            <input class="fqa-fi" id="fqad-due" type="date" style="width:100%;">
+          </div>
+          <div style="flex:1;">
+            <label class="fqa-lbl">Notes</label>
+            <input class="fqa-fi" id="fqad-note" type="text" placeholder="Optional" style="width:100%;">
+          </div>
+        </div>
+        <button class="fqa-save-btn" onclick="fqaSaveDebt()">Save debt</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- FINANCE DAY DETAIL MODAL -->
 <div class="fd-day-modal-wrap" id="fd-day-modal-wrap" onclick="if(event.target===this)closeFdDayModal()">
