@@ -46,7 +46,8 @@
   --sh-lg:0 8px 30px rgba(0,0,0,0.4),0 4px 8px rgba(0,0,0,0.25);
 }
 html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);background:var(--bg);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
-.app{display:flex;height:100vh;height:100dvh;}
+/* PWA safe area — Dynamic Island / notch at top, home indicator at bottom */
+.app{display:flex;height:100vh;height:100dvh;padding-top:env(safe-area-inset-top);background:var(--bg);}
 
 /* SIDEBAR */
 .sb{width:var(--sw);flex-shrink:0;background:var(--bg-sb);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow-y:auto;user-select:none;transition:transform .2s ease;}
@@ -87,7 +88,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .sb{position:fixed;top:0;left:0;height:100%;z-index:100;transform:translateX(-100%);box-shadow:4px 0 30px rgba(0,0,0,0.18);}
   .sb.open{transform:translateX(0);}
   .sb-overlay.open{display:block;}
-  .content{padding:16px 16px 88px!important;}
+  .content{padding:16px 16px 0!important;padding-bottom:calc(76px + env(safe-area-inset-bottom))!important;}
   .page-cover{height:90px!important;}
   .page-title{font-size:26px!important;}
   .metrics-grid{grid-template-columns:repeat(2,1fr)!important;}
@@ -96,8 +97,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .notion-table th,.notion-table td{padding:6px 8px;}
   .form-row{flex-direction:column;}
   .form-row>*{min-width:unset!important;max-width:unset!important;}
-  .summary-bar{flex-wrap:wrap;}
-  .sum-item{min-width:calc(50% - 1px);}
   .bh2{font-size:16px!important;margin:16px 0 8px!important;}
   .nf{padding:14px 14px;}
   .mc{padding:12px 14px!important;}
@@ -106,7 +105,15 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-.topbar{height:50px;flex-shrink:0;border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 20px;gap:10px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+.topbar{
+  height:50px;flex-shrink:0;
+  border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;
+  padding:0 20px;gap:10px;
+  background:color-mix(in srgb,var(--bg) 90%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  z-index:50;
+}
 .bc{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ts);flex:1;min-width:0;overflow:hidden;}
 .bc-sep{color:var(--th);font-size:12px;flex-shrink:0;}
 .bc-cur{color:var(--t);font-weight:600;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -115,12 +122,35 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .tb-btn:hover{background:var(--bg-h);color:var(--t);}
 .tb-btn.pri{background:var(--t);color:var(--ti);padding:6px 16px;border-radius:20px;font-weight:600;font-size:13px;letter-spacing:-0.01em;box-shadow:var(--sh);}
 .tb-btn.pri:hover{opacity:0.88;transform:translateY(-1px);box-shadow:var(--sh-md);}
+
+/* MOBILE FAB — replaces the topbar New button on small screens */
+.mob-fab{
+  display:none;
+  position:fixed;
+  right:20px;
+  bottom:calc(74px + env(safe-area-inset-bottom));
+  width:54px;height:54px;
+  border-radius:50%;
+  background:var(--t);color:var(--ti);
+  border:none;cursor:pointer;
+  font-size:26px;font-weight:300;line-height:1;
+  box-shadow:0 4px 20px rgba(0,0,0,0.32),0 2px 8px rgba(0,0,0,0.16);
+  z-index:140;
+  align-items:center;justify-content:center;
+  transition:transform .15s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.mob-fab:active{transform:scale(0.92);}
+
 @media(max-width:768px){
-  .topbar{padding:0 14px;gap:8px;}
+  .topbar{padding:0 14px;gap:8px;height:46px;}
   .bc-sep{display:none;}
   .bc span:first-child{display:none;}
   .bc-cur{font-size:13px;}
-  .tb-btn.pri{padding:6px 14px;font-size:12.5px;}
+  /* Hide desktop New button on mobile — FAB replaces it */
+  #new-btn{display:none!important;}
+  /* Show FAB on mobile */
+  .mob-fab{display:flex;}
   .sb-toggle-btn{display:none!important;}
 }
 .content{flex:1;overflow-y:auto;padding:28px 72px 80px;-webkit-overflow-scrolling:touch;}
@@ -256,13 +286,20 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .co-tx{font-size:14px;color:var(--t);line-height:1.6;}
 
 /* SUMMARY BAR */
-.summary-bar{display:flex;border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:12px 0;box-shadow:var(--sh);}
-.sum-item{flex:1;padding:12px 16px;background:var(--bg-card);}
+.summary-bar{display:flex;border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:10px 0;box-shadow:var(--sh);}
+.sum-item{flex:1;padding:12px 16px;background:var(--bg-card);min-width:90px;}
 .sum-item+.sum-item{border-left:1px solid var(--bd);}
 .sum-lb{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;}
 .sum-vl{font-size:19px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
 .sum-vl.up{color:var(--green);}
 .sum-vl.dn{color:var(--red);}
+@media(max-width:768px){
+  .summary-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;}
+  .summary-bar::-webkit-scrollbar{display:none;}
+  .sum-item{padding:9px 12px;flex-shrink:0;min-width:80px;}
+  .sum-vl{font-size:15px;}
+  .sum-lb{font-size:9px;}
+}
 .bh2{font-size:18px;font-weight:800;color:var(--t);margin:24px 0 10px;letter-spacing:-0.02em;}
 .bh3{font-size:15px;font-weight:700;color:var(--t);margin:16px 0 8px;letter-spacing:-0.01em;}
 
@@ -494,15 +531,15 @@ textarea.fi{resize:vertical;min-height:52px;}
   .bottom-nav{
     display:flex;
     position:fixed;bottom:0;left:0;right:0;
-    height:calc(62px + env(safe-area-inset-bottom));
+    height:calc(56px + env(safe-area-inset-bottom));
     padding-bottom:env(safe-area-inset-bottom);
-    background:color-mix(in srgb,var(--bg-card) 88%,transparent);
+    background:color-mix(in srgb,var(--bg-card) 92%,transparent);
     border-top:1px solid var(--bd);
     z-index:150;
     align-items:stretch;
     -webkit-backdrop-filter:blur(20px) saturate(180%);
     backdrop-filter:blur(20px) saturate(180%);
-    box-shadow:0 -1px 0 var(--bd),0 -8px 24px rgba(0,0,0,0.08);
+    box-shadow:0 -1px 0 var(--bd);
   }
   .bn-item{
     flex:1;display:flex;flex-direction:column;
@@ -530,8 +567,7 @@ textarea.fi{resize:vertical;min-height:52px;}
   /* Hide sidebar on mobile completely — bottom nav is the nav */
   .sb{display:none!important;}
   .sb-overlay{display:none!important;}
-  /* Content clears bottom nav + safe area */
-  .content{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important;}
+  /* Content and nav handled in main mobile block above */
 }
 
 /* CLICKABLE METRIC CARDS */
@@ -797,12 +833,12 @@ textarea.fi{resize:vertical;min-height:52px;}
 .icon-opt{transition:all .12s;}
 
 /* FINANCE TABS */
-.fin-tabs{display:flex;gap:0;border-bottom:2px solid var(--bd);margin:16px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.fin-tabs{display:flex;gap:0;border-bottom:2px solid var(--bd);margin:10px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .fin-tabs::-webkit-scrollbar{display:none;}
 .fin-tab{font-family:var(--font);font-size:13px;font-weight:600;padding:10px 18px;border:none;background:transparent;color:var(--ts);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;-webkit-tap-highlight-color:transparent;}
 .fin-tab:hover{color:var(--t);}
 .fin-tab.on{color:var(--blue);border-bottom-color:var(--blue);}
-@media(max-width:768px){.fin-tab{padding:10px 12px;font-size:12px;}}
+@media(max-width:768px){.fin-tab{padding:9px 14px;font-size:12px;}.fin-tabs{margin:6px 0 0;}}
 
 /* FINANCE PERIOD SELECTOR */
 .fd-period-bar{display:flex;align-items:center;gap:6px;padding:16px 0 14px;flex-wrap:wrap;}
@@ -979,7 +1015,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fin-page-title{font-size:26px;font-weight:800;color:var(--t);letter-spacing:-0.03em;line-height:1.1;}
 .fin-page-sub{font-size:12px;font-weight:500;color:var(--ts);margin-top:3px;letter-spacing:0.01em;}
 .fin-page-header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-@media(max-width:768px){.fin-page-header{padding:16px 0 10px;}.fin-page-title{font-size:22px;}.fin-page-icon{width:40px;height:40px;font-size:20px;border-radius:11px;}}
+@media(max-width:768px){.fin-page-header{padding:10px 0 8px;}.fin-page-title{font-size:20px;}.fin-page-icon{width:36px;height:36px;font-size:18px;border-radius:10px;}.fin-page-sub{font-size:11px;}}
 
 /* FINANCE PANEL LINKS */
 .ov-see-all{font-family:var(--font);font-size:12px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer;padding:3px 8px;border-radius:20px;transition:background .12s;white-space:nowrap;}
@@ -1613,6 +1649,8 @@ function go(id,el){
   G('bc-ic').textContent=PM[id]?PM[id].ic:'📝';
   G('bc-ttl').textContent=PM[id]?PM[id].ttl:id;
   G('new-btn').style.display=id==='home'?'none':'flex';
+  // FAB mirrors new-btn on mobile
+  const fab=G('mob-fab');if(fab)fab.style.display=id==='home'?'none':'flex';
   closeSB();
   renderAll();
   updateBN(id);
@@ -4486,7 +4524,7 @@ function goCustomPage(id){
   const ni=G('ni-'+id);if(ni)ni.classList.add('on');
   G('bc-ic').textContent=page.icon;
   G('bc-ttl').textContent=page.name;
-  G('new-btn').style.display='none';
+  G('new-btn').style.display='none';const _fab=G('mob-fab');if(_fab)_fab.style.display='none';
   closeSB();
 }
 function renderCustomPagePanel(id){
@@ -4849,7 +4887,7 @@ function openDayDetail(dk){
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   G('bc-ic').textContent = '📅';
   G('bc-ttl').textContent = dayNames[dateObj.getDay()]+', '+monthNames[dateObj.getMonth()]+' '+dateObj.getDate();
-  G('new-btn').style.display='none';
+  G('new-btn').style.display='none';const _fab=G('mob-fab');if(_fab)_fab.style.display='none';
   closeSB();
 }
 
@@ -5048,6 +5086,9 @@ function ddAddTask(dk){
 
 </script>
 
+
+<!-- MOBILE FAB (replaces topbar New button on mobile) -->
+<button class="mob-fab" id="mob-fab" onclick="triggerAdd()" aria-label="Add new">＋</button>
 
 <!-- BOTTOM NAV (mobile only) -->
 <nav class="bottom-nav" id="bottom-nav">
