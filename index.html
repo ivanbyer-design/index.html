@@ -513,6 +513,104 @@ textarea.fi{resize:vertical;min-height:52px;}
 .day-task-txt.done{text-decoration:line-through;color:var(--ts);}
 .day-fin-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px;}
 .day-fin-row:last-child{border-bottom:none;}
+
+/* PROJECTS PAGE */
+.proj-cover{background:linear-gradient(135deg,#0d1b2a,#1b2838,#2d4a6e);}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin:14px 0;}
+@media(max-width:768px){.proj-grid{grid-template-columns:1fr;}}
+
+/* PROJECT CARD */
+.proj-card{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--rl);overflow:hidden;
+  transition:transform .15s,box-shadow .15s;cursor:pointer;
+  position:relative;
+}
+.proj-card:hover{transform:translateY(-2px);}
+.proj-card-accent{height:4px;width:100%;}
+.proj-card-body{padding:14px 16px 12px;}
+.proj-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.proj-title{font-size:15px;font-weight:600;color:var(--t);line-height:1.3;}
+.proj-status-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-left:8px;}
+.proj-meta{font-size:11px;color:var(--ts);margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap;}
+.proj-meta span{display:flex;align-items:center;gap:3px;}
+.proj-progress-wrap{margin-bottom:10px;}
+.proj-progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--ts);margin-bottom:4px;}
+.proj-bar{height:5px;background:var(--bg-tag);border-radius:3px;overflow:hidden;}
+.proj-bar-fill{height:100%;border-radius:3px;transition:width .4s ease;}
+.proj-task-preview{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.proj-task-chip{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--bg-in);color:var(--ts);border:1px solid var(--bd);}
+.proj-card-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-top:1px solid var(--bd);background:var(--bg-h);}
+.proj-avatar-row{display:flex;gap:-4px;}
+.proj-due-chip{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;}
+
+/* PROJECT DETAIL DRAWER */
+.proj-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(500px,100vw);
+  background:var(--bg-card);border-left:1px solid var(--bd);
+  z-index:300;transform:translateX(100%);
+  transition:transform .25s ease;
+  display:flex;flex-direction:column;
+  box-shadow:-4px 0 24px rgba(0,0,0,0.12);
+}
+.proj-drawer.open{transform:translateX(0);}
+.proj-drawer-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:299;
+}
+.proj-drawer-overlay.open{display:block;}
+.proj-drawer-header{
+  padding:14px 18px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.proj-drawer-close{background:none;border:none;cursor:pointer;color:var(--ts);font-size:18px;padding:2px 6px;border-radius:var(--r);}
+.proj-drawer-close:hover{background:var(--bg-h);color:var(--t);}
+.proj-drawer-body{flex:1;overflow-y:auto;padding:16px 18px;-webkit-overflow-scrolling:touch;}
+.proj-drawer-footer{padding:12px 18px;border-top:1px solid var(--bd);flex-shrink:0;}
+
+/* PHASE TIMELINE */
+.phase-track{position:relative;padding:8px 0 8px 28px;margin:6px 0;}
+.phase-track::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--bd);}
+.phase-node{
+  position:absolute;left:2px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;border-radius:50%;border:2px solid var(--bd);
+  background:var(--bg-card);
+}
+.phase-node.done{background:var(--green);border-color:var(--green);}
+.phase-node.active{background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 3px var(--bbg);}
+.phase-node.blocked{background:var(--red);border-color:var(--red);}
+.phase-label{font-size:13px;color:var(--t);font-weight:500;}
+.phase-sub{font-size:11px;color:var(--ts);margin-top:1px;}
+
+/* KANBAN COLUMNS */
+.kanban-wrap{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
+.kanban-col{flex-shrink:0;width:220px;background:var(--bg-in);border-radius:var(--rl);padding:10px;}
+.kanban-col-hdr{font-size:11px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.kanban-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);padding:8px 10px;margin-bottom:6px;font-size:12px;color:var(--t);cursor:pointer;transition:border-color .1s;}
+.kanban-card:hover{border-color:var(--bd2);}
+.kanban-card.high-pri{border-left:3px solid var(--red);}
+.kanban-add{font-size:11px;color:var(--ts);cursor:pointer;padding:4px 6px;border-radius:var(--r);text-align:center;border:1px dashed var(--bd);}
+.kanban-add:hover{background:var(--bg-h);color:var(--t);}
+
+/* RING PROGRESS */
+.ring-wrap{display:flex;align-items:center;gap:16px;margin:10px 0;}
+.ring-svg{flex-shrink:0;}
+.ring-info{flex:1;}
+.ring-pct{font-size:22px;font-weight:700;color:var(--t);}
+.ring-lbl{font-size:11px;color:var(--ts);margin-top:2px;}
+
+/* STATUS COLORS */
+.ps-active{background:#e7f3f8;color:#185fa5;}
+.ps-planning{background:#fef4dc;color:#854f0b;}
+.ps-blocked{background:#fcebeb;color:#791f1f;}
+.ps-review{background:#f4f0f8;color:#6a3d9a;}
+.ps-done{background:#e4f5f0;color:#085041;}
+.ps-paused{background:#f1efe8;color:#5f5e5a;}
+
+/* PROJECT BUDGET METER */
+.budget-bar{height:8px;background:var(--bg-tag);border-radius:4px;overflow:hidden;margin-top:6px;}
+.budget-fill{height:100%;border-radius:4px;background:var(--green);transition:width .4s;}
+.budget-fill.warn{background:var(--amber);}
+.budget-fill.over{background:var(--red);}
 </style>
 </head>
 <body>
@@ -540,6 +638,7 @@ textarea.fi{resize:vertical;min-height:52px;}
   <div class="ni draggable-ni" id="ni-bills" draggable="true" onclick="go('bills',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🧾</span><span class="ni-lb" id="sbl-bills">Bills</span></div>
   <div class="ni draggable-ni" id="ni-todos" draggable="true" onclick="go('todos',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">✅</span><span class="ni-lb" id="sbl-todos">Admin & Todos</span></div>
   <div class="ni draggable-ni" id="ni-habits" draggable="true" onclick="go('habits',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🔄</span><span class="ni-lb" id="sbl-habits">Habits</span></div>
+  <div class="ni draggable-ni" id="ni-projects" draggable="true" onclick="go('projects',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🚀</span><span class="ni-lb" id="sbl-projects">Projects</span></div>
   <div class="sb-div" id="sb-custom-div"></div>
   <div id="sb-custom-pages"></div>
   <div style="padding:4px 8px 2px;">
@@ -842,6 +941,56 @@ textarea.fi{resize:vertical;min-height:52px;}
       </div>
     </div>
 
+    <!-- PROJECTS -->
+    <div class="panel" id="p-projects">
+      <button class="mob-menu-float" onclick="openSB()">☰</button>
+      <div class="page-cover proj-cover"></div>
+      <span class="page-icon">🚀</span>
+      <div class="page-title editable-hdr" data-hdr="projects-title" id="hdr-projects-title">Projects</div>
+      <div class="page-sub">Track, plan, and ship your life projects</div>
+      <div class="summary-bar" id="proj-summary"></div>
+
+      <!-- ADD PROJECT FORM -->
+      <div class="nf" style="margin:12px 0;">
+        <div class="nf-ttl">＋ New project</div>
+        <div class="fr">
+          <input class="fi" type="text" id="proj-name" placeholder="Project name">
+          <select class="fi" id="proj-cat" style="max-width:130px;">
+            <option>Personal</option><option>Work</option><option>Financial</option>
+            <option>Health</option><option>Home</option><option>Creative</option>
+            <option>Learning</option><option>Business</option><option>Other</option>
+          </select>
+          <select class="fi" id="proj-status" style="max-width:120px;">
+            <option value="planning">Planning</option>
+            <option value="active" selected>Active</option>
+            <option value="review">In Review</option>
+            <option value="paused">Paused</option>
+            <option value="done">Done</option>
+          </select>
+          <input class="fi" type="date" id="proj-deadline" style="max-width:150px;">
+          <button class="btn pri" onclick="addProject()">Create</button>
+        </div>
+        <div class="fr" style="margin-top:4px;">
+          <input class="fi" type="text" id="proj-desc" placeholder="Description / goal (optional)">
+          <input class="fi" type="number" id="proj-budget" placeholder="Budget $" step="0.01" style="max-width:130px;">
+        </div>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="db-hdr">
+        <div class="db-ttl">📋 All projects</div>
+        <div class="db-acts" id="proj-filters">
+          <button class="db-btn" onclick="filtProj('all')" id="pf-all" style="font-weight:600;">All</button>
+          <button class="db-btn" onclick="filtProj('active')" id="pf-active">Active</button>
+          <button class="db-btn" onclick="filtProj('planning')" id="pf-planning">Planning</button>
+          <button class="db-btn" onclick="filtProj('done')" id="pf-done">Done</button>
+        </div>
+      </div>
+
+      <!-- PROJECT GRID -->
+      <div class="proj-grid" id="proj-grid"></div>
+    </div>
+
     <!-- DAILY DETAIL -->
     <div class="panel" id="p-day-detail">
       <button class="mob-menu-float" onclick="openSB()">☰</button>
@@ -873,6 +1022,26 @@ textarea.fi{resize:vertical;min-height:52px;}
   <span id="ptr-label">Pull down to refresh</span>
 </div>
 
+<!-- PROJECT DETAIL DRAWER -->
+<div class="proj-drawer-overlay" id="proj-drawer-overlay" onclick="closeProjectDrawer()"></div>
+<div class="proj-drawer" id="proj-drawer">
+  <div class="proj-drawer-header">
+    <button class="proj-drawer-close" onclick="closeProjectDrawer()">✕</button>
+    <div style="flex:1;">
+      <div style="font-size:15px;font-weight:600;color:var(--t);" id="drawer-title">Project</div>
+      <div style="font-size:12px;color:var(--ts);" id="drawer-sub"></div>
+    </div>
+    <button class="btn xs" onclick="deleteCurrentProject()" style="color:var(--red);border-color:var(--red);">Delete</button>
+  </div>
+  <div class="proj-drawer-body" id="drawer-body"></div>
+  <div class="proj-drawer-footer">
+    <div class="fr">
+      <input class="fi" type="text" id="drawer-task-inp" placeholder="Add task to project..." style="margin:0;" onkeydown="if(event.key==='Enter')addProjectTask()">
+      <button class="btn pri" onclick="addProjectTask()" style="margin:0;">+ Task</button>
+    </div>
+  </div>
+</div>
+
 <!-- INSTALL BANNER -->
 <div class="install-banner" id="install-banner">
   <span>📱</span>
@@ -891,7 +1060,7 @@ G('h-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',mo
 document.querySelectorAll('input[type=date]').forEach(el=>{if(!el.value)el.value=today;});
 
 // STATE
-let S={finance:[],trades:[],backtests:[],goals:[],bills:[],todos:[],habits:[],hlog:{}};
+let S={finance:[],trades:[],backtests:[],goals:[],bills:[],todos:[],habits:[],hlog:{},projects:[]};
 try{const d=localStorage.getItem('lifeOS_v3');if(d)S=Object.assign(S,JSON.parse(d));}catch(e){}
 const save=()=>{try{localStorage.setItem('lifeOS_v3',JSON.stringify(S));}catch(e){}};
 
@@ -906,7 +1075,7 @@ function openSB(){G('sb').classList.add('open');G('sb-overlay').classList.add('o
 function closeSB(){G('sb').classList.remove('open');G('sb-overlay').classList.remove('open');}
 
 // NAV
-const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},bills:{ic:'🧾',ttl:'Bills'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'}};
+const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},bills:{ic:'🧾',ttl:'Bills'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'}};
 function go(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1564,8 +1733,330 @@ function doImport(e){
   r.readAsText(f);e.target.value='';
 }
 
+// ── PROJECTS ──
+if(!S.projects)S.projects=[];
+const STATUS_META={
+  active:{label:'Active',cls:'ps-active',color:'#185fa5'},
+  planning:{label:'Planning',cls:'ps-planning',color:'#854f0b'},
+  review:{label:'In Review',cls:'ps-review',color:'#6a3d9a'},
+  paused:{label:'Paused',cls:'ps-paused',color:'#5f5e5a'},
+  blocked:{label:'Blocked',cls:'ps-blocked',color:'#791f1f'},
+  done:{label:'Done',cls:'ps-done',color:'#085041'},
+};
+const ACCENT_COLORS=['#185fa5','#0f7b6c','#854f0b','#6a3d9a','#c7372f','#2c5364','#3b6d11'];
+let projFilter='all';
+let openProjId=null;
+
+function addProject(){
+  const name=G('proj-name').value.trim();if(!name)return;
+  const id='proj-'+Date.now();
+  S.projects.push({
+    id, name,
+    cat:G('proj-cat').value,
+    status:G('proj-status').value,
+    desc:G('proj-desc').value.trim(),
+    deadline:G('proj-deadline').value,
+    budget:parseFloat(G('proj-budget').value)||0,
+    spent:0,
+    tasks:[],
+    phases:[],
+    notes:'',
+    created:today,
+    color:ACCENT_COLORS[S.projects.length%ACCENT_COLORS.length],
+  });
+  G('proj-name').value='';G('proj-desc').value='';G('proj-budget').value='';
+  save();renderProjects();
+}
+
+function delProject(id){
+  S.projects=S.projects.filter(p=>p.id!==id);
+  save();renderProjects();
+}
+
+function deleteCurrentProject(){
+  if(!openProjId)return;
+  if(!confirm('Delete this project and all its data?'))return;
+  delProject(openProjId);
+  closeProjectDrawer();
+}
+
+function filtProj(f){
+  projFilter=f;
+  ['all','active','planning','done'].forEach(x=>{
+    const el=G('pf-'+x);if(el)el.style.fontWeight=x===f?'700':'400';
+  });
+  renderProjects();
+}
+
+function renderProjects(){
+  if(!S.projects)S.projects=[];
+  const total=S.projects.length;
+  const active=S.projects.filter(p=>p.status==='active').length;
+  const done=S.projects.filter(p=>p.status==='done').length;
+  const blocked=S.projects.filter(p=>p.status==='blocked').length;
+  const sumEl=G('proj-summary');
+  if(sumEl)sumEl.innerHTML=`
+    <div class="sum-item"><div class="sum-lb">Total</div><div class="sum-vl">${total}</div></div>
+    <div class="sum-item"><div class="sum-lb">Active</div><div class="sum-vl up">${active}</div></div>
+    <div class="sum-item"><div class="sum-lb">Done</div><div class="sum-vl up">${done}</div></div>
+    <div class="sum-item"><div class="sum-lb">Blocked</div><div class="sum-vl ${blocked>0?'dn':''}">${blocked}</div></div>`;
+
+  let projects=[...S.projects];
+  if(projFilter!=='all')projects=projects.filter(p=>p.status===projFilter);
+  // Sort: blocked first, then active, planning, review, paused, done
+  const order={blocked:0,active:1,planning:2,review:3,paused:4,done:5};
+  projects.sort((a,b)=>(order[a.status]||9)-(order[b.status]||9));
+
+  const grid=G('proj-grid');
+  if(!grid)return;
+  if(!projects.length){
+    grid.innerHTML=`<div class="empty" style="grid-column:1/-1;padding:40px 0;">No projects yet — create one above</div>`;
+    return;
+  }
+
+  grid.innerHTML=projects.map(p=>{
+    const tasks=p.tasks||[];
+    const done=tasks.filter(t=>t.done).length;
+    const pct=tasks.length?Math.round(done/tasks.length*100):0;
+    const sm=STATUS_META[p.status]||STATUS_META.active;
+    const overBudget=p.budget>0&&p.spent>p.budget;
+    const nearBudget=p.budget>0&&p.spent/p.budget>0.8;
+    const daysLeft=p.deadline?Math.ceil((new Date(p.deadline)-new Date())/(1000*60*60*24)):null;
+    const isOverdue=daysLeft!==null&&daysLeft<0&&p.status!=='done';
+
+    // Progress ring SVG
+    const r=20,circ=2*Math.PI*r;
+    const dash=circ*(pct/100);
+    const ringColor=pct===100?'#0f7b6c':p.status==='blocked'?'#c7372f':p.color;
+
+    return`<div class="proj-card" onclick="openProjectDrawer('${p.id}')">
+      <div class="proj-card-accent" style="background:${p.color};"></div>
+      <div class="proj-card-body">
+        <div class="proj-card-header">
+          <div>
+            <div class="proj-title">${p.name}</div>
+            ${p.cat?`<div style="font-size:11px;color:var(--ts);margin-top:2px;">${p.cat}</div>`:''}
+          </div>
+          <span class="proj-status-badge ${sm.cls}">${sm.label}</span>
+        </div>
+        ${p.desc?`<div style="font-size:12px;color:var(--ts);margin-bottom:8px;line-height:1.5;">${p.desc}</div>`:''}
+
+        <div class="proj-progress-wrap">
+          <div class="proj-progress-label">
+            <span>Progress</span>
+            <span style="font-weight:600;color:${pct===100?'var(--green)':'var(--t)'};">${pct}%</span>
+          </div>
+          <div class="proj-bar"><div class="proj-bar-fill" style="width:${pct}%;background:${ringColor};"></div></div>
+          <div style="font-size:10px;color:var(--ts);margin-top:3px;">${done}/${tasks.length} tasks</div>
+        </div>
+
+        ${tasks.length?`<div class="proj-task-preview">
+          ${tasks.filter(t=>!t.done).slice(0,3).map(t=>`<span class="proj-task-chip ${t.p==='high'?'tag red':''}">${t.p==='high'?'🔴 ':''}${t.t}</span>`).join('')}
+          ${tasks.filter(t=>!t.done).length>3?`<span class="proj-task-chip">+${tasks.filter(t=>!t.done).length-3} more</span>`:''}
+        </div>`:''}
+
+        ${p.budget>0?`<div style="margin-top:6px;">
+          <div style="font-size:10px;color:var(--ts);display:flex;justify-content:space-between;margin-bottom:3px;">
+            <span>Budget</span>
+            <span style="color:${overBudget?'var(--red)':nearBudget?'var(--amber)':'var(--ts)'};">${fmt(p.spent)} / ${fmt(p.budget)}</span>
+          </div>
+          <div class="budget-bar"><div class="budget-fill ${overBudget?'over':nearBudget?'warn':''}" style="width:${Math.min(p.budget>0?p.spent/p.budget*100:0,100)}%;"></div></div>
+        </div>`:''}
+      </div>
+      <div class="proj-card-footer">
+        ${p.deadline?`<span class="proj-due-chip" style="background:${isOverdue?'var(--rbg)':'var(--bg-in)'};color:${isOverdue?'var(--red)':'var(--ts)'};">
+          ${isOverdue?'⚠ Overdue':'📅 '+p.deadline}${daysLeft!==null&&!isOverdue?' ('+daysLeft+'d)':''}
+        </span>`:`<span style="font-size:11px;color:var(--th);">No deadline</span>`}
+        <div style="display:flex;align-items:center;gap:6px;">
+          <svg width="36" height="36" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--bg-tag)" stroke-width="4"/>
+            <circle cx="24" cy="24" r="${r}" fill="none" stroke="${ringColor}" stroke-width="4"
+              stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}"
+              stroke-linecap="round"
+              transform="rotate(-90 24 24)"/>
+            <text x="24" y="29" text-anchor="middle" font-size="11" font-weight="700" fill="${ringColor}">${pct}</text>
+          </svg>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openProjectDrawer(id){
+  const p=S.projects.find(p=>p.id===id);if(!p)return;
+  openProjId=id;
+  G('proj-drawer').classList.add('open');
+  G('proj-drawer-overlay').classList.add('open');
+  renderProjectDrawer(p);
+}
+
+function closeProjectDrawer(){
+  G('proj-drawer').classList.remove('open');
+  G('proj-drawer-overlay').classList.remove('open');
+  openProjId=null;
+}
+
+function renderProjectDrawer(p){
+  if(!p)p=S.projects.find(x=>x.id===openProjId);if(!p)return;
+  const sm=STATUS_META[p.status]||STATUS_META.active;
+  G('drawer-title').textContent=p.name;
+  G('drawer-sub').textContent=(p.cat||'')+(p.deadline?' · Due '+p.deadline:'');
+
+  const tasks=p.tasks||[];
+  const doneTasks=tasks.filter(t=>t.done).length;
+  const pct=tasks.length?Math.round(doneTasks/tasks.length*100):0;
+  const priOrder={high:0,med:1,low:2};
+
+  G('drawer-body').innerHTML=`
+    <!-- STATUS + QUICK EDITS -->
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+      <select class="fi" style="max-width:130px;margin:0;" onchange="updateProjField('${p.id}','status',this.value)">
+        ${Object.entries(STATUS_META).map(([k,v])=>`<option value="${k}" ${p.status===k?'selected':''}>${v.label}</option>`).join('')}
+      </select>
+      <input class="fi" type="date" value="${p.deadline||''}" style="max-width:150px;margin:0;" onchange="updateProjField('${p.id}','deadline',this.value)" placeholder="Deadline">
+      <select class="fi" style="max-width:130px;margin:0;" onchange="updateProjField('${p.id}','cat',this.value)">
+        ${['Personal','Work','Financial','Health','Home','Creative','Learning','Business','Other'].map(c=>`<option ${p.cat===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+
+    ${p.desc?`<div style="font-size:13px;color:var(--ts);margin-bottom:14px;padding:10px;background:var(--bg-in);border-radius:var(--r);line-height:1.6;">${p.desc}</div>`:''}
+
+    <!-- PROGRESS RING + STATS -->
+    <div class="ring-wrap">
+      <svg class="ring-svg" width="70" height="70" viewBox="0 0 70 70">
+        <circle cx="35" cy="35" r="28" fill="none" stroke="var(--bg-tag)" stroke-width="6"/>
+        <circle cx="35" cy="35" r="28" fill="none" stroke="${p.color}" stroke-width="6"
+          stroke-dasharray="${(2*Math.PI*28*pct/100).toFixed(1)} ${(2*Math.PI*28).toFixed(1)}"
+          stroke-linecap="round" transform="rotate(-90 35 35)"/>
+        <text x="35" y="40" text-anchor="middle" font-size="16" font-weight="700" fill="${p.color}">${pct}%</text>
+      </svg>
+      <div class="ring-info">
+        <div class="ring-pct">${doneTasks}/${tasks.length} tasks done</div>
+        <div class="ring-lbl">${p.status==='done'?'✅ Completed':'In progress · '+sm.label}</div>
+        ${p.deadline?`<div class="ring-lbl" style="margin-top:4px;">📅 Deadline: ${p.deadline}</div>`:''}
+      </div>
+    </div>
+
+    ${p.budget>0?`
+    <!-- BUDGET -->
+    <div class="bh3" style="margin-bottom:8px;">💰 Budget</div>
+    <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+      <div class="mc" style="flex:1;min-width:100px;"><div class="mc-lb">Budget</div><div class="mc-vl">${fmt(p.budget)}</div></div>
+      <div class="mc" style="flex:1;min-width:100px;"><div class="mc-lb">Spent</div><div class="mc-vl ${p.spent>p.budget?'red':''}">${fmt(p.spent)}</div></div>
+      <div class="mc" style="flex:1;min-width:100px;"><div class="mc-lb">Remaining</div><div class="mc-vl ${p.budget-p.spent<0?'red':'green'}">${fmt(p.budget-p.spent)}</div></div>
+    </div>
+    <div class="budget-bar" style="height:10px;margin-bottom:6px;"><div class="budget-fill ${p.spent>p.budget?'over':p.spent/p.budget>0.8?'warn':''}" style="width:${Math.min(p.spent/p.budget*100,100).toFixed(0)}%;"></div></div>
+    <div class="fr" style="margin-bottom:14px;">
+      <input class="fi" type="number" id="drawer-spent" placeholder="Log expense $" step="0.01" style="margin:0;">
+      <button class="btn xs" onclick="logProjExpense('${p.id}')" style="margin:0;">Log</button>
+    </div>`:''}
+
+    <!-- PHASES / MILESTONES -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div class="bh3" style="margin:0;">📍 Phases</div>
+      <button class="subtask-toggle" onclick="addPhase('${p.id}')">＋ Add phase</button>
+    </div>
+    <div id="drawer-phases">
+    ${(p.phases||[]).length?p.phases.map((ph,i)=>`
+      <div class="phase-track">
+        <div class="phase-node ${ph.status==='done'?'done':ph.status==='active'?'active':ph.status==='blocked'?'blocked':''}"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div class="phase-label">${ph.name}</div>
+            ${ph.due?`<div class="phase-sub">Due: ${ph.due}</div>`:''}
+          </div>
+          <div style="display:flex;gap:4px;align-items:center;">
+            <select class="fi" style="font-size:11px;padding:2px 4px;margin:0;max-width:90px;" onchange="updatePhaseStatus('${p.id}',${i},this.value)">
+              <option ${ph.status==='todo'?'selected':''} value="todo">Todo</option>
+              <option ${ph.status==='active'?'selected':''} value="active">Active</option>
+              <option ${ph.status==='done'?'selected':''} value="done">Done</option>
+              <option ${ph.status==='blocked'?'selected':''} value="blocked">Blocked</option>
+            </select>
+            <button class="del" onclick="delPhase('${p.id}',${i})">✕</button>
+          </div>
+        </div>
+      </div>`).join(''):`<div class="empty">No phases yet — add milestones to track progress</div>`}
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TASKS -->
+    <div class="bh3" style="margin-bottom:8px;">✅ Tasks</div>
+    <div id="drawer-tasks">
+    ${tasks.length?[...tasks].sort((a,b)=>priOrder[a.p||'med']-priOrder[b.p||'med']).map((t,i)=>`
+      <div class="ci" style="padding:6px 2px;">
+        <input type="checkbox" ${t.done?'checked':''} onchange="toggleProjTask('${p.id}',${i},this.checked)" style="accent-color:var(--blue);width:14px;height:14px;flex-shrink:0;">
+        <div style="flex:1;">
+          <div class="ci-lb ${t.done?'done':''}">${t.t}</div>
+          <div class="ci-meta"><span class="tag ${t.p==='high'?'red':t.p==='low'?'gray':'amber'}" style="font-size:10px;">${t.p==='high'?'🔴 High':t.p==='low'?'⚪ Low':'🟡 Med'}</span></div>
+        </div>
+        <button class="del" onclick="delProjTask('${p.id}',${i})">✕</button>
+      </div>`).join(''):`<div class="empty">No tasks yet — add one below</div>`}
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- NOTES -->
+    <div class="bh3" style="margin-bottom:6px;">📝 Notes</div>
+    <textarea class="fi" placeholder="Project notes, blockers, ideas..." style="min-height:80px;" onblur="updateProjField('${p.id}','notes',this.value)">${p.notes||''}</textarea>
+  `;
+}
+
+function updateProjField(id,field,val){
+  const p=S.projects.find(p=>p.id===id);if(!p)return;
+  p[field]=val;save();
+  renderProjects();
+  if(openProjId===id)renderProjectDrawer(p);
+}
+
+function addProjectTask(){
+  const inp=G('drawer-task-inp');
+  const txt=inp.value.trim();if(!txt||!openProjId)return;
+  const p=S.projects.find(p=>p.id===openProjId);if(!p)return;
+  if(!p.tasks)p.tasks=[];
+  p.tasks.push({t:txt,done:false,p:'med',id:Date.now()});
+  inp.value='';save();renderProjects();renderProjectDrawer(p);
+}
+
+function toggleProjTask(id,idx,checked){
+  const p=S.projects.find(p=>p.id===id);if(!p||!p.tasks[idx])return;
+  p.tasks[idx].done=checked;save();renderProjects();renderProjectDrawer(p);
+}
+
+function delProjTask(id,idx){
+  const p=S.projects.find(p=>p.id===id);if(!p)return;
+  p.tasks.splice(idx,1);save();renderProjects();renderProjectDrawer(p);
+}
+
+function addPhase(id){
+  const name=prompt('Phase / milestone name:');if(!name)return;
+  const due=prompt('Due date (YYYY-MM-DD, or leave blank):');
+  const p=S.projects.find(p=>p.id===id);if(!p)return;
+  if(!p.phases)p.phases=[];
+  p.phases.push({name,due:due||'',status:'todo',id:Date.now()});
+  save();renderProjectDrawer(p);
+}
+
+function updatePhaseStatus(id,idx,status){
+  const p=S.projects.find(p=>p.id===id);if(!p||!p.phases[idx])return;
+  p.phases[idx].status=status;save();renderProjectDrawer(p);
+}
+
+function delPhase(id,idx){
+  const p=S.projects.find(p=>p.id===id);if(!p)return;
+  p.phases.splice(idx,1);save();renderProjectDrawer(p);
+}
+
+function logProjExpense(id){
+  const inp=G('drawer-spent');
+  const amt=parseFloat(inp.value);if(!amt)return;
+  const p=S.projects.find(p=>p.id===id);if(!p)return;
+  p.spent=(p.spent||0)+amt;inp.value='';
+  save();renderProjectDrawer(p);renderProjects();
+}
+
 // ── RENDER ALL ──
-function renderAll(){renderFinance();renderTrades();renderGoals();renderBills();renderTodos();renderHabits();renderHome();renderRecurring();}
+function renderAll(){renderFinance();renderTrades();renderGoals();renderBills();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();}
 renderAll();
 setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},150);
 window.addEventListener('resize',()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});});
@@ -3104,6 +3595,10 @@ function ddAddTask(dk){
   <button class="bn-item" id="bn-habits" onclick="go('habits',document.getElementById('ni-habits'));updateBN('habits')">
     <span class="bn-icon">🔄</span>
     <span class="bn-label">Habits</span>
+  </button>
+  <button class="bn-item" id="bn-projects" onclick="go('projects',document.getElementById('ni-projects'));updateBN('projects')">
+    <span class="bn-icon">🚀</span>
+    <span class="bn-label">Projects</span>
   </button>
 </nav>
 
