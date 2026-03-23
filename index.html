@@ -107,14 +107,22 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 .topbar{height:50px;flex-shrink:0;border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 20px;gap:10px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
-.bc{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ts);}
-.bc-sep{color:var(--th);font-size:12px;}
-.bc-cur{color:var(--t);font-weight:600;letter-spacing:-0.01em;}
-.tb-acts{margin-left:auto;display:flex;align-items:center;gap:4px;}
+.bc{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ts);flex:1;min-width:0;overflow:hidden;}
+.bc-sep{color:var(--th);font-size:12px;flex-shrink:0;}
+.bc-cur{color:var(--t);font-weight:600;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tb-acts{margin-left:0;display:flex;align-items:center;gap:4px;flex-shrink:0;}
 .tb-btn{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:var(--r);border:none;background:transparent;cursor:pointer;font-size:13px;color:var(--ts);font-family:var(--font);transition:background .12s;}
 .tb-btn:hover{background:var(--bg-h);color:var(--t);}
 .tb-btn.pri{background:var(--t);color:var(--ti);padding:6px 16px;border-radius:20px;font-weight:600;font-size:13px;letter-spacing:-0.01em;box-shadow:var(--sh);}
 .tb-btn.pri:hover{opacity:0.88;transform:translateY(-1px);box-shadow:var(--sh-md);}
+@media(max-width:768px){
+  .topbar{padding:0 14px;gap:8px;}
+  .bc-sep{display:none;}
+  .bc span:first-child{display:none;}
+  .bc-cur{font-size:13px;}
+  .tb-btn.pri{padding:6px 14px;font-size:12.5px;}
+  .sb-toggle-btn{display:none!important;}
+}
 .content{flex:1;overflow-y:auto;padding:28px 72px 80px;-webkit-overflow-scrolling:touch;}
 
 /* PAGE HEADER */
@@ -524,9 +532,6 @@ textarea.fi{resize:vertical;min-height:52px;}
   .sb-overlay{display:none!important;}
   /* Content clears bottom nav + safe area */
   .content{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important;}
-  /* Topbar cleaner on mobile */
-  .topbar{padding:0 14px;}
-  .sb-toggle-btn{display:none!important;}
 }
 
 /* CLICKABLE METRIC CARDS */
@@ -3154,14 +3159,53 @@ function toggleDailyTask(id,isRecurring,checked){
 
 // ── EXPORT / IMPORT ──
 function exportData(){
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const backup={
+    _meta:{
+      version:3,
+      exportedAt:new Date().toISOString(),
+      exportedDate:today,
+      device:navigator.userAgent.slice(0,80),
+      dataKeys:Object.keys(S).filter(k=>Array.isArray(S[k])?S[k].length>0:!!S[k])
+    },
+    ...S
+  };
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='life-os-backup-'+today+'.json';a.click();
+  showBackupToast('✓ Backup exported');
 }
 function importData(){G('imp-file').click();}
 function doImport(e){
   const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=ev=>{try{S=Object.assign(S,JSON.parse(ev.target.result));save();renderAll();alert('Data imported successfully!');}catch(err){alert('Invalid backup file.');}};
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const raw=JSON.parse(ev.target.result);
+      const incoming={...raw};
+      const meta=incoming._meta||null;
+      delete incoming._meta;
+
+      // Smart merge: for each array field, merge by ID — incoming wins on conflict
+      const arrayFields=['finance','trades','backtests','goals','bills','todos','habits','projects','otherPayments','customCategories','recurring'];
+      arrayFields.forEach(field=>{
+        if(!incoming[field])return;
+        const existing=S[field]||[];
+        const incomingIds=new Set(incoming[field].map(x=>x.id));
+        const onlyLocal=existing.filter(x=>!incomingIds.has(x.id));
+        S[field]=[...incoming[field],...onlyLocal];
+      });
+      // Deep-merge object fields
+      ['hlog','customHeaders','customPageBlocks'].forEach(field=>{
+        if(incoming[field])S[field]=Object.assign({},S[field]||{},incoming[field]);
+      });
+      ['sidebarOrder'].forEach(field=>{if(incoming[field]!==undefined)S[field]=incoming[field];});
+
+      save();renderAll();
+      showBackupToast(meta?'✓ Synced from '+meta.exportedDate:'✓ Import complete');
+    }catch(err){
+      alert('Could not read backup file. Please use a valid Life OS JSON backup.');
+    }
+  };
   r.readAsText(f);e.target.value='';
 }
 
@@ -3838,13 +3882,15 @@ function autoBackup(){
 function triggerBackupDownload(src){
   const hasData=S.finance.length||S.trades.length||S.goals.length||S.bills.length||S.todos.length||S.habits.length;
   if(!hasData)return;
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const backup={
+    _meta:{version:3,exportedAt:new Date().toISOString(),exportedDate:today,auto:src!=='manual'},
+    ...S
+  };
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='life-os-backup-'+today+'.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
   if(src==='auto')showBackupToast('✓ Daily backup saved');
   if(src==='close')showBackupToast('✓ Backup saved on exit');
   if(src==='bg')showBackupToast('✓ Backup saved');
