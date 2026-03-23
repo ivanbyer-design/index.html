@@ -798,6 +798,159 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fin-tab:hover{color:var(--t);}
 .fin-tab.on{color:var(--blue);border-bottom-color:var(--blue);}
 @media(max-width:768px){.fin-tab{padding:10px 12px;font-size:12px;}}
+
+/* FINANCE DASHBOARD — MONTH NAV */
+.fd-month-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0 14px;gap:12px;}
+.fd-month-label{font-size:20px;font-weight:800;color:var(--t);letter-spacing:-0.02em;flex:1;text-align:center;}
+.fd-nav-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--bd);background:var(--bg-card);color:var(--t);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:background .12s,box-shadow .12s,transform .1s;flex-shrink:0;}
+.fd-nav-btn:hover{background:var(--bg-h);transform:scale(1.08);box-shadow:var(--sh-md);}
+
+/* FINANCE DASHBOARD — KPI CARDS */
+.fd-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+@media(max-width:768px){.fd-kpi-grid{grid-template-columns:repeat(2,1fr);gap:8px;}}
+.fd-kpi{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;}
+.fd-kpi:hover{transform:translateY(-2px);box-shadow:var(--sh-md);}
+.fd-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0;}
+.fd-kpi.income::before{background:linear-gradient(90deg,var(--green),color-mix(in srgb,var(--green) 60%,var(--blue)));}
+.fd-kpi.expense::before{background:linear-gradient(90deg,var(--red),color-mix(in srgb,var(--red) 60%,#e07b00));}
+.fd-kpi.net::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
+.fd-kpi.savings::before{background:linear-gradient(90deg,var(--purple),color-mix(in srgb,var(--purple) 60%,var(--blue)));}
+.fd-kpi-label{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+.fd-kpi-value{font-size:22px;font-weight:800;color:var(--t);letter-spacing:-0.02em;line-height:1;}
+.fd-kpi-value.up{color:var(--green);}
+.fd-kpi-value.dn{color:var(--red);}
+.fd-kpi-sub{font-size:11px;color:var(--ts);margin-top:5px;display:flex;align-items:center;gap:4px;}
+.fd-kpi-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.fd-kpi-badge.up{background:var(--gbg);color:var(--green);}
+.fd-kpi-badge.dn{background:var(--rbg);color:var(--red);}
+.fd-kpi-badge.neu{background:var(--bbg);color:var(--blue);}
+@media(max-width:768px){.fd-kpi-value{font-size:18px;}.fd-kpi{padding:12px 12px;}}
+
+/* FINANCE DASHBOARD — TWO PANEL (bills + debts) */
+.fd-two-panel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+@media(max-width:768px){.fd-two-panel{grid-template-columns:1fr;}}
+.fd-panel-box{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;box-shadow:var(--sh);}
+.fd-panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.fd-panel-title{font-size:13px;font-weight:700;color:var(--t);letter-spacing:-0.01em;}
+
+/* FINANCE DASHBOARD — DEBT/BILL ROWS */
+.fd-debt-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd);}
+.fd-debt-row:last-child{border-bottom:none;}
+.fd-debt-icon{font-size:17px;width:30px;text-align:center;flex-shrink:0;}
+.fd-debt-info{flex:1;min-width:0;}
+.fd-debt-name{font-size:13px;font-weight:600;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fd-debt-meta{font-size:11px;color:var(--ts);margin-top:1px;}
+.fd-debt-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.fd-debt-amount{font-size:13px;font-weight:800;color:var(--red);}
+.fd-pay-btn{font-family:var(--font);font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;border:none;background:var(--gbg);color:var(--green);cursor:pointer;transition:background .12s,transform .1s;white-space:nowrap;}
+.fd-pay-btn:hover{background:var(--green);color:#fff;transform:scale(1.05);}
+.fd-empty-row{font-size:12.5px;color:var(--th);padding:14px 0;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* FINANCE DASHBOARD — CALENDAR */
+.fd-cal-wrap{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);margin-bottom:16px;}
+.fd-cal-top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;border-bottom:1px solid var(--bd);background:var(--bg-h);flex-wrap:wrap;gap:8px;}
+.fd-cal-month-title{font-size:15px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
+.fd-cal-legend{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:500;color:var(--ts);}
+.fd-cal-legend span{display:flex;align-items:center;gap:4px;}
+.fd-cal-dot-legend{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fd-cal-dot-legend.income{background:var(--green);}
+.fd-cal-dot-legend.expense{background:var(--red);}
+.fd-cal-dot-legend.bill{background:var(--amber);}
+.fd-cal-dot-legend.debt{background:var(--purple);}
+.fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-h);border-bottom:1px solid var(--bd);}
+.fd-cal-header span{padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
+.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.fd-cal-day{min-height:90px;padding:6px 6px 5px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.fd-cal-day:nth-child(7n){border-right:none;}
+.fd-cal-day:hover{background:var(--bg-h);}
+.fd-cal-day:active{background:var(--bg-a);}
+.fd-cal-day.empty{background:transparent;cursor:default;pointer-events:none;}
+.fd-cal-day.empty:hover{background:transparent;}
+.fd-cal-day.is-today{background:color-mix(in srgb,var(--bbg) 35%,var(--bg-card));}
+.fd-cal-day.is-today:hover{background:color-mix(in srgb,var(--bbg) 50%,var(--bg-card));}
+.fd-cal-day.has-data{background:color-mix(in srgb,var(--bg-in) 60%,var(--bg-card));}
+.fd-cal-day-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
+.fd-cal-num{font-size:12px;font-weight:700;color:var(--t);line-height:1;flex-shrink:0;}
+.fd-cal-day.empty .fd-cal-num{color:var(--th);}
+.fd-cal-day.is-today .fd-cal-num{background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.fd-cal-day-net{font-size:10px;font-weight:800;letter-spacing:-0.01em;line-height:1;flex-shrink:0;}
+.fd-cal-day-net.pos{color:var(--green);}
+.fd-cal-day-net.neg{color:var(--red);}
+.fd-cal-day-entries{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0;overflow:hidden;}
+.fd-cal-entry{font-size:9.5px;font-weight:600;padding:2px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
+.fd-cal-entry.income{background:var(--gbg);color:var(--green);}
+.fd-cal-entry.expense{background:var(--rbg);color:var(--red);}
+.fd-cal-entry.bill{background:var(--abg);color:var(--amber);}
+.fd-cal-entry.debt{background:var(--pbg);color:var(--purple);}
+.fd-cal-entry.more{background:var(--bg-tag);color:var(--ts);}
+.fd-cal-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:auto;padding-top:2px;}
+.fd-cal-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.fd-cal-dot.income{background:var(--green);}
+.fd-cal-dot.expense{background:var(--red);}
+.fd-cal-dot.bill{background:var(--amber);}
+.fd-cal-dot.debt{background:var(--purple);}
+@media(max-width:768px){
+  .fd-cal-day{min-height:72px;padding:5px 4px 4px;}
+  .fd-cal-entry{font-size:9px;padding:1.5px 4px;}
+  .fd-cal-num{font-size:11px;}
+  .fd-cal-day-net{font-size:9.5px;}
+  .fd-cal-month-title{font-size:14px;}
+  .fd-cal-legend{gap:8px;font-size:10px;}
+}
+
+/* FINANCE DAY MODAL */
+/* MODERN FINANCE PAGE HEADER */
+.fin-page-header{display:flex;align-items:center;justify-content:space-between;padding:24px 0 10px;gap:16px;border-bottom:1px solid var(--bd);margin-bottom:0;}
+.fin-page-header-left{display:flex;align-items:center;gap:14px;}
+.fin-page-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#0d1321,#1b3a5c,#2d6ca6);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:var(--sh-md);flex-shrink:0;}
+.fin-page-title{font-size:26px;font-weight:800;color:var(--t);letter-spacing:-0.03em;line-height:1.1;}
+.fin-page-sub{font-size:12px;font-weight:500;color:var(--ts);margin-top:3px;letter-spacing:0.01em;}
+.fin-page-header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+@media(max-width:768px){.fin-page-header{padding:16px 0 10px;}.fin-page-title{font-size:22px;}.fin-page-icon{width:40px;height:40px;font-size:20px;border-radius:11px;}}
+
+/* FINANCE PANEL LINKS */
+.ov-see-all{font-family:var(--font);font-size:12px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer;padding:3px 8px;border-radius:20px;transition:background .12s;white-space:nowrap;}
+.ov-see-all:hover{background:var(--bbg);}
+
+/* DAY MODAL — SUMMARY BAR */
+.fdd-summary{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg-in);border-radius:var(--rl);margin-bottom:16px;}
+.fdd-summary-net{font-size:24px;font-weight:800;letter-spacing:-0.03em;line-height:1;}
+.fdd-summary-sides{display:flex;gap:16px;}
+.fdd-side{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.fdd-side-lbl{font-size:9.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.08em;}
+.fdd-side-val{font-size:14px;font-weight:800;letter-spacing:-0.01em;}
+.fdd-side.in .fdd-side-val{color:var(--green);}
+.fdd-side.out .fdd-side-val{color:var(--red);}
+
+/* DAY MODAL — ADD FORM */
+.fdd-add-form{background:var(--bg-card);border:1.5px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:16px;box-shadow:var(--sh);}
+.fdd-type-toggle{display:flex;background:var(--bg-in);border-radius:20px;padding:3px;margin-bottom:12px;width:fit-content;}
+.fdd-type-btn{font-family:var(--font);font-size:12.5px;font-weight:600;padding:6px 18px;border-radius:16px;border:none;background:transparent;color:var(--ts);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.fdd-type-btn.on{background:var(--bg-card);color:var(--t);box-shadow:var(--sh);}
+.fdd-form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.fdd-form-row:last-child{margin-bottom:0;}
+.fdd-inp{font-size:13px!important;}
+.fdd-save-btn{flex-shrink:0;white-space:nowrap;}
+.fdd-empty-hint{text-align:center;padding:20px 0;color:var(--th);font-size:13px;font-style:italic;}
+
+.fd-day-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+.fd-day-modal-wrap.open{display:flex;}
+.fd-day-modal{background:var(--bg-card);border-radius:20px 20px 0 0;width:100%;max-width:580px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(0,0,0,0.18);border-top:1px solid var(--bd);animation:slideUp .22s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+@media(min-width:640px){
+  .fd-day-modal-wrap{align-items:center;}
+  .fd-day-modal{border-radius:16px;max-height:82vh;border:1px solid var(--bd);}
+}
+.fd-day-modal-handle{width:40px;height:4px;background:var(--bd2);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.fd-day-modal-hdr{padding:14px 20px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.fd-day-modal-title{font-size:16px;font-weight:800;color:var(--t);letter-spacing:-0.01em;}
+.fd-day-modal-close{background:var(--bg-h);border:none;color:var(--ts);font-size:16px;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.fd-day-modal-body{flex:1;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch;}
+.fd-day-section{margin-bottom:16px;}
+.fd-day-section-ttl{font-size:10.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd);}
+.fd-day-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;}
+.fd-day-row:last-child{border-bottom:none;}
+.fd-day-net{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg-in);border-radius:var(--r);margin-top:8px;}
 </style>
 </head>
 <body>
@@ -875,9 +1028,6 @@ textarea.fi{resize:vertical;min-height:52px;}
       </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
 
-      <div class="bh2 editable-hdr" data-hdr="home-daily-hdr" id="hdr-home-daily">📋 Today's tasks</div>
-      <div id="home-daily-tasks" style="margin:10px 0;"></div>
-      <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
       <div id="home-attn" style="margin-top:6px;"></div>
       <div class="divider"></div>
@@ -912,13 +1062,21 @@ textarea.fi{resize:vertical;min-height:52px;}
       </div>
     </div>
 
-    <!-- FINANCE DASHBOARD (merged Finance + Bills + Other Payments) -->
+    <!-- FINANCE DASHBOARD -->
     <div class="panel" id="p-finance">
       <button class="mob-menu-float" onclick="openSB()">☰</button>
-      <div class="page-cover cf"></div>
-      <span class="page-icon">💰</span>
-      <div class="page-title editable-hdr" data-hdr="finance-title" id="hdr-finance-title">Finance</div>
-      <div class="page-sub">Income, expenses, bills & payments — all in one place</div>
+
+      <!-- MODERN FINANCE HEADER -->
+      <div class="fin-page-header">
+        <div class="fin-page-header-left">
+          <div class="fin-page-icon">💰</div>
+          <div>
+            <div class="fin-page-title">Finance</div>
+            <div class="fin-page-sub">Income · Expenses · Bills · Debts</div>
+          </div>
+        </div>
+        <div class="fin-page-header-right" id="fin-header-meta"></div>
+      </div>
 
       <!-- SUMMARY BAR (dynamic) -->
       <div class="summary-bar" id="f-sum"></div>
@@ -928,40 +1086,71 @@ textarea.fi{resize:vertical;min-height:52px;}
         <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">📊 Overview</button>
         <button class="fin-tab"   id="ftab-entries"    onclick="switchFinTab('entries',this)">📋 Transactions</button>
         <button class="fin-tab"   id="ftab-bills"      onclick="switchFinTab('bills',this)">🧾 Bills</button>
-        <button class="fin-tab"   id="ftab-payments"   onclick="switchFinTab('payments',this)">💳 Other Payments</button>
+        <button class="fin-tab"   id="ftab-payments"   onclick="switchFinTab('payments',this)">💸 Other Debts</button>
       </div>
 
       <!-- TAB: OVERVIEW -->
       <div id="ftab-overview-body">
-        <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 10px;">
-          <div class="chart-box" style="margin:0;">
-            <div class="chart-ttl">Income vs Expenses — last 7 days</div>
-            <div class="legend">
+
+        <!-- MONTH NAVIGATOR -->
+        <div class="fd-month-nav">
+          <button class="fd-nav-btn" onclick="finNavMonth(-1)">←</button>
+          <div class="fd-month-label" id="fd-month-label">March 2026</div>
+          <button class="fd-nav-btn" onclick="finNavMonth(1)">→</button>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="fd-kpi-grid" id="fd-kpis"></div>
+
+        <!-- MONTHLY CALENDAR — above chart -->
+        <div class="fd-cal-wrap">
+          <div class="fd-cal-top-bar">
+            <div class="fd-cal-month-title" id="fd-cal-month-title">March 2026</div>
+            <div class="fd-cal-legend">
+              <span><span class="fd-cal-dot-legend income"></span>Income</span>
+              <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+              <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+              <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+            </div>
+          </div>
+          <div class="fd-cal-header">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div class="fd-cal-grid" id="fd-cal-grid"></div>
+        </div>
+
+        <!-- MONTHLY BAR CHART — below calendar -->
+        <div class="chart-box" style="margin:0 0 16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow — <span id="fd-chart-month"></span></div>
+            <div class="legend" style="margin:0;">
               <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
               <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
             </div>
-            <div class="cw" style="height:180px;"><canvas id="fc"></canvas></div>
           </div>
-          <div class="chart-box" style="margin:0;">
-            <div class="chart-ttl">Bills breakdown</div>
-            <div class="cw" style="height:180px;"><canvas id="bc"></canvas></div>
+          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
+        </div>
+
+        <!-- BILLS + DEBTS TWO-COL -->
+        <div class="fd-two-panel">
+          <!-- UNPAID BILLS -->
+          <div class="fd-panel-box">
+            <div class="fd-panel-hdr">
+              <div class="fd-panel-title">🧾 Unpaid bills</div>
+              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">All bills →</button>
+            </div>
+            <div id="fd-unpaid-bills"></div>
+          </div>
+          <!-- OUTSTANDING DEBTS -->
+          <div class="fd-panel-box">
+            <div class="fd-panel-hdr">
+              <div class="fd-panel-title">💸 Outstanding debts</div>
+              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">All debts →</button>
+            </div>
+            <div id="fd-active-debts"></div>
           </div>
         </div>
-        <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px;">
-          <div class="chart-box" style="margin:0;">
-            <div class="chart-ttl">Bill payment status</div>
-            <div class="cw" style="height:160px;"><canvas id="bsc"></canvas></div>
-          </div>
-          <div class="chart-box" style="margin:0;">
-            <div class="chart-ttl">Other payments status</div>
-            <div class="cw" style="height:160px;"><canvas id="opc"></canvas></div>
-          </div>
-        </div>
-        <!-- Upcoming / overdue alerts -->
-        <div id="fin-alerts" style="margin-bottom:10px;"></div>
-        <!-- Recent transactions snapshot -->
-        <div class="db-hdr"><div class="db-ttl">🕐 Recent transactions</div></div>
-        <table class="nt"><thead><tr><th>Description</th><th>Category</th><th>Type</th><th>Amount</th><th>Date</th></tr></thead><tbody id="f-recent-tb"></tbody></table>
+
       </div>
 
       <!-- TAB: TRANSACTIONS -->
@@ -969,10 +1158,11 @@ textarea.fi{resize:vertical;min-height:52px;}
         <div class="nf">
           <div class="nf-ttl">＋ New entry</div>
           <div class="fr">
-            <input class="fi" type="text" id="fi-d" placeholder="Description">
-            <input class="fi" type="number" id="fi-a" placeholder="Amount" step="0.01" style="max-width:130px;">
-            <select class="fi" id="fi-t" style="max-width:120px;"><option value="income">Income</option><option value="expense">Expense</option></select>
-            <select class="fi" id="fi-c" style="max-width:140px;"><option>Salary</option><option>Freelance</option><option>Investment</option><option>Side income</option><option>Food</option><option>Transport</option><option>Housing</option><option>Utilities</option><option>Entertainment</option><option>Healthcare</option><option>Shopping</option><option>Other</option></select>
+            <input class="fi" type="text" id="fi-d" placeholder="Description" style="min-width:160px;">
+            <input class="fi" type="number" id="fi-a" placeholder="Amount" step="0.01" style="max-width:120px;">
+            <select class="fi" id="fi-t" style="max-width:110px;" onchange="buildCatSelect('fi-c',this.value)"><option value="income">Income</option><option value="expense">Expense</option></select>
+            <select class="fi" id="fi-c" style="max-width:140px;" onchange="handleCatChange('fi-c',G('fi-t').value)"></select>
+            <select class="fi" id="fi-biz" style="max-width:120px;"><option value="personal">👤 Personal</option><option value="business">💼 Business</option></select>
             <input class="fi" type="date" id="fi-dt" style="max-width:150px;">
             <button class="btn pri" onclick="addFin()">Save</button>
           </div>
@@ -985,7 +1175,7 @@ textarea.fi{resize:vertical;min-height:52px;}
             <button class="db-btn" id="ff-expense" onclick="filtF('expense')">Expense</button>
           </div>
         </div>
-        <table class="nt"><thead><tr><th>Description</th><th>Category</th><th>Type</th><th>Amount</th><th>Date</th><th style="width:28px;"></th></tr></thead><tbody id="f-tb"></tbody></table>
+        <table class="nt"><thead><tr><th>Description</th><th>Category</th><th>Type</th><th>Context</th><th>Amount</th><th>Date</th><th style="width:28px;"></th></tr></thead><tbody id="f-tb"></tbody></table>
         <div class="add-row" onclick="G('fi-d').focus()">＋ New entry</div>
       </div>
 
@@ -1019,7 +1209,7 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div id="ftab-payments-body" style="display:none;">
         <div class="summary-bar" id="op-sum" style="margin-top:14px;"></div>
         <div class="nf">
-          <div class="nf-ttl">＋ Log payment</div>
+          <div class="nf-ttl">＋ Log debt</div>
           <div class="fr">
             <input class="fi" type="text" id="op-n" placeholder="Payment name / description">
             <input class="fi" type="number" id="op-a" placeholder="Amount" step="0.01" style="max-width:130px;">
@@ -1033,7 +1223,7 @@ textarea.fi{resize:vertical;min-height:52px;}
           </div>
         </div>
         <div class="db-hdr">
-          <div class="db-ttl">💳 All payments</div>
+          <div class="db-ttl">💸 All debts</div>
           <div class="db-acts">
             <button class="db-btn" id="opf-all" onclick="filtOP('all')" style="font-weight:700;">All</button>
             <button class="db-btn" id="opf-pending" onclick="filtOP('pending')">Pending</button>
@@ -1042,7 +1232,7 @@ textarea.fi{resize:vertical;min-height:52px;}
           </div>
         </div>
         <table class="nt"><thead><tr><th>Payment</th><th>Category</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Notes</th><th style="width:28px;"></th></tr></thead><tbody id="op-tb"></tbody></table>
-        <div class="add-row" onclick="G('op-n').focus()">＋ Log payment</div>
+        <div class="add-row" onclick="G('op-n').focus()">＋ Log debt</div>
       </div>
     </div>
 
@@ -1325,9 +1515,10 @@ G('h-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',mo
 document.querySelectorAll('input[type=date]').forEach(el=>{if(!el.value)el.value=today;});
 
 // STATE
-let S={finance:[],trades:[],backtests:[],goals:[],bills:[],todos:[],habits:[],hlog:{},projects:[],otherPayments:[]};
+let S={finance:[],trades:[],backtests:[],goals:[],bills:[],todos:[],habits:[],hlog:{},projects:[],otherPayments:[],customCategories:[]};
 try{const d=localStorage.getItem('lifeOS_v3');if(d)S=Object.assign(S,JSON.parse(d));}catch(e){}
 if(!S.otherPayments)S.otherPayments=[];
+if(!S.customCategories)S.customCategories=[];
 const save=()=>{try{localStorage.setItem('lifeOS_v3',JSON.stringify(S));}catch(e){}};
 
 // DARK MODE
@@ -1385,16 +1576,41 @@ const GC='rgba(128,128,128,0.08)';
 let charts={};
 const mkChart=(id,cfg)=>{if(charts[id])charts[id].destroy();const el=G(id);if(el)charts[id]=new Chart(el,cfg);};
 
-// ── FINANCE TABS ──
-let activeFinTab='overview';
-function switchFinTab(tab,btn){
-  activeFinTab=tab;
-  document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
-  btn.classList.add('on');
-  ['overview','entries','bills','payments'].forEach(t=>{
-    const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
-  });
-  if(tab==='overview')setTimeout(()=>{['fc','bc','bsc','opc'].forEach(id=>{if(charts[id])try{charts[id].resize();}catch(e){}});},50);
+// ── CATEGORY HELPERS ──
+const BASE_INCOME_CATS=['Salary','Freelance','Investment','Side income','Gift','Other'];
+const BASE_EXPENSE_CATS=['Food','Transport','Housing','Utilities','Entertainment','Healthcare','Shopping','Other'];
+function getAllCats(type){
+  const base=type==='income'?BASE_INCOME_CATS:BASE_EXPENSE_CATS;
+  const custom=(S.customCategories||[]).filter(c=>c.type===type||c.type==='both').map(c=>c.name);
+  return [...new Set([...base,...custom])];
+}
+function addCustomCategory(type,name){
+  if(!name)return;
+  const n=name.trim();
+  if(!n)return;
+  if(!S.customCategories)S.customCategories=[];
+  if(!S.customCategories.find(c=>c.name===n&&c.type===type)){
+    S.customCategories.push({name:n,type,id:Date.now()});
+    save();
+  }
+  return n;
+}
+function buildCatSelect(selectId,type,value=''){
+  const cats=getAllCats(type);
+  const el=G(selectId);
+  if(!el)return;
+  el.innerHTML=cats.map(c=>`<option${c===value?' selected':''}>${c}</option>`).join('')+'<option value="__new__">＋ New category…</option>';
+}
+function handleCatChange(selectId,type){
+  const el=G(selectId);
+  if(!el||el.value!=='__new__')return;
+  const name=prompt('New category name:');
+  if(name&&name.trim()){
+    const n=addCustomCategory(type,name);
+    buildCatSelect(selectId,type,n);
+  } else {
+    el.value=getAllCats(type)[0];
+  }
 }
 
 // ── FINANCE ──
@@ -1403,16 +1619,32 @@ function filtF(f){ff=f;['all','income','expense'].forEach(x=>{const el=G('ff-'+x
 function addFin(){
   const d=G('fi-d').value.trim(),a=parseFloat(G('fi-a').value);
   if(!d||!a)return;
-  S.finance.push({d,a,t:G('fi-t').value,c:G('fi-c').value,dt:G('fi-dt').value,id:Date.now()});
+  const type=G('fi-t').value;
+  const cat=G('fi-c')&&G('fi-c').value!=='__new__'?G('fi-c').value:(getAllCats(type)[0]);
+  const biz=G('fi-biz')?G('fi-biz').value:'personal';
+  S.finance.push({d,a,t:type,c:cat,biz,dt:G('fi-dt').value,id:Date.now()});
   G('fi-d').value='';G('fi-a').value='';save();renderFinance();renderHome();
 }
 function quickFin(){
   const d=G('qf-d').value.trim(),a=parseFloat(G('qf-a').value);
   if(!d||!a)return;
-  S.finance.push({d,a,t:G('qf-t').value,c:'Other',dt:today,id:Date.now()});
+  S.finance.push({d,a,t:G('qf-t').value,c:'Other',biz:'personal',dt:today,id:Date.now()});
   G('qf-d').value='';G('qf-a').value='';save();renderFinance();renderHome();
 }
 function delFin(id){S.finance=S.finance.filter(f=>f.id!==id);save();renderFinance();renderHome();}
+
+// ── FINANCE TABS ──
+let activeFinTab='overview';
+function switchFinTab(tab,btn){
+  activeFinTab=tab;
+  document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  ['overview','entries','bills','payments'].forEach(t=>{
+    const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
+  });
+  if(tab==='overview'){setTimeout(()=>{renderFinOverview();},30);}
+  if(tab==='entries'){buildCatSelect('fi-c','expense');} // default to expense cats; updates on type change
+}
 
 // ── OTHER PAYMENTS ──
 let opFilter='all';
@@ -1429,73 +1661,412 @@ function cycleOP(id){
   const p=S.otherPayments.find(p=>p.id===id);
   if(p){const states=['pending','paid','overdue','scheduled'];p.s=states[(states.indexOf(p.s)+1)%states.length];save();renderFinance();}
 }
+function markBillPaid(id){
+  const b=S.bills.find(b=>b.id===id);
+  if(b){b.s='Paid';save();renderFinance();renderHome();showBackupToast('✓ Bill marked paid');}
+}
+function markDebtPaid(id){
+  const p=S.otherPayments.find(p=>p.id===id);
+  if(p){p.s='paid';save();renderFinance();renderHome();showBackupToast('✓ Debt marked paid');}
+}
+
+// ── FINANCE CALENDAR STATE ──
+let finCalYear=new Date().getFullYear();
+let finCalMonth=new Date().getMonth(); // 0-indexed
+
+function finNavMonth(dir){
+  finCalMonth+=dir;
+  if(finCalMonth>11){finCalMonth=0;finCalYear++;}
+  if(finCalMonth<0){finCalMonth=11;finCalYear--;}
+  renderFinOverview();
+}
+
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const CAT_ICONS={'Housing':'🏠','Utilities':'💡','Insurance':'🛡️','Subscriptions':'📱','Transport':'🚗','Healthcare':'🏥','Other':'🧾','Medical':'🏥','Legal':'⚖️','Tax':'🏛️','Education':'📚','Home repair':'🔧','Car':'🚗','Family':'👨‍👩‍👧','Travel':'✈️','Gift':'🎁','Charity':'❤️'};
+
+function renderFinOverview(){
+  const y=finCalYear, m=finCalMonth;
+  const mPrefix=y+'-'+String(m+1).padStart(2,'0');
+  const GC='rgba(128,128,128,0.07)';
+
+  // ── MONTH LABEL (also update chart title) ──
+  const lbl=G('fd-month-label');
+  if(lbl)lbl.textContent=MONTH_NAMES[m]+' '+y;
+  const calMonthTitle=G('fd-cal-month-title');
+  if(calMonthTitle)calMonthTitle.textContent=MONTH_NAMES[m]+' '+y;
+  const chartMonth=G('fd-chart-month');
+  if(chartMonth)chartMonth.textContent=MONTH_NAMES[m]+' '+y;
+
+  // ── DATA FOR THIS MONTH ──
+  const mFin=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPrefix));
+  const mInc=mFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  const mExp=mFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const mNet=mInc-mExp;
+  const savingsRate=mInc>0?Math.round((mNet/mInc)*100):0;
+
+  // Last month for delta
+  const lmDate=new Date(y,m-1,1);
+  const lmPrefix=lmDate.getFullYear()+'-'+String(lmDate.getMonth()+1).padStart(2,'0');
+  const lmInc=S.finance.filter(f=>f.dt&&f.dt.startsWith(lmPrefix)&&f.t==='income').reduce((s,f)=>s+f.a,0);
+  const lmExp=S.finance.filter(f=>f.dt&&f.dt.startsWith(lmPrefix)&&f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const lmNet=lmInc-lmExp;
+  const netDelta=mNet-lmNet;
+  const incDelta=mInc-lmInc;
+
+  // ── KPI CARDS ──
+  const kpiEl=G('fd-kpis');
+  if(kpiEl)kpiEl.innerHTML=`
+    <div class="fd-kpi income">
+      <div class="fd-kpi-label">Income</div>
+      <div class="fd-kpi-value up">${fmt(mInc)}</div>
+      <div class="fd-kpi-sub">
+        <span class="fd-kpi-badge ${incDelta>=0?'up':'dn'}">${incDelta>=0?'↑':'↓'} ${fmt(Math.abs(incDelta))} vs last mo</span>
+      </div>
+    </div>
+    <div class="fd-kpi expense">
+      <div class="fd-kpi-label">Expenses</div>
+      <div class="fd-kpi-value dn">${fmt(mExp)}</div>
+      <div class="fd-kpi-sub">${mFin.filter(f=>f.t==='expense').length} transactions</div>
+    </div>
+    <div class="fd-kpi net">
+      <div class="fd-kpi-label">Net</div>
+      <div class="fd-kpi-value ${mNet>=0?'up':'dn'}">${fmtS(mNet)}</div>
+      <div class="fd-kpi-sub">
+        <span class="fd-kpi-badge ${netDelta>=0?'up':'dn'}">${netDelta>=0?'↑':'↓'} ${fmt(Math.abs(netDelta))} vs last mo</span>
+      </div>
+    </div>
+    <div class="fd-kpi savings">
+      <div class="fd-kpi-label">Savings rate</div>
+      <div class="fd-kpi-value ${savingsRate>=20?'up':savingsRate>=0?'':'dn'}">${mInc>0?savingsRate+'%':'—'}</div>
+      <div class="fd-kpi-sub">${savingsRate>=30?'🔥 Excellent':savingsRate>=20?'👍 On track':savingsRate>=0?'📊 Low':'⚠️ Negative'}</div>
+    </div>`;
+
+  // ── MONTHLY BAR CHART ──
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const barLabels=[],barInc=[],barExp=[];
+  for(let d=1;d<=daysInMonth;d++){
+    const dk=mPrefix+'-'+String(d).padStart(2,'0');
+    barLabels.push(d);
+    barInc.push(S.finance.filter(f=>f.dt===dk&&f.t==='income').reduce((s,f)=>s+f.a,0));
+    barExp.push(S.finance.filter(f=>f.dt===dk&&f.t==='expense').reduce((s,f)=>s+f.a,0));
+  }
+  mkChart('fc',{type:'bar',data:{labels:barLabels,datasets:[
+    {label:'Income',data:barInc,backgroundColor:'rgba(10,124,110,0.78)',borderRadius:4,borderSkipped:false},
+    {label:'Expense',data:barExp,backgroundColor:'rgba(192,52,44,0.68)',borderRadius:4,borderSkipped:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:v=>`${MONTH_NAMES[m]} ${v[0].label}`,label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.raw)}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},autoSkip:true,maxTicksLimit:16,maxRotation:0}},y:{grid:{color:GC},ticks:{callback:v=>v>0?'$'+v:'',font:{size:9}}}}}});
+
+  // ── UNPAID BILLS PANEL ──
+  const billsEl=G('fd-unpaid-bills');
+  if(billsEl){
+    const unpaid=S.bills.filter(b=>b.s==='Unpaid').sort((a,b)=>(a.d||'9999').localeCompare(b.d||'9999'));
+    if(!unpaid.length){
+      billsEl.innerHTML=`<div class="fd-empty-row">✅ All bills paid</div>`;
+    } else {
+      const tot=unpaid.reduce((s,b)=>s+b.a,0);
+      billsEl.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--ts);">${unpaid.length} unpaid</span>
+          <span style="font-size:15px;font-weight:800;color:var(--red);">${fmt(tot)}</span>
+        </div>
+        ${unpaid.map(b=>{
+          const isOvd=b.d&&b.d<today;
+          return`<div class="fd-debt-row">
+            <div class="fd-debt-icon">${CAT_ICONS[b.cat||'Other']||'🧾'}</div>
+            <div class="fd-debt-info">
+              <div class="fd-debt-name">${b.n}</div>
+              <div class="fd-debt-meta">${b.cat||'Other'} · ${b.f}${b.d?` · <span style="color:${isOvd?'var(--red)':'var(--ts)'};">${isOvd?'⚠️ overdue':'due'} ${b.d}</span>`:''}</div>
+            </div>
+            <div class="fd-debt-right">
+              <div class="fd-debt-amount">${fmt(b.a)}</div>
+              <button class="fd-pay-btn" onclick="markBillPaid(${b.id});event.stopPropagation()">✓ Pay</button>
+            </div>
+          </div>`;
+        }).join('')}`;
+    }
+  }
+
+  // ── OUTSTANDING DEBTS PANEL ──
+  const debtsEl=G('fd-active-debts');
+  if(debtsEl){
+    const OPS={pending:'amber',overdue:'red',scheduled:'blue'};
+    const OPL={pending:'Pending',overdue:'Overdue',scheduled:'Scheduled'};
+    const active=(S.otherPayments||[]).filter(p=>p.s!=='paid').sort((a,b)=>{
+      const ord={overdue:0,pending:1,scheduled:2};
+      return(ord[a.s]||9)-(ord[b.s]||9)||(a.due||'9999').localeCompare(b.due||'9999');
+    });
+    if(!active.length){
+      debtsEl.innerHTML=`<div class="fd-empty-row">✅ No outstanding debts</div>`;
+    } else {
+      const tot=active.reduce((s,p)=>s+p.a,0);
+      debtsEl.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--ts);">${active.length} outstanding</span>
+          <span style="font-size:15px;font-weight:800;color:var(--red);">${fmt(tot)}</span>
+        </div>
+        ${active.map(p=>{
+          return`<div class="fd-debt-row">
+            <div class="fd-debt-icon">${CAT_ICONS[p.cat||'Other']||'💸'}</div>
+            <div class="fd-debt-info">
+              <div class="fd-debt-name">${p.n}</div>
+              <div class="fd-debt-meta">${tag(OPL[p.s]||p.s,OPS[p.s]||'gray')} ${p.cat?'· '+p.cat:''} ${p.due?'· due '+p.due:''}</div>
+            </div>
+            <div class="fd-debt-right">
+              <div class="fd-debt-amount">${fmt(p.a)}</div>
+              <button class="fd-pay-btn" onclick="markDebtPaid(${p.id});event.stopPropagation()">✓ Paid</button>
+            </div>
+          </div>`;
+        }).join('')}`;
+    }
+  }
+
+  // ── MONTHLY CALENDAR ──
+  const calEl=G('fd-cal-grid');
+  if(calEl){
+    const firstDay=new Date(y,m,1).getDay();
+    const startOffset=(firstDay+6)%7; // Mon-first
+    let html='';
+    for(let i=0;i<startOffset;i++) html+=`<div class="fd-cal-day empty"><div class="fd-cal-day-top"><div class="fd-cal-num"></div></div></div>`;
+
+    for(let d=1;d<=daysInMonth;d++){
+      const dk=mPrefix+'-'+String(d).padStart(2,'0');
+      const dayIncItems=S.finance.filter(f=>f.dt===dk&&f.t==='income');
+      const dayExpItems=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
+      const dayBillItems=S.bills.filter(b=>b.d===dk);
+      const dayDebtItems=(S.otherPayments||[]).filter(p=>p.due===dk);
+      const dayInc=dayIncItems.reduce((s,f)=>s+f.a,0);
+      const dayExp=dayExpItems.reduce((s,f)=>s+f.a,0);
+      const dayNet=dayInc-dayExp;
+      const isToday=dk===today;
+      const hasData=dayInc||dayExp||dayBillItems.length||dayDebtItems.length;
+
+      // Net badge
+      const netBadge=hasData&&(dayInc||dayExp)
+        ? `<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}$${Math.round(Math.abs(dayNet)).toLocaleString()}</div>`
+        : '';
+
+      // Build inline entry chips — show up to 3, then "+N more"
+      const allEntries=[];
+      dayIncItems.forEach(f=>allEntries.push({type:'income',label:'↑ '+f.d,amount:f.a}));
+      dayExpItems.forEach(f=>allEntries.push({type:'expense',label:'↓ '+f.d,amount:f.a}));
+      dayBillItems.forEach(b=>allEntries.push({type:'bill',label:'🧾 '+b.n,amount:b.a}));
+      dayDebtItems.forEach(p=>allEntries.push({type:'debt',label:'💸 '+p.n,amount:p.a}));
+
+      const maxShow=3;
+      const shown=allEntries.slice(0,maxShow);
+      const hidden=allEntries.length-maxShow;
+
+      const entryChips=shown.map(e=>`<div class="fd-cal-entry ${e.type}" title="${e.label} — $${e.amount.toLocaleString()}">${e.label}</div>`).join('');
+      const moreChip=hidden>0?`<div class="fd-cal-entry more">+${hidden} more</div>`:'';
+
+      html+=`<div class="fd-cal-day${isToday?' is-today':''}${hasData?' has-data':''}" onclick="openFdDayModal('${dk}')">
+        <div class="fd-cal-day-top">
+          <div class="fd-cal-num">${d}</div>
+          ${netBadge}
+        </div>
+        <div class="fd-cal-day-entries">${entryChips}${moreChip}</div>
+      </div>`;
+    }
+    calEl.innerHTML=html;
+  }
+}
+
+// ── FINANCE DAY MODAL ──
+function openFdDayModal(dk){
+  const dateObj=new Date(dk+'T12:00:00');
+  const title=dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  G('fd-day-modal-title').textContent=title;
+  renderFdDayBody(dk);
+  G('fd-day-modal-wrap').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function renderFdDayBody(dk){
+  const dayInc=S.finance.filter(f=>f.dt===dk&&f.t==='income');
+  const dayExp=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
+  const dayBills=S.bills.filter(b=>b.d===dk);
+  const dayDebts=(S.otherPayments||[]).filter(p=>p.due===dk);
+  const totalIn=dayInc.reduce((s,f)=>s+f.a,0);
+  const totalOut=dayExp.reduce((s,f)=>s+f.a,0);
+  const net=totalIn-totalOut;
+  const hasEntries=dayInc.length||dayExp.length;
+
+  // Build category option HTML for selects
+  const incCats=getAllCats('income');
+  const expCats=getAllCats('expense');
+  const incOpts=incCats.map(c=>`<option>${c}</option>`).join('')+'<option value="__new__">＋ New category…</option>';
+  const expOpts=expCats.map(c=>`<option>${c}</option>`).join('')+'<option value="__new__">＋ New category…</option>';
+
+  let html=`
+  <!-- DAY SUMMARY -->
+  <div class="fdd-summary">
+    <div class="fdd-summary-net" style="color:${net>=0?'var(--green)':net<0?'var(--red)':'var(--ts)'};">${net>=0?'+':''}${fmt(net)}</div>
+    <div class="fdd-summary-sides">
+      <div class="fdd-side in"><span class="fdd-side-lbl">IN</span><span class="fdd-side-val">${fmt(totalIn)}</span></div>
+      <div class="fdd-side out"><span class="fdd-side-lbl">OUT</span><span class="fdd-side-val">${fmt(totalOut)}</span></div>
+    </div>
+  </div>
+
+  <!-- ADD ENTRY FORM -->
+  <div class="fdd-add-form">
+    <div class="fdd-type-toggle">
+      <button class="fdd-type-btn on" id="fdd-btn-expense" onclick="fddSetType('expense')">Expense</button>
+      <button class="fdd-type-btn" id="fdd-btn-income" onclick="fddSetType('income')">Income</button>
+    </div>
+    <div class="fdd-form-row">
+      <input class="fi fdd-inp" type="text" id="fdd-desc" placeholder="Description" style="flex:2;min-width:120px;">
+      <input class="fi fdd-inp" type="number" id="fdd-amt" placeholder="Amount" step="0.01" style="max-width:110px;">
+    </div>
+    <div class="fdd-form-row">
+      <select class="fi fdd-inp" id="fdd-cat" style="flex:1;" onchange="fddHandleCat()">${expOpts}</select>
+      <select class="fi fdd-inp" id="fdd-biz" style="max-width:130px;">
+        <option value="personal">👤 Personal</option>
+        <option value="business">💼 Business</option>
+      </select>
+      <button class="btn pri fdd-save-btn" onclick="fddAddEntry('${dk}')">＋ Add</button>
+    </div>
+  </div>`;
+
+  // Income entries
+  if(dayInc.length){
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">💚 Income <span style="font-weight:400;color:var(--ts);">(${dayInc.length})</span></div>`;
+    dayInc.forEach(f=>{
+      html+=`<div class="fd-day-row">
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.d}</div>
+          <div style="font-size:11px;color:var(--ts);margin-top:2px;display:flex;gap:5px;flex-wrap:wrap;">${tag(f.c,'gray')}${f.biz==='business'?tag('💼 Biz','blue'):tag('👤 Personal','gray')}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+          <div style="font-weight:800;color:var(--green);">+${fmt(f.a)}</div>
+          <button class="del" onclick="delFinFromDay(${f.id},'${dk}')" title="Delete">✕</button>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Expense entries
+  if(dayExp.length){
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">🔴 Expenses <span style="font-weight:400;color:var(--ts);">(${dayExp.length})</span></div>`;
+    dayExp.forEach(f=>{
+      html+=`<div class="fd-day-row">
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.d}</div>
+          <div style="font-size:11px;color:var(--ts);margin-top:2px;display:flex;gap:5px;flex-wrap:wrap;">${tag(f.c,'gray')}${f.biz==='business'?tag('💼 Biz','blue'):tag('👤 Personal','gray')}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+          <div style="font-weight:800;color:var(--red);">-${fmt(f.a)}</div>
+          <button class="del" onclick="delFinFromDay(${f.id},'${dk}')" title="Delete">✕</button>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  if(!hasEntries){
+    html+=`<div class="fdd-empty-hint">No transactions yet — add one above</div>`;
+  }
+
+  // Bills and debts
+  if(dayBills.length){
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">🧾 Bills due</div>`;
+    dayBills.forEach(b=>{html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.cat||'Other'} · ${b.f}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(b.a)}</div>${tag(b.s,{Paid:'green',Unpaid:'red','Auto-pay':'blue'}[b.s]||'gray')}</div></div>`;});
+    html+=`</div>`;
+  }
+  if(dayDebts.length){
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">💸 Debts due</div>`;
+    dayDebts.forEach(p=>{const OPS={pending:'amber',overdue:'red',scheduled:'blue'};html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${p.n}</div><div style="font-size:11px;color:var(--ts);">${p.cat||'Other'}${p.note?' · '+p.note:''}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(p.a)}</div>${tag(p.s,OPS[p.s]||'gray')}</div></div>`;});
+    html+=`</div>`;
+  }
+
+  G('fd-day-modal-body').innerHTML=html;
+}
+
+// Day modal helpers
+let fddType='expense';
+function fddSetType(t){
+  fddType=t;
+  G('fdd-btn-income')&&G('fdd-btn-income').classList.toggle('on',t==='income');
+  G('fdd-btn-expense')&&G('fdd-btn-expense').classList.toggle('on',t==='expense');
+  const cats=getAllCats(t);
+  const sel=G('fdd-cat');
+  if(sel)sel.innerHTML=cats.map(c=>`<option>${c}</option>`).join('')+'<option value="__new__">＋ New category…</option>';
+}
+function fddHandleCat(){
+  const sel=G('fdd-cat');
+  if(!sel||sel.value!=='__new__')return;
+  const name=prompt('New category name:');
+  if(name&&name.trim()){
+    const n=addCustomCategory(fddType,name);
+    const cats=getAllCats(fddType);
+    sel.innerHTML=cats.map(c=>`<option${c===n?' selected':''}>${c}</option>`).join('')+'<option value="__new__">＋ New category…</option>';
+    sel.value=n;
+  } else {
+    sel.value=getAllCats(fddType)[0];
+  }
+}
+function fddAddEntry(dk){
+  const desc=G('fdd-desc').value.trim();
+  const amt=parseFloat(G('fdd-amt').value);
+  if(!desc||!amt)return;
+  const cat=G('fdd-cat').value==='__new__'?getAllCats(fddType)[0]:G('fdd-cat').value;
+  const biz=G('fdd-biz').value;
+  S.finance.push({d:desc,a:amt,t:fddType,c:cat,biz,dt:dk,id:Date.now()});
+  G('fdd-desc').value='';G('fdd-amt').value='';
+  save();renderFinance();renderHome();renderFdDayBody(dk);
+  showBackupToast('✓ Entry added');
+}
+function delFinFromDay(id,dk){
+  S.finance=S.finance.filter(f=>f.id!==id);
+  save();renderFinance();renderHome();renderFdDayBody(dk);
+}
+
+function closeFdDayModal(){
+  G('fd-day-modal-wrap').classList.remove('open');
+  document.body.style.overflow='';
+  fddType='expense';
+}
 
 function renderFinance(){
   const inc=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
   const exp=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
   const net=inc-exp;
   const billsTotal=S.bills.reduce((s,b)=>s+b.a,0);
-  const opTotal=S.otherPayments.filter(p=>p.s!=='paid').reduce((s,p)=>s+p.a,0);
+  const opTotal=(S.otherPayments||[]).filter(p=>p.s!=='paid').reduce((s,p)=>s+p.a,0);
   const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
 
-  // Master summary bar
+  // This month figures for header
+  const now=new Date();
+  const mPfx=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  const mInc=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPfx)&&f.t==='income').reduce((s,f)=>s+f.a,0);
+  const mExp=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPfx)&&f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const mNet=mInc-mExp;
+  const unpaidBillsCount=S.bills.filter(b=>b.s==='Unpaid').length;
+  const activeDebtsCount=(S.otherPayments||[]).filter(p=>p.s!=='paid').length;
+
+  // Modern header meta — live this-month stats
+  const hm=G('fin-header-meta');
+  if(hm)hm.innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+      <div style="font-size:11px;font-weight:600;color:var(--ts);text-align:right;">This month</div>
+      <div style="font-size:18px;font-weight:800;letter-spacing:-0.02em;color:${mNet>=0?'var(--green)':'var(--red)'};">${mNet>=0?'+':''}${fmt(mNet)}</div>
+      <div style="display:flex;gap:8px;font-size:11px;color:var(--ts);">
+        ${unpaidBillsCount>0?`<span style="color:var(--amber);font-weight:600;">${unpaidBillsCount} bill${unpaidBillsCount>1?'s':''} due</span>`:''}
+        ${activeDebtsCount>0?`<span style="color:var(--red);font-weight:600;">${activeDebtsCount} debt${activeDebtsCount>1?'s':''}</span>`:''}
+        ${unpaidBillsCount===0&&activeDebtsCount===0?`<span style="color:var(--green);font-weight:600;">✓ All clear</span>`:''}
+      </div>
+    </div>`;
+
+  // Summary bar
   const fsum=G('f-sum');
   if(fsum)fsum.innerHTML=`
-    <div class="sum-item"><div class="sum-lb">Total income</div><div class="sum-vl up">${fmt(inc)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Total expenses</div><div class="sum-vl dn">${fmt(exp)}</div></div>
+    <div class="sum-item"><div class="sum-lb">All-time income</div><div class="sum-vl up">${fmt(inc)}</div></div>
+    <div class="sum-item"><div class="sum-lb">All-time expenses</div><div class="sum-vl dn">${fmt(exp)}</div></div>
     <div class="sum-item"><div class="sum-lb">Net</div><div class="sum-vl ${net>=0?'up':'dn'}">${fmtS(net)}</div></div>
     <div class="sum-item"><div class="sum-lb">Bills / mo</div><div class="sum-vl">${fmt(billsTotal)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Payments due</div><div class="sum-vl ${opTotal>0?'dn':''}">${fmt(opTotal)}</div></div>`;
+    <div class="sum-item"><div class="sum-lb">Debts outstanding</div><div class="sum-vl ${opTotal>0?'dn':''}">${fmt(opTotal)}</div></div>`;
 
   // ── OVERVIEW TAB ──
-  // 7-day bar chart
-  const days=[],i7=[],e7=[];
-  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(localDate(d));}
-  days.forEach(d=>{
-    i7.push(S.finance.filter(f=>f.dt===d&&f.t==='income').reduce((s,f)=>s+f.a,0));
-    e7.push(S.finance.filter(f=>f.dt===d&&f.t==='expense').reduce((s,f)=>s+f.a,0));
-  });
-  const GC='rgba(128,128,128,0.07)';
-  if(activeFinTab==='overview'){
-    mkChart('fc',{type:'bar',data:{labels:days.map(d=>d.slice(5)),datasets:[
-      {label:'Income',data:i7,backgroundColor:'rgba(10,124,110,0.78)',borderRadius:4,borderSkipped:false},
-      {label:'Expense',data:e7,backgroundColor:'rgba(192,52,44,0.68)',borderRadius:4,borderSkipped:false}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:GC},ticks:{callback:v=>'$'+v,font:{size:10}}}}}});
-
-    // Bills doughnut
-    const clrs=['rgba(10,124,110,0.82)','rgba(45,120,164,0.82)','rgba(197,140,30,0.82)','rgba(192,52,44,0.72)','rgba(138,95,174,0.82)','rgba(112,110,107,0.6)'];
-    if(S.bills.length){
-      mkChart('bc',{type:'doughnut',data:{labels:S.bills.map(b=>b.n),datasets:[{data:S.bills.map(b=>b.a),backgroundColor:clrs.slice(0,S.bills.length),borderWidth:0,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:8,boxWidth:10}}}}});
-      const paid=S.bills.filter(b=>b.s==='Paid').reduce((s,b)=>s+b.a,0);
-      const auto=S.bills.filter(b=>b.s==='Auto-pay').reduce((s,b)=>s+b.a,0);
-      mkChart('bsc',{type:'doughnut',data:{labels:['Paid','Unpaid','Auto-pay'],datasets:[{data:[paid,unp,auto],backgroundColor:['rgba(10,124,110,0.8)','rgba(192,52,44,0.72)','rgba(45,120,164,0.8)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:6,boxWidth:10}}}}});
-    }
-    // Other payments doughnut
-    const opPaid=S.otherPayments.filter(p=>p.s==='paid').length;
-    const opPend=S.otherPayments.filter(p=>p.s==='pending').length;
-    const opOver=S.otherPayments.filter(p=>p.s==='overdue').length;
-    const opSched=S.otherPayments.filter(p=>p.s==='scheduled').length;
-    if(S.otherPayments.length){
-      mkChart('opc',{type:'doughnut',data:{labels:['Paid','Pending','Overdue','Scheduled'],datasets:[{data:[opPaid,opPend,opOver,opSched],backgroundColor:['rgba(10,124,110,0.8)','rgba(197,140,30,0.75)','rgba(192,52,44,0.72)','rgba(45,120,164,0.8)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:6,boxWidth:10}}}}});
-    }
-
-    // Alerts
-    const alertEl=G('fin-alerts');
-    if(alertEl){
-      const alerts=[];
-      S.bills.filter(b=>b.s==='Unpaid').forEach(b=>alerts.push(`<div class="callout amber" style="margin:4px 0;padding:10px 14px;"><span class="co-ic">🧾</span><span class="co-tx"><strong>${b.n}</strong> — ${fmt(b.a)} unpaid${b.d?' (due '+b.d+')':''}</span></div>`));
-      S.otherPayments.filter(p=>p.s==='overdue').forEach(p=>alerts.push(`<div class="callout red" style="margin:4px 0;padding:10px 14px;"><span class="co-ic">⚠️</span><span class="co-tx"><strong>${p.n}</strong> — ${fmt(p.a)} overdue${p.due?' ('+p.due+')':''}</span></div>`));
-      S.otherPayments.filter(p=>p.s==='pending'&&p.due&&p.due<=today).forEach(p=>alerts.push(`<div class="callout amber" style="margin:4px 0;padding:10px 14px;"><span class="co-ic">💳</span><span class="co-tx"><strong>${p.n}</strong> — ${fmt(p.a)} due today</span></div>`));
-      alertEl.innerHTML=alerts.length?'<div style="margin-bottom:6px;font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;">⚡ Action needed</div>'+alerts.join(''):'';
-    }
-
-    // Recent 8 transactions
-    const rtb=G('f-recent-tb');
-    if(rtb){
-      const recent=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt)).slice(0,8);
-      rtb.innerHTML=recent.length?recent.map(f=>`<tr><td>${f.d}</td><td>${tag(f.c,'gray')}</td><td>${tag(f.t==='income'?'Income':'Expense',f.t==='income'?'green':'red')}</td><td style="font-weight:700;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td><td style="font-size:12px;color:var(--ts);">${f.dt}</td></tr>`).join(''):`<tr><td colspan="5"><div class="empty">No entries yet</div></td></tr>`;
-    }
-  }
+  if(activeFinTab==='overview') renderFinOverview();
 
   // ── TRANSACTIONS TAB ──
   let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
@@ -1503,8 +2074,16 @@ function renderFinance(){
   else if(ff==='expense')items=items.filter(f=>f.t==='expense');
   const tb=G('f-tb');
   if(tb){
-    if(!items.length){tb.innerHTML=`<tr><td colspan="6"><div class="empty">No entries yet</div></td></tr>`;}
-    else tb.innerHTML=items.map(f=>`<tr><td>${f.d}</td><td>${tag(f.c,'gray')}</td><td>${tag(f.t==='income'?'Income':'Expense',f.t==='income'?'green':'red')}</td><td style="font-weight:700;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td><td style="font-size:12px;color:var(--ts);">${f.dt}</td><td><button class="del" onclick="delFin(${f.id})">✕</button></td></tr>`).join('');
+    if(!items.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty">No entries yet — add one above</div></td></tr>`;}
+    else tb.innerHTML=items.map(f=>`<tr>
+      <td><strong>${f.d}</strong></td>
+      <td>${tag(f.c,'gray')}</td>
+      <td>${tag(f.t==='income'?'Income':'Expense',f.t==='income'?'green':'red')}</td>
+      <td>${f.biz==='business'?tag('💼 Business','blue'):tag('👤 Personal','gray')}</td>
+      <td style="font-weight:800;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td>
+      <td style="font-size:12px;color:var(--ts);">${f.dt}</td>
+      <td><button class="del" onclick="delFin(${f.id})">✕</button></td>
+    </tr>`).join('');
   }
 
   // ── BILLS TAB ──
@@ -1944,6 +2523,46 @@ function renderProjectOverview(){
   </div></div>`;
 }
 
+function renderHomeDebts(){
+  const el=G('home-debts');if(!el)return;
+  const ops=S.otherPayments||[];
+  const active=ops.filter(p=>p.s!=='paid').sort((a,b)=>{
+    const ord={overdue:0,pending:1,scheduled:2};
+    return(ord[a.s]||9)-(ord[b.s]||9)||(a.due||'9999').localeCompare(b.due||'9999');
+  });
+  if(!active.length){
+    el.innerHTML=`<div style="font-size:13px;color:var(--th);padding:10px 0;display:flex;align-items:center;gap:8px;">✅ <span>No outstanding debts</span></div>`;
+    return;
+  }
+  const total=active.reduce((s,p)=>s+p.a,0);
+  const OPS={pending:'amber',overdue:'red',scheduled:'blue'};
+  const OPL={pending:'Pending',overdue:'Overdue',scheduled:'Scheduled'};
+  const debtIcons={'Medical':'🏥','Legal':'⚖️','Tax':'🏛️','Education':'📚','Home repair':'🔧','Car':'🚗','Family':'👨‍👩‍👧','Travel':'✈️','Gift':'🎁','Charity':'❤️','Other':'💸'};
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-size:12px;color:var(--ts);">${active.length} outstanding · click to manage</span>
+      <span style="font-size:15px;font-weight:800;color:var(--red);letter-spacing:-0.02em;">${fmt(total)}</span>
+    </div>
+    ${active.map(p=>{
+      const icon=debtIcons[p.cat||'Other']||'💸';
+      return`<div class="home-debt-card ${p.s}" onclick="navToPage('finance')">
+        <div style="font-size:18px;width:32px;text-align:center;flex-shrink:0;">${icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.n}</div>
+          <div style="font-size:11px;color:var(--ts);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            ${tag(OPL[p.s]||p.s,OPS[p.s]||'gray')}
+            ${p.due?`<span>${p.due}</span>`:''}
+            ${p.cat?`<span>${p.cat}</span>`:''}
+          </div>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:var(--red);flex-shrink:0;">${fmt(p.a)}</div>
+      </div>`;
+    }).join('')}
+    <div style="text-align:right;margin-top:4px;">
+      <button style="font-family:var(--font);font-size:12px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer;padding:4px 8px;" onclick="navToPage('finance')">Manage all debts →</button>
+    </div>`;
+}
+
 function renderHome(){
   // ── GREETING ──
   const hour=new Date().getHours();
@@ -1983,6 +2602,10 @@ function renderHome(){
     const habitsDoneToday=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
     const habitsTotal=S.habits.length;
     const unpaidBills=S.bills.filter(b=>b.s==='Unpaid').length;
+    const unpaidBillsAmt=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
+    const activeDebts=(S.otherPayments||[]).filter(p=>p.s!=='paid');
+    const activeDebtsAmt=activeDebts.reduce((s,p)=>s+p.a,0);
+    const totalOwed=unpaidBillsAmt+activeDebtsAmt;
     heroEl.innerHTML=`
       <div class="hero-stat" onclick="navToPage('finance')">
         <div class="hero-stat-lb">Net this month</div>
@@ -2000,9 +2623,9 @@ function renderHome(){
         <div class="hero-stat-sub">${habitsTotal?Math.round(habitsDoneToday/habitsTotal*100)+'% done':'No habits set'}</div>
       </div>
       <div class="hero-stat" onclick="navToPage('finance')">
-        <div class="hero-stat-lb">Unpaid bills</div>
-        <div class="hero-stat-vl ${unpaidBills>0?'dn':''}">${unpaidBills||'✓'}</div>
-        <div class="hero-stat-sub">${unpaidBills?unpaidBills+' overdue':'All clear'}</div>
+        <div class="hero-stat-lb">Total owed</div>
+        <div class="hero-stat-vl ${totalOwed>0?'dn':''}">${totalOwed>0?fmt(totalOwed):'✓'}</div>
+        <div class="hero-stat-sub">${unpaidBills} bill${unpaidBills!==1?'s':''} · ${activeDebts.length} debt${activeDebts.length!==1?'s':''}</div>
       </div>`;
   }
   renderProjectOverview();
@@ -2561,6 +3184,8 @@ function logProjExpense(id){
 // ── RENDER ALL ──
 function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();}
 renderAll();
+// Init category dropdowns for the transactions form (default: expense)
+setTimeout(()=>{buildCatSelect('fi-c','expense');},50);
 setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},150);
 window.addEventListener('resize',()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});});
 
@@ -4103,6 +4728,18 @@ function ddAddTask(dk){
     <span class="bn-label">Projects</span>
   </button>
 </nav>
+
+<!-- FINANCE DAY DETAIL MODAL -->
+<div class="fd-day-modal-wrap" id="fd-day-modal-wrap" onclick="if(event.target===this)closeFdDayModal()">
+  <div class="fd-day-modal">
+    <div class="fd-day-modal-handle"></div>
+    <div class="fd-day-modal-hdr">
+      <div class="fd-day-modal-title" id="fd-day-modal-title">Day detail</div>
+      <button class="fd-day-modal-close" onclick="closeFdDayModal()">✕</button>
+    </div>
+    <div class="fd-day-modal-body" id="fd-day-modal-body"></div>
+  </div>
+</div>
 
 <!-- EDIT MODE BAR -->
 <div class="edit-mode-bar" id="edit-bar">
