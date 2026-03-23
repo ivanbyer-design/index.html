@@ -1769,12 +1769,13 @@ function renderFinOverview(){
           <span style="font-size:15px;font-weight:800;color:var(--red);">${fmt(tot)}</span>
         </div>
         ${unpaid.map(b=>{
-          const isOvd=b.d&&b.d<today;
+          const nxt=nextBillDue(b);
+          const isOvd=nxt&&nxt<today;
           return`<div class="fd-debt-row">
             <div class="fd-debt-icon">${CAT_ICONS[b.cat||'Other']||'🧾'}</div>
             <div class="fd-debt-info">
               <div class="fd-debt-name">${b.n}</div>
-              <div class="fd-debt-meta">${b.cat||'Other'} · ${b.f}${b.d?` · <span style="color:${isOvd?'var(--red)':'var(--ts)'};">${isOvd?'⚠️ overdue':'due'} ${b.d}</span>`:''}</div>
+              <div class="fd-debt-meta">${b.cat||'Other'} · ${b.f}${nxt?` · <span style="color:${isOvd?'var(--red)':'var(--ts)'};">${isOvd?'⚠️ overdue':'due'} ${nxt}</span>`:''}</div>
             </div>
             <div class="fd-debt-right">
               <div class="fd-debt-amount">${fmt(b.a)}</div>
@@ -1831,7 +1832,7 @@ function renderFinOverview(){
       const dk=mPrefix+'-'+String(d).padStart(2,'0');
       const dayIncItems=S.finance.filter(f=>f.dt===dk&&f.t==='income');
       const dayExpItems=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
-      const dayBillItems=S.bills.filter(b=>b.d===dk);
+      const dayBillItems=billsDueOn(dk);
       const dayDebtItems=(S.otherPayments||[]).filter(p=>p.due===dk);
       const dayInc=dayIncItems.reduce((s,f)=>s+f.a,0);
       const dayExp=dayExpItems.reduce((s,f)=>s+f.a,0);
@@ -1883,7 +1884,7 @@ function openFdDayModal(dk){
 function renderFdDayBody(dk){
   const dayInc=S.finance.filter(f=>f.dt===dk&&f.t==='income');
   const dayExp=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
-  const dayBills=S.bills.filter(b=>b.d===dk);
+  const dayBills=billsDueOn(dk);
   const dayDebts=(S.otherPayments||[]).filter(p=>p.due===dk);
   const totalIn=dayInc.reduce((s,f)=>s+f.a,0);
   const totalOut=dayExp.reduce((s,f)=>s+f.a,0);
@@ -2167,6 +2168,55 @@ function addBill(){
 }
 function delBill(id){S.bills=S.bills.filter(b=>b.id!==id);save();renderFinance();renderHome();}
 function cycleBill(id){const b=S.bills.find(b=>b.id===id);if(b){const s=['Unpaid','Paid','Auto-pay'];b.s=s[(s.indexOf(b.s)+1)%3];save();renderBills();}}
+// ── BILLS RECURRENCE HELPER ──
+// Returns all bills that are due on a given date string (YYYY-MM-DD),
+// respecting each bill's frequency (Monthly, Bi-weekly, Weekly, Annual, One-time).
+function billsDueOn(dk){
+  if(!S.bills||!S.bills.length)return[];
+  const target=new Date(dk+'T12:00:00');
+  return S.bills.filter(b=>{
+    if(!b.d)return false;
+    const orig=new Date(b.d+'T12:00:00');
+    if(isNaN(orig))return false;
+    switch(b.f){
+      case'Monthly':
+        return orig.getDate()===target.getDate()||
+          (target.getDate()===new Date(target.getFullYear(),target.getMonth()+1,0).getDate()&&
+           orig.getDate()>new Date(target.getFullYear(),target.getMonth()+1,0).getDate());
+      case'Bi-weekly':{
+        const diff=Math.round((target-orig)/(1000*60*60*24));
+        return diff>=0&&diff%14===0;
+      }
+      case'Weekly':{
+        const diff=Math.round((target-orig)/(1000*60*60*24));
+        return diff>=0&&diff%7===0;
+      }
+      case'Annual':
+        return orig.getMonth()===target.getMonth()&&orig.getDate()===target.getDate();
+      case'One-time':
+      default:
+        return b.d===dk;
+    }
+  });
+}
+
+// Returns the next upcoming due date string for a bill from today onwards
+function nextBillDue(b){
+  if(!b.d)return null;
+  const orig=new Date(b.d+'T12:00:00');
+  if(isNaN(orig))return null;
+  if(b.f==='One-time')return b.d;
+  // Scan forward up to 400 days from today to find next occurrence
+  const base=new Date(today+'T12:00:00');
+  for(let i=0;i<=400;i++){
+    const d=new Date(base);
+    d.setDate(base.getDate()+i);
+    const dk=localDate(d);
+    if(billsDueOn(dk).find(bill=>bill.id===b.id))return dk;
+  }
+  return b.d;
+}
+
 function renderBills(){
   const tot=S.bills.reduce((s,b)=>s+b.a,0);
   const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
@@ -2178,19 +2228,23 @@ function renderBills(){
     <div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl dn">${fmt(unp)}</div></div>
     <div class="sum-item"><div class="sum-lb">Paid</div><div class="sum-vl up">${fmt(paid)}</div></div>
     <div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(auto)}</div></div>`;
-  const srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:(a.d||'').localeCompare(b.d||''));
+  const srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:(nextBillDue(a)||'').localeCompare(nextBillDue(b)||''));
   const tb=G('bl-tb');
   if(!tb)return;
   if(!S.bills.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty">No bills tracked — add one above</div></td></tr>`;return;}
-  tb.innerHTML=srt.map(b=>`<tr>
-    <td><strong>${b.n}</strong></td>
-    <td>${tag(b.cat||'Other','gray')}</td>
-    <td style="font-weight:700;">${fmt(b.a)}</td>
-    <td>${tag(b.f,'gray')}</td>
-    <td style="font-size:12px;color:var(--ts);">${b.d||'—'}</td>
-    <td><span class="tag ${SC[b.s]||'gray'}" style="cursor:pointer;" onclick="cycleBill(${b.id})" title="Click to cycle status">${b.s}</span></td>
-    <td><button class="del" onclick="delBill(${b.id})">✕</button></td>
-  </tr>`).join('');
+  tb.innerHTML=srt.map(b=>{
+    const nxt=nextBillDue(b);
+    const isOverdue=nxt&&nxt<today;
+    return`<tr>
+      <td><strong>${b.n}</strong></td>
+      <td>${tag(b.cat||'Other','gray')}</td>
+      <td style="font-weight:700;">${fmt(b.a)}</td>
+      <td>${tag(b.f,'gray')}</td>
+      <td style="font-size:12px;color:${isOverdue?'var(--red)':'var(--ts)'};">${nxt||'—'}${isOverdue?' ⚠️':''}</td>
+      <td><span class="tag ${SC[b.s]||'gray'}" style="cursor:pointer;" onclick="cycleBill(${b.id})" title="Click to cycle status">${b.s}</span></td>
+      <td><button class="del" onclick="delBill(${b.id})">✕</button></td>
+    </tr>`;
+  }).join('');
 }
 
 // ── OTHER PAYMENTS ──
@@ -2375,7 +2429,7 @@ function renderWeekly(){
     const dayAllTasks=[...dayTodos,...dayRecurring];
     const dayDoneTasks=S.todos.filter(t=>t.done&&t.dd===dk).length;
     const dayTotalTasks=dayAllTasks.length+dayDoneTasks;
-    const dayBills=S.bills.filter(b=>b.d===dk);
+    const dayBills=billsDueOn(dk);
     const dayInc=S.finance.filter(f=>f.dt===dk&&f.t==='income').reduce((s,f)=>s+f.a,0);
     const dayExp=S.finance.filter(f=>f.dt===dk&&f.t==='expense').reduce((s,f)=>s+f.a,0);
     const dayNet=dayInc-dayExp;
@@ -4514,7 +4568,7 @@ function renderDayDetail(dk){
     const doneKey='rdone-'+r.id+'-'+dk;
     return{...r,isDone:!!(S.hlog&&S.hlog[doneKey]),isRecurring:true};
   });
-  const bills=S.bills.filter(b=>b.d===dk);
+  const bills=billsDueOn(dk);
   const finEntries=S.finance.filter(f=>f.dt===dk);
   const finInc=finEntries.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
   const finExp=finEntries.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
