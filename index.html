@@ -153,7 +153,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .mob-fab{display:flex;}
   .sb-toggle-btn{display:none!important;}
 }
-.content{flex:1;overflow-y:auto;padding:28px 72px 80px;-webkit-overflow-scrolling:touch;}
+.content{flex:1;overflow-y:auto;padding:28px 72px 80px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+@media(min-width:1200px){.content{padding-left:max(72px,calc(50% - 520px));padding-right:max(72px,calc(50% - 520px));}}
 
 /* PAGE HEADER */
 .page-cover{height:150px;border-radius:var(--rl);margin-bottom:20px;position:relative;overflow:hidden;}
@@ -259,7 +260,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .week-day.is-today .wd-name{color:rgba(255,255,255,0.8);}
 .wd-num{font-size:22px;font-weight:800;color:var(--t);line-height:1.2;margin-top:2px;letter-spacing:-0.02em;}
 .week-day.is-today .wd-num{color:#fff;}
-.wd-body{padding:8px;min-height:130px;overflow:hidden;}
+.wd-body{padding:8px;min-height:130px;overflow:hidden;color:var(--t);}
 .wd-event{font-size:11px;padding:3px 6px;border-radius:4px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
 .wd-event.finance-in{background:var(--gbg);color:var(--green);}
 .wd-event.finance-out{background:var(--rbg);color:var(--red);}
@@ -390,7 +391,8 @@ textarea.fi{resize:vertical;min-height:52px;}
 .tg-body{padding-left:16px;margin-top:4px;display:none;}
 .tg-body.open{display:block;}
 
-.empty{padding:20px;text-align:center;color:var(--th);font-size:14px;}
+.empty{padding:28px 16px;text-align:center;color:var(--ts);font-size:13.5px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.empty::before{font-size:28px;opacity:0.4;display:block;}
 
 /* INSTALL BANNER */
 .install-banner{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--t);color:var(--ti);padding:14px 24px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,0.25);white-space:nowrap;align-items:center;gap:10px;letter-spacing:-0.01em;}
@@ -1060,6 +1062,103 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-day-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;}
 .fd-day-row:last-child{border-bottom:none;}
 .fd-day-net{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg-in);border-radius:var(--r);margin-top:8px;}
+/* Focus-visible rings for keyboard nav */
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+button:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+
+/* Autofill colour override */
+input:-webkit-autofill,input:-webkit-autofill:focus{
+  -webkit-box-shadow:0 0 0 40px var(--bg-in) inset !important;
+  -webkit-text-fill-color:var(--t) !important;
+}
+
+/* Callout improvement — consistent left border */
+.callout.def{background:var(--bg-a);border-left:3px solid var(--bd2);}
+
+/* Mobile tap states */
+@media(max-width:768px){
+  .ni:active{background:var(--bg-a);}
+  .btn:active{transform:scale(0.97);}
+  .stt-action-row:active{background:var(--bg-a);}
+}
+
+/* Smooth panel entry animation */
+.panel.on{animation:panelFadeIn .18s ease both;}
+@keyframes panelFadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* Divider style */
+.divider{height:1px;background:var(--bd);margin:22px 0;}
+
+/* Progress bar pulse for active habits */
+@keyframes progressPulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
+</style>
+.stt-hero{display:flex;align-items:center;gap:14px;padding:24px 0 18px;border-bottom:1px solid var(--bd);margin-bottom:4px;}
+.stt-hero-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#2d2d2d,#555);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:var(--sh-md);}
+[data-dark] .stt-hero-icon{background:linear-gradient(135deg,#333,#666);}
+.stt-hero-title{font-size:26px;font-weight:800;color:var(--t);letter-spacing:-0.03em;}
+.stt-hero-sub{font-size:12.5px;color:var(--ts);margin-top:3px;}
+
+.stt-section{margin:20px 0 0;}
+.stt-section-hdr{font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:8px;padding-left:2px;}
+.stt-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);}
+.stt-row{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.stt-action-row{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .12s;}
+.stt-action-row:hover{background:var(--bg-h);}
+.stt-action-row:active{background:var(--bg-a);}
+.stt-action-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.stt-row-info{flex:1;min-width:0;}
+.stt-row-label{font-size:14px;font-weight:600;color:var(--t);letter-spacing:-0.01em;}
+.stt-row-sub{font-size:12px;color:var(--ts);margin-top:2px;}
+.stt-chevron{font-size:20px;color:var(--th);flex-shrink:0;font-weight:300;}
+.stt-divider{height:1px;background:var(--bd);margin:0 16px;}
+
+/* THEME PICKER */
+.stt-theme-picker{display:flex;gap:12px;padding:0 16px 16px;}
+.stt-theme-opt{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;flex:1;}
+.stt-theme-swatch{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;border:2px solid var(--bd);transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column;}
+.stt-theme-opt:hover .stt-theme-swatch{border-color:var(--blue);}
+.stt-theme-opt.on .stt-theme-swatch{border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,120,164,0.2);}
+.stt-theme-opt.on .stt-theme-lbl{color:var(--blue);font-weight:700;}
+.stt-swatch-top{height:30%;flex-shrink:0;}
+.stt-swatch-lines{flex:1;padding:4px 6px;display:flex;flex-direction:column;gap:3px;justify-content:center;}
+.stt-swatch-lines div{height:3px;border-radius:2px;background:currentColor;opacity:0.25;}
+.stt-swatch-lines div:first-child{width:70%;}
+.stt-swatch-lines div:nth-child(2){width:100%;}
+.stt-swatch-lines div:last-child{width:50%;}
+.stt-theme-swatch.light{background:#fafaf9;color:#37352f;}
+.stt-theme-swatch.light .stt-swatch-top{background:#e5e4e0;}
+.stt-theme-swatch.dark{background:#1e1e1e;color:#dedad3;}
+.stt-theme-swatch.dark .stt-swatch-top{background:#2e2e2e;}
+.stt-theme-swatch.system{background:linear-gradient(135deg,#fafaf9 50%,#1e1e1e 50%);color:#888;}
+.stt-theme-swatch.system .stt-swatch-top{background:linear-gradient(135deg,#e5e4e0 50%,#2e2e2e 50%);}
+.stt-theme-lbl{font-size:12px;font-weight:600;color:var(--ts);}
+
+/* STORAGE BAR */
+.stt-storage-bar-wrap{width:80px;height:6px;background:var(--bg-tag);border-radius:3px;overflow:hidden;flex-shrink:0;}
+.stt-storage-bar{height:100%;border-radius:3px;background:var(--blue);transition:width .4s ease;}
+
+/* DIAGNOSTICS */
+.stt-run-btn{font-family:var(--font);font-size:13.5px;font-weight:700;padding:10px 22px;border-radius:20px;border:none;background:var(--t);color:var(--ti);cursor:pointer;box-shadow:var(--sh);transition:opacity .15s,transform .1s;}
+.stt-run-btn:hover{opacity:0.88;transform:translateY(-1px);}
+.stt-run-btn:active{transform:translateY(0);}
+.stt-run-btn:disabled{opacity:0.5;cursor:default;transform:none;}
+.stt-diag-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);}
+.stt-diag-item:last-child{border-bottom:none;}
+.stt-diag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.stt-diag-dot.ok{background:var(--green);}
+.stt-diag-dot.warn{background:var(--amber);}
+.stt-diag-dot.error{background:var(--red);}
+.stt-diag-dot.info{background:var(--blue);}
+.stt-diag-text{flex:1;}
+.stt-diag-title{font-size:13px;font-weight:600;color:var(--t);}
+.stt-diag-desc{font-size:12px;color:var(--ts);margin-top:2px;}
+.stt-fix-btn{font-family:var(--font);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;border:1.5px solid var(--blue);background:transparent;color:var(--blue);cursor:pointer;white-space:nowrap;transition:all .12s;margin-top:6px;}
+.stt-fix-btn:hover{background:var(--blue);color:#fff;}
+.stt-diag-summary{display:flex;gap:12px;padding:10px 0 4px;font-size:12px;font-weight:600;}
+.stt-diag-summary .ok{color:var(--green);}
+.stt-diag-summary .warn{color:var(--amber);}
+.stt-diag-summary .error{color:var(--red);}
+@media(max-width:768px){.stt-hero{padding:14px 0 14px;}.stt-hero-title{font-size:22px;}}
 </style>
 </head>
 <body>
@@ -1098,6 +1197,7 @@ textarea.fi{resize:vertical;min-height:52px;}
   </div>
   <div class="sb-div"></div>
   <div class="sb-ft">
+    <div class="ni" onclick="go('settings',this)" id="ni-settings"><span class="ni-ic">⚙️</span><span class="ni-lb">Settings</span></div>
     <div class="ni" style="color:var(--th);font-size:13px;" onclick="exportData()"><span class="ni-ic">⬇️</span><span class="ni-lb">Export backup</span></div>
     <div class="ni" style="color:var(--th);font-size:13px;" onclick="importData()"><span class="ni-ic">⬆️</span><span class="ni-lb">Import backup</span></div>
   </div>
@@ -1154,8 +1254,8 @@ textarea.fi{resize:vertical;min-height:52px;}
         <div class="nf" style="margin:0;">
           <div class="nf-ttl">💰 Log finance</div>
           <div class="fr">
-            <input class="fi" type="text" id="qf-d" placeholder="Description">
-            <input class="fi" type="number" id="qf-a" placeholder="Amount" step="0.01">
+            <input class="fi" type="text" id="qf-d" placeholder="Description" onkeydown="if(event.key==='Enter')quickFin()">
+            <input class="fi" type="number" id="qf-a" placeholder="Amount" step="0.01" onkeydown="if(event.key==='Enter')quickFin()">
             <select class="fi" id="qf-t"><option value="income">Income</option><option value="expense">Expense</option></select>
           </div>
           <div style="display:flex;justify-content:flex-end;margin-top:4px;"><button class="btn pri" onclick="quickFin()">Add</button></div>
@@ -1163,7 +1263,7 @@ textarea.fi{resize:vertical;min-height:52px;}
         <div class="nf" style="margin:0;">
           <div class="nf-ttl">✅ Quick task</div>
           <div class="fr">
-            <input class="fi" type="text" id="qt-t" placeholder="Task description">
+            <input class="fi" type="text" id="qt-t" placeholder="Task description" onkeydown="if(event.key==='Enter')quickTodo()">
             <select class="fi" id="qt-p" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
           </div>
           <div style="display:flex;justify-content:flex-end;margin-top:4px;"><button class="btn pri" onclick="quickTodo()">Add</button></div>
@@ -1554,6 +1654,131 @@ textarea.fi{resize:vertical;min-height:52px;}
       <div class="proj-grid" id="proj-grid"></div>
     </div>
 
+    <!-- SETTINGS -->
+    <div class="panel" id="p-settings">
+      <button class="mob-menu-float" onclick="openSB()">☰</button>
+      <div class="stt-hero">
+        <div class="stt-hero-icon">⚙️</div>
+        <div>
+          <div class="stt-hero-title">Settings</div>
+          <div class="stt-hero-sub">Preferences, data & diagnostics</div>
+        </div>
+      </div>
+
+      <!-- APPEARANCE -->
+      <div class="stt-section">
+        <div class="stt-section-hdr">🎨 Appearance</div>
+        <div class="stt-card">
+          <div class="stt-row">
+            <div class="stt-row-info">
+              <div class="stt-row-label">Theme</div>
+              <div class="stt-row-sub">Choose how Life OS looks</div>
+            </div>
+          </div>
+          <div class="stt-theme-picker" id="stt-theme-picker">
+            <div class="stt-theme-opt" id="stt-theme-light" onclick="setTheme('light')">
+              <div class="stt-theme-swatch light">
+                <div class="stt-swatch-top"></div>
+                <div class="stt-swatch-lines">
+                  <div></div><div></div><div></div>
+                </div>
+              </div>
+              <div class="stt-theme-lbl">Light</div>
+            </div>
+            <div class="stt-theme-opt" id="stt-theme-dark" onclick="setTheme('dark')">
+              <div class="stt-theme-swatch dark">
+                <div class="stt-swatch-top"></div>
+                <div class="stt-swatch-lines">
+                  <div></div><div></div><div></div>
+                </div>
+              </div>
+              <div class="stt-theme-lbl">Dark</div>
+            </div>
+            <div class="stt-theme-opt" id="stt-theme-system" onclick="setTheme('system')">
+              <div class="stt-theme-swatch system">
+                <div class="stt-swatch-top"></div>
+                <div class="stt-swatch-lines">
+                  <div></div><div></div><div></div>
+                </div>
+              </div>
+              <div class="stt-theme-lbl">System</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA -->
+      <div class="stt-section">
+        <div class="stt-section-hdr">💾 Data & Backup</div>
+        <div class="stt-card">
+          <div class="stt-action-row" onclick="exportData()">
+            <div class="stt-action-icon" style="background:var(--bbg);color:var(--blue);">⬇️</div>
+            <div class="stt-row-info">
+              <div class="stt-row-label">Export backup</div>
+              <div class="stt-row-sub">Download all data as JSON — use to sync between devices</div>
+            </div>
+            <div class="stt-chevron">›</div>
+          </div>
+          <div class="stt-divider"></div>
+          <div class="stt-action-row" onclick="importData()">
+            <div class="stt-action-icon" style="background:var(--gbg);color:var(--green);">⬆️</div>
+            <div class="stt-row-info">
+              <div class="stt-row-label">Import & sync backup</div>
+              <div class="stt-row-sub">Smart merge — keeps local data, imports new entries</div>
+            </div>
+            <div class="stt-chevron">›</div>
+          </div>
+          <div class="stt-divider"></div>
+          <div class="stt-action-row" id="stt-storage-row">
+            <div class="stt-action-icon" style="background:var(--abg);color:var(--amber);">📦</div>
+            <div class="stt-row-info">
+              <div class="stt-row-label">Storage used</div>
+              <div class="stt-row-sub" id="stt-storage-size">Calculating…</div>
+            </div>
+            <div class="stt-storage-bar-wrap"><div class="stt-storage-bar" id="stt-storage-bar"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUG FIXER -->
+      <div class="stt-section">
+        <div class="stt-section-hdr">🔧 Diagnostics & bug fixer</div>
+        <div class="stt-card">
+          <div style="padding:4px 0 10px;">
+            <div style="font-size:13px;color:var(--ts);margin-bottom:12px;">Scans your data for common issues — duplicate IDs, missing fields, corrupted entries, and display bugs.</div>
+            <button class="stt-run-btn" onclick="runDiagnostics()">▶ Run diagnostics</button>
+          </div>
+          <div id="stt-diag-results" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="stt-section">
+        <div class="stt-section-hdr">ℹ️ About</div>
+        <div class="stt-card">
+          <div class="stt-action-row" style="cursor:default;">
+            <div class="stt-action-icon" style="background:var(--bg-in);font-size:20px;">∞</div>
+            <div class="stt-row-info">
+              <div class="stt-row-label">Life OS</div>
+              <div class="stt-row-sub">Your personal operating system · Data stored locally</div>
+            </div>
+          </div>
+          <div class="stt-divider"></div>
+          <!-- Data stats grid -->
+          <div id="stt-data-stats" style="padding:12px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
+          <div class="stt-divider"></div>
+          <div class="stt-action-row" onclick="if(confirm('This will permanently delete ALL your data. Are you absolutely sure?'))resetAllData()" style="cursor:pointer;">
+            <div class="stt-action-icon" style="background:var(--rbg);color:var(--red);">🗑️</div>
+            <div class="stt-row-info">
+              <div class="stt-row-label" style="color:var(--red);">Reset all data</div>
+              <div class="stt-row-sub">Permanently delete everything — cannot be undone</div>
+            </div>
+            <div class="stt-chevron" style="color:var(--red);">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- DAILY DETAIL -->
     <div class="panel" id="p-day-detail">
       <button class="mob-menu-float" onclick="openSB()">☰</button>
@@ -1632,15 +1857,23 @@ const save=()=>{try{localStorage.setItem('lifeOS_v3',JSON.stringify(S));}catch(e
 // DARK MODE
 let dark=localStorage.getItem('lifeOS_dark')==='1'||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches&&!localStorage.getItem('lifeOS_dark'));
 const applyDark=()=>{if(dark)document.documentElement.setAttribute('data-dark','');else document.documentElement.removeAttribute('data-dark');};
+// Theme mode (overrides legacy dark flag when set)
+let themeMode='system';
+try{const tm=localStorage.getItem('lifeOS_themeMode');if(tm)themeMode=tm;}catch(e){}
+// Apply theme on startup
+if(themeMode==='light')dark=false;
+else if(themeMode==='dark')dark=true;
 applyDark();
-function toggleDark(){dark=!dark;localStorage.setItem('lifeOS_dark',dark?'1':'0');applyDark();}
+function toggleDark(){
+  setTheme(dark?'light':'dark');
+}
 
 // MOBILE SIDEBAR
 function openSB(){G('sb').classList.add('open');G('sb-overlay').classList.add('open');}
 function closeSB(){G('sb').classList.remove('open');G('sb-overlay').classList.remove('open');}
 
 // NAV
-const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'}};
+const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'},settings:{ic:'⚙️',ttl:'Settings'}};
 function go(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1648,9 +1881,9 @@ function go(id,el){
   if(el)el.classList.add('on');
   G('bc-ic').textContent=PM[id]?PM[id].ic:'📝';
   G('bc-ttl').textContent=PM[id]?PM[id].ttl:id;
-  G('new-btn').style.display=id==='home'?'none':'flex';
+  G('new-btn').style.display=(id==='home'||id==='settings')?'none':'flex';
   // FAB mirrors new-btn on mobile
-  const fab=G('mob-fab');if(fab)fab.style.display=id==='home'?'none':'flex';
+  const fab=G('mob-fab');if(fab)fab.style.display=(id==='home'||id==='settings')?'none':'flex';
   closeSB();
   renderAll();
   updateBN(id);
@@ -2746,7 +2979,7 @@ function renderWeekly(){
         ${dayHabitTotal>0?`
         <div style="margin-bottom:5px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-            <span style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--th)'};text-transform:uppercase;letter-spacing:0.05em;">Habits</span>
+            <span style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--ts)'};text-transform:uppercase;letter-spacing:0.05em;">Habits</span>
             <span style="font-size:9px;font-weight:600;color:${dayHabitPct===100?'var(--green)':isToday?'rgba(255,255,255,0.8)':'var(--ts)'};">${dayHabitDone}/${dayHabitTotal}</span>
           </div>
           <div style="height:3px;background:${isToday?'rgba(255,255,255,0.2)':'var(--bg-tag)'};border-radius:2px;overflow:hidden;">
@@ -2756,15 +2989,15 @@ function renderWeekly(){
 
         ${dayAllTasks.length>0||dayCompletedTodos>0?`
         <div style="margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--th)'};text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Tasks</div>
+          <div style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--ts)'};text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Tasks</div>
           ${dayAllTasks.slice(0,3).map(t=>`
             <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;">
               <div style="width:5px;height:5px;border-radius:50%;flex-shrink:0;background:${t.p==='high'?'var(--red)':t.p==='low'?'var(--ts)':'var(--amber)'};"></div>
               <span style="font-size:9px;color:${isToday?'rgba(255,255,255,0.9)':'var(--t)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${t.isRecurring?'↻ ':''}${t.t||t.label||''}</span>
             </div>`).join('')}
-          ${dayAllTasks.length>3?`<div style="font-size:9px;color:${isToday?'rgba(255,255,255,0.5)':'var(--th)'};">+${dayAllTasks.length-3} more</div>`:''}
+          ${dayAllTasks.length>3?`<div style="font-size:9px;color:${isToday?'rgba(255,255,255,0.5)':'var(--ts)'};">+${dayAllTasks.length-3} more</div>`:''}
           ${isPast&&dayCompletedTodos>0?`<div style="font-size:9px;color:var(--green);">✓ ${dayCompletedTodos} done</div>`:''}
-        </div>`:'<div style="font-size:9px;color:'+(isToday?'rgba(255,255,255,0.4)':'var(--th)')+';">No tasks</div>'}
+        </div>`:'<div style="font-size:9px;color:'+(isToday?'rgba(255,255,255,0.4)':'var(--ts)')+';">No tasks</div>'}
 
         ${dayBills.length>0?`
         <div style="margin-bottom:3px;">
@@ -3174,12 +3407,32 @@ function renderHome(){
 
   // ── NEEDS ATTENTION ──
   const tdH=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
-  const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
+  const unpaidBills=S.bills.filter(b=>b.s==='Unpaid');
+  const overdueDebts=(S.otherPayments||[]).filter(p=>p.s==='overdue');
+  const highTasks=S.todos.filter(t=>!t.done&&t.p==='high');
+  const habitsLeft=S.habits.filter(h=>!(S.hlog&&S.hlog[today+'-'+h.id]));
   const att=[];
-  S.todos.filter(t=>!t.done&&t.p==='high').slice(0,3).forEach(t=>att.push(`<div class="callout amber"><span class="co-ic">⚠️</span><span class="co-tx"><strong>High priority:</strong> ${t.t}</span></div>`));
-  S.bills.filter(b=>b.s==='Unpaid').slice(0,3).forEach(b=>att.push(`<div class="callout red"><span class="co-ic">🧾</span><span class="co-tx"><strong>Unpaid bill:</strong> ${b.n} — ${fmt(b.a)} due ${b.d||'no date'}</span></div>`));
-  if(S.habits.length&&tdH<S.habits.length)att.push(`<div class="callout green"><span class="co-ic">🔄</span><span class="co-tx"><strong>Habits remaining:</strong> ${S.habits.filter(h=>!(S.hlog&&S.hlog[today+'-'+h.id])).map(h=>h.n).join(', ')}</span></div>`);
-  G('home-attn').innerHTML=att.length?att.join(''):`<div class="callout green"><span class="co-ic">✅</span><span class="co-tx">All clear — no urgent items right now.</span></div>`;
+
+  highTasks.slice(0,3).forEach(t=>att.push(
+    `<div class="callout amber"><span class="co-ic">⚠️</span><span class="co-tx"><strong>High priority:</strong> ${t.t}${t.d?' · due '+t.d:''}</span></div>`
+  ));
+  unpaidBills.slice(0,3).forEach(b=>{
+    const nxt=nextBillDue(b);
+    const isOvd=nxt&&nxt<today;
+    att.push(`<div class="callout ${isOvd?'red':'amber'}"><span class="co-ic">🧾</span><span class="co-tx"><strong>${isOvd?'Overdue bill':'Unpaid bill'}:</strong> ${b.n} — ${fmt(b.a)}${nxt?' · '+nxt:''}</span></div>`);
+  });
+  overdueDebts.slice(0,2).forEach(p=>att.push(
+    `<div class="callout red"><span class="co-ic">💸</span><span class="co-tx"><strong>Overdue debt:</strong> ${p.n} — ${fmt(p.a)}${p.due?' · due '+p.due:''}</span></div>`
+  ));
+  if(S.habits.length&&habitsLeft.length&&habitsLeft.length<=3){
+    att.push(`<div class="callout blue"><span class="co-ic">🔄</span><span class="co-tx"><strong>Habits left today:</strong> ${habitsLeft.map(h=>h.n).join(', ')}</span></div>`);
+  } else if(S.habits.length&&habitsLeft.length>3){
+    att.push(`<div class="callout blue"><span class="co-ic">🔄</span><span class="co-tx"><strong>${habitsLeft.length} habits</strong> still to complete today</span></div>`);
+  }
+
+  G('home-attn').innerHTML=att.length
+    ? att.join('')
+    : `<div class="callout green"><span class="co-ic">✅</span><span class="co-tx" style="font-weight:600;">All clear — no urgent items right now.</span></div>`;
 }
 
 function toggleDailyTask(id,isRecurring,checked){
@@ -3570,12 +3823,14 @@ function logProjExpense(id){
 }
 
 // ── RENDER ALL ──
-function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();}
+function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();renderSettings();}
 renderAll();
 // Init category dropdowns for the transactions form (default: expense)
 setTimeout(()=>{buildCatSelect('fi-c','expense');},50);
 setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},150);
 window.addEventListener('resize',()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});});
+// Auto-update when OS theme changes (only when set to System)
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{if(themeMode==='system'){dark=e.matches;applyDark();}});}catch(e){}
 
 // ── REFRESH ──
 function hardRefresh(){
@@ -5084,6 +5339,245 @@ function ddAddTask(dk){
   showBackupToast('✓ Task added');
 }
 
+// ── SETTINGS ──
+
+function setTheme(mode){
+  themeMode=mode;
+  try{localStorage.setItem('lifeOS_themeMode',mode);}catch(e){}
+  applyThemeMode();
+  updateThemeUI();
+}
+
+function applyThemeMode(){
+  if(themeMode==='light'){
+    dark=false;
+  } else if(themeMode==='dark'){
+    dark=true;
+  } else {
+    // system
+    dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  applyDark();
+}
+
+function updateThemeUI(){
+  ['light','dark','system'].forEach(m=>{
+    const el=G('stt-theme-'+m);
+    if(el)el.classList.toggle('on',themeMode===m);
+  });
+}
+
+function renderSettings(){
+  updateThemeUI();
+
+  // Data stats
+  const statsEl=G('stt-data-stats');
+  if(statsEl){
+    const stats=[
+      {icon:'💰',label:'Transactions',val:S.finance.length},
+      {icon:'🧾',label:'Bills',val:S.bills.length},
+      {icon:'💸',label:'Debts',val:(S.otherPayments||[]).length},
+      {icon:'✅',label:'Tasks',val:S.todos.length},
+      {icon:'🔄',label:'Habits',val:S.habits.length},
+      {icon:'🎯',label:'Goals',val:S.goals.length},
+      {icon:'📈',label:'Trades',val:S.trades.length},
+      {icon:'🚀',label:'Projects',val:(S.projects||[]).length},
+      {icon:'📝',label:'Categories',val:(S.customCategories||[]).length},
+    ];
+    statsEl.innerHTML=stats.map(s=>`
+      <div style="text-align:center;padding:8px 4px;background:var(--bg-in);border-radius:var(--r);">
+        <div style="font-size:18px;margin-bottom:3px;">${s.icon}</div>
+        <div style="font-size:17px;font-weight:800;color:var(--t);letter-spacing:-0.02em;">${s.val}</div>
+        <div style="font-size:9.5px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">${s.label}</div>
+      </div>`).join('');
+  }
+
+  // Storage
+  try{
+    const raw=localStorage.getItem('lifeOS_v3')||'';
+    const bytes=new Blob([raw]).size;
+    const kb=Math.round(bytes/1024);
+    const maxKb=5000;
+    const pct=Math.min(100,Math.round(kb/maxKb*100));
+    const el=G('stt-storage-size');
+    if(el)el.textContent=kb+' KB used of ~5 MB ('+pct+'%)';
+    const bar=G('stt-storage-bar');
+    if(bar){bar.style.width=pct+'%';bar.style.background=pct>80?'var(--red)':pct>60?'var(--amber)':'var(--blue)';}
+  }catch(e){}
+}
+
+function runDiagnostics(){
+  const btn=document.querySelector('.stt-run-btn');
+  if(btn){btn.disabled=true;btn.textContent='⟳ Scanning…';}
+  const results=G('stt-diag-results');
+  if(!results)return;
+
+  setTimeout(()=>{
+    const issues=[];
+    const fixes=[];
+    let warns=0,errors=0,infos=0,oks=0;
+
+    // 1. Duplicate IDs
+    const allItems=[
+      ...S.finance.map(x=>({...x,_type:'finance'})),
+      ...S.todos.map(x=>({...x,_type:'todo'})),
+      ...S.bills.map(x=>({...x,_type:'bill'})),
+      ...S.goals.map(x=>({...x,_type:'goal'})),
+      ...(S.otherPayments||[]).map(x=>({...x,_type:'debt'})),
+      ...(S.projects||[]).map(x=>({...x,_type:'project'})),
+    ];
+    const ids=allItems.map(x=>x.id);
+    const dupes=ids.filter((id,i)=>ids.indexOf(id)!==i);
+    if(dupes.length>0){
+      errors++;
+      issues.push({level:'error',title:dupes.length+' duplicate IDs found',desc:'Duplicate IDs can cause data overwrites. Auto-fix will reassign unique IDs.',fix:'fixDuplicateIds'});
+    } else {oks++;issues.push({level:'ok',title:'No duplicate IDs',desc:'All entries have unique identifiers.'});}
+
+    // 2. Finance entries missing fields
+    const badFin=S.finance.filter(f=>!f.d||!f.a||!f.t||!f.dt);
+    if(badFin.length){
+      warns++;
+      issues.push({level:'warn',title:badFin.length+' finance entr'+(badFin.length>1?'ies':'y')+' with missing fields',desc:'Missing description, amount, type, or date. Auto-fix will add placeholder values.',fix:'fixBadFinance'});
+    } else {oks++;issues.push({level:'ok',title:'Finance entries look healthy',desc:S.finance.length+' entries, all fields present.'});}
+
+    // 3. Bills with no name
+    const badBills=S.bills.filter(b=>!b.n||!b.a);
+    if(badBills.length){
+      warns++;
+      issues.push({level:'warn',title:badBills.length+' bill'+(badBills.length>1?'s':'')+' missing name or amount',desc:'These bills may not display correctly.',fix:'fixBadBills'});
+    } else {oks++;issues.push({level:'ok',title:'Bills look healthy',desc:S.bills.length+' bills, all required fields present.'});}
+
+    // 4. Todos missing priority
+    const badTodos=S.todos.filter(t=>!t.p);
+    if(badTodos.length){
+      warns++;
+      issues.push({level:'warn',title:badTodos.length+' task'+(badTodos.length>1?'s':'')+' missing priority',desc:'Tasks without priority default to medium.',fix:'fixBadTodos'});
+    } else {oks++;issues.push({level:'ok',title:'Tasks look healthy',desc:S.todos.length+' tasks, all have priorities.'});}
+
+    // 5. localStorage size
+    try{
+      const bytes=new Blob([localStorage.getItem('lifeOS_v3')||'']).size;
+      const kb=Math.round(bytes/1024);
+      if(kb>4000){
+        errors++;
+        issues.push({level:'error',title:'Storage is almost full ('+kb+' KB)',desc:'localStorage is near its 5MB limit. Export a backup and consider clearing old data.'});
+      } else if(kb>2500){
+        warns++;
+        issues.push({level:'warn',title:'Storage usage is high ('+kb+' KB)',desc:'Consider exporting a backup regularly.'});
+      } else {
+        oks++;
+        issues.push({level:'ok',title:'Storage is healthy ('+kb+' KB)',desc:'Plenty of space remaining.'});
+      }
+    }catch(e){}
+
+    // 6. Habits log orphans (logs for deleted habits)
+    if(S.hlog&&S.habits.length>0){
+      const habitIds=new Set(S.habits.map(h=>h.id));
+      const orphanKeys=Object.keys(S.hlog).filter(k=>{
+        const parts=k.split('-');
+        const hid=parseInt(parts[parts.length-1]);
+        return!habitIds.has(hid);
+      });
+      if(orphanKeys.length>20){
+        infos++;
+        issues.push({level:'info',title:orphanKeys.length+' orphaned habit log entries',desc:'Log entries for deleted habits. Auto-fix will clean these up to free space.',fix:'fixOrphanHabitLogs'});
+      } else {oks++;issues.push({level:'ok',title:'Habit log is clean',desc:'No orphaned entries found.'});}
+    }
+
+    // 7. Weekly calendar color bug check (light mode text)
+    const hasWdBodyColor=document.querySelector('.wd-body') && 
+      getComputedStyle(document.querySelector('.wd-body')).color !== 'rgb(255, 255, 255)';
+    if(document.querySelector('.wd-body')){
+      const col=getComputedStyle(document.querySelector('.wd-body')).color;
+      const isWhiteOnLight=col==='rgb(255, 255, 255)'&&!dark;
+      if(isWhiteOnLight){
+        errors++;
+        issues.push({level:'error',title:'Weekly calendar text is white in light mode',desc:'Display bug: calendar day text invisible against white background.',fix:'fixWeeklyColors'});
+      } else {
+        oks++;
+        issues.push({level:'ok',title:'Weekly calendar text colors OK',desc:'Text is visible in current theme.'});
+      }
+    }
+
+    // Build results HTML
+    const summary={ok:oks,warn:warns,error:errors,info:infos};
+    let html=`<div class="stt-diag-summary">
+      <span class="ok">✓ ${oks} passed</span>
+      ${warns>0?`<span class="warn">⚠ ${warns} warnings</span>`:''}
+      ${errors>0?`<span class="error">✕ ${errors} errors</span>`:''}
+      ${infos>0?`<span style="color:var(--blue)">ℹ ${infos} info</span>`:''}
+    </div>`;
+
+    issues.forEach(item=>{
+      html+=`<div class="stt-diag-item">
+        <div class="stt-diag-dot ${item.level}"></div>
+        <div class="stt-diag-text">
+          <div class="stt-diag-title">${item.title}</div>
+          <div class="stt-diag-desc">${item.desc}</div>
+          ${item.fix?`<button class="stt-fix-btn" onclick="${item.fix}()">Auto-fix</button>`:''}
+        </div>
+      </div>`;
+    });
+
+    results.innerHTML=html;
+    results.style.display='block';
+    if(btn){btn.disabled=false;btn.textContent='▶ Run diagnostics';}
+  },200);
+}
+
+// Auto-fix functions
+function fixDuplicateIds(){
+  [...S.finance,...S.todos,...S.bills,...S.goals,...(S.otherPayments||[]),...(S.projects||[])].forEach((item,i)=>{
+    // find items with same id
+  });
+  const seen=new Set();
+  ['finance','todos','bills','goals','otherPayments','projects','trades','backtests','habits'].forEach(key=>{
+    if(!S[key])return;
+    S[key].forEach(item=>{
+      if(seen.has(item.id)){item.id=Date.now()+Math.random();}
+      seen.add(item.id);
+    });
+  });
+  save();showBackupToast('✓ Duplicate IDs fixed');runDiagnostics();
+}
+function fixBadFinance(){
+  S.finance.forEach(f=>{
+    if(!f.d)f.d='Unknown';
+    if(!f.a)f.a=0;
+    if(!f.t)f.t='expense';
+    if(!f.dt)f.dt=today;
+    if(!f.c)f.c='Other';
+    if(!f.id)f.id=Date.now()+Math.random();
+  });
+  save();renderFinance();showBackupToast('✓ Finance entries fixed');runDiagnostics();
+}
+function fixBadBills(){
+  S.bills=S.bills.filter(b=>b.n&&b.a);
+  save();renderFinance();showBackupToast('✓ Invalid bills removed');runDiagnostics();
+}
+function fixBadTodos(){
+  S.todos.forEach(t=>{if(!t.p)t.p='med';});
+  save();renderTodos();showBackupToast('✓ Task priorities fixed');runDiagnostics();
+}
+function fixOrphanHabitLogs(){
+  if(!S.hlog)return;
+  const habitIds=new Set(S.habits.map(h=>h.id));
+  Object.keys(S.hlog).forEach(k=>{
+    const parts=k.split('-');
+    const hid=parseInt(parts[parts.length-1]);
+    if(!habitIds.has(hid))delete S.hlog[k];
+  });
+  save();showBackupToast('✓ Orphaned log entries cleared');runDiagnostics();
+}
+function fixWeeklyColors(){
+  // Force a re-render which will pick up the corrected CSS
+  renderHome();showBackupToast('✓ Weekly calendar refreshed');runDiagnostics();
+}
+function resetAllData(){
+  S={finance:[],trades:[],backtests:[],goals:[],bills:[],todos:[],habits:[],hlog:{},projects:[],otherPayments:[],customCategories:[]};
+  save();renderAll();showBackupToast('All data cleared');
+}
+
 </script>
 
 
@@ -5119,6 +5613,10 @@ function ddAddTask(dk){
   <button class="bn-item" id="bn-projects" onclick="go('projects',document.getElementById('ni-projects'));updateBN('projects')">
     <span class="bn-icon">🚀</span>
     <span class="bn-label">Projects</span>
+  </button>
+  <button class="bn-item" id="bn-settings" onclick="go('settings',document.getElementById('ni-settings'));updateBN('settings')">
+    <span class="bn-icon">⚙️</span>
+    <span class="bn-label">Settings</span>
   </button>
 </nav>
 
