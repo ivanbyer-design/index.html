@@ -251,16 +251,17 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .week-scroll::-webkit-scrollbar-track{background:transparent;}
 .week-scroll::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px;}
 .week-days{display:flex;min-width:max-content;}
-.week-day{width:148px;flex-shrink:0;border-right:1px solid var(--bd);scroll-snap-align:start;transition:background .12s;}
+.week-day{width:148px;flex-shrink:0;border-right:1px solid var(--bd);scroll-snap-align:start;transition:background .12s,transform .15s;}
 .week-day:last-child{border-right:none;}
-.week-day.is-today{background:color-mix(in srgb,var(--bbg) 50%,transparent);}
-.wd-hdr{padding:10px 8px 8px;text-align:center;border-bottom:1px solid var(--bd);transition:opacity .1s;cursor:pointer;}.wd-hdr:hover{opacity:0.85;}.wd-body:hover{background:rgba(0,0,0,0.015);}
+.week-day.is-today{background:color-mix(in srgb,var(--bbg) 60%,var(--bg-card));}
+.wd-hdr{padding:10px 8px 8px;text-align:center;border-bottom:1px solid var(--bd);transition:opacity .1s;cursor:pointer;}.wd-hdr:hover{opacity:0.85;}.week-day:hover{background:var(--bg-h);}.week-day.is-today:hover{background:color-mix(in srgb,var(--bbg) 70%,var(--bg-card));}
 .week-day.is-today .wd-hdr{background:var(--blue);}
 .wd-name{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;}
 .week-day.is-today .wd-name{color:rgba(255,255,255,0.8);}
 .wd-num{font-size:22px;font-weight:800;color:var(--t);line-height:1.2;margin-top:2px;letter-spacing:-0.02em;}
 .week-day.is-today .wd-num{color:#fff;}
 .wd-body{padding:8px;min-height:130px;overflow:hidden;color:var(--t);}
+.week-day.is-today .wd-body{color:var(--t);}
 .wd-event{font-size:11px;padding:3px 6px;border-radius:4px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
 .wd-event.finance-in{background:var(--gbg);color:var(--green);}
 .wd-event.finance-out{background:var(--rbg);color:var(--red);}
@@ -268,13 +269,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .wd-event.todo-high{background:var(--rbg);color:var(--red);font-weight:600;}
 .wd-event.bill{background:var(--rbg);color:var(--red);}
 .wd-event.habit{background:var(--bbg);color:var(--blue);}
-.week-day.is-today .wd-event.habit{background:rgba(51,126,169,0.2);color:#fff;}
+.week-day.is-today .wd-event.habit{background:var(--bbg);color:var(--blue);}
+[data-dark] .week-day.is-today .wd-event.habit{background:rgba(51,126,169,0.25);color:#9ec5e0;}
 .wd-more{font-size:10px;color:var(--ts);padding:1px 4px;}
 .week-legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--bd);background:var(--bg-h);}
 .wl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ts);}
 .wl-dot{width:8px;height:8px;border-radius:3px;flex-shrink:0;}
-.bh2{font-size:19px;font-weight:600;color:var(--t);margin:22px 0 8px;letter-spacing:-0.01em;}
-.bh3{font-size:15px;font-weight:600;color:var(--t);margin:14px 0 8px;}
+/* bh2/bh3 defined below after summary-bar */
 
 /* CALLOUT */
 .callout{display:flex;gap:12px;border-radius:var(--rl);padding:12px 16px;margin:6px 0;}
@@ -311,7 +312,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .mc-vl.green{color:var(--green);}
 .mc-vl.red{color:var(--red);}
 .mc-vl.amber{color:var(--amber);}
-.mc-vl.gold{color:#b8860b;}
+.mc-vl.gold{color:var(--amber);}
 .mc-sub{font-size:11.5px;color:var(--ts);margin-top:3px;}
 
 /* CHART */
@@ -686,12 +687,12 @@ textarea.fi{resize:vertical;min-height:52px;}
 .ring-lbl{font-size:11.5px;color:var(--ts);margin-top:2px;}
 
 /* STATUS COLORS */
-.ps-active{background:#e7f3f8;color:#185fa5;}
-.ps-planning{background:#fef4dc;color:#854f0b;}
-.ps-blocked{background:#fcebeb;color:#791f1f;}
-.ps-review{background:#f4f0f8;color:#6a3d9a;}
-.ps-done{background:#e4f5f0;color:#085041;}
-.ps-paused{background:#f1efe8;color:#5f5e5a;}
+.ps-active{background:var(--bbg);color:var(--blue);}
+.ps-planning{background:var(--abg);color:var(--amber);}
+.ps-blocked{background:var(--rbg);color:var(--red);}
+.ps-review{background:var(--pbg);color:var(--purple);}
+.ps-done{background:var(--gbg);color:var(--green);}
+.ps-paused{background:var(--bg-tag);color:var(--ts);}
 
 /* PROJECT BUDGET METER */
 .budget-bar{height:8px;background:var(--bg-tag);border-radius:4px;overflow:hidden;margin-top:6px;}
@@ -2979,25 +2980,25 @@ function renderWeekly(){
         ${dayHabitTotal>0?`
         <div style="margin-bottom:5px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-            <span style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--ts)'};text-transform:uppercase;letter-spacing:0.05em;">Habits</span>
-            <span style="font-size:9px;font-weight:600;color:${dayHabitPct===100?'var(--green)':isToday?'rgba(255,255,255,0.8)':'var(--ts)'};">${dayHabitDone}/${dayHabitTotal}</span>
+            <span style="font-size:9px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;">Habits</span>
+            <span style="font-size:9px;font-weight:600;color:${dayHabitPct===100?'var(--green)':'var(--ts)'};">${dayHabitDone}/${dayHabitTotal}</span>
           </div>
-          <div style="height:3px;background:${isToday?'rgba(255,255,255,0.2)':'var(--bg-tag)'};border-radius:2px;overflow:hidden;">
-            <div style="height:100%;width:${dayHabitPct}%;background:${dayHabitPct===100?'var(--green)':isToday?'rgba(255,255,255,0.8)':'var(--blue)'};border-radius:2px;"></div>
+          <div style="height:3px;background:var(--bg-tag);border-radius:2px;overflow:hidden;">
+            <div style="height:100%;width:${dayHabitPct}%;background:${dayHabitPct===100?'var(--green)':'var(--blue)'};border-radius:2px;"></div>
           </div>
         </div>`:''}
 
         ${dayAllTasks.length>0||dayCompletedTodos>0?`
         <div style="margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:600;color:${isToday?'rgba(255,255,255,0.7)':'var(--ts)'};text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Tasks</div>
+          <div style="font-size:9px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Tasks</div>
           ${dayAllTasks.slice(0,3).map(t=>`
             <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;">
               <div style="width:5px;height:5px;border-radius:50%;flex-shrink:0;background:${t.p==='high'?'var(--red)':t.p==='low'?'var(--ts)':'var(--amber)'};"></div>
-              <span style="font-size:9px;color:${isToday?'rgba(255,255,255,0.9)':'var(--t)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${t.isRecurring?'↻ ':''}${t.t||t.label||''}</span>
+              <span style="font-size:9px;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${t.isRecurring?'↻ ':''}${t.t||t.label||''}</span>
             </div>`).join('')}
-          ${dayAllTasks.length>3?`<div style="font-size:9px;color:${isToday?'rgba(255,255,255,0.5)':'var(--ts)'};">+${dayAllTasks.length-3} more</div>`:''}
+          ${dayAllTasks.length>3?`<div style="font-size:9px;color:var(--ts);">+${dayAllTasks.length-3} more</div>`:''}
           ${isPast&&dayCompletedTodos>0?`<div style="font-size:9px;color:var(--green);">✓ ${dayCompletedTodos} done</div>`:''}
-        </div>`:'<div style="font-size:9px;color:'+(isToday?'rgba(255,255,255,0.4)':'var(--ts)')+';">No tasks</div>'}
+        </div>`:'<div style="font-size:9px;color:var(--ts);">No tasks</div>'}
 
         ${dayBills.length>0?`
         <div style="margin-bottom:3px;">
@@ -3006,7 +3007,7 @@ function renderWeekly(){
         </div>`:''}
 
         ${(dayInc>0||dayExp>0)?`
-        <div style="margin-top:3px;padding-top:3px;border-top:1px solid ${isToday?'rgba(255,255,255,0.15)':'var(--bd)'};">
+        <div style="margin-top:3px;padding-top:3px;border-top:1px solid var(--bd);">
           <span style="font-size:9px;font-weight:600;color:${dayNet>=0?'var(--green)':'var(--red)'};">${dayNet>=0?'+':''}${dayNet===0?'$0':fmt(Math.abs(dayNet))}</span>
         </div>`:'' }
 
@@ -3338,8 +3339,8 @@ function renderHome(){
       <div class="chart-box" style="margin:0;">
         <div class="chart-ttl">Daily income vs expenses — ${monthLabel}</div>
         <div class="legend">
-          <div class="li"><div class="ld" style="background:#0f7b6c;"></div>Income</div>
-          <div class="li"><div class="ld" style="background:#c7372f;"></div>Expense</div>
+          <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
+          <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
         </div>
         <div class="cw" style="height:160px;"><canvas id="mc-chart"></canvas></div>
       </div>`;
@@ -3503,14 +3504,16 @@ function doImport(e){
 // ── PROJECTS ──
 if(!S.projects)S.projects=[];
 const STATUS_META={
-  active:{label:'Active',cls:'ps-active',color:'#185fa5'},
-  planning:{label:'Planning',cls:'ps-planning',color:'#854f0b'},
-  review:{label:'In Review',cls:'ps-review',color:'#6a3d9a'},
-  paused:{label:'Paused',cls:'ps-paused',color:'#5f5e5a'},
-  blocked:{label:'Blocked',cls:'ps-blocked',color:'#791f1f'},
-  done:{label:'Done',cls:'ps-done',color:'#085041'},
+  active:{label:'Active',cls:'ps-active',colorVar:'--blue'},
+  planning:{label:'Planning',cls:'ps-planning',colorVar:'--amber'},
+  review:{label:'In Review',cls:'ps-review',colorVar:'--purple'},
+  paused:{label:'Paused',cls:'ps-paused',colorVar:'--ts'},
+  blocked:{label:'Blocked',cls:'ps-blocked',colorVar:'--red'},
+  done:{label:'Done',cls:'ps-done',colorVar:'--green'},
 };
-const ACCENT_COLORS=['#185fa5','#0f7b6c','#854f0b','#6a3d9a','#c7372f','#2c5364','#3b6d11'];
+Object.keys(STATUS_META).forEach(k=>{const s=STATUS_META[k];Object.defineProperty(s,'color',{get(){return getComputedStyle(document.documentElement).getPropertyValue(s.colorVar).trim();}});});
+function getAccentColors(){const s=getComputedStyle(document.documentElement);return[s.getPropertyValue('--blue').trim(),s.getPropertyValue('--green').trim(),s.getPropertyValue('--amber').trim(),s.getPropertyValue('--purple').trim(),s.getPropertyValue('--red').trim(),'#2c5364','#3b6d11'];}
+const ACCENT_COLORS=['#2d78a4','#0a7c6e','#c58c1e','#8a5fae','#c0342c','#2c5364','#3b6d11'];
 let projFilter='all';
 let openProjId=null;
 
@@ -3529,7 +3532,7 @@ function addProject(){
     phases:[],
     notes:'',
     created:today,
-    color:ACCENT_COLORS[S.projects.length%ACCENT_COLORS.length],
+    color:getAccentColors()[S.projects.length%7],
   });
   G('proj-name').value='';G('proj-desc').value='';G('proj-budget').value='';
   save();renderProjects();
@@ -3594,7 +3597,8 @@ function renderProjects(){
     // Progress ring SVG
     const r=20,circ=2*Math.PI*r;
     const dash=circ*(pct/100);
-    const ringColor=pct===100?'#0f7b6c':p.status==='blocked'?'#c7372f':p.color;
+    const cs=getComputedStyle(document.documentElement);
+    const ringColor=pct===100?cs.getPropertyValue('--green').trim():p.status==='blocked'?cs.getPropertyValue('--red').trim():p.color;
 
     return`<div class="proj-card" onclick="openProjectDrawer('${p.id}')">
       <div class="proj-card-accent" style="background:${p.color};"></div>
