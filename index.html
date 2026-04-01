@@ -4451,11 +4451,13 @@ function renderFinancialMilestone(){
   const cur=getLevelInfo(pts,FINANCIAL_LEVELS);
   const next=getNextLevel(pts,FINANCIAL_LEVELS);
   const pct=cur.level===5?100:Math.min(100,Math.round((pts-cur.min)/(next.min-cur.min)*100));
-  const totalIncome=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  const totalIncome =S.finance.filter(f=>f.t==='income' ).reduce((s,f)=>s+f.a,0);
+  const totalExpenses=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const netSavings=Math.max(0,totalIncome-totalExpenses); // can't go below 0 for progress purposes
   // Top wants with prices, sorted by closest to unlock
   const wantsWithPrice=(S.wants||[]).filter(w=>w.price>0).sort((a,b)=>{
-    const pa=Math.min(100,Math.round(totalIncome/(a.price*2)*100));
-    const pb=Math.min(100,Math.round(totalIncome/(b.price*2)*100));
+    const pa=Math.min(100,Math.round(netSavings/(a.price*2)*100));
+    const pb=Math.min(100,Math.round(netSavings/(b.price*2)*100));
     return pb-pa; // most progress first
   });
 
@@ -4481,7 +4483,7 @@ function renderFinancialMilestone(){
   // Home widget
   const hel=G('home-finance-milestone');
   if(!hel)return;
-  const readyToBuy=wantsWithPrice.filter(w=>totalIncome>=w.price*2);
+  const readyToBuy=wantsWithPrice.filter(w=>netSavings>=w.price*2);
   hel.innerHTML=`<div class="milestone-widget">
     <div class="milestone-header">
       <div class="milestone-icon financial">💰</div>
@@ -4494,14 +4496,15 @@ function renderFinancialMilestone(){
       ${cur.level<5?`<div class="milestone-pts-next">/ ${next.min} for Lv${next.level}</div>`:'<div class="milestone-pts-next" style="color:var(--amber);">MAX LEVEL 🏆</div>'}
     </div>
     <div class="milestone-bar-wrap"><div class="milestone-bar-fill financial" style="width:${pct}%"></div></div>
-    ${readyToBuy.length?`<div class="milestone-reward-hint" style="color:var(--green);font-weight:600;">✅ ${readyToBuy.length} want${readyToBuy.length>1?'s':''} ready to buy!</div>`:''}
+    <div class="milestone-reward-hint" style="${netSavings>0?'':''}">💰 Savings: <strong style="color:${netSavings>0?'var(--green)':'var(--ts)'};">${fmt(netSavings)}</strong></div>
+    ${readyToBuy.length?`<div class="milestone-reward-hint" style="color:var(--green);font-weight:600;margin-top:4px;">✅ ${readyToBuy.length} want${readyToBuy.length>1?'s':''} ready to buy!</div>`:''}
     ${wantsWithPrice.length?`
     <div style="margin-top:10px;border-top:1px solid var(--bd);padding-top:10px;">
       <div style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">Buy It Twice</div>
       ${wantsWithPrice.slice(0,3).map(w=>{
         const needed=w.price*2;
-        const p=Math.min(100,Math.round(totalIncome/needed*100));
-        const done=totalIncome>=needed;
+        const p=Math.min(100,Math.round(netSavings/needed*100));
+        const done=netSavings>=needed;
         return`<div style="margin-bottom:8px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
             <span style="font-size:12px;font-weight:600;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;">${w.name}</span>
@@ -4510,7 +4513,7 @@ function renderFinancialMilestone(){
           <div style="height:5px;background:var(--bg-tag);border-radius:3px;overflow:hidden;">
             <div style="height:100%;width:${p}%;background:${done?'var(--green)':'linear-gradient(90deg,#059669,#10b981)'};border-radius:3px;transition:width .4s;"></div>
           </div>
-          <div style="font-size:10px;color:var(--ts);margin-top:2px;">${done?`Saved $${totalIncome.toLocaleString()} — can buy twice`:`Need $${needed.toLocaleString()} · have $${Math.min(totalIncome,needed).toLocaleString()}`}</div>
+          <div style="font-size:10px;color:var(--ts);margin-top:2px;">${done?`Savings $${netSavings.toLocaleString()} — can buy twice`:`Need $${needed.toLocaleString()} saved · have $${Math.min(netSavings,needed).toLocaleString()}`}</div>
         </div>`;
       }).join('')}
       ${wantsWithPrice.length>3?`<div style="font-size:11px;color:var(--ts);text-align:center;">+${wantsWithPrice.length-3} more in Finance → Wants</div>`:''}
@@ -4660,14 +4663,16 @@ function renderWantsNeeds(){
   const wl=G('wn-wants-list');const nl=G('wn-needs-list');
   if(!wl||!nl)return;
   const claimed=S.milestones.claimedRewards||[];
-  const totalIncome=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  const _inc =S.finance.filter(f=>f.t==='income' ).reduce((s,f)=>s+f.a,0);
+  const _exp =S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const netSavings=Math.max(0,_inc-_exp);
 
   wl.innerHTML=(S.wants||[]).length?S.wants.map((w,i)=>{
     const isReward=claimed.includes(w.id);
     const price=w.price||0;
     const needed=price*2;
-    const pct=needed>0?Math.min(100,Math.round(totalIncome/needed*100)):null;
-    const canBuy=needed>0&&totalIncome>=needed;
+    const pct=needed>0?Math.min(100,Math.round(netSavings/needed*100)):null;
+    const canBuy=needed>0&&netSavings>=needed;
     return`<div class="wn-item" style="flex-direction:column;align-items:stretch;gap:6px;">
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="wn-item-icon">${canBuy?'✅':isReward?'🏆':'⭐'}</div>
@@ -4681,13 +4686,13 @@ function renderWantsNeeds(){
       ${pct!==null?`
       <div style="padding:0 4px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-          <span style="font-size:10px;color:var(--ts);">Buy it twice rule · need $${needed.toLocaleString()} saved income</span>
+          <span style="font-size:10px;color:var(--ts);">Buy it twice · need $${needed.toLocaleString()} in savings</span>
           <span style="font-size:10px;font-weight:700;color:${canBuy?'var(--green)':'var(--t)'};">${pct}%</span>
         </div>
         <div style="height:5px;background:var(--bg-tag);border-radius:3px;overflow:hidden;">
           <div style="height:100%;width:${pct}%;background:${canBuy?'var(--green)':'linear-gradient(90deg,var(--blue),var(--purple))'};border-radius:3px;transition:width .4s;"></div>
         </div>
-        <div style="font-size:10px;color:var(--ts);margin-top:3px;">${canBuy?`✅ You've logged $${totalIncome.toLocaleString()} — enough to buy this twice!`:`$${Math.min(totalIncome,needed).toLocaleString()} / $${needed.toLocaleString()} logged income`}</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:3px;">${canBuy?`✅ Savings $${netSavings.toLocaleString()} — enough to buy this twice!`:`$${Math.min(netSavings,needed).toLocaleString()} / $${needed.toLocaleString()} saved`}</div>
       </div>`:''}
     </div>`;
   }).join(''):'<div style="font-size:12px;color:var(--ts);padding:8px 0;">No wants yet</div>';
