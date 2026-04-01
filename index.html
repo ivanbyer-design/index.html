@@ -178,8 +178,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   padding:24px 0 22px;
   border-bottom:1px solid var(--bd);
   margin-bottom:24px;
-  position:relative;
-  overflow:hidden;
 }
 .home-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
 .home-hero-left{flex:1;}
@@ -1236,15 +1234,14 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
 /* ── 3D HUMAN AVATAR (Three.js canvas) ── */
 .avatar-float{
-  position:absolute;right:-8px;top:-24px;
-  width:110px;height:230px;
-  pointer-events:none;z-index:2;
+  flex-shrink:0;
+  width:90px;height:180px;
+  pointer-events:none;align-self:center;
 }
 #avatar-canvas{
-  width:110px;height:230px;
+  width:90px;height:180px;
   display:block;
 }
-.home-hero{position:relative;overflow:visible;}
 
 /* MILESTONE WIDGET */
 .milestone-widget{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;margin:12px 0;box-shadow:var(--sh);}
@@ -1497,14 +1494,14 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
             <div class="home-hero-title">My Life OS</div>
             <div class="home-hero-date" id="home-date"></div>
           </div>
+          <!-- 3D HUMAN AVATAR -->
+          <div class="avatar-float">
+            <canvas id="avatar-canvas"></canvas>
+          </div>
           <div class="home-hero-streak">
             <div class="home-hero-streak-num" id="home-streak-num">—</div>
             <div class="home-hero-streak-lb">day streak</div>
           </div>
-        </div>
-        <!-- 3D HUMAN AVATAR -->
-        <div class="avatar-float">
-          <canvas id="avatar-canvas"></canvas>
         </div>
         <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
       </div>
@@ -4181,7 +4178,7 @@ function initAvatar(){
   const canvas=document.getElementById('avatar-canvas');
   if(!canvas||!window.THREE)return;
 
-  const W=110,H=230;
+  const W=90,H=180;
   canvas.style.width=W+'px';canvas.style.height=H+'px';
 
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
