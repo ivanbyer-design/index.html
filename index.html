@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -1165,232 +1166,15 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
    GAMIFICATION — AVATAR, ROUTINES, MILESTONES, WANTS
    ═══════════════════════════════════════════════════ */
 
-/* ── FULL BODY 4D AVATAR ── */
+/* ── 3D HUMAN AVATAR (Three.js canvas) ── */
 .avatar-float{
-  position:absolute;right:-4px;top:-18px;
-  width:80px;height:170px;
+  position:absolute;right:-8px;top:-24px;
+  width:110px;height:230px;
   pointer-events:none;z-index:2;
-  perspective:320px;
-  animation:avatarBob 3.5s ease-in-out infinite;
 }
-.avatar-scene{
-  width:100%;height:100%;
-  transform-style:preserve-3d;
-  animation:avatar4D 7s linear infinite;
-}
-/* outer 4D shell — hyperdimensional shimmer ring */
-.avatar-4d-ring{
-  position:absolute;
-  top:50%;left:50%;
-  width:100px;height:100px;
-  margin:-50px 0 0 -50px;
-  border-radius:50%;
-  border:2px solid transparent;
-  background:transparent;
-  box-shadow:
-    0 0 18px 3px rgba(168,85,247,0.45),
-    0 0 36px 6px rgba(59,130,246,0.25),
-    inset 0 0 18px 2px rgba(236,72,153,0.2);
-  transform-style:preserve-3d;
-  animation:ringPulse 3.5s ease-in-out infinite, ringRotate 7s linear infinite;
-}
-/* figure parts — all inside .avatar-scene */
-.av-figure{
-  position:absolute;left:50%;top:0;
-  transform:translateX(-50%);
-  transform-style:preserve-3d;
-}
-/* HEAD */
-.av-head{
-  position:absolute;left:50%;
-  width:32px;height:32px;
-  margin-left:-16px;top:8px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#fde68a,#f59e0b);
-  box-shadow:0 2px 10px rgba(245,158,11,0.5),0 0 0 2px rgba(255,255,255,0.2);
-  animation:headTilt 4s ease-in-out infinite;
-  transform-style:preserve-3d;
-}
-/* FACE dots */
-.av-head::before{
-  content:'';position:absolute;
-  top:10px;left:7px;
-  width:5px;height:5px;border-radius:50%;
-  background:#7c2d12;
-  box-shadow:8px 0 0 #7c2d12;
-}
-.av-head::after{
-  content:'';position:absolute;
-  bottom:9px;left:9px;
-  width:14px;height:5px;
-  border-bottom:2px solid #7c2d12;
-  border-radius:0 0 6px 6px;
-}
-/* NECK */
-.av-neck{
-  position:absolute;left:50%;top:38px;
-  width:10px;height:10px;
-  margin-left:-5px;
-  background:linear-gradient(180deg,#fde68a,#fbbf24);
-  border-radius:2px;
-}
-/* TORSO */
-.av-torso{
-  position:absolute;left:50%;top:46px;
-  width:30px;height:42px;
-  margin-left:-15px;
-  background:linear-gradient(160deg,#6d28d9,#7c3aed,#a855f7);
-  border-radius:6px 6px 4px 4px;
-  box-shadow:0 4px 12px rgba(124,58,237,0.5),inset 0 1px 0 rgba(255,255,255,0.15);
-  animation:torsoSway 4s ease-in-out infinite;
-  transform-style:preserve-3d;
-}
-/* shirt detail */
-.av-torso::after{
-  content:'';position:absolute;
-  top:6px;left:50%;transform:translateX(-50%);
-  width:14px;height:2px;
-  background:rgba(255,255,255,0.3);
-  border-radius:1px;
-  box-shadow:0 5px 0 rgba(255,255,255,0.2),0 10px 0 rgba(255,255,255,0.15);
-}
-/* HIPS */
-.av-hips{
-  position:absolute;left:50%;top:86px;
-  width:34px;height:12px;
-  margin-left:-17px;
-  background:linear-gradient(90deg,#1e40af,#2563eb,#1e40af);
-  border-radius:4px;
-}
-/* LEFT ARM */
-.av-arm-l{
-  position:absolute;left:50%;top:48px;
-  width:11px;height:36px;
-  margin-left:-26px;
-  background:linear-gradient(180deg,#7c3aed,#a855f7);
-  border-radius:5px 5px 8px 8px;
-  transform-origin:top center;
-  animation:armSwingL 1.4s ease-in-out infinite;
-  box-shadow:0 2px 6px rgba(124,58,237,0.4);
-}
-/* LEFT HAND */
-.av-arm-l::after{
-  content:'';position:absolute;
-  bottom:-5px;left:50%;transform:translateX(-50%);
-  width:9px;height:9px;border-radius:50%;
-  background:#fde68a;
-}
-/* RIGHT ARM */
-.av-arm-r{
-  position:absolute;left:50%;top:48px;
-  width:11px;height:36px;
-  margin-left:15px;
-  background:linear-gradient(180deg,#7c3aed,#a855f7);
-  border-radius:5px 5px 8px 8px;
-  transform-origin:top center;
-  animation:armSwingR 1.4s ease-in-out infinite;
-  box-shadow:0 2px 6px rgba(124,58,237,0.4);
-}
-.av-arm-r::after{
-  content:'';position:absolute;
-  bottom:-5px;left:50%;transform:translateX(-50%);
-  width:9px;height:9px;border-radius:50%;
-  background:#fde68a;
-}
-/* LEFT LEG */
-.av-leg-l{
-  position:absolute;left:50%;top:96px;
-  width:13px;height:42px;
-  margin-left:-17px;
-  background:linear-gradient(180deg,#1e40af,#3b82f6);
-  border-radius:3px 3px 6px 6px;
-  transform-origin:top center;
-  animation:legSwingL 1.4s ease-in-out infinite;
-  box-shadow:0 3px 8px rgba(37,99,235,0.4);
-}
-/* LEFT SHOE */
-.av-leg-l::after{
-  content:'';position:absolute;
-  bottom:-5px;left:-3px;
-  width:18px;height:8px;border-radius:3px 6px 6px 3px;
-  background:#1e1b4b;
-}
-/* RIGHT LEG */
-.av-leg-r{
-  position:absolute;left:50%;top:96px;
-  width:13px;height:42px;
-  margin-left:4px;
-  background:linear-gradient(180deg,#1e40af,#3b82f6);
-  border-radius:3px 3px 6px 6px;
-  transform-origin:top center;
-  animation:legSwingR 1.4s ease-in-out infinite;
-  box-shadow:0 3px 8px rgba(37,99,235,0.4);
-}
-.av-leg-r::after{
-  content:'';position:absolute;
-  bottom:-5px;right:-3px;
-  width:18px;height:8px;border-radius:6px 3px 3px 6px;
-  background:#1e1b4b;
-}
-/* SHADOW */
-.av-shadow{
-  position:absolute;left:50%;top:145px;
-  width:36px;height:8px;
-  margin-left:-18px;
-  background:rgba(0,0,0,0.15);
-  border-radius:50%;
-  animation:shadowPulse 3.5s ease-in-out infinite;
-}
-
-/* 4D ANIMATIONS */
-@keyframes avatar4D{
-  0%  {transform:rotateY(0deg)   rotateX(0deg)   rotateZ(0deg);}
-  25% {transform:rotateY(90deg)  rotateX(8deg)   rotateZ(-3deg);}
-  50% {transform:rotateY(180deg) rotateX(0deg)   rotateZ(0deg);}
-  75% {transform:rotateY(270deg) rotateX(-8deg)  rotateZ(3deg);}
-  100%{transform:rotateY(360deg) rotateX(0deg)   rotateZ(0deg);}
-}
-@keyframes ringRotate{
-  0%  {transform:rotateZ(0deg)   rotateX(60deg);}
-  100%{transform:rotateZ(360deg) rotateX(60deg);}
-}
-@keyframes ringPulse{
-  0%,100%{opacity:0.6;transform:rotateX(60deg) scale(1);}
-  50%    {opacity:1;  transform:rotateX(60deg) scale(1.15);}
-}
-@keyframes avatarBob{
-  0%,100%{transform:translateY(0px);}
-  50%    {transform:translateY(-10px);}
-}
-@keyframes headTilt{
-  0%,100%{transform:rotateZ(0deg);}
-  25%    {transform:rotateZ(6deg);}
-  75%    {transform:rotateZ(-6deg);}
-}
-@keyframes torsoSway{
-  0%,100%{transform:rotateZ(0deg);}
-  25%    {transform:rotateZ(2deg);}
-  75%    {transform:rotateZ(-2deg);}
-}
-@keyframes armSwingL{
-  0%,100%{transform:rotateZ(-10deg);}
-  50%    {transform:rotateZ(30deg);}
-}
-@keyframes armSwingR{
-  0%,100%{transform:rotateZ(10deg);}
-  50%    {transform:rotateZ(-30deg);}
-}
-@keyframes legSwingL{
-  0%,100%{transform:rotateZ(-8deg);}
-  50%    {transform:rotateZ(12deg);}
-}
-@keyframes legSwingR{
-  0%,100%{transform:rotateZ(8deg);}
-  50%    {transform:rotateZ(-12deg);}
-}
-@keyframes shadowPulse{
-  0%,100%{transform:scaleX(1);  opacity:0.15;}
-  50%    {transform:scaleX(0.7);opacity:0.08;}
+#avatar-canvas{
+  width:110px;height:230px;
+  display:block;
 }
 .home-hero{position:relative;overflow:visible;}
 
@@ -1546,22 +1330,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
             <div class="home-hero-streak-lb">day streak</div>
           </div>
         </div>
-        <!-- FLOATING 4D FULL-BODY AVATAR -->
+        <!-- 3D HUMAN AVATAR -->
         <div class="avatar-float">
-          <div class="avatar-4d-ring"></div>
-          <div class="avatar-scene">
-            <div class="av-figure">
-              <div class="av-head"></div>
-              <div class="av-neck"></div>
-              <div class="av-torso"></div>
-              <div class="av-hips"></div>
-              <div class="av-arm-l"></div>
-              <div class="av-arm-r"></div>
-              <div class="av-leg-l"></div>
-              <div class="av-leg-r"></div>
-            </div>
-            <div class="av-shadow"></div>
-          </div>
+          <canvas id="avatar-canvas"></canvas>
         </div>
         <div class="home-hero-stats" id="home-hero-stats">
           <!-- filled by renderHome -->
@@ -4210,6 +3981,180 @@ function logProjExpense(id){
   const p=S.projects.find(p=>p.id===id);if(!p)return;
   p.spent=(p.spent||0)+amt;inp.value='';
   save();renderProjectDrawer(p);renderProjects();
+}
+
+// ════════════════════════════════════════════════════
+// 3D HUMAN AVATAR (Three.js)
+// ════════════════════════════════════════════════════
+function initAvatar(){
+  const canvas=document.getElementById('avatar-canvas');
+  if(!canvas||!window.THREE)return;
+
+  const W=110,H=230;
+  canvas.width=W*2;canvas.height=H*2; // retina
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setSize(W*2,H*2,false);
+  renderer.setClearColor(0x000000,0);
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(38,W/H,0.1,100);
+  camera.position.set(0,0.05,4.2);
+  camera.lookAt(0,0.05,0);
+
+  // ── LIGHTING ──
+  // Warm key light from front-left-top
+  const key=new THREE.DirectionalLight(0xfff5e6,1.1);
+  key.position.set(2,4,5);
+  key.castShadow=true;
+  scene.add(key);
+  // Cool fill from right
+  const fill=new THREE.DirectionalLight(0xe8f4ff,0.45);
+  fill.position.set(-3,1,2);
+  scene.add(fill);
+  // Rim/back light
+  const rim=new THREE.DirectionalLight(0xffeedd,0.35);
+  rim.position.set(0,2,-4);
+  scene.add(rim);
+  // Soft ambient
+  scene.add(new THREE.AmbientLight(0xffffff,0.55));
+
+  // ── MATERIALS ──
+  const skin  =new THREE.MeshPhongMaterial({color:0xc68642,shininess:25,specular:0x331100});
+  const skinD =new THREE.MeshPhongMaterial({color:0xb5763a,shininess:15}); // slightly darker for sides
+  const hair  =new THREE.MeshPhongMaterial({color:0x1a0f0a,shininess:80,specular:0x220000});
+  const shirt =new THREE.MeshPhongMaterial({color:0x1a2e4a,shininess:30,specular:0x0a1a2a});
+  const shirtL=new THREE.MeshPhongMaterial({color:0x1e3554,shininess:20});
+  const pants =new THREE.MeshPhongMaterial({color:0x22283a,shininess:15});
+  const shoe  =new THREE.MeshPhongMaterial({color:0x0d0d0d,shininess:120,specular:0x444444});
+  const sole  =new THREE.MeshPhongMaterial({color:0xfafafa,shininess:30});
+
+  // ── FIGURE GROUP ──
+  const fig=new THREE.Group();
+  scene.add(fig);
+
+  // helper: add a rounded-edge box mesh (uses BoxGeometry, simulates roundness via scale)
+  const add=(w,h,d,mat,x,y,z,parent=fig)=>{
+    const geo=new THREE.BoxGeometry(w,h,d);
+    const mesh=new THREE.Mesh(geo,mat);
+    mesh.position.set(x,y,z);
+    mesh.castShadow=true;
+    mesh.receiveShadow=true;
+    parent.add(mesh);
+    return mesh;
+  };
+
+  // ── HEAD ──
+  const headGrp=new THREE.Group();
+  fig.add(headGrp);
+  headGrp.position.set(0,0.865,0);
+  add(0.38,0.42,0.32,skin,   0,0,0,headGrp);          // skull + face
+  add(0.40,0.16,0.34,hair,   0,0.19,0,headGrp);        // hair top
+  add(0.38,0.10,0.06,hair,   0,0.08,-0.17,headGrp);    // hair back overhang
+  add(0.04,0.14,0.07,skin,  -0.20,0,0,headGrp);        // left ear
+  add(0.04,0.14,0.07,skin,   0.20,0,0,headGrp);        // right ear
+  // eyebrows
+  add(0.07,0.02,0.02,hair,  -0.09,0.10,0.17,headGrp);
+  add(0.07,0.02,0.02,hair,   0.09,0.10,0.17,headGrp);
+  // eyes (dark)
+  const eyeM=new THREE.MeshPhongMaterial({color:0x2c1a0e,shininess:200,specular:0x888888});
+  add(0.06,0.05,0.02,eyeM, -0.09,0.04,0.17,headGrp);
+  add(0.06,0.05,0.02,eyeM,  0.09,0.04,0.17,headGrp);
+  // nose
+  add(0.04,0.07,0.04,skinD,  0,-0.04,0.18,headGrp);
+  // lips
+  const lipM=new THREE.MeshPhongMaterial({color:0xa0522d,shininess:60});
+  add(0.10,0.03,0.02,lipM,  0,-0.12,0.17,headGrp);
+
+  // ── NECK ──
+  add(0.13,0.15,0.13,skin, 0,0.60,0);
+
+  // ── TORSO ──
+  // chest (slightly tapers)
+  add(0.54,0.34,0.24,shirt, 0,0.35,0);
+  add(0.50,0.28,0.22,shirt, 0,0.05,0);   // abdomen (slightly narrower)
+  // collar / neckline
+  add(0.14,0.05,0.03,shirt, 0,0.51,0.12);
+
+  // ── PELVIS / HIPS ──
+  add(0.52,0.20,0.23,pants, 0,-0.17,0);
+
+  // ── SHOULDERS (rounded) ──
+  const shdM=new THREE.MeshPhongMaterial({color:0x1e3a5a,shininess:25});
+  add(0.18,0.18,0.18,shdM,-0.36,0.50,0);
+  add(0.18,0.18,0.18,shdM, 0.36,0.50,0);
+
+  // ── UPPER ARMS ──
+  add(0.17,0.34,0.17,shirtL,-0.37,0.25,0);
+  add(0.17,0.34,0.17,shirtL, 0.37,0.25,0);
+
+  // ── FOREARMS ──
+  add(0.14,0.30,0.14,skin,-0.37,0.02 -0.15,0);  // slight offset
+  add(0.14,0.30,0.14,skin, 0.37,0.02 -0.15,0);
+  // rewrite with correct Y
+  fig.children[fig.children.length-1].position.set(0.37,-0.13,0);
+  fig.children[fig.children.length-2].position.set(-0.37,-0.13,0);
+
+  // ── HANDS ──
+  const handGrpL=new THREE.Group();fig.add(handGrpL);handGrpL.position.set(-0.37,-0.30,0);
+  add(0.16,0.14,0.08,skin,0,0,0,handGrpL);
+  add(0.03,0.06,0.03,skin,-0.06,-0.09,0,handGrpL);
+  add(0.03,0.06,0.03,skin,-0.02,-0.10,0,handGrpL);
+  add(0.03,0.06,0.03,skin, 0.02,-0.10,0,handGrpL);
+  add(0.03,0.05,0.03,skin, 0.06,-0.09,0,handGrpL);
+
+  const handGrpR=new THREE.Group();fig.add(handGrpR);handGrpR.position.set(0.37,-0.30,0);
+  add(0.16,0.14,0.08,skin,0,0,0,handGrpR);
+  add(0.03,0.06,0.03,skin,-0.06,-0.09,0,handGrpR);
+  add(0.03,0.06,0.03,skin,-0.02,-0.10,0,handGrpR);
+  add(0.03,0.06,0.03,skin, 0.02,-0.10,0,handGrpR);
+  add(0.03,0.05,0.03,skin, 0.06,-0.09,0,handGrpR);
+
+  // ── UPPER LEGS (thighs) ──
+  add(0.22,0.40,0.21,pants,-0.14,-0.47,0);
+  add(0.22,0.40,0.21,pants, 0.14,-0.47,0);
+
+  // ── LOWER LEGS (shins) ──
+  add(0.17,0.37,0.17,pants,-0.14,-0.85,0);
+  add(0.17,0.37,0.17,pants, 0.14,-0.85,0);
+
+  // ── FEET ──
+  const footGrpL=new THREE.Group();fig.add(footGrpL);footGrpL.position.set(-0.14,-1.09,0.04);
+  add(0.17,0.09,0.30,shoe,0,0,0,footGrpL);
+  add(0.17,0.03,0.30,sole,0,-0.06,0,footGrpL);  // sole
+
+  const footGrpR=new THREE.Group();fig.add(footGrpR);footGrpR.position.set(0.14,-1.09,0.04);
+  add(0.17,0.09,0.30,shoe,0,0,0,footGrpR);
+  add(0.17,0.03,0.30,sole,0,-0.06,0,footGrpR);
+
+  // ── GROUND SHADOW ──
+  const shadowGeo=new THREE.CircleGeometry(0.28,32);
+  const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.18});
+  const shadow=new THREE.Mesh(shadowGeo,shadowMat);
+  shadow.rotation.x=-Math.PI/2;
+  shadow.position.set(0,-1.16,0);
+  scene.add(shadow);
+
+  // ── ROTATION ──
+  let rotY=0;
+  (function animate(){
+    requestAnimationFrame(animate);
+    rotY+=0.012; // smooth 360° rotation
+    fig.rotation.y=rotY;
+    // very subtle camera bob
+    camera.position.y=0.05+Math.sin(rotY*0.4)*0.04;
+    renderer.render(scene,camera);
+  })();
+}
+
+// Run after DOM + Three.js ready
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(initAvatar,200));
+}else{
+  setTimeout(initAvatar,200);
 }
 
 // ════════════════════════════════════════════════════
