@@ -1529,17 +1529,20 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       <div id="home-weekly"></div>
       <div class="divider"></div>
 
-      <!-- BOTTOM QUADRANT: Personal Progress | Needs Attention -->
+      <!-- BOTTOM QUADRANT: Personal Progress | Finance Progress -->
       <div class="home-quadrant">
         <div class="home-quad-cell">
           <div class="home-quad-hdr">⚡ Personal Progress</div>
           <div id="home-personal-milestone"></div>
         </div>
         <div class="home-quad-cell">
-          <div class="home-quad-hdr">🔔 Needs Attention</div>
-          <div id="home-attn" style="margin-top:6px;"></div>
+          <div class="home-quad-hdr">💰 Finance Progress</div>
+          <div id="home-finance-milestone"></div>
         </div>
       </div>
+      <div class="divider"></div>
+      <div class="home-quad-hdr" style="margin-bottom:6px;">🔔 Needs Attention</div>
+      <div id="home-attn"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-proj-hdr" id="hdr-home-proj">🚀 Projects</div>
       <div id="home-proj-overview" style="margin:10px 0 4px;"></div>
@@ -1671,7 +1674,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
             <div id="wn-wants-list"></div>
             <div class="wn-add-row">
               <input class="fi wn-add-inp" id="wn-w-name" placeholder="What do you want?" style="min-width:120px;">
-              <input class="fi wn-add-inp" id="wn-w-note" placeholder="Note (optional)" style="max-width:140px;">
+              <input class="fi wn-add-inp" id="wn-w-note" placeholder="Note (optional)" style="max-width:130px;">
+              <input class="fi wn-add-inp" id="wn-w-price" type="number" placeholder="Price ($)" step="0.01" style="max-width:100px;">
               <button class="btn pri" onclick="addWant()">Add</button>
             </div>
           </div>
@@ -3783,6 +3787,10 @@ function renderHome(){
   G('home-attn').innerHTML=att.length
     ? att.join('')
     : `<div class="callout green"><span class="co-ic">✅</span><span class="co-tx" style="font-weight:600;">All clear — no urgent items right now.</span></div>`;
+
+  // Refresh progress widgets on home
+  renderPersonalMilestone();
+  renderFinancialMilestone();
 }
 
 function toggleDailyTask(id,isRecurring,checked){
@@ -4439,15 +4447,45 @@ function renderPersonalMilestone(){
   </div>`;
 }
 function renderFinancialMilestone(){
-  const el=G('finance-milestone');if(!el)return;
   const pts=(S.points||{}).financial||0;
   const cur=getLevelInfo(pts,FINANCIAL_LEVELS);
   const next=getNextLevel(pts,FINANCIAL_LEVELS);
   const pct=cur.level===5?100:Math.min(100,Math.round((pts-cur.min)/(next.min-cur.min)*100));
-  el.innerHTML=`<div class="milestone-widget" style="margin-top:16px;">
+  const totalIncome=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  // Top wants with prices, sorted by closest to unlock
+  const wantsWithPrice=(S.wants||[]).filter(w=>w.price>0).sort((a,b)=>{
+    const pa=Math.min(100,Math.round(totalIncome/(a.price*2)*100));
+    const pb=Math.min(100,Math.round(totalIncome/(b.price*2)*100));
+    return pb-pa; // most progress first
+  });
+
+  // Finance page widget
+  const el=G('finance-milestone');
+  if(el){
+    el.innerHTML=`<div class="milestone-widget" style="margin-top:16px;">
+      <div class="milestone-header">
+        <div class="milestone-icon financial">💰</div>
+        <div class="milestone-title">Financial Milestone</div>
+        <div class="milestone-level-badge financial">Lv${cur.level} · ${cur.name}</div>
+      </div>
+      <div class="milestone-points-row">
+        <div class="milestone-pts-current">${pts}</div>
+        <div class="milestone-pts-sep">pts</div>
+        ${cur.level<5?`<div class="milestone-pts-next">/ ${next.min} for Lv${next.level}</div>`:'<div class="milestone-pts-next" style="color:var(--amber);">MAX LEVEL 🏆</div>'}
+      </div>
+      <div class="milestone-bar-wrap"><div class="milestone-bar-fill financial" style="width:${pct}%"></div></div>
+      <div class="milestone-reward-hint">💡 Earn pts by logging transactions, paying bills & debts</div>
+    </div>`;
+  }
+
+  // Home widget
+  const hel=G('home-finance-milestone');
+  if(!hel)return;
+  const readyToBuy=wantsWithPrice.filter(w=>totalIncome>=w.price*2);
+  hel.innerHTML=`<div class="milestone-widget">
     <div class="milestone-header">
       <div class="milestone-icon financial">💰</div>
-      <div class="milestone-title">Financial Milestone</div>
+      <div class="milestone-title">Finance Progress</div>
       <div class="milestone-level-badge financial">Lv${cur.level} · ${cur.name}</div>
     </div>
     <div class="milestone-points-row">
@@ -4456,7 +4494,27 @@ function renderFinancialMilestone(){
       ${cur.level<5?`<div class="milestone-pts-next">/ ${next.min} for Lv${next.level}</div>`:'<div class="milestone-pts-next" style="color:var(--amber);">MAX LEVEL 🏆</div>'}
     </div>
     <div class="milestone-bar-wrap"><div class="milestone-bar-fill financial" style="width:${pct}%"></div></div>
-    <div class="milestone-reward-hint">💡 Earn pts by logging transactions, paying bills & debts</div>
+    ${readyToBuy.length?`<div class="milestone-reward-hint" style="color:var(--green);font-weight:600;">✅ ${readyToBuy.length} want${readyToBuy.length>1?'s':''} ready to buy!</div>`:''}
+    ${wantsWithPrice.length?`
+    <div style="margin-top:10px;border-top:1px solid var(--bd);padding-top:10px;">
+      <div style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">Buy It Twice</div>
+      ${wantsWithPrice.slice(0,3).map(w=>{
+        const needed=w.price*2;
+        const p=Math.min(100,Math.round(totalIncome/needed*100));
+        const done=totalIncome>=needed;
+        return`<div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+            <span style="font-size:12px;font-weight:600;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;">${w.name}</span>
+            <span style="font-size:11px;font-weight:700;color:${done?'var(--green)':'var(--t)'};">${done?'✅ Ready':'$'+w.price.toLocaleString()}</span>
+          </div>
+          <div style="height:5px;background:var(--bg-tag);border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${p}%;background:${done?'var(--green)':'linear-gradient(90deg,#059669,#10b981)'};border-radius:3px;transition:width .4s;"></div>
+          </div>
+          <div style="font-size:10px;color:var(--ts);margin-top:2px;">${done?`Saved $${totalIncome.toLocaleString()} — can buy twice`:`Need $${needed.toLocaleString()} · have $${Math.min(totalIncome,needed).toLocaleString()}`}</div>
+        </div>`;
+      }).join('')}
+      ${wantsWithPrice.length>3?`<div style="font-size:11px;color:var(--ts);text-align:center;">+${wantsWithPrice.length-3} more in Finance → Wants</div>`:''}
+    </div>`:`<div class="milestone-reward-hint">💡 Add prices to your Wants in Finance → Wants &amp; Needs</div>`}
   </div>`;
 }
 
@@ -4578,8 +4636,9 @@ function switchPlanTab(tab, btn){
 function addWant(){
   const name=G('wn-w-name').value.trim();if(!name)return;
   const note=G('wn-w-note').value.trim();
-  S.wants.push({name,note,id:Date.now()});
-  G('wn-w-name').value='';G('wn-w-note').value='';
+  const price=parseFloat(G('wn-w-price').value)||0;
+  S.wants.push({name,note,price,id:Date.now()});
+  G('wn-w-name').value='';G('wn-w-note').value='';G('wn-w-price').value='';
   save();renderWantsNeeds();renderMilestones();
 }
 function delWant(id){
@@ -4601,18 +4660,38 @@ function renderWantsNeeds(){
   const wl=G('wn-wants-list');const nl=G('wn-needs-list');
   if(!wl||!nl)return;
   const claimed=S.milestones.claimedRewards||[];
+  const totalIncome=S.finance.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+
   wl.innerHTML=(S.wants||[]).length?S.wants.map((w,i)=>{
     const isReward=claimed.includes(w.id);
-    return`<div class="wn-item">
-      <div class="wn-item-icon">${isReward?'🏆':'⭐'}</div>
-      <div class="wn-item-info">
-        <div class="wn-item-name">${w.name}</div>
-        ${w.note?`<div class="wn-item-note">${w.note}</div>`:''}
+    const price=w.price||0;
+    const needed=price*2;
+    const pct=needed>0?Math.min(100,Math.round(totalIncome/needed*100)):null;
+    const canBuy=needed>0&&totalIncome>=needed;
+    return`<div class="wn-item" style="flex-direction:column;align-items:stretch;gap:6px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="wn-item-icon">${canBuy?'✅':isReward?'🏆':'⭐'}</div>
+        <div class="wn-item-info" style="flex:1;">
+          <div class="wn-item-name">${w.name}${price>0?` <span style="font-size:11px;font-weight:600;color:var(--green);">$${price.toLocaleString()}</span>`:''}</div>
+          ${w.note?`<div class="wn-item-note">${w.note}</div>`:''}
+        </div>
+        ${canBuy?`<span class="tag green" style="font-size:11px;font-weight:700;">Ready to buy!</span>`:isReward?'<div class="wn-item-reward">Unlocked!</div>':'<span style="font-size:11px;color:var(--ts);">Reward #'+(i+1)+'</span>'}
+        <button class="wn-item-del" onclick="delWant(${w.id})">✕</button>
       </div>
-      ${isReward?'<div class="wn-item-reward">Unlocked!</div>':'<span style="font-size:11px;color:var(--ts);">Reward #'+(i+1)+'</span>'}
-      <button class="wn-item-del" onclick="delWant(${w.id})">✕</button>
+      ${pct!==null?`
+      <div style="padding:0 4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+          <span style="font-size:10px;color:var(--ts);">Buy it twice rule · need $${needed.toLocaleString()} saved income</span>
+          <span style="font-size:10px;font-weight:700;color:${canBuy?'var(--green)':'var(--t)'};">${pct}%</span>
+        </div>
+        <div style="height:5px;background:var(--bg-tag);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${canBuy?'var(--green)':'linear-gradient(90deg,var(--blue),var(--purple))'};border-radius:3px;transition:width .4s;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--ts);margin-top:3px;">${canBuy?`✅ You've logged $${totalIncome.toLocaleString()} — enough to buy this twice!`:`$${Math.min(totalIncome,needed).toLocaleString()} / $${needed.toLocaleString()} logged income`}</div>
+      </div>`:''}
     </div>`;
   }).join(''):'<div style="font-size:12px;color:var(--ts);padding:8px 0;">No wants yet</div>';
+
   nl.innerHTML=(S.needs||[]).length?S.needs.map(n=>`<div class="wn-item">
     <div class="wn-item-icon">✅</div>
     <div class="wn-item-info">
