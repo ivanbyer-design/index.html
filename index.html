@@ -4182,11 +4182,11 @@ function initAvatar(){
   if(!canvas||!window.THREE)return;
 
   const W=110,H=230;
-  canvas.width=W*2;canvas.height=H*2; // retina
   canvas.style.width=W+'px';canvas.style.height=H+'px';
 
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-  renderer.setSize(W*2,H*2,false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setSize(W,H);
   renderer.setClearColor(0x000000,0);
   renderer.shadowMap.enabled=true;
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -4197,145 +4197,130 @@ function initAvatar(){
   camera.lookAt(0,0.05,0);
 
   // ── LIGHTING ──
-  // Warm key light from front-left-top
-  const key=new THREE.DirectionalLight(0xfff5e6,1.1);
-  key.position.set(2,4,5);
-  key.castShadow=true;
-  scene.add(key);
-  // Cool fill from right
-  const fill=new THREE.DirectionalLight(0xe8f4ff,0.45);
-  fill.position.set(-3,1,2);
-  scene.add(fill);
-  // Rim/back light
-  const rim=new THREE.DirectionalLight(0xffeedd,0.35);
-  rim.position.set(0,2,-4);
-  scene.add(rim);
-  // Soft ambient
-  scene.add(new THREE.AmbientLight(0xffffff,0.55));
+  const key=new THREE.DirectionalLight(0xfff5e6,1.2);
+  key.position.set(2,4,5);key.castShadow=true;scene.add(key);
+  const fill=new THREE.DirectionalLight(0xe8f4ff,0.5);
+  fill.position.set(-3,1,2);scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xffeedd,0.4);
+  rim.position.set(0,2,-4);scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff,0.6));
 
-  // ── MATERIALS ──
-  const skin  =new THREE.MeshPhongMaterial({color:0xc68642,shininess:25,specular:0x331100});
-  const skinD =new THREE.MeshPhongMaterial({color:0xb5763a,shininess:15}); // slightly darker for sides
-  const hair  =new THREE.MeshPhongMaterial({color:0x1a0f0a,shininess:80,specular:0x220000});
-  const shirt =new THREE.MeshPhongMaterial({color:0x1a2e4a,shininess:30,specular:0x0a1a2a});
-  const shirtL=new THREE.MeshPhongMaterial({color:0x1e3554,shininess:20});
-  const pants =new THREE.MeshPhongMaterial({color:0x22283a,shininess:15});
-  const shoe  =new THREE.MeshPhongMaterial({color:0x0d0d0d,shininess:120,specular:0x444444});
-  const sole  =new THREE.MeshPhongMaterial({color:0xfafafa,shininess:30});
+  // ── MATERIALS (PBR) ──
+  const mkM=(c,r=0.75)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:0});
+  const skin =mkM(0xc68642,0.70);
+  const hair =mkM(0x1a0f0a,0.85);
+  const shirt=mkM(0x1a2e4a,0.80);
+  const pants=mkM(0x22283a,0.85);
+  const shoe =new THREE.MeshStandardMaterial({color:0x111111,roughness:0.3,metalness:0.1});
+  const sole =mkM(0xf0f0f0,0.75);
+  const eyeW =mkM(0xf5f2ee,0.90);
+  const eyeD =new THREE.MeshStandardMaterial({color:0x0a0400,roughness:0.05,metalness:0.5});
+  const lipM =mkM(0x9b4a2a,0.55);
 
-  // ── FIGURE GROUP ──
   const fig=new THREE.Group();
   scene.add(fig);
 
-  // helper: add a rounded-edge box mesh (uses BoxGeometry, simulates roundness via scale)
-  const add=(w,h,d,mat,x,y,z,parent=fig)=>{
-    const geo=new THREE.BoxGeometry(w,h,d);
-    const mesh=new THREE.Mesh(geo,mat);
-    mesh.position.set(x,y,z);
-    mesh.castShadow=true;
-    mesh.receiveShadow=true;
-    parent.add(mesh);
-    return mesh;
-  };
+  // helper: create mesh with optional non-uniform scale and rotation
+  function add(geo,mat,x,y,z,par=fig,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(x,y,z);
+    m.scale.set(sx,sy,sz);
+    m.rotation.set(rx,ry,rz);
+    m.castShadow=true;m.receiveShadow=true;
+    par.add(m);return m;
+  }
+  // geometry shortcuts
+  const SPH=(r,w=20,h=14)=>new THREE.SphereGeometry(r,w,h);
+  const SPHCAP=(r,w=20,h=10,arc=0.52)=>new THREE.SphereGeometry(r,w,h,0,Math.PI*2,0,Math.PI*arc);
+  const CYL=(rt,rb,ht,s=18)=>new THREE.CylinderGeometry(rt,rb,ht,s);
+  const BOX=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
 
   // ── HEAD ──
-  const headGrp=new THREE.Group();
-  fig.add(headGrp);
-  headGrp.position.set(0,0.865,0);
-  add(0.38,0.42,0.32,skin,   0,0,0,headGrp);          // skull + face
-  add(0.40,0.16,0.34,hair,   0,0.19,0,headGrp);        // hair top
-  add(0.38,0.10,0.06,hair,   0,0.08,-0.17,headGrp);    // hair back overhang
-  add(0.04,0.14,0.07,skin,  -0.20,0,0,headGrp);        // left ear
-  add(0.04,0.14,0.07,skin,   0.20,0,0,headGrp);        // right ear
+  const hg=new THREE.Group();fig.add(hg);hg.position.set(0,0.88,0);
+  add(SPH(0.22,24,16),skin,   0,0,0,hg,    1,1.1,0.9);          // skull – oval
+  add(SPHCAP(0.237),hair,     0,0.03,-0.01,hg);                  // hair dome cap
+  add(BOX(0.34,0.12,0.04),hair,0,-0.04,-0.205,hg);               // hair back overhang
+  add(SPH(0.055,12,8),skin,  -0.21,0,0,hg,  0.48,0.9,0.65);     // left ear
+  add(SPH(0.055,12,8),skin,   0.21,0,0,hg,  0.48,0.9,0.65);     // right ear
+  // eye whites
+  add(SPH(0.042,14,10),eyeW, -0.086,0.04,0.183,hg, 1.1,0.82,0.5);
+  add(SPH(0.042,14,10),eyeW,  0.086,0.04,0.183,hg, 1.1,0.82,0.5);
+  // irises/pupils
+  add(SPH(0.026,12,8),eyeD,  -0.086,0.04,0.203,hg);
+  add(SPH(0.026,12,8),eyeD,   0.086,0.04,0.203,hg);
   // eyebrows
-  add(0.07,0.02,0.02,hair,  -0.09,0.10,0.17,headGrp);
-  add(0.07,0.02,0.02,hair,   0.09,0.10,0.17,headGrp);
-  // eyes (dark)
-  const eyeM=new THREE.MeshPhongMaterial({color:0x2c1a0e,shininess:200,specular:0x888888});
-  add(0.06,0.05,0.02,eyeM, -0.09,0.04,0.17,headGrp);
-  add(0.06,0.05,0.02,eyeM,  0.09,0.04,0.17,headGrp);
+  add(BOX(0.075,0.014,0.012),hair,-0.086,0.117,0.207,hg, 1,1,1, 0,0,-0.10);
+  add(BOX(0.075,0.014,0.012),hair, 0.086,0.117,0.207,hg, 1,1,1, 0,0, 0.10);
   // nose
-  add(0.04,0.07,0.04,skinD,  0,-0.04,0.18,headGrp);
+  add(SPH(0.028,12,8),skin,   0,-0.035,0.215,hg, 1,1.25,0.8);
   // lips
-  const lipM=new THREE.MeshPhongMaterial({color:0xa0522d,shininess:60});
-  add(0.10,0.03,0.02,lipM,  0,-0.12,0.17,headGrp);
+  add(SPH(0.055,14,8),lipM,   0,-0.12,0.192,hg,  1.65,0.42,0.45);
 
   // ── NECK ──
-  add(0.13,0.15,0.13,skin, 0,0.60,0);
+  add(CYL(0.075,0.09,0.13,16),skin, 0,0.60,0);
 
-  // ── TORSO ──
-  // chest (slightly tapers)
-  add(0.54,0.34,0.24,shirt, 0,0.35,0);
-  add(0.50,0.28,0.22,shirt, 0,0.05,0);   // abdomen (slightly narrower)
-  // collar / neckline
-  add(0.14,0.05,0.03,shirt, 0,0.51,0.12);
+  // ── TORSO – tapered cylinders for chest/waist shape ──
+  add(CYL(0.27,0.21,0.34,20),shirt, 0,0.345,0);   // chest: wide top, narrows at waist
+  add(CYL(0.20,0.22,0.20,20),shirt, 0,0.07,0);    // abdomen: slight V-taper
 
-  // ── PELVIS / HIPS ──
-  add(0.52,0.20,0.23,pants, 0,-0.17,0);
+  // ── HIPS ──
+  add(CYL(0.23,0.21,0.20,20),pants, 0,-0.13,0);
 
-  // ── SHOULDERS (rounded) ──
-  const shdM=new THREE.MeshPhongMaterial({color:0x1e3a5a,shininess:25});
-  add(0.18,0.18,0.18,shdM,-0.36,0.50,0);
-  add(0.18,0.18,0.18,shdM, 0.36,0.50,0);
+  // ── SHOULDER CAPS ──
+  add(SPH(0.115,16,12),shirt, -0.345,0.50,0);
+  add(SPH(0.115,16,12),shirt,  0.345,0.50,0);
 
   // ── UPPER ARMS ──
-  add(0.17,0.34,0.17,shirtL,-0.37,0.25,0);
-  add(0.17,0.34,0.17,shirtL, 0.37,0.25,0);
+  add(CYL(0.078,0.088,0.30,16),shirt,-0.375,0.255,0);
+  add(CYL(0.078,0.088,0.30,16),shirt, 0.375,0.255,0);
+
+  // ── ELBOW JOINTS ──
+  add(SPH(0.082,14,10),skin,-0.375,0.085,0);
+  add(SPH(0.082,14,10),skin, 0.375,0.085,0);
 
   // ── FOREARMS ──
-  add(0.14,0.30,0.14,skin,-0.37,0.02 -0.15,0);  // slight offset
-  add(0.14,0.30,0.14,skin, 0.37,0.02 -0.15,0);
-  // rewrite with correct Y
-  fig.children[fig.children.length-1].position.set(0.37,-0.13,0);
-  fig.children[fig.children.length-2].position.set(-0.37,-0.13,0);
+  add(CYL(0.062,0.074,0.27,16),skin,-0.375,-0.105,0);
+  add(CYL(0.062,0.074,0.27,16),skin, 0.375,-0.105,0);
 
   // ── HANDS ──
-  const handGrpL=new THREE.Group();fig.add(handGrpL);handGrpL.position.set(-0.37,-0.30,0);
-  add(0.16,0.14,0.08,skin,0,0,0,handGrpL);
-  add(0.03,0.06,0.03,skin,-0.06,-0.09,0,handGrpL);
-  add(0.03,0.06,0.03,skin,-0.02,-0.10,0,handGrpL);
-  add(0.03,0.06,0.03,skin, 0.02,-0.10,0,handGrpL);
-  add(0.03,0.05,0.03,skin, 0.06,-0.09,0,handGrpL);
+  add(SPH(0.082,16,10),skin,-0.375,-0.275,0, fig, 1.18,0.88,0.62);
+  add(SPH(0.082,16,10),skin, 0.375,-0.275,0, fig, 1.18,0.88,0.62);
 
-  const handGrpR=new THREE.Group();fig.add(handGrpR);handGrpR.position.set(0.37,-0.30,0);
-  add(0.16,0.14,0.08,skin,0,0,0,handGrpR);
-  add(0.03,0.06,0.03,skin,-0.06,-0.09,0,handGrpR);
-  add(0.03,0.06,0.03,skin,-0.02,-0.10,0,handGrpR);
-  add(0.03,0.06,0.03,skin, 0.02,-0.10,0,handGrpR);
-  add(0.03,0.05,0.03,skin, 0.06,-0.09,0,handGrpR);
+  // ── THIGHS ──
+  add(CYL(0.108,0.122,0.38,18),pants,-0.135,-0.455,0);
+  add(CYL(0.108,0.122,0.38,18),pants, 0.135,-0.455,0);
 
-  // ── UPPER LEGS (thighs) ──
-  add(0.22,0.40,0.21,pants,-0.14,-0.47,0);
-  add(0.22,0.40,0.21,pants, 0.14,-0.47,0);
+  // ── KNEE JOINTS ──
+  add(SPH(0.108,14,10),pants,-0.135,-0.66,0);
+  add(SPH(0.108,14,10),pants, 0.135,-0.66,0);
 
-  // ── LOWER LEGS (shins) ──
-  add(0.17,0.37,0.17,pants,-0.14,-0.85,0);
-  add(0.17,0.37,0.17,pants, 0.14,-0.85,0);
+  // ── LOWER LEGS ──
+  add(CYL(0.082,0.096,0.34,16),pants,-0.135,-0.858,0);
+  add(CYL(0.082,0.096,0.34,16),pants, 0.135,-0.858,0);
 
   // ── FEET ──
-  const footGrpL=new THREE.Group();fig.add(footGrpL);footGrpL.position.set(-0.14,-1.09,0.04);
-  add(0.17,0.09,0.30,shoe,0,0,0,footGrpL);
-  add(0.17,0.03,0.30,sole,0,-0.06,0,footGrpL);  // sole
-
-  const footGrpR=new THREE.Group();fig.add(footGrpR);footGrpR.position.set(0.14,-1.09,0.04);
-  add(0.17,0.09,0.30,shoe,0,0,0,footGrpR);
-  add(0.17,0.03,0.30,sole,0,-0.06,0,footGrpR);
+  const fL=new THREE.Group();fig.add(fL);fL.position.set(-0.135,-1.075,0.04);
+  add(BOX(0.16,0.09,0.28),shoe, 0,0,0,fL);
+  add(BOX(0.16,0.03,0.28),sole, 0,-0.060,0,fL);
+  const fR=new THREE.Group();fig.add(fR);fR.position.set( 0.135,-1.075,0.04);
+  add(BOX(0.16,0.09,0.28),shoe, 0,0,0,fR);
+  add(BOX(0.16,0.03,0.28),sole, 0,-0.060,0,fR);
 
   // ── GROUND SHADOW ──
-  const shadowGeo=new THREE.CircleGeometry(0.28,32);
-  const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.18});
-  const shadow=new THREE.Mesh(shadowGeo,shadowMat);
-  shadow.rotation.x=-Math.PI/2;
-  shadow.position.set(0,-1.16,0);
-  scene.add(shadow);
+  const shadowMesh=new THREE.Mesh(
+    new THREE.CircleGeometry(0.28,32),
+    new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.18})
+  );
+  shadowMesh.rotation.x=-Math.PI/2;
+  shadowMesh.position.set(0,-1.16,0);
+  scene.add(shadowMesh);
 
   // ── ROTATION ──
   let rotY=0;
   (function animate(){
     requestAnimationFrame(animate);
-    rotY+=0.012; // smooth 360° rotation
+    rotY+=0.012;
     fig.rotation.y=rotY;
-    // very subtle camera bob
     camera.position.y=0.05+Math.sin(rotY*0.4)*0.04;
     renderer.render(scene,camera);
   })();
