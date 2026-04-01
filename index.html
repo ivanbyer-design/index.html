@@ -1202,20 +1202,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 /* hide the internal header row — quadrant cell header replaces it */
 .home-quad-cell .milestone-header{display:none;}
 
-/* Merged Weekly Snapshot + Daily Routines */
-.home-weekly-routines{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
-  align-items:start;
-  margin-top:4px;
-}
-.home-weekly-col{flex:1;}
-.home-routines-col{flex:1;}
-
 @media(max-width:768px){
   .home-quadrant{grid-template-columns:1fr;}
-  .home-weekly-routines{grid-template-columns:1fr;}
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1290,6 +1278,13 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .routine-complete-btn{font-family:var(--font);font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(135deg,#059669,#10b981);color:#fff;transition:opacity .15s,transform .1s;white-space:nowrap;}
 .routine-complete-btn:hover{opacity:0.88;transform:translateY(-1px);}
 .routine-complete-btn:disabled{opacity:0.4;cursor:default;transform:none;}
+
+/* ROUTINE JOURNAL */
+.routine-journal-wrap{margin-top:12px;border-top:1px solid var(--bd);padding-top:10px;}
+.routine-journal-lbl{font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.routine-journal-ta{width:100%;font-family:var(--font);font-size:13px;line-height:1.55;padding:9px 11px;border-radius:var(--r);border:1px solid var(--bd);background:var(--bg-in);color:var(--t);resize:vertical;min-height:72px;box-sizing:border-box;transition:border-color .15s;}
+.routine-journal-ta:focus{outline:none;border-color:var(--blue);}
+.routine-journal-ta::placeholder{color:var(--th);}
 
 /* PLANNING PAGE */
 .planning-tabs{display:flex;gap:0;border-bottom:2px solid var(--bd);margin:10px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
@@ -1409,17 +1404,10 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       </div>
       <div class="divider"></div>
 
-      <!-- MERGED: Weekly Snapshot + Daily Routines -->
-      <div class="home-weekly-routines">
-        <div class="home-weekly-col">
-          <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
-          <div id="home-weekly"></div>
-        </div>
-        <div class="home-routines-col">
-          <div class="bh2">🌤️ Daily Routines</div>
-          <div id="routines-container" style="margin-top:8px;"></div>
-        </div>
-      </div>
+      <!-- WEEKLY SNAPSHOT + DAILY ROUTINES (merged) -->
+      <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly Snapshot & Daily Routines</div>
+      <div id="home-weekly"></div>
+      <div id="routines-container" style="margin-top:12px;"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-proj-hdr" id="hdr-home-proj">🚀 Projects</div>
       <div id="home-proj-overview" style="margin:10px 0 4px;"></div>
@@ -4398,6 +4386,13 @@ function toggleRoutineCard(type){
   body.classList.toggle('open');
   if(chevron)chevron.style.transform=body.classList.contains('open')?'rotate(90deg)':'';
 }
+function saveRoutineJournal(type){
+  const ta=G('rj-'+type);if(!ta)return;
+  const jKey=today+'-'+type+'-journal';
+  if(!S.routineLog)S.routineLog={};
+  S.routineLog[jKey]=ta.value;
+  save();
+}
 function renderRoutines(){
   const el=G('routines-container');if(!el)return;
   const types=['morning','midday','night'];
@@ -4405,9 +4400,16 @@ function renderRoutines(){
     const def=ROUTINE_DEFS[type];
     const items=(S.routines&&S.routines[type])||[];
     const key=today+'-'+type;
+    const jKey=today+'-'+type+'-journal';
     const done=(S.routineLog&&S.routineLog[key])||[];
+    const journalVal=(S.routineLog&&S.routineLog[jKey])||'';
     const allDone=items.length>0&&done.length>=items.length;
     const countTxt=items.length?`${done.length}/${items.length}`:'0 items';
+    const jPlaceholders={
+      morning:'How are you feeling? What are your intentions for today?',
+      midday:'How is your day going? Any wins or blockers so far?',
+      night:'What went well today? What are you grateful for?',
+    };
     return`<div class="routine-card">
       <div class="routine-hdr" onclick="toggleRoutineCard('${type}')">
         <div class="routine-hdr-ic">${def.icon}</div>
@@ -4427,10 +4429,14 @@ function renderRoutines(){
             <button class="routine-item-del" onclick="delRoutineItem('${type}',${it.id})">✕</button>
           </div>`;
         }).join('')}
-        ${!items.length?'<div style="font-size:12px;color:var(--ts);padding:8px 0;">No items yet — add your first step below</div>':''}
+        ${!items.length?'<div style="font-size:12px;color:var(--ts);padding:8px 0;">No steps yet — add your first one below</div>':''}
         <div class="routine-add-row">
           <input class="routine-add-inp" id="ri-inp-${type}" placeholder="Add step..." onkeydown="if(event.key==='Enter')addRoutineItem('${type}')">
           <button class="routine-complete-btn" onclick="addRoutineItem('${type}')">＋ Add</button>
+        </div>
+        <div class="routine-journal-wrap">
+          <div class="routine-journal-lbl">✏️ Journal — ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})}</div>
+          <textarea class="routine-journal-ta" id="rj-${type}" placeholder="${jPlaceholders[type]}" onblur="saveRoutineJournal('${type}')">${journalVal}</textarea>
         </div>
       </div>
     </div>`;
