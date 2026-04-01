@@ -1455,6 +1455,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   <div class="ni draggable-ni" id="ni-goals" draggable="true" onclick="go('goals',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🎯</span><span class="ni-lb" id="sbl-goals">Goals</span></div>
   <div class="ni draggable-ni" id="ni-planning" draggable="true" onclick="go('planning',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🗓️</span><span class="ni-lb" id="sbl-planning">Planning</span></div>
   <div class="ni draggable-ni" id="ni-projects" draggable="true" onclick="go('projects',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🚀</span><span class="ni-lb" id="sbl-projects">Projects</span></div>
+  <div class="ni draggable-ni" id="ni-routinizer" draggable="true" onclick="go('routinizer',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🔁</span><span class="ni-lb" id="sbl-routinizer">Routinizer</span></div>
   <div class="sb-div" id="sb-custom-div"></div>
   <div id="sb-custom-pages"></div>
   <div style="padding:4px 8px 2px;">
@@ -1517,9 +1518,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           <div class="home-quad-hdr">📊 Today at a Glance</div>
           <div id="home-stats-quad"></div>
         </div>
-        <div class="home-quad-cell home-quad-cell--routines">
-          <div class="home-quad-hdr">🌤️ Daily Routines</div>
-          <div id="routines-container"></div>
+        <div class="home-quad-cell">
+          <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">🔔 Needs Attention <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a></div>
+          <div id="home-attn" style="margin-top:6px;"></div>
         </div>
       </div>
       <div class="divider"></div>
@@ -1540,9 +1541,6 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           <div id="home-finance-milestone"></div>
         </div>
       </div>
-      <div class="divider"></div>
-      <div class="home-quad-hdr" style="margin-bottom:6px;">🔔 Needs Attention</div>
-      <div id="home-attn"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-proj-hdr" id="hdr-home-proj">🚀 Projects</div>
       <div id="home-proj-overview" style="margin:10px 0 4px;"></div>
@@ -2008,6 +2006,36 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
     </div>
 
     <!-- SETTINGS -->
+    <!-- ROUTINIZER -->
+    <div class="panel" id="p-routinizer">
+      <button class="mob-menu-float" onclick="openSB()">☰</button>
+      <div class="fin-page-header">
+        <div class="fin-page-header-left">
+          <div class="fin-page-icon">🔁</div>
+          <div>
+            <div class="fin-page-title">Routinizer</div>
+            <div class="fin-page-sub">Build your day through daily routines</div>
+          </div>
+        </div>
+      </div>
+      <div id="routinizer-summary" style="margin-bottom:16px;"></div>
+      <!-- built-in routines rendered here -->
+      <div id="routines-container"></div>
+      <!-- custom routines -->
+      <div id="routines-custom-container" style="margin-top:8px;"></div>
+      <!-- add new routine -->
+      <div class="nf" style="margin-top:16px;">
+        <div class="nf-ttl">＋ Create new routine</div>
+        <div class="fr">
+          <input class="fi" id="rtz-icon" placeholder="🏋️ Icon" style="max-width:72px;text-align:center;font-size:18px;">
+          <input class="fi" id="rtz-name" placeholder="Routine name (e.g. Workout)" style="min-width:160px;">
+          <input class="fi" id="rtz-sub"  placeholder="Description (optional)">
+          <input class="fi" id="rtz-pts"  type="number" placeholder="Pts" value="15" style="max-width:70px;">
+          <button class="btn pri" onclick="addCustomRoutine()">Create</button>
+        </div>
+      </div>
+    </div>
+
     <div class="panel" id="p-settings">
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="stt-hero">
@@ -2212,6 +2240,7 @@ if(!S.routineLog)S.routineLog={};
 if(!S.points)S.points={personal:0,financial:0};
 if(!S.milestones)S.milestones={personalLevel:1,financialLevel:1,claimedRewards:[]};
 if(!S.savingsAccounts)S.savingsAccounts=[];
+if(!S.customRoutines)S.customRoutines=[];
 const save=()=>{try{localStorage.setItem('lifeOS_v3',JSON.stringify(S));}catch(e){}};
 
 // DARK MODE
@@ -2233,7 +2262,7 @@ function openSB(){G('sb').classList.add('open');G('sb-overlay').classList.add('o
 function closeSB(){G('sb').classList.remove('open');G('sb-overlay').classList.remove('open');}
 
 // NAV
-const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},planning:{ic:'🗓️',ttl:'Planning'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'},settings:{ic:'⚙️',ttl:'Settings'}};
+const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},planning:{ic:'🗓️',ttl:'Planning'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'},routinizer:{ic:'🔁',ttl:'Routinizer'},settings:{ic:'⚙️',ttl:'Settings'}};
 function go(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -4543,41 +4572,6 @@ const ROUTINE_DEFS={
   midday: {icon:'☀️', title:'Midday Check-in', sub:'Reset and refocus',pts:10},
   night:  {icon:'🌙',title:'Night Routine',   sub:'Wind down and reflect',pts:20},
 };
-function addRoutineItem(type){
-  const inp=G('ri-inp-'+type);if(!inp)return;
-  const text=inp.value.trim();if(!text)return;
-  if(!S.routines)S.routines={morning:[],midday:[],night:[]};
-  if(!S.routines[type])S.routines[type]=[];
-  S.routines[type].push({t:text,id:Date.now()});
-  inp.value='';save();renderRoutines();
-}
-function delRoutineItem(type,id){
-  if(!S.routines||!S.routines[type])return;
-  S.routines[type]=S.routines[type].filter(r=>r.id!==id);
-  save();renderRoutines();
-}
-function togRoutineItem(type,id,checked){
-  if(!S.routineLog)S.routineLog={};
-  const key=today+'-'+type;
-  if(!S.routineLog[key])S.routineLog[key]=[];
-  if(checked){
-    if(!S.routineLog[key].includes(id))S.routineLog[key].push(id);
-  }else{
-    S.routineLog[key]=S.routineLog[key].filter(x=>x!==id);
-  }
-  // Check if routine is now complete
-  const items=S.routines[type]||[];
-  const done=S.routineLog[key];
-  if(items.length&&done.length===items.length){
-    // Award completion bonus (only once per day)
-    const bonusKey=today+'-'+type+'-bonus';
-    if(!S.routineLog[bonusKey]){
-      S.routineLog[bonusKey]=true;
-      addPersonalPoints(ROUTINE_DEFS[type].pts,'Completed '+type+' routine');
-    }
-  }
-  save();renderRoutines();
-}
 function toggleRoutineCard(type){
   const body=G('routine-body-'+type);
   const chevron=G('routine-chevron-'+type);
@@ -4589,9 +4583,49 @@ function saveRoutineJournal(type){
   const ta=G('rj-'+type);if(!ta)return;
   const jKey=today+'-'+type+'-journal';
   if(!S.routineLog)S.routineLog={};
-  S.routineLog[jKey]=ta.value;
-  save();
+  S.routineLog[jKey]=ta.value;save();
 }
+function buildRoutineCard(type, def, items, done, journalVal){
+  const allDone=items.length>0&&done.length>=items.length;
+  const countTxt=items.length?`${done.length}/${items.length}`:'0 items';
+  const jPlaceholders={
+    morning:'How are you feeling? What are your intentions for today?',
+    midday:'How is your day going? Any wins or blockers so far?',
+    night:'What went well today? What are you grateful for?',
+  };
+  const placeholder=jPlaceholders[type]||'How did this routine go?';
+  return`<div class="routine-card">
+    <div class="routine-hdr" onclick="toggleRoutineCard('${type}')">
+      <div class="routine-hdr-ic">${def.icon}</div>
+      <div class="routine-hdr-info">
+        <div class="routine-hdr-title">${def.title}</div>
+        <div class="routine-hdr-sub">${def.sub} · +${def.pts}pts on completion</div>
+      </div>
+      <div class="routine-hdr-badge${allDone?' complete':''}"><span>${allDone?'✓ Done':countTxt}</span></div>
+      <div class="routine-hdr-chevron" id="routine-chevron-${type}">›</div>
+    </div>
+    <div class="routine-body" id="routine-body-${type}">
+      ${items.map(it=>{
+        const checked=done.includes(it.id);
+        return`<div class="routine-item-row">
+          <input type="checkbox" class="routine-item-check" ${checked?'checked':''} onchange="togRoutineItem('${type}',${it.id},this.checked)">
+          <span class="routine-item-label${checked?' done':''}">${it.t}</span>
+          <button class="routine-item-del" onclick="delRoutineItem('${type}',${it.id})">✕</button>
+        </div>`;
+      }).join('')}
+      ${!items.length?'<div style="font-size:12px;color:var(--ts);padding:8px 0;">No steps yet — add your first one below</div>':''}
+      <div class="routine-add-row">
+        <input class="routine-add-inp" id="ri-inp-${type}" placeholder="Add step..." onkeydown="if(event.key===\'Enter\')addRoutineItem(\'${type}\')">
+        <button class="routine-complete-btn" onclick="addRoutineItem('${type}')">＋ Add</button>
+      </div>
+      <div class="routine-journal-wrap">
+        <div class="routine-journal-lbl">✏️ Journal — ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})}</div>
+        <textarea class="routine-journal-ta" id="rj-${type}" placeholder="${placeholder}" onblur="saveRoutineJournal('${type}')">${journalVal}</textarea>
+      </div>
+    </div>
+  </div>`;
+}
+
 function renderRoutines(){
   const el=G('routines-container');if(!el)return;
   const types=['morning','midday','night'];
@@ -4602,44 +4636,118 @@ function renderRoutines(){
     const jKey=today+'-'+type+'-journal';
     const done=(S.routineLog&&S.routineLog[key])||[];
     const journalVal=(S.routineLog&&S.routineLog[jKey])||'';
-    const allDone=items.length>0&&done.length>=items.length;
-    const countTxt=items.length?`${done.length}/${items.length}`:'0 items';
-    const jPlaceholders={
-      morning:'How are you feeling? What are your intentions for today?',
-      midday:'How is your day going? Any wins or blockers so far?',
-      night:'What went well today? What are you grateful for?',
-    };
-    return`<div class="routine-card">
-      <div class="routine-hdr" onclick="toggleRoutineCard('${type}')">
-        <div class="routine-hdr-ic">${def.icon}</div>
-        <div class="routine-hdr-info">
-          <div class="routine-hdr-title">${def.title}</div>
-          <div class="routine-hdr-sub">${def.sub} · +${def.pts}pts on completion</div>
-        </div>
-        <div class="routine-hdr-badge${allDone?' complete':''}"><span>${allDone?'✓ Done':countTxt}</span></div>
-        <div class="routine-hdr-chevron" id="routine-chevron-${type}">›</div>
-      </div>
-      <div class="routine-body" id="routine-body-${type}">
-        ${items.map(it=>{
-          const checked=done.includes(it.id);
-          return`<div class="routine-item-row">
-            <input type="checkbox" class="routine-item-check" ${checked?'checked':''} onchange="togRoutineItem('${type}',${it.id},this.checked)">
-            <span class="routine-item-label${checked?' done':''}">${it.t}</span>
-            <button class="routine-item-del" onclick="delRoutineItem('${type}',${it.id})">✕</button>
-          </div>`;
-        }).join('')}
-        ${!items.length?'<div style="font-size:12px;color:var(--ts);padding:8px 0;">No steps yet — add your first one below</div>':''}
-        <div class="routine-add-row">
-          <input class="routine-add-inp" id="ri-inp-${type}" placeholder="Add step..." onkeydown="if(event.key==='Enter')addRoutineItem('${type}')">
-          <button class="routine-complete-btn" onclick="addRoutineItem('${type}')">＋ Add</button>
-        </div>
-        <div class="routine-journal-wrap">
-          <div class="routine-journal-lbl">✏️ Journal — ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})}</div>
-          <textarea class="routine-journal-ta" id="rj-${type}" placeholder="${jPlaceholders[type]}" onblur="saveRoutineJournal('${type}')">${journalVal}</textarea>
-        </div>
-      </div>
-    </div>`;
+    return buildRoutineCard(type,def,items,done,journalVal);
   }).join('');
+
+  // Custom routines
+  const customEl=G('routines-custom-container');
+  if(customEl){
+    const customs=S.customRoutines||[];
+    customEl.innerHTML=customs.map(cr=>{
+      const key=today+'-cr-'+cr.id;
+      const jKey=today+'-cr-'+cr.id+'-journal';
+      const items=cr.steps||[];
+      const done=(S.routineLog&&S.routineLog[key])||[];
+      const journalVal=(S.routineLog&&S.routineLog[jKey])||'';
+      const def={icon:cr.icon||'🔁',title:cr.name,sub:cr.sub||'Custom routine',pts:cr.pts||10};
+      return buildRoutineCard('cr-'+cr.id,def,items,done,journalVal)+
+        `<div style="text-align:right;margin-top:-6px;padding-bottom:4px;">
+           <button onclick="delCustomRoutine(${cr.id})" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:var(--font);">✕ Delete routine</button>
+         </div>`;
+    }).join('');
+  }
+
+  // Routinizer summary bar
+  const sumEl=G('routinizer-summary');
+  if(sumEl){
+    const allTypes=['morning','midday','night',...(S.customRoutines||[]).map(cr=>'cr-'+cr.id)];
+    let totalDone=0,totalRoutines=0;
+    allTypes.forEach(type=>{
+      const isCustom=type.startsWith('cr-');
+      const cid=isCustom?parseInt(type.replace('cr-','')):-1;
+      const items=isCustom?(S.customRoutines.find(r=>r.id===cid)?.steps||[]):(S.routines&&S.routines[type])||[];
+      if(!items.length)return;
+      totalRoutines++;
+      const key=today+'-'+type;
+      const done=(S.routineLog&&S.routineLog[key])||[];
+      if(done.length>=items.length)totalDone++;
+    });
+    const pct=totalRoutines?Math.round(totalDone/totalRoutines*100):0;
+    sumEl.innerHTML=`<div style="background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(168,85,247,0.05));border:1px solid rgba(124,58,237,0.2);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Today's Progress</div>
+        <div style="font-size:22px;font-weight:800;color:var(--t);">${totalDone} / ${totalRoutines} <span style="font-size:13px;font-weight:500;color:var(--ts);">routines complete</span></div>
+        <div style="height:5px;background:var(--bg-tag);border-radius:3px;overflow:hidden;margin-top:8px;">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#7c3aed,#a855f7);border-radius:3px;transition:width .4s;"></div>
+        </div>
+      </div>
+      <div style="font-size:36px;">${pct===100?'🏆':'🔁'}</div>
+    </div>`;
+  }
+}
+
+// ── CUSTOM ROUTINES ──
+function addCustomRoutine(){
+  const name=G('rtz-name').value.trim();if(!name)return;
+  const icon=G('rtz-icon').value.trim()||'🔁';
+  const sub=G('rtz-sub').value.trim()||'Custom routine';
+  const pts=parseInt(G('rtz-pts').value)||10;
+  if(!S.customRoutines)S.customRoutines=[];
+  S.customRoutines.push({id:Date.now(),name,icon,sub,pts,steps:[]});
+  G('rtz-name').value='';G('rtz-icon').value='';G('rtz-sub').value='';G('rtz-pts').value='15';
+  save();renderRoutines();
+}
+function delCustomRoutine(id){
+  S.customRoutines=(S.customRoutines||[]).filter(r=>r.id!==id);
+  save();renderRoutines();
+}
+function addRoutineItem(type){
+  const inp=G('ri-inp-'+type);if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
+  if(type.startsWith('cr-')){
+    const cid=parseInt(type.replace('cr-',''));
+    const cr=(S.customRoutines||[]).find(r=>r.id===cid);
+    if(cr){if(!cr.steps)cr.steps=[];cr.steps.push({t:text,id:Date.now()});}
+  } else {
+    if(!S.routines)S.routines={morning:[],midday:[],night:[]};
+    if(!S.routines[type])S.routines[type]=[];
+    S.routines[type].push({t:text,id:Date.now()});
+  }
+  inp.value='';save();renderRoutines();
+}
+function delRoutineItem(type,id){
+  if(type.startsWith('cr-')){
+    const cid=parseInt(type.replace('cr-',''));
+    const cr=(S.customRoutines||[]).find(r=>r.id===cid);
+    if(cr)cr.steps=cr.steps.filter(s=>s.id!==id);
+  } else {
+    if(!S.routines||!S.routines[type])return;
+    S.routines[type]=S.routines[type].filter(r=>r.id!==id);
+  }
+  save();renderRoutines();
+}
+function togRoutineItem(type,id,checked){
+  if(!S.routineLog)S.routineLog={};
+  const key=today+'-'+type;
+  if(!S.routineLog[key])S.routineLog[key]=[];
+  if(checked){if(!S.routineLog[key].includes(id))S.routineLog[key].push(id);}
+  else{S.routineLog[key]=S.routineLog[key].filter(x=>x!==id);}
+  // Award completion points
+  let items,pts;
+  if(type.startsWith('cr-')){
+    const cid=parseInt(type.replace('cr-',''));
+    const cr=(S.customRoutines||[]).find(r=>r.id===cid);
+    items=cr?.steps||[];pts=cr?.pts||10;
+  } else {
+    items=(S.routines&&S.routines[type])||[];
+    pts=ROUTINE_DEFS[type]?.pts||10;
+  }
+  const done=S.routineLog[key];
+  if(items.length&&done.length===items.length){
+    const bonusKey=today+'-'+type+'-bonus';
+    if(!S.routineLog[bonusKey]){S.routineLog[bonusKey]=true;addPersonalPoints(pts,'Completed '+type+' routine');}
+  }
+  save();renderRoutines();
 }
 
 // ── PLANNING TAB SWITCHER ──
@@ -7039,6 +7147,10 @@ function resetAllData(){
   <button class="bn-item" id="bn-projects" onclick="go('projects',document.getElementById('ni-projects'));updateBN('projects')">
     <span class="bn-icon">🚀</span>
     <span class="bn-label">Projects</span>
+  </button>
+  <button class="bn-item" id="bn-routinizer" onclick="go('routinizer',document.getElementById('ni-routinizer'));updateBN('routinizer')">
+    <span class="bn-icon">🔁</span>
+    <span class="bn-label">Routines</span>
   </button>
   <button class="bn-item" id="bn-settings" onclick="go('settings',document.getElementById('ni-settings'));updateBN('settings')">
     <span class="bn-icon">⚙️</span>
