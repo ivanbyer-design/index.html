@@ -1202,6 +1202,30 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 /* hide the internal header row — quadrant cell header replaces it */
 .home-quad-cell .milestone-header{display:none;}
 
+/* Stats quadrant cell */
+.home-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+.hsg-card{background:var(--bg-h);border:1px solid var(--bd);border-radius:var(--r);padding:12px 10px;cursor:pointer;transition:background .12s;}
+.hsg-card:hover{background:var(--bg-a);}
+.hsg-lb{font-size:10.5px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+.hsg-vl{font-size:20px;font-weight:800;color:var(--t);letter-spacing:-0.02em;line-height:1.1;}
+.hsg-vl.up{color:var(--green);}
+.hsg-vl.dn{color:var(--red);}
+.hsg-vl.amb{color:var(--amber);}
+.hsg-sub{font-size:10px;color:var(--ts);margin-top:3px;}
+
+/* Routines cell — scrollable when tall */
+.home-quad-cell--routines{padding:14px 10px;}
+.home-quad-cell--routines #routines-container{max-height:360px;overflow-y:auto;}
+/* compact routine cards inside quadrant */
+.home-quad-cell--routines .routine-card{margin-bottom:6px;}
+.home-quad-cell--routines .routine-hdr{padding:10px 12px;}
+.home-quad-cell--routines .routine-body{padding:0 12px 10px;}
+.home-quad-cell--routines .routine-journal-ta{min-height:56px;}
+
+/* align top quadrant cells to stretch full height */
+.home-top-quadrant{align-items:stretch;}
+.home-top-quadrant .home-quad-cell{display:flex;flex-direction:column;}
+
 @media(max-width:768px){
   .home-quadrant{grid-template-columns:1fr;}
 }
@@ -1385,13 +1409,29 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         <div class="avatar-float">
           <canvas id="avatar-canvas"></canvas>
         </div>
-        <div class="home-hero-stats" id="home-hero-stats">
-          <!-- filled by renderHome -->
-        </div>
+        <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
       </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
 
-      <!-- QUADRANT: Personal Progress + Needs Attention -->
+      <!-- TOP QUADRANT: Stats | Routines -->
+      <div class="home-quadrant home-top-quadrant">
+        <div class="home-quad-cell">
+          <div class="home-quad-hdr">📊 Today at a Glance</div>
+          <div id="home-stats-quad"></div>
+        </div>
+        <div class="home-quad-cell home-quad-cell--routines">
+          <div class="home-quad-hdr">🌤️ Daily Routines</div>
+          <div id="routines-container"></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <!-- WEEKLY SNAPSHOT -->
+      <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly Snapshot</div>
+      <div id="home-weekly"></div>
+      <div class="divider"></div>
+
+      <!-- BOTTOM QUADRANT: Personal Progress | Needs Attention -->
       <div class="home-quadrant">
         <div class="home-quad-cell">
           <div class="home-quad-hdr">⚡ Personal Progress</div>
@@ -1402,12 +1442,6 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           <div id="home-attn" style="margin-top:6px;"></div>
         </div>
       </div>
-      <div class="divider"></div>
-
-      <!-- WEEKLY SNAPSHOT + DAILY ROUTINES (merged) -->
-      <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly Snapshot & Daily Routines</div>
-      <div id="home-weekly"></div>
-      <div id="routines-container" style="margin-top:12px;"></div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-proj-hdr" id="hdr-home-proj">🚀 Projects</div>
       <div id="home-proj-overview" style="margin:10px 0 4px;"></div>
@@ -3381,9 +3415,9 @@ function renderHome(){
   const streakEl=G('home-streak-num');
   if(streakEl)streakEl.textContent=streak||'—';
 
-  // ── HERO STAT CARDS ──
-  const heroEl=G('home-hero-stats');
-  if(heroEl){
+  // ── STATS QUADRANT ──
+  const statsEl=G('home-stats-quad');
+  if(statsEl){
     const now=new Date();
     const mPrefix=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
     const mFin=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPrefix));
@@ -3396,32 +3430,33 @@ function renderHome(){
     const totalToday=todayTasks.length+todayRec.length;
     const habitsDoneToday=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
     const habitsTotal=S.habits.length;
-    const unpaidBills=S.bills.filter(b=>b.s==='Unpaid').length;
     const unpaidBillsAmt=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
     const activeDebts=(S.otherPayments||[]).filter(p=>p.s!=='paid');
     const activeDebtsAmt=activeDebts.reduce((s,p)=>s+p.a,0);
     const totalOwed=unpaidBillsAmt+activeDebtsAmt;
-    heroEl.innerHTML=`
-      <div class="hero-stat" onclick="navToPage('finance')">
-        <div class="hero-stat-lb">Net this month</div>
-        <div class="hero-stat-vl ${mNet>=0?'up':'dn'}">${fmtS(mNet)}</div>
-        <div class="hero-stat-sub">${fmt(mInc)} in · ${fmt(mExp)} out</div>
+    const unpaidBills=S.bills.filter(b=>b.s==='Unpaid').length;
+    statsEl.innerHTML=`<div class="home-stats-grid">
+      <div class="hsg-card" onclick="navToPage('finance')">
+        <div class="hsg-lb">Net month</div>
+        <div class="hsg-vl ${mNet>=0?'up':'dn'}">${fmtS(mNet)}</div>
+        <div class="hsg-sub">${fmt(mInc)} in · ${fmt(mExp)} out</div>
       </div>
-      <div class="hero-stat" onclick="navToPage('todos')">
-        <div class="hero-stat-lb">Tasks today</div>
-        <div class="hero-stat-vl ${totalToday===0?'':'amb'}">${totalToday}</div>
-        <div class="hero-stat-sub">remaining</div>
+      <div class="hsg-card" onclick="navToPage('planning')">
+        <div class="hsg-lb">Tasks today</div>
+        <div class="hsg-vl ${totalToday===0?'up':'amb'}">${totalToday}</div>
+        <div class="hsg-sub">${totalToday===0?'All clear':'remaining'}</div>
       </div>
-      <div class="hero-stat" onclick="navToPage('habits')">
-        <div class="hero-stat-lb">Habits today</div>
-        <div class="hero-stat-vl ${habitsTotal?habitsDoneToday===habitsTotal?'up':'amb':''}">${habitsTotal?habitsDoneToday+'/'+habitsTotal:'—'}</div>
-        <div class="hero-stat-sub">${habitsTotal?Math.round(habitsDoneToday/habitsTotal*100)+'% done':'No habits set'}</div>
+      <div class="hsg-card" onclick="navToPage('planning')">
+        <div class="hsg-lb">Habits today</div>
+        <div class="hsg-vl ${habitsTotal?habitsDoneToday===habitsTotal?'up':'amb':''}">${habitsTotal?habitsDoneToday+'/'+habitsTotal:'—'}</div>
+        <div class="hsg-sub">${habitsTotal?Math.round(habitsDoneToday/habitsTotal*100)+'% done':'no habits set'}</div>
       </div>
-      <div class="hero-stat" onclick="navToPage('finance')">
-        <div class="hero-stat-lb">Total owed</div>
-        <div class="hero-stat-vl ${totalOwed>0?'dn':''}">${totalOwed>0?fmt(totalOwed):'✓'}</div>
-        <div class="hero-stat-sub">${unpaidBills} bill${unpaidBills!==1?'s':''} · ${activeDebts.length} debt${activeDebts.length!==1?'s':''}</div>
-      </div>`;
+      <div class="hsg-card" onclick="navToPage('finance')">
+        <div class="hsg-lb">Total owed</div>
+        <div class="hsg-vl ${totalOwed>0?'dn':'up'}">${totalOwed>0?fmt(totalOwed):'$0'}</div>
+        <div class="hsg-sub">${unpaidBills} bill${unpaidBills!==1?'s':''} · ${activeDebts.length} debt${activeDebts.length!==1?'s':''}</div>
+      </div>
+    </div>`;
   }
   renderProjectOverview();
 
