@@ -1597,6 +1597,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         <button class="fin-tab"   id="ftab-entries"    onclick="switchFinTab('entries',this)">📋 Transactions</button>
         <button class="fin-tab"   id="ftab-bills"      onclick="switchFinTab('bills',this)">🧾 Bills</button>
         <button class="fin-tab"   id="ftab-payments"   onclick="switchFinTab('payments',this)">💸 Other Debts</button>
+        <button class="fin-tab"   id="ftab-savings"    onclick="switchFinTab('savings',this)">🏦 Savings</button>
         <button class="fin-tab"   id="ftab-wants"      onclick="switchFinTab('wants',this)">🎯 Wants & Needs</button>
       </div>
 
@@ -1667,6 +1668,21 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       </div>
 
       <!-- TAB: WANTS & NEEDS -->
+      <!-- TAB: SAVINGS ACCOUNTS -->
+      <div id="ftab-savings-body" style="display:none;">
+        <div id="savings-total-bar" style="margin:14px 0 16px;"></div>
+        <div id="savings-accounts-list"></div>
+        <div class="nf" style="margin-top:14px;">
+          <div class="nf-ttl">＋ Add savings account</div>
+          <div class="fr">
+            <input class="fi" type="text" id="sav-name" placeholder="Account name (e.g. Emergency Fund)" style="min-width:160px;">
+            <input class="fi" type="number" id="sav-bal" placeholder="Current balance ($)" step="0.01" style="max-width:160px;">
+            <input class="fi" type="text" id="sav-note" placeholder="Note (optional)" style="max-width:140px;">
+            <button class="btn pri" onclick="addSavingsAccount()">Add</button>
+          </div>
+        </div>
+      </div>
+
       <div id="ftab-wants-body" style="display:none;">
         <div class="wn-grid">
           <div>
@@ -2195,6 +2211,7 @@ if(!S.routines)S.routines={morning:[],midday:[],night:[]};
 if(!S.routineLog)S.routineLog={};
 if(!S.points)S.points={personal:0,financial:0};
 if(!S.milestones)S.milestones={personalLevel:1,financialLevel:1,claimedRewards:[]};
+if(!S.savingsAccounts)S.savingsAccounts=[];
 const save=()=>{try{localStorage.setItem('lifeOS_v3',JSON.stringify(S));}catch(e){}};
 
 // DARK MODE
@@ -2431,11 +2448,12 @@ function switchFinTab(tab,btn){
   activeFinTab=tab;
   document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
   if(btn)btn.classList.add('on');
-  ['overview','entries','bills','payments','wants'].forEach(t=>{
+  ['overview','entries','bills','payments','savings','wants'].forEach(t=>{
     const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
   });
   if(tab==='overview'){setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);}
   if(tab==='entries'){buildCatSelect('fi-c','expense');}
+  if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
 }
 
@@ -4451,9 +4469,7 @@ function renderFinancialMilestone(){
   const cur=getLevelInfo(pts,FINANCIAL_LEVELS);
   const next=getNextLevel(pts,FINANCIAL_LEVELS);
   const pct=cur.level===5?100:Math.min(100,Math.round((pts-cur.min)/(next.min-cur.min)*100));
-  const totalIncome =S.finance.filter(f=>f.t==='income' ).reduce((s,f)=>s+f.a,0);
-  const totalExpenses=S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
-  const netSavings=Math.max(0,totalIncome-totalExpenses); // can't go below 0 for progress purposes
+  const netSavings=totalSavings(); // can't go below 0 for progress purposes
   // Top wants with prices, sorted by closest to unlock
   const wantsWithPrice=(S.wants||[]).filter(w=>w.price>0).sort((a,b)=>{
     const pa=Math.min(100,Math.round(netSavings/(a.price*2)*100));
@@ -4496,7 +4512,7 @@ function renderFinancialMilestone(){
       ${cur.level<5?`<div class="milestone-pts-next">/ ${next.min} for Lv${next.level}</div>`:'<div class="milestone-pts-next" style="color:var(--amber);">MAX LEVEL 🏆</div>'}
     </div>
     <div class="milestone-bar-wrap"><div class="milestone-bar-fill financial" style="width:${pct}%"></div></div>
-    <div class="milestone-reward-hint" style="${netSavings>0?'':''}">💰 Savings: <strong style="color:${netSavings>0?'var(--green)':'var(--ts)'};">${fmt(netSavings)}</strong></div>
+    <div class="milestone-reward-hint">🏦 Savings: <strong style="color:${netSavings>0?'var(--green)':'var(--ts)'};">${fmt(netSavings)}</strong>${netSavings===0?' · <a onclick="switchFinTab(\'savings\',G(\'ftab-savings\'));go(\'finance\',G(\'ni-finance\'))" style="color:var(--blue);cursor:pointer;text-decoration:none;">Add accounts →</a>':''}</div>
     ${readyToBuy.length?`<div class="milestone-reward-hint" style="color:var(--green);font-weight:600;margin-top:4px;">✅ ${readyToBuy.length} want${readyToBuy.length>1?'s':''} ready to buy!</div>`:''}
     ${wantsWithPrice.length?`
     <div style="margin-top:10px;border-top:1px solid var(--bd);padding-top:10px;">
@@ -4635,6 +4651,62 @@ function switchPlanTab(tab, btn){
   if(body)body.classList.add('on');
 }
 
+// ── SAVINGS ACCOUNTS ──
+function totalSavings(){
+  return (S.savingsAccounts||[]).reduce((s,a)=>s+(a.balance||0),0);
+}
+function addSavingsAccount(){
+  const name=G('sav-name').value.trim();if(!name)return;
+  const balance=parseFloat(G('sav-bal').value)||0;
+  const note=G('sav-note').value.trim();
+  S.savingsAccounts.push({id:Date.now(),name,balance,note});
+  G('sav-name').value='';G('sav-bal').value='';G('sav-note').value='';
+  save();renderSavingsAccounts();renderFinancialMilestone();renderWantsNeeds();
+}
+function delSavingsAccount(id){
+  S.savingsAccounts=S.savingsAccounts.filter(a=>a.id!==id);
+  save();renderSavingsAccounts();renderFinancialMilestone();renderWantsNeeds();
+}
+function updateSavingsBalance(id,val){
+  const a=S.savingsAccounts.find(a=>a.id===id);
+  if(a){a.balance=parseFloat(val)||0;save();renderSavingsAccounts();renderFinancialMilestone();renderWantsNeeds();}
+}
+function renderSavingsAccounts(){
+  const listEl=G('savings-accounts-list');
+  const totalEl=G('savings-total-bar');
+  if(!listEl||!totalEl)return;
+  const accs=S.savingsAccounts||[];
+  const total=totalSavings();
+
+  totalEl.innerHTML=`
+    <div style="background:linear-gradient(135deg,rgba(5,150,105,0.12),rgba(16,185,129,0.06));border:1px solid rgba(5,150,105,0.25);border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Total Savings</div>
+        <div style="font-size:28px;font-weight:800;color:var(--green);letter-spacing:-0.02em;">${fmt(total)}</div>
+        <div style="font-size:12px;color:var(--ts);margin-top:2px;">${accs.length} account${accs.length!==1?'s':''}</div>
+      </div>
+      <div style="font-size:36px;">🏦</div>
+    </div>`;
+
+  if(!accs.length){
+    listEl.innerHTML=`<div class="day-empty" style="margin:12px 0;">No savings accounts yet — add one below.</div>`;
+    return;
+  }
+  listEl.innerHTML=accs.map(a=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--bd);">
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏦</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:600;color:var(--t);">${a.name}</div>
+        ${a.note?`<div style="font-size:11px;color:var(--ts);">${a.note}</div>`:''}
+      </div>
+      <input type="number" step="0.01" value="${a.balance||0}"
+        style="width:120px;padding:6px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg-h);color:var(--t);font-family:var(--font);font-size:13px;font-weight:600;text-align:right;"
+        onchange="updateSavingsBalance(${a.id},this.value)"
+        onblur="updateSavingsBalance(${a.id},this.value)">
+      <button class="wn-item-del" onclick="delSavingsAccount(${a.id})">✕</button>
+    </div>`).join('');
+}
+
 // ── WANTS & NEEDS ──
 function addWant(){
   const name=G('wn-w-name').value.trim();if(!name)return;
@@ -4663,9 +4735,7 @@ function renderWantsNeeds(){
   const wl=G('wn-wants-list');const nl=G('wn-needs-list');
   if(!wl||!nl)return;
   const claimed=S.milestones.claimedRewards||[];
-  const _inc =S.finance.filter(f=>f.t==='income' ).reduce((s,f)=>s+f.a,0);
-  const _exp =S.finance.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
-  const netSavings=Math.max(0,_inc-_exp);
+  const netSavings=totalSavings();
 
   wl.innerHTML=(S.wants||[]).length?S.wants.map((w,i)=>{
     const isReward=claimed.includes(w.id);
@@ -5098,7 +5168,7 @@ function wizardNav(dir){
 }
 
 // ── RENDER ALL ──
-function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();renderSettings();renderRoutines();renderMilestones();renderWantsNeeds();}
+function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();renderSettings();renderRoutines();renderMilestones();renderWantsNeeds();renderSavingsAccounts();}
 renderAll();
 // Init category dropdowns for the transactions form (default: expense)
 setTimeout(()=>{buildCatSelect('fi-c','expense');},50);
