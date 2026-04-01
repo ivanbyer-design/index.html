@@ -1163,6 +1163,62 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 @media(max-width:768px){.stt-hero{padding:14px 0 14px;}.stt-hero-title{font-size:22px;}}
 
 /* ═══════════════════════════════════════════════════
+   HOME LAYOUT — QUADRANT + MERGED WEEKLY/ROUTINES
+   ═══════════════════════════════════════════════════ */
+
+/* Quadrant: Personal Progress | Needs Attention */
+.home-quadrant{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:14px 0 0;
+}
+.home-quad-cell{
+  background:var(--bg-card);
+  border:1px solid var(--bd);
+  border-radius:var(--rl);
+  padding:14px;
+  box-shadow:var(--sh);
+  min-height:120px;
+}
+.home-quad-hdr{
+  font-size:12px;
+  font-weight:700;
+  color:var(--ts);
+  text-transform:uppercase;
+  letter-spacing:0.07em;
+  margin-bottom:8px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--bd);
+}
+/* strip redundant card wrapper inside quadrant */
+.home-quad-cell .milestone-widget{
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  padding:0;
+  margin:0;
+}
+/* hide the internal header row — quadrant cell header replaces it */
+.home-quad-cell .milestone-header{display:none;}
+
+/* Merged Weekly Snapshot + Daily Routines */
+.home-weekly-routines{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  align-items:start;
+  margin-top:4px;
+}
+.home-weekly-col{flex:1;}
+.home-routines-col{flex:1;}
+
+@media(max-width:768px){
+  .home-quadrant{grid-template-columns:1fr;}
+  .home-weekly-routines{grid-template-columns:1fr;}
+}
+
+/* ═══════════════════════════════════════════════════
    GAMIFICATION — AVATAR, ROUTINES, MILESTONES, WANTS
    ═══════════════════════════════════════════════════ */
 
@@ -1340,19 +1396,30 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
 
-      <!-- PERSONAL PROGRESS MILESTONE -->
-      <div id="home-personal-milestone"></div>
-
-      <!-- MORNING ROUTINE -->
-      <div class="bh2" style="margin-top:16px;">🌤️ Daily Routines</div>
-      <div id="routines-container" style="margin-top:8px;"></div>
+      <!-- QUADRANT: Personal Progress + Needs Attention -->
+      <div class="home-quadrant">
+        <div class="home-quad-cell">
+          <div class="home-quad-hdr">⚡ Personal Progress</div>
+          <div id="home-personal-milestone"></div>
+        </div>
+        <div class="home-quad-cell">
+          <div class="home-quad-hdr">🔔 Needs Attention</div>
+          <div id="home-attn" style="margin-top:6px;"></div>
+        </div>
+      </div>
       <div class="divider"></div>
 
-      <div class="bh2 editable-hdr" data-hdr="home-attn-hdr" id="hdr-home-attn">🔔 Needs attention</div>
-      <div id="home-attn" style="margin-top:6px;"></div>
-      <div class="divider"></div>
-      <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
-      <div id="home-weekly"></div>
+      <!-- MERGED: Weekly Snapshot + Daily Routines -->
+      <div class="home-weekly-routines">
+        <div class="home-weekly-col">
+          <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly snapshot</div>
+          <div id="home-weekly"></div>
+        </div>
+        <div class="home-routines-col">
+          <div class="bh2">🌤️ Daily Routines</div>
+          <div id="routines-container" style="margin-top:8px;"></div>
+        </div>
+      </div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-proj-hdr" id="hdr-home-proj">🚀 Projects</div>
       <div id="home-proj-overview" style="margin:10px 0 4px;"></div>
