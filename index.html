@@ -3313,11 +3313,15 @@ function renderWeekly(){
     // Past day — show completed count differently
     const isPast=dk<today;
     const dayCompletedTodos=S.todos.filter(t=>t.done&&t.dd===dk).length;
+    const rl2=S.routineLog||{};
+    const hasMorningWiz=!!(rl2[dk+'-morning-mood']||rl2[dk+'-intention']||rl2[dk+'-morning-journal']);
+    const hasEveningWiz=!!(rl2[dk+'-evening-mood']||rl2[dk+'-night-journal']);
 
     return`<div class="week-day${isToday?' is-today':''}" ${isToday?'id="cal-today"':''} onclick="openDayDetail('${dk}')" style="cursor:pointer;">
       <div class="wd-hdr">
         <div class="wd-name">${dayNames[d.getDay()]}</div>
         <div class="wd-num">${d.getDate()}</div>
+        ${(hasMorningWiz||hasEveningWiz)?`<div style="display:flex;justify-content:center;gap:2px;margin-top:2px;">${hasMorningWiz?'<span style="font-size:7px;">🌅</span>':''}${hasEveningWiz?'<span style="font-size:7px;">🌙</span>':''}</div>`:''}
       </div>
       <div class="wd-body">
 
@@ -4975,9 +4979,15 @@ function saveWizardFields(){
   if(!S.routineLog)S.routineLog={};
   const j=G('wiz-journal');if(j){
     const jk=today+'-'+(wizardType==='start'?'morning':'night')+'-journal';
-    S.routineLog[jk]=j.value;save();
+    S.routineLog[jk]=j.value;
   }
-  const it=G('wiz-intention');if(it){S.routineLog[today+'-intention']=it.value;save();}
+  const it=G('wiz-intention');if(it){S.routineLog[today+'-intention']=it.value;}
+  // Persist mood
+  if(wizardMood){
+    const mk=today+'-'+(wizardType==='start'?'morning-mood':'evening-mood');
+    S.routineLog[mk]=wizardMood;
+  }
+  save();
 }
 function renderWizardStep(){
   const steps=wizardType==='start'?START_STEPS:END_STEPS;
@@ -6334,6 +6344,20 @@ function renderDayDetail(dk){
   const dow=dateObj.getDay();
   const isToday=dk===today;
 
+  // ── Wizard journal data for this day ──
+  const rl=S.routineLog||{};
+  const morningMood   =rl[dk+'-morning-mood']||'';
+  const eveningMood   =rl[dk+'-evening-mood']||'';
+  const intention     =rl[dk+'-intention']||'';
+  const morningJournal=rl[dk+'-morning-journal']||'';
+  const nightJournal  =rl[dk+'-night-journal']||'';
+  const morningDone   =(rl[dk+'-morning']||[]);
+  const middayDone    =(rl[dk+'-midday']||[]);
+  const nightDone     =(rl[dk+'-night']||[]);
+  const morningItems  =(S.routines&&S.routines.morning)||[];
+  const middayItems   =(S.routines&&S.routines.midday)||[];
+  const nightItems    =(S.routines&&S.routines.night)||[];
+
   // Gather data
   const todos=S.todos.filter(t=>t.d===dk);
   const recurringDue=(S.recurring||[]).filter(r=>r.days&&r.days.includes(dow)).map(r=>{
@@ -6395,11 +6419,12 @@ function renderDayDetail(dk){
     </div>`:''}
 
     <!-- TABS -->
-    <div style="display:flex;gap:0;border-bottom:2px solid var(--bd);margin-bottom:16px;" id="dd-tabs">
-      <button class="dd-tab on" onclick="switchDDTab('tasks',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--blue);border-bottom:2px solid var(--blue);margin-bottom:-2px;cursor:pointer;">✅ Tasks</button>
-      <button class="dd-tab" onclick="switchDDTab('morning',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;">🌅 Morning</button>
-      <button class="dd-tab" onclick="switchDDTab('night',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;">🌙 Night</button>
-      <button class="dd-tab" onclick="switchDDTab('finance',this)" style="flex:1;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;">💰 Finance</button>
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--bd);margin-bottom:16px;overflow-x:auto;" id="dd-tabs">
+      <button class="dd-tab on" onclick="switchDDTab('tasks',this)" style="flex:1;min-width:60px;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--blue);border-bottom:2px solid var(--blue);margin-bottom:-2px;cursor:pointer;white-space:nowrap;">✅ Tasks</button>
+      <button class="dd-tab" onclick="switchDDTab('morning',this)" style="flex:1;min-width:60px;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;white-space:nowrap;">🌅 Morning</button>
+      <button class="dd-tab" onclick="switchDDTab('night',this)" style="flex:1;min-width:60px;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;white-space:nowrap;">🌙 Night</button>
+      <button class="dd-tab" onclick="switchDDTab('finance',this)" style="flex:1;min-width:60px;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;white-space:nowrap;">💰 Finance</button>
+      <button class="dd-tab" onclick="switchDDTab('journal',this)" style="flex:1;min-width:60px;padding:8px 4px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;white-space:nowrap;">📓 Journal</button>
     </div>
 
     <!-- TAB: TASKS -->
@@ -6485,13 +6510,77 @@ function renderDayDetail(dk){
         </div>
       </div>
     </div>
+
+    <!-- TAB: JOURNAL -->
+    <div id="dd-tab-journal" style="display:none;">
+      ${(!morningMood&&!eveningMood&&!intention&&!morningJournal&&!nightJournal)?`
+        <div class="day-empty" style="text-align:center;padding:32px 16px;">
+          <div style="font-size:36px;margin-bottom:10px;">📓</div>
+          <div style="font-size:15px;font-weight:600;color:var(--t);margin-bottom:6px;">No journal entries yet</div>
+          <div style="font-size:13px;color:var(--ts);">Use <strong>Start My Day</strong> and <strong>End My Day</strong> on the home screen to fill this in.</div>
+        </div>`:`
+
+      <!-- MORNING SECTION -->
+      <div style="background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(251,191,36,0.03));border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:16px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="font-size:20px;">🌅</span>
+          <span style="font-size:15px;font-weight:700;color:var(--t);">Start My Day</span>
+          ${morningMood?`<span style="font-size:22px;margin-left:auto;">${morningMood}</span>`:''}
+        </div>
+        ${intention?`
+          <div style="font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Today's Intention</div>
+          <div style="font-size:14px;color:var(--t);background:var(--bg-h);border-radius:8px;padding:10px 12px;margin-bottom:10px;line-height:1.5;">${intention.replace(/\n/g,'<br>')}</div>`:''}
+        ${morningJournal?`
+          <div style="font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Morning Journal</div>
+          <div style="font-size:14px;color:var(--t);background:var(--bg-h);border-radius:8px;padding:10px 12px;margin-bottom:10px;line-height:1.5;white-space:pre-wrap;">${morningJournal.replace(/</g,'&lt;')}</div>`:''}
+        ${morningItems.length?`
+          <div style="font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Morning Routine</div>
+          <div>${morningItems.map(it=>{const done=morningDone.includes(it.id);return`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;color:${done?'var(--green)':'var(--t)'};">
+            <span style="font-size:14px;">${done?'✅':'⬜'}</span>
+            <span style="${done?'text-decoration:line-through;opacity:0.6;':''}">${it.t}</span>
+          </div>`;}).join('')}</div>`:''}
+        ${!morningMood&&!intention&&!morningJournal?`<div style="font-size:13px;color:var(--ts);font-style:italic;">Start My Day wizard was not completed for this day.</div>`:''}
+      </div>
+
+      <!-- EVENING SECTION -->
+      <div style="background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(99,102,241,0.03));border:1px solid rgba(99,102,241,0.2);border-radius:14px;padding:16px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="font-size:20px;">🌙</span>
+          <span style="font-size:15px;font-weight:700;color:var(--t);">End My Day</span>
+          ${eveningMood?`<span style="font-size:22px;margin-left:auto;">${eveningMood}</span>`:''}
+        </div>
+        ${nightJournal?`
+          <div style="font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Evening Reflection</div>
+          <div style="font-size:14px;color:var(--t);background:var(--bg-h);border-radius:8px;padding:10px 12px;margin-bottom:10px;line-height:1.5;white-space:pre-wrap;">${nightJournal.replace(/</g,'&lt;')}</div>`:''}
+        ${nightItems.length?`
+          <div style="font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Night Routine</div>
+          <div>${nightItems.map(it=>{const done=nightDone.includes(it.id);return`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;color:${done?'var(--green)':'var(--t)'};">
+            <span style="font-size:14px;">${done?'✅':'⬜'}</span>
+            <span style="${done?'text-decoration:line-through;opacity:0.6;':''}">${it.t}</span>
+          </div>`;}).join('')}</div>`:''}
+        ${!eveningMood&&!nightJournal?`<div style="font-size:13px;color:var(--ts);font-style:italic;">End My Day wizard was not completed for this day.</div>`:''}
+      </div>
+
+      ${middayItems.length&&middayDone.length?`
+      <div style="background:var(--bg-card);border:1px solid var(--bd);border-radius:14px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:20px;">☀️</span>
+          <span style="font-size:15px;font-weight:700;color:var(--t);">Midday Check-in</span>
+        </div>
+        ${middayItems.map(it=>{const done=middayDone.includes(it.id);return`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;color:${done?'var(--green)':'var(--t)'};">
+          <span style="font-size:14px;">${done?'✅':'⬜'}</span>
+          <span style="${done?'text-decoration:line-through;opacity:0.6;':''}">${it.t}</span>
+        </div>`;}).join('')}
+      </div>`:''}
+      `}
+    </div>
   `;
 }
 
 function switchDDTab(tab,btn){
   document.querySelectorAll('.dd-tab').forEach(b=>{b.style.color='var(--ts)';b.style.borderBottom='2px solid transparent';b.style.marginBottom='-2px';});
   btn.style.color='var(--blue)';btn.style.borderBottom='2px solid var(--blue)';btn.style.marginBottom='-2px';
-  ['tasks','morning','night','finance'].forEach(t=>{
+  ['tasks','morning','night','finance','journal'].forEach(t=>{
     const el=G('dd-tab-'+t);if(el)el.style.display=t===tab?'block':'none';
   });
 }
