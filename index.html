@@ -1225,31 +1225,45 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .home-top-quadrant .home-quad-cell{display:flex;flex-direction:column;}
 
 /* QUICK-ADD WIDGET */
-.qa-widget{display:flex;flex-direction:column;flex:1;gap:8px;}
-.qa-tabs{display:flex;gap:4px;flex-wrap:wrap;}
-.qa-tab{font-family:var(--font);font-size:11px;font-weight:600;padding:4px 9px;border-radius:20px;border:1.5px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;transition:all .12s;white-space:nowrap;line-height:1.4;}
-.qa-tab.on{background:var(--t);color:var(--ti);border-color:var(--t);}
-.qa-tab:hover:not(.on){background:var(--bg-h);color:var(--t);}
-.qa-form{display:none;flex-direction:column;gap:7px;flex:1;}
+.qa-widget{display:flex;flex-direction:column;flex:1;gap:10px;}
+.qa-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;}
+.qa-tab{font-family:var(--font);font-size:10px;font-weight:600;padding:8px 4px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg-in);color:var(--ts);cursor:pointer;transition:all .14s;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1.2;}
+.qa-tab-ic{font-size:18px;line-height:1;}
+.qa-tab:hover:not(.on){background:var(--bg-h);color:var(--t);border-color:var(--bd2);}
+.qa-tab.on{border-color:transparent;color:#fff;}
+.qa-tab.on.t-task{background:linear-gradient(135deg,#0a7c6e,#3da892);}
+.qa-tab.on.t-money{background:linear-gradient(135deg,#2d78a4,#5ca4cf);}
+.qa-tab.on.t-journal{background:linear-gradient(135deg,#8a5fae,#b88ed4);}
+.qa-tab.on.t-goal{background:linear-gradient(135deg,#c58c1e,#f0a500);}
+.qa-tab.on.t-bill{background:linear-gradient(135deg,#c0342c,#e05c5c);}
+.qa-tab.on.t-habit{background:linear-gradient(135deg,#1e6b4a,#3da892);}
+.qa-form{display:none;flex-direction:column;gap:8px;flex:1;}
 .qa-form.on{display:flex;}
-.qa-inp{width:100%;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);box-sizing:border-box;}
-.qa-inp:focus{outline:none;border-color:var(--blue);}
+.qa-lbl{font-size:11px;font-weight:600;color:var(--ts);margin-bottom:2px;}
+.qa-inp{width:100%;font-family:var(--font);font-size:13px;padding:9px 11px;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);box-sizing:border-box;transition:border-color .15s;}
+.qa-inp:focus{outline:none;border-color:var(--blue);background:var(--bg-card);}
 .qa-inp::placeholder{color:var(--th);}
-.qa-ta{resize:none;min-height:62px;line-height:1.5;}
+.qa-ta{resize:none;min-height:70px;line-height:1.55;}
 .qa-row{display:flex;gap:6px;align-items:stretch;}
-.qa-row .qa-inp{flex:1;}
-.qa-sel{font-family:var(--font);font-size:12px;padding:7px 6px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);}
-.qa-ie{display:flex;border-radius:var(--r);overflow:hidden;border:1px solid var(--bd);flex-shrink:0;}
-.qa-ie-btn{font-family:var(--font);font-size:11px;font-weight:700;padding:5px 10px;border:none;background:var(--bg-in);color:var(--ts);cursor:pointer;transition:background .12s,color .12s;}
-.qa-ie-btn.on{background:var(--t);color:var(--ti);}
-.qa-save{font-family:var(--font);font-size:13px;font-weight:700;padding:8px;border-radius:var(--r);border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;margin-top:auto;transition:opacity .12s;}
-.qa-save:hover{opacity:0.85;}
-.qa-confirm{font-size:12px;font-weight:600;color:var(--green);text-align:center;min-height:18px;transition:opacity .3s;}
-/* NEEDS ATTENTION COLLAPSE */
-.attn-toggle{background:none;border:none;cursor:pointer;font-size:14px;color:var(--ts);padding:0;line-height:1;transition:transform .2s;}
-.attn-collapsed .attn-toggle{transform:rotate(-90deg);}
-.attn-body{overflow:hidden;transition:max-height .25s ease;}
-.attn-collapsed .attn-body{max-height:0!important;}
+.qa-row .qa-inp,.qa-row .qa-sel{flex:1;}
+.qa-sel{font-family:var(--font);font-size:12px;padding:8px 7px;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);transition:border-color .15s;}
+.qa-sel:focus{outline:none;border-color:var(--blue);}
+.qa-ie{display:flex;border-radius:var(--r);overflow:hidden;border:1.5px solid var(--bd);flex-shrink:0;}
+.qa-ie-btn{font-family:var(--font);font-size:12px;font-weight:700;padding:8px 12px;border:none;background:var(--bg-in);color:var(--ts);cursor:pointer;transition:background .12s,color .12s;}
+.qa-ie-btn.on.exp{background:var(--red);color:#fff;}
+.qa-ie-btn.on.inc{background:var(--green);color:#fff;}
+.qa-save{font-family:var(--font);font-size:13px;font-weight:700;padding:10px;border-radius:var(--r);border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;margin-top:4px;letter-spacing:0.01em;transition:opacity .12s,transform .1s;}
+.qa-save:hover{opacity:0.88;transform:translateY(-1px);}
+.qa-save:active{transform:translateY(0);}
+.qa-confirm{font-size:12px;font-weight:700;color:var(--green);text-align:center;min-height:20px;padding:2px 0;}
+/* NEEDS ATTENTION — fixed height scroll */
+.attn-scroll{overflow-y:auto;flex:1;max-height:260px;padding-right:2px;}
+.attn-scroll::-webkit-scrollbar{width:4px;}
+.attn-scroll::-webkit-scrollbar-track{background:transparent;}
+.attn-scroll::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
+/* WEEKLY SNAPSHOT CARD */
+.home-weekly-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;box-shadow:var(--sh);margin:14px 0 0;}
+.home-weekly-card .bh2{margin:0 0 10px!important;}
 
 @media(max-width:768px){
   .home-quadrant{grid-template-columns:1fr;}
@@ -1617,10 +1631,17 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
       </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
-<div class="home-day-btns">
-  <button class="home-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
-  <button class="home-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
-</div>
+
+      <!-- WEEKLY SNAPSHOT CARD (top of page) -->
+      <div class="home-weekly-card">
+        <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly" style="margin:0 0 10px!important;">📅 Weekly Snapshot</div>
+        <div id="home-weekly"></div>
+        <div class="home-day-btns" style="margin-top:14px;">
+          <button class="home-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
+          <button class="home-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
+        </div>
+      </div>
+      <div class="divider"></div>
 
       <!-- TOP QUADRANT: Quick Add | Needs Attention -->
       <div class="home-quadrant home-top-quadrant">
@@ -1630,12 +1651,12 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           <div class="home-quad-hdr">⚡ Quick Add</div>
           <div class="qa-widget">
             <div class="qa-tabs">
-              <button class="qa-tab on" onclick="qaSwitch('task',this)">✅ Task</button>
-              <button class="qa-tab" onclick="qaSwitch('money',this)">💸 Money</button>
-              <button class="qa-tab" onclick="qaSwitch('journal',this)">📓 Journal</button>
-              <button class="qa-tab" onclick="qaSwitch('goal',this)">🎯 Goal</button>
-              <button class="qa-tab" onclick="qaSwitch('bill',this)">🧾 Bill</button>
-              <button class="qa-tab" onclick="qaSwitch('habit',this)">🔄 Habit</button>
+              <button class="qa-tab on t-task" onclick="qaSwitch('task',this)"><span class="qa-tab-ic">✅</span>Task</button>
+              <button class="qa-tab t-money" onclick="qaSwitch('money',this)"><span class="qa-tab-ic">💸</span>Money</button>
+              <button class="qa-tab t-journal" onclick="qaSwitch('journal',this)"><span class="qa-tab-ic">📓</span>Journal</button>
+              <button class="qa-tab t-goal" onclick="qaSwitch('goal',this)"><span class="qa-tab-ic">🎯</span>Goal</button>
+              <button class="qa-tab t-bill" onclick="qaSwitch('bill',this)"><span class="qa-tab-ic">🧾</span>Bill</button>
+              <button class="qa-tab t-habit" onclick="qaSwitch('habit',this)"><span class="qa-tab-ic">🔄</span>Habit</button>
             </div>
 
             <!-- TASK -->
@@ -1699,26 +1720,18 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           </div>
         </div>
 
-        <!-- NEEDS ATTENTION (collapsible) -->
+        <!-- NEEDS ATTENTION (fixed height scroll) -->
         <div class="home-quad-cell" id="attn-cell">
           <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">
             <span>🔔 Needs Attention</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a>
-              <button class="attn-toggle" id="attn-toggle-btn" onclick="toggleAttn()" title="Collapse">▾</button>
-            </div>
+            <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a>
           </div>
-          <div class="attn-body" id="attn-body" style="max-height:600px;">
+          <div class="attn-scroll">
             <div id="home-attn" style="margin-top:6px;"></div>
           </div>
         </div>
 
       </div>
-      <div class="divider"></div>
-
-      <!-- WEEKLY SNAPSHOT -->
-      <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly">📅 Weekly Snapshot</div>
-      <div id="home-weekly"></div>
       <div class="divider"></div>
 
       <!-- BOTTOM QUADRANT: Personal Progress | Finance Progress -->
@@ -5933,27 +5946,9 @@ function qaFlash(msg){
   setTimeout(()=>{if(el.textContent===msg)el.textContent='';},2200);
 }
 
-// ── NEEDS ATTENTION COLLAPSE ──
-function toggleAttn(){
-  attnOpen=!attnOpen;
-  localStorage.setItem('lifeOS_attnOpen',attnOpen?'1':'0');
-  applyAttnState();
-}
-function applyAttnState(){
-  const cell=G('attn-cell'),body=G('attn-body'),btn=G('attn-toggle-btn');
-  if(!cell)return;
-  if(attnOpen){
-    cell.classList.remove('attn-collapsed');
-    body.style.maxHeight='600px';
-    if(btn)btn.textContent='▾';
-    if(btn)btn.title='Collapse';
-  } else {
-    cell.classList.add('attn-collapsed');
-    body.style.maxHeight='0';
-    if(btn)btn.textContent='▸';
-    if(btn)btn.title='Expand';
-  }
-}
+// ── NEEDS ATTENTION (scroll mode, no collapse) ──
+function toggleAttn(){}
+function applyAttnState(){}
 
 // ── EDIT MODAL ──
 let emType='',emId=0,emExtra=null;
@@ -6044,7 +6039,6 @@ function saveEM(){
 // ── RENDER ALL ──
 function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();renderSettings();renderRoutines();renderMilestones();renderWantsNeeds();renderSavingsAccounts();}
 renderAll();
-applyAttnState();
 // Init QA money category dropdown
 setTimeout(()=>{if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat','expense');},80);
 // Init category dropdowns for the transactions form (default: expense)
