@@ -89,7 +89,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .sb{position:fixed;top:0;left:0;height:100%;z-index:100;transform:translateX(-100%);box-shadow:4px 0 30px rgba(0,0,0,0.18);}
   .sb.open{transform:translateX(0);}
   .sb-overlay.open{display:block;}
-  .content{padding:16px 16px 0!important;padding-bottom:calc(76px + env(safe-area-inset-bottom))!important;}
+  .content{padding:16px 16px 0!important;padding-bottom:calc(76px + env(safe-area-inset-bottom))!important;overflow-x:hidden;}
   /* Prevent iOS zoom on input focus — font-size must be ≥ 16px */
   input,select,textarea{font-size:16px!important;}
   .page-cover{height:90px!important;}
@@ -1324,6 +1324,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .qa-save:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.2);}
 .qa-save:active{transform:scale(0.97);box-shadow:none;}
 .qa-confirm{font-size:12px;font-weight:700;color:var(--green);text-align:center;min-height:18px;padding:2px 0;}
+.qa-date-row{display:flex;align-items:center;gap:8px;}
+.qa-date-lbl{font-size:12px;font-weight:700;color:var(--ts);white-space:nowrap;flex-shrink:0;}
+.qa-date-inp{flex:1;margin:0!important;}
 /* NEEDS ATTENTION — fixed height scroll */
 .attn-scroll{overflow-y:auto;flex:1;max-height:260px;padding-right:2px;}
 .attn-scroll::-webkit-scrollbar{width:4px;}
@@ -1342,6 +1345,19 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   /* Bills & Budgets: single column, no horizontal overflow */
   .bq-grid{grid-template-columns:1fr;}
   .fin-qa-btn{font-size:13px;padding:12px 14px;}
+  /* Prevent finance panel from bleeding wider than viewport */
+  #p-finance{overflow-x:hidden;max-width:100%;}
+  .bq-card{box-sizing:border-box;max-width:100%;overflow:hidden;padding:12px 12px;}
+  .bq-grid{box-sizing:border-box;width:100%;}
+  .bq-row{font-size:12px;}
+  .bq-row-n span{max-width:120px;}
+  .bq-tot{font-size:12px;}
+  /* Finance calendar: scroll horizontally instead of squishing 7 cols */
+  #fd-cal-section{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  #fd-cal-section .fd-cal-wrap{min-width:420px;}
+  .fd-cal-day{min-height:65px!important;padding:4px 3px 3px!important;}
+  .fd-cal-entry{font-size:8.5px!important;}
+  .fd-cal-day-net{font-size:9px!important;}
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1757,6 +1773,10 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
                 <input class="qa-amount-inp" type="number" id="qa-money-amt" placeholder="0.00" step="0.01" inputmode="decimal" onkeydown="if(event.key==='Enter')qaSave()">
               </div>
               <input class="qa-fi" id="qa-money-desc" placeholder="Description" onkeydown="if(event.key==='Enter')qaSave()">
+              <div class="qa-date-row">
+                <label class="qa-date-lbl">📅 Date</label>
+                <input class="qa-fi qa-date-inp" type="date" id="qa-money-date">
+              </div>
               <select class="qa-fi" id="qa-money-cat"></select>
               <button class="qa-save" onclick="qaSave()">Add Transaction</button>
             </div>
@@ -3682,12 +3702,12 @@ function renderBudgetQuadrant(){
       const spent=livSpendThisMonth.filter(s=>String(s.catId)===String(c.id)).reduce((s,sp)=>s+sp.amt,0);
       const pct=c.budget?Math.min(100,Math.round(spent/c.budget*100)):0;
       const clr=pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--green)';
-      return`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
-        <span style="width:16px;text-align:center;">${c.icon||'💰'}</span>
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.name}</span>
-        <span style="color:${clr};font-weight:700;flex-shrink:0;">${fmt(spent)}<span style="color:var(--th);font-weight:400;">/${fmt(c.budget)}</span></span>
+      return`<div style="display:flex;align-items:center;gap:5px;padding:3px 0;font-size:11px;min-width:0;">
+        <span style="width:16px;flex-shrink:0;text-align:center;">${c.icon||'💰'}</span>
+        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.name}</span>
+        <span style="color:${clr};font-weight:700;flex-shrink:0;font-size:10px;">${fmt(spent)}<span style="color:var(--th);font-weight:400;">/${fmt(c.budget)}</span></span>
         <input type="number" placeholder="$" min="0" step="0.01"
-          style="width:54px;font-family:var(--font);font-size:11px;border:1px solid var(--bd);border-radius:4px;padding:2px 4px;background:var(--bg-in);color:var(--t);"
+          style="width:48px;min-width:0;flex-shrink:0;font-family:var(--font);font-size:11px;border:1px solid var(--bd);border-radius:4px;padding:2px 4px;background:var(--bg-in);color:var(--t);"
           onkeydown="if(event.key==='Enter'){bqLogSpend(${c.id},this.value);this.value='';}"
           title="Type amount + Enter to log spending for ${c.name}">
       </div>`;
@@ -6051,7 +6071,10 @@ function qaSwitch(type,el){
   const f=G('qa-'+type);if(f)f.classList.add('on');
   G('qa-confirm').textContent='';
   if(type==='habit')renderQAHabits();
-  if(type==='money'){setTimeout(()=>{if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat',qaIEType);},10);}
+  if(type==='money'){
+    setTimeout(()=>{if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat',qaIEType);},10);
+    const di=G('qa-money-date');if(di&&!di.value)di.value=today;
+  }
 }
 function qaSetIE(t,el){
   qaIEType=t;
@@ -6083,8 +6106,9 @@ function qaSave(){
     const a=parseFloat(G('qa-money-amt').value);if(!a)return;
     const d=G('qa-money-desc').value.trim()||qaIEType;
     const c=G('qa-money-cat').value||'Other';
-    S.finance.push({d,a,t:qaIEType,c,dt:today,biz:'personal',id:Date.now()});
-    G('qa-money-amt').value='';G('qa-money-desc').value='';
+    const dt=G('qa-money-date').value||today;
+    S.finance.push({d,a,t:qaIEType,c,dt,biz:'personal',id:Date.now()});
+    G('qa-money-amt').value='';G('qa-money-desc').value='';G('qa-money-date').value=today;
     addFinancialPoints(3,'Quick add transaction');save();renderFinance();renderHome();
     qaFlash('✓ '+(qaIEType==='income'?'Income':'Expense')+' added');
   } else if(qaActive==='journal'){
