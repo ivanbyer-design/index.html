@@ -6046,8 +6046,8 @@ function qaSwitch(type,el){
 }
 function qaSetIE(t,el){
   qaIEType=t;
-  document.querySelectorAll('#qa-ie .qa-ie-btn').forEach(b=>b.classList.remove('on'));
-  if(el)el.classList.add('on');
+  document.querySelectorAll('.qa-ie-toggle .qa-ie-btn').forEach(b=>b.classList.remove('on','exp','inc'));
+  if(el){el.classList.add('on',t==='expense'?'exp':'inc');}
   if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat',t);
 }
 function renderQAHabits(){
