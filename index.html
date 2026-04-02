@@ -228,52 +228,62 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .home-hero-streak-num{font-size:24px;}
 }
 
-/* WEEKLY SUMMARY ROW */
-.week-summary{
-  display:flex;border-top:1px solid var(--bd);padding:10px 12px;
-  gap:0;background:var(--bg-h);flex-wrap:wrap;
-}
-.ws-cell{
-  flex:1;min-width:80px;
-  text-align:center;padding:5px 8px;
-}
-.ws-cell+.ws-cell{border-left:1px solid var(--bd);}
-.ws-cell-lb{font-size:9px;font-weight:700;color:var(--th);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;}
-.ws-cell-vl{font-size:14px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
-.ws-cell-vl.up{color:var(--green);}
-.ws-cell-vl.dn{color:var(--red);}
-.ws-cell-vl.amb{color:var(--amber);}
-
-.week-cal{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:10px 0;box-shadow:var(--sh);}
-.week-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;}
+/* WEEKLY SNAPSHOT */
+.week-cal{overflow:hidden;margin:0;}
+.week-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;}
 .week-scroll::-webkit-scrollbar{height:4px;}
 .week-scroll::-webkit-scrollbar-track{background:transparent;}
 .week-scroll::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px;}
 .week-days{display:flex;min-width:max-content;}
-.week-day{width:148px;flex-shrink:0;border-right:1px solid var(--bd);scroll-snap-align:start;transition:background .12s,transform .15s;}
+.week-day{width:150px;flex-shrink:0;border-right:1px solid var(--bd);scroll-snap-align:start;transition:background .15s;}
 .week-day:last-child{border-right:none;}
-.week-day.is-today{background:color-mix(in srgb,var(--bbg) 60%,var(--bg-card));}
-.wd-hdr{padding:10px 8px 8px;text-align:center;border-bottom:1px solid var(--bd);transition:opacity .1s;cursor:pointer;}.wd-hdr:hover{opacity:0.85;}.week-day:hover{background:var(--bg-h);}.week-day.is-today:hover{background:color-mix(in srgb,var(--bbg) 70%,var(--bg-card));}
-.week-day.is-today .wd-hdr{background:var(--blue);}
-.wd-name{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;}
-.week-day.is-today .wd-name{color:rgba(255,255,255,0.8);}
-.wd-num{font-size:22px;font-weight:800;color:var(--t);line-height:1.2;margin-top:2px;letter-spacing:-0.02em;}
+.week-day.is-weekend{background:color-mix(in srgb,var(--bg-h) 60%,var(--bg-card));}
+.week-day.is-today{background:color-mix(in srgb,var(--bbg) 55%,var(--bg-card));}
+.week-day:hover:not(.is-today){background:var(--bg-h);}
+.week-day.is-today:hover{background:color-mix(in srgb,var(--bbg) 65%,var(--bg-card));}
+/* Day header */
+.wd-hdr{padding:10px 8px 8px;text-align:center;border-bottom:1px solid var(--bd);cursor:pointer;position:relative;}
+.week-day.is-today .wd-hdr{background:linear-gradient(160deg,#1a7fd4,#3daee9);}
+.week-day.is-weekend:not(.is-today) .wd-hdr{background:color-mix(in srgb,var(--bg-h) 80%,transparent);}
+.wd-name{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.08em;}
+.week-day.is-today .wd-name{color:rgba(255,255,255,0.75);}
+.week-day.is-weekend:not(.is-today) .wd-name{color:var(--th);}
+.wd-num{font-size:24px;font-weight:900;color:var(--t);line-height:1.1;margin-top:1px;letter-spacing:-0.03em;}
 .week-day.is-today .wd-num{color:#fff;}
-.wd-body{padding:8px;min-height:130px;overflow:hidden;color:var(--t);}
-.week-day.is-today .wd-body{color:var(--t);}
-.wd-event{font-size:11px;padding:3px 6px;border-radius:4px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
-.wd-event.finance-in{background:var(--gbg);color:var(--green);}
-.wd-event.finance-out{background:var(--rbg);color:var(--red);}
-.wd-event.todo{background:var(--abg);color:var(--amber);}
-.wd-event.todo-high{background:var(--rbg);color:var(--red);font-weight:600;}
-.wd-event.bill{background:var(--rbg);color:var(--red);}
-.wd-event.habit{background:var(--bbg);color:var(--blue);}
-.week-day.is-today .wd-event.habit{background:var(--bbg);color:var(--blue);}
-[data-dark] .week-day.is-today .wd-event.habit{background:rgba(51,126,169,0.25);color:#9ec5e0;}
-.wd-more{font-size:10px;color:var(--ts);padding:1px 4px;}
-.week-legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--bd);background:var(--bg-h);}
-.wl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ts);}
-.wl-dot{width:8px;height:8px;border-radius:3px;flex-shrink:0;}
+.wd-today-pill{display:inline-block;font-size:8px;font-weight:800;background:rgba(255,255,255,0.25);color:#fff;padding:1px 6px;border-radius:10px;letter-spacing:0.06em;text-transform:uppercase;margin-top:3px;}
+/* Day body */
+.wd-body{padding:8px;min-height:120px;overflow:hidden;}
+/* Habit bar */
+.wd-habit-bar{margin-bottom:6px;}
+.wd-habit-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.wd-habit-lbl{font-size:8.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
+.wd-habit-cnt{font-size:8.5px;font-weight:800;}
+.wd-habit-track{height:5px;background:var(--bd);border-radius:3px;overflow:hidden;}
+.wd-habit-fill{height:100%;border-radius:3px;transition:width .3s;}
+/* Task pills */
+.wd-task{display:flex;align-items:center;gap:3px;margin-bottom:2px;overflow:hidden;}
+.wd-task-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.wd-task-txt{font-size:9px;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
+.wd-tag{display:inline-flex;align-items:center;font-size:8px;font-weight:700;padding:1.5px 5px;border-radius:6px;margin-bottom:2px;letter-spacing:0.02em;}
+.wd-tag.bill{background:var(--rbg);color:var(--red);}
+.wd-tag.done{background:var(--gbg);color:var(--green);}
+.wd-net{font-size:9.5px;font-weight:800;padding-top:4px;margin-top:4px;border-top:1px solid var(--bd);}
+.wd-net.up{color:var(--green);}
+.wd-net.dn{color:var(--red);}
+.wd-empty{font-size:9px;color:var(--th);font-style:italic;margin-top:4px;}
+/* Wizard badges */
+.wd-wiz{display:flex;justify-content:center;gap:3px;margin-top:3px;}
+.wd-wiz span{font-size:8px;}
+/* Weekly KPI summary */
+.week-summary{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px;}
+.ws-cell{background:var(--bg-card);border:1px solid var(--bd);border-radius:12px;padding:9px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.ws-cell-ic{font-size:16px;margin-bottom:3px;line-height:1;}
+.ws-cell-lb{font-size:8.5px;font-weight:700;color:var(--th);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+.ws-cell-vl{font-size:13px;font-weight:900;color:var(--t);letter-spacing:-0.02em;line-height:1.1;}
+.ws-cell-vl.up{color:var(--green);}
+.ws-cell-vl.dn{color:var(--red);}
+.ws-cell-vl.amb{color:var(--amber);}
+.week-legend{display:none;}
 /* bh2/bh3 defined below after summary-bar */
 
 /* CALLOUT */
@@ -1851,6 +1861,25 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         <button class="fin-tab"   id="ftab-wants"      onclick="switchFinTab('wants',this)">🎯 Wants & Needs</button>
       </div>
 
+      <!-- FINANCE CALENDAR (pinned below tab bar) -->
+      <div id="fd-cal-section" style="margin-top:14px;">
+        <div class="fd-cal-wrap">
+          <div class="fd-cal-top-bar">
+            <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+            <div class="fd-cal-legend">
+              <span><span class="fd-cal-dot-legend income"></span>Income</span>
+              <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+              <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+              <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+            </div>
+          </div>
+          <div class="fd-cal-header">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div class="fd-cal-grid" id="fd-cal-grid"></div>
+        </div>
+      </div>
+
       <!-- TAB: OVERVIEW (Bills & Budgets dashboard) -->
       <div id="ftab-overview-body">
 
@@ -1864,25 +1893,6 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           <div class="bq-card"><div class="bq-ttl">💸 Living Expenses Budget</div><div id="bq-living"></div></div>
           <div class="bq-card"><div class="bq-ttl">📊 Monthly Snapshot</div><div id="bq-snap"></div></div>
           <div class="bq-card"><div class="bq-ttl">⏰ Due Next 14 Days</div><div id="bq-due"></div></div>
-        </div>
-
-        <!-- FINANCE CALENDAR -->
-        <div id="fd-cal-section" style="margin-top:16px;">
-          <div class="fd-cal-wrap">
-            <div class="fd-cal-top-bar">
-              <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-              <div class="fd-cal-legend">
-                <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-              </div>
-            </div>
-            <div class="fd-cal-header">
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-            </div>
-            <div class="fd-cal-grid" id="fd-cal-grid"></div>
-          </div>
         </div>
 
         <!-- QUARTERLY / CASH FLOW SUMMARY -->
@@ -2831,7 +2841,8 @@ function switchFinTab(tab,btn){
   ['overview','entries','bills','payments','savings','wants'].forEach(t=>{
     const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
   });
-  if(tab==='overview'){setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);}
+  // Always render the calendar (now pinned above all tabs)
+  setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
   if(tab==='entries'){buildCatSelect('fi-c','expense');}
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
@@ -3331,8 +3342,8 @@ function renderFinance(){
       <div class="sum-item"><div class="sum-lb">Living spent</div><div class="sum-vl ${livSpent>livTot?'dn':''}">${fmt(livSpent)}</div></div>`;
   }
 
-  // ── OVERVIEW TAB — render finance calendar/KPIs/chart/money owed ──
-  if(activeFinTab==='overview') renderFinOverview();
+  // ── Always render finance calendar (pinned above tabs) + overview content ──
+  renderFinOverview();
 
   // ── TRANSACTIONS TAB ──
   let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
@@ -4007,47 +4018,44 @@ function renderWeekly(){
     const hasMorningWiz=!!(rl2[dk+'-morning-mood']||rl2[dk+'-intention']||rl2[dk+'-morning-journal']);
     const hasEveningWiz=!!(rl2[dk+'-evening-mood']||rl2[dk+'-night-journal']);
 
-    return`<div class="week-day${isToday?' is-today':''}" ${isToday?'id="cal-today"':''} onclick="openDayDetail('${dk}')" style="cursor:pointer;">
+    const isWeekend=dow===0||dow===6;
+    const habitColor=dayHabitPct===100?'var(--green)':dayHabitPct>=60?'var(--blue)':'var(--amber)';
+    const habitBarColor=dayHabitPct===100?'#26a97a':dayHabitPct>=60?'#3d8fc2':'#c58c1e';
+
+    return`<div class="week-day${isToday?' is-today':''}${isWeekend&&!isToday?' is-weekend':''}" ${isToday?'id="cal-today"':''} onclick="openDayDetail('${dk}')" style="cursor:pointer;">
       <div class="wd-hdr">
         <div class="wd-name">${dayNames[d.getDay()]}</div>
         <div class="wd-num">${d.getDate()}</div>
-        ${(hasMorningWiz||hasEveningWiz)?`<div style="display:flex;justify-content:center;gap:2px;margin-top:2px;">${hasMorningWiz?'<span style="font-size:7px;">🌅</span>':''}${hasEveningWiz?'<span style="font-size:7px;">🌙</span>':''}</div>`:''}
+        ${isToday?`<div class="wd-today-pill">Today</div>`:''}
+        ${!isToday&&(hasMorningWiz||hasEveningWiz)?`<div class="wd-wiz">${hasMorningWiz?'<span>🌅</span>':''}${hasEveningWiz?'<span>🌙</span>':''}</div>`:''}
       </div>
       <div class="wd-body">
 
         ${dayHabitTotal>0?`
-        <div style="margin-bottom:5px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-            <span style="font-size:9px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;">Habits</span>
-            <span style="font-size:9px;font-weight:600;color:${dayHabitPct===100?'var(--green)':'var(--ts)'};">${dayHabitDone}/${dayHabitTotal}</span>
+        <div class="wd-habit-bar">
+          <div class="wd-habit-row">
+            <span class="wd-habit-lbl">Habits</span>
+            <span class="wd-habit-cnt" style="color:${habitColor};">${dayHabitDone}<span style="color:var(--th);font-weight:600;">/${dayHabitTotal}</span></span>
           </div>
-          <div style="height:3px;background:var(--bg-tag);border-radius:2px;overflow:hidden;">
-            <div style="height:100%;width:${dayHabitPct}%;background:${dayHabitPct===100?'var(--green)':'var(--blue)'};border-radius:2px;"></div>
+          <div class="wd-habit-track">
+            <div class="wd-habit-fill" style="width:${dayHabitPct}%;background:${habitBarColor};"></div>
           </div>
         </div>`:''}
 
-        ${dayAllTasks.length>0||dayCompletedTodos>0?`
-        <div style="margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Tasks</div>
-          ${dayAllTasks.slice(0,3).map(t=>`
-            <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;">
-              <div style="width:5px;height:5px;border-radius:50%;flex-shrink:0;background:${t.p==='high'?'var(--red)':t.p==='low'?'var(--ts)':'var(--amber)'};"></div>
-              <span style="font-size:9px;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${t.isRecurring?'↻ ':''}${t.t||t.label||''}</span>
-            </div>`).join('')}
-          ${dayAllTasks.length>3?`<div style="font-size:9px;color:var(--ts);">+${dayAllTasks.length-3} more</div>`:''}
-          ${isPast&&dayCompletedTodos>0?`<div style="font-size:9px;color:var(--green);">✓ ${dayCompletedTodos} done</div>`:''}
-        </div>`:'<div style="font-size:9px;color:var(--ts);">No tasks</div>'}
+        ${dayAllTasks.slice(0,3).map(t=>`
+          <div class="wd-task">
+            <div class="wd-task-dot" style="background:${t.p==='high'?'var(--red)':t.p==='low'?'var(--ts)':'var(--amber)'};"></div>
+            <span class="wd-task-txt">${t.isRecurring?'↻ ':''}${t.t||t.label||''}</span>
+          </div>`).join('')}
+        ${dayAllTasks.length>3?`<div class="wd-tag" style="background:var(--bg-h);color:var(--ts);margin-top:1px;">+${dayAllTasks.length-3} more</div>`:''}
+        ${isPast&&dayCompletedTodos>0?`<div class="wd-tag done">✓ ${dayCompletedTodos} done</div>`:''}
+        ${dayAllTasks.length===0&&!dayCompletedTodos?`<div class="wd-empty">Free</div>`:''}
 
         ${dayBills.length>0?`
-        <div style="margin-bottom:3px;">
-          ${dayBills.slice(0,2).map(b=>`<div style="font-size:9px;color:var(--red);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🧾 ${b.n}</div>`).join('')}
-          ${dayBills.length>2?`<div style="font-size:9px;color:var(--red);">+${dayBills.length-2} bills</div>`:''}
-        </div>`:''}
+          ${dayBills.slice(0,2).map(b=>`<div class="wd-tag bill">🧾 ${b.n}</div>`).join('')}
+          ${dayBills.length>2?`<div class="wd-tag bill">+${dayBills.length-2} bills</div>`:''}`:''}
 
-        ${(dayInc>0||dayExp>0)?`
-        <div style="margin-top:3px;padding-top:3px;border-top:1px solid var(--bd);">
-          <span style="font-size:9px;font-weight:600;color:${dayNet>=0?'var(--green)':'var(--red)'};">${dayNet>=0?'+':''}${dayNet===0?'$0':fmt(Math.abs(dayNet))}</span>
-        </div>`:'' }
+        ${(dayInc>0||dayExp>0)?`<div class="wd-net ${dayNet>=0?'up':'dn'}">${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div>`:'' }
 
       </div>
     </div>`;
@@ -4070,23 +4078,42 @@ function renderWeekly(){
   const wkHabitAvg=wkHabitDays.length?Math.round(wkHabitSum/wkHabitDays.length):0;
   const wkBills=S.bills.filter(b=>wkDates.includes(b.d));
 
+  const wkTaskPct=wkTasks.length?Math.round(wkDoneTasks/wkTasks.length*100):0;
   G('home-weekly').innerHTML=`<div class="week-cal">
     <div class="week-scroll" id="week-scroll">
       <div class="week-days">${cols}</div>
     </div>
     <div class="week-summary">
-      <div class="ws-cell"><div class="ws-cell-lb">Wk income</div><div class="ws-cell-vl up">${wkInc>0?'+':' '}${fmt(wkInc)}</div></div>
-      <div class="ws-cell"><div class="ws-cell-lb">Wk expenses</div><div class="ws-cell-vl dn">${wkExp>0?'-':' '}${fmt(wkExp)}</div></div>
-      <div class="ws-cell"><div class="ws-cell-lb">Wk net</div><div class="ws-cell-vl ${wkNet>0?'up':wkNet<0?'dn':''}">${fmtS(wkNet)}</div></div>
-      <div class="ws-cell"><div class="ws-cell-lb">Tasks</div><div class="ws-cell-vl ${wkDoneTasks===wkTasks.length&&wkTasks.length?'up':'amb'}">${wkDoneTasks}/${wkTasks.length}</div></div>
-      <div class="ws-cell"><div class="ws-cell-lb">Habit avg</div><div class="ws-cell-vl ${wkHabitAvg>=80?'up':wkHabitAvg>=50?'amb':'dn'}">${wkHabitAvg}%</div></div>
-      <div class="ws-cell"><div class="ws-cell-lb">Bills due</div><div class="ws-cell-vl ${wkBills.length>0?'dn':''}">${wkBills.length}</div></div>
-    </div>
-    <div class="week-legend">
-      <div class="wl-item"><div class="wl-dot" style="background:var(--rbg);border:1px solid var(--red);"></div>High priority</div>
-      <div class="wl-item"><div class="wl-dot" style="background:var(--abg);border:1px solid var(--amber);"></div>Task / recurring</div>
-      <div class="wl-item"><div class="wl-dot" style="background:var(--rbg);border:1px solid var(--red);"></div>Bill due</div>
-      <div class="wl-item"><div class="wl-dot" style="background:var(--bbg);border:1px solid var(--blue);"></div>Habits</div>
+      <div class="ws-cell">
+        <div class="ws-cell-ic">💰</div>
+        <div class="ws-cell-lb">Income</div>
+        <div class="ws-cell-vl up">${fmt(wkInc)}</div>
+      </div>
+      <div class="ws-cell">
+        <div class="ws-cell-ic">💸</div>
+        <div class="ws-cell-lb">Expenses</div>
+        <div class="ws-cell-vl dn">${fmt(wkExp)}</div>
+      </div>
+      <div class="ws-cell">
+        <div class="ws-cell-ic">${wkNet>=0?'📈':'📉'}</div>
+        <div class="ws-cell-lb">Net</div>
+        <div class="ws-cell-vl ${wkNet>0?'up':wkNet<0?'dn':''}">${fmtS(wkNet)}</div>
+      </div>
+      <div class="ws-cell">
+        <div class="ws-cell-ic">✅</div>
+        <div class="ws-cell-lb">Tasks</div>
+        <div class="ws-cell-vl ${wkDoneTasks===wkTasks.length&&wkTasks.length?'up':'amb'}">${wkDoneTasks}<span style="font-size:9px;font-weight:600;color:var(--th);">/${wkTasks.length}</span></div>
+      </div>
+      <div class="ws-cell">
+        <div class="ws-cell-ic">🔁</div>
+        <div class="ws-cell-lb">Habits</div>
+        <div class="ws-cell-vl ${wkHabitAvg>=80?'up':wkHabitAvg>=50?'amb':'dn'}">${wkHabitAvg}%</div>
+      </div>
+      <div class="ws-cell">
+        <div class="ws-cell-ic">🧾</div>
+        <div class="ws-cell-lb">Bills due</div>
+        <div class="ws-cell-vl ${wkBills.length>0?'dn':''}">${wkBills.length}</div>
+      </div>
     </div>
   </div>`;
 
