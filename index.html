@@ -1532,7 +1532,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   <div class="ni on" id="ni-home" onclick="go('home',this)"><span class="ni-ic">∞</span><span class="ni-lb">Home</span></div>
   <div class="sb-div"></div>
   <div class="sb-sec">Life Sectors</div>
-  <div class="ni draggable-ni" id="ni-finance" draggable="true" onclick="go('finance',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">💰</span><span class="ni-lb" id="sbl-finance">Finance & Bills</span></div>
+  <div class="ni draggable-ni" id="ni-finance" draggable="true" onclick="go('finance',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🧾</span><span class="ni-lb" id="sbl-finance">Bills &amp; Budgets</span></div>
   <div class="ni draggable-ni" id="ni-trades" draggable="true" onclick="go('trades',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">📈</span><span class="ni-lb" id="sbl-trades">Trades & Backtests</span></div>
   <div class="ni draggable-ni" id="ni-goals" draggable="true" onclick="go('goals',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🎯</span><span class="ni-lb" id="sbl-goals">Goals</span></div>
   <div class="ni draggable-ni" id="ni-planning" draggable="true" onclick="go('planning',this)"><span class="sb-drag-grip" onclick="event.stopPropagation()">⠿</span><span class="ni-ic">🗓️</span><span class="ni-lb" id="sbl-planning">Planning</span></div>
@@ -1659,10 +1659,10 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       <!-- MODERN FINANCE HEADER -->
       <div class="fin-page-header">
         <div class="fin-page-header-left">
-          <div class="fin-page-icon">💰</div>
+          <div class="fin-page-icon">🧾</div>
           <div>
-            <div class="fin-page-title">Finance</div>
-            <div class="fin-page-sub">Income · Expenses · Bills · Debts</div>
+            <div class="fin-page-title">Bills &amp; Budgets</div>
+            <div class="fin-page-sub">Bills · Subscriptions · Living Expenses · Tracking</div>
           </div>
         </div>
         <div class="fin-page-header-right" id="fin-header-meta"></div>
@@ -1673,73 +1673,73 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
       <!-- FINANCE TABS -->
       <div class="fin-tabs" id="fin-tabs">
-        <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">📊 Overview</button>
+        <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">🧾 Overview</button>
         <button class="fin-tab"   id="ftab-entries"    onclick="switchFinTab('entries',this)">📋 Transactions</button>
-        <button class="fin-tab"   id="ftab-bills"      onclick="switchFinTab('bills',this)">🧾 Bills</button>
+        <button class="fin-tab"   id="ftab-bills"      onclick="switchFinTab('bills',this)">📋 All Bills</button>
         <button class="fin-tab"   id="ftab-payments"   onclick="switchFinTab('payments',this)">💸 Other Debts</button>
         <button class="fin-tab"   id="ftab-savings"    onclick="switchFinTab('savings',this)">🏦 Savings</button>
         <button class="fin-tab"   id="ftab-wants"      onclick="switchFinTab('wants',this)">🎯 Wants & Needs</button>
       </div>
 
-      <!-- TAB: OVERVIEW -->
+      <!-- TAB: OVERVIEW (Bills & Budgets dashboard) -->
       <div id="ftab-overview-body">
 
-        <!-- MONTHLY CALENDAR (top — only visible in monthly mode) -->
-        <div id="fd-cal-section" style="margin-top:16px;">
-          <div class="fd-cal-wrap">
-            <div class="fd-cal-top-bar">
-              <div class="fd-cal-month-title" id="fd-cal-month-title">March 2026</div>
-              <div class="fd-cal-legend">
-                <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-              </div>
-            </div>
-            <div class="fd-cal-header">
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-            </div>
-            <div class="fd-cal-grid" id="fd-cal-grid"></div>
-          </div>
+        <!-- MY BUDGET QUADRANT -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
+          <span class="bl-month-pill">📅 <span id="bl-month-lbl"></span></span>
+          <span style="font-size:12px;color:var(--ts);">Bills auto-refresh each month · check off as you pay</span>
+        </div>
+        <div class="bq-grid">
+          <div class="bq-card"><div class="bq-ttl">🧾 Unpaid Bills</div><div id="bq-unpaid"></div></div>
+          <div class="bq-card"><div class="bq-ttl">💸 Living Expenses Budget</div><div id="bq-living"></div></div>
+          <div class="bq-card"><div class="bq-ttl">📊 Monthly Snapshot</div><div id="bq-snap"></div></div>
+          <div class="bq-card"><div class="bq-ttl">⏰ Due Next 14 Days</div><div id="bq-due"></div></div>
         </div>
 
-        <!-- PERIOD SELECTOR -->
-        <div class="fd-period-bar">
-          <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
-          <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
-          <button class="fd-period-btn" id="fpb-yearly" onclick="setFinPeriod('yearly',this)">Yearly</button>
-          <div class="fd-period-nav">
-            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
-            <div class="fd-month-label" id="fd-month-label">March 2026</div>
-            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
+        <!-- BILL CALENDAR -->
+        <div class="bl-section">
+          <span>📅 Bill Calendar — <span id="bl-cal-lbl"></span></span>
+          <div style="display:flex;gap:4px;">
+            <button class="btn xs" onclick="blCalNav(-1)">‹ Prev</button>
+            <button class="btn xs" onclick="blCalNav(0)">Today</button>
+            <button class="btn xs" onclick="blCalNav(1)">Next ›</button>
           </div>
         </div>
+        <div id="bl-calendar"></div>
 
-        <!-- KPI CARDS -->
-        <div class="fd-kpi-grid" id="fd-kpis"></div>
-
-        <!-- PERIOD CHART -->
-        <div class="chart-box" style="margin:0 0 16px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
-            <div class="legend" style="margin:0;">
-              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
-              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
-            </div>
-          </div>
-          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
+        <!-- SUBSCRIPTIONS SECTION -->
+        <div class="bl-section" style="margin-top:8px;">
+          <span>📱 Subscriptions</span>
+          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
         </div>
+        <div id="sub-cards"></div>
 
-        <!-- UNIFIED MONEY OWED (bills + debts) -->
-        <div class="fd-owed-section">
-          <div class="fd-panel-hdr" style="margin-bottom:10px;">
-            <div class="fd-panel-title">💳 Money owed</div>
-            <div style="display:flex;gap:8px;">
-              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
-              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
-            </div>
+        <!-- LIVING EXPENSES SECTION -->
+        <div class="bl-section">
+          <span>🛒 Living Expenses</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:var(--th);font-weight:400;text-transform:none;letter-spacing:0;">Groceries · Gas · Eating Out · Laundry · etc.</span>
+            <button class="btn xs" onclick="G('live-form').classList.toggle('hidden')">＋ Add category</button>
           </div>
-          <div id="fd-owed-list"></div>
+        </div>
+        <div class="nf hidden" id="live-form">
+          <div class="fr">
+            <input class="fi" type="text" id="live-name" placeholder="Category name (e.g. Groceries)">
+            <input class="fi" type="text" id="live-icon" placeholder="Icon 🛒" style="max-width:72px;">
+            <input class="fi" type="number" id="live-amt" placeholder="Monthly budget $" step="1" style="max-width:170px;">
+            <button class="btn pri" onclick="addLiveCategory()">Save</button>
+          </div>
+        </div>
+        <div class="live-grid" id="live-grid"></div>
+        <div class="nf">
+          <div class="nf-ttl">＋ Log spending</div>
+          <div class="fr">
+            <select class="fi" id="live-sp-cat" style="max-width:170px;"><option value="">Select category...</option></select>
+            <input class="fi" type="number" id="live-sp-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <input class="fi" type="text" id="live-sp-note" placeholder="Note (optional)">
+            <input class="fi" type="date" id="live-sp-date" style="max-width:150px;">
+            <button class="btn pri" onclick="addLiveSpend()">Log</button>
+          </div>
         </div>
 
         <!-- FINANCIAL MILESTONE -->
@@ -1789,6 +1789,65 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
       <!-- TAB: TRANSACTIONS -->
       <div id="ftab-entries-body" style="display:none;">
+
+        <!-- MONTHLY CALENDAR -->
+        <div id="fd-cal-section" style="margin-top:16px;">
+          <div class="fd-cal-wrap">
+            <div class="fd-cal-top-bar">
+              <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+              <div class="fd-cal-legend">
+                <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+              </div>
+            </div>
+            <div class="fd-cal-header">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="fd-cal-grid" id="fd-cal-grid"></div>
+          </div>
+        </div>
+
+        <!-- PERIOD SELECTOR -->
+        <div class="fd-period-bar">
+          <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
+          <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
+          <button class="fd-period-btn" id="fpb-yearly" onclick="setFinPeriod('yearly',this)">Yearly</button>
+          <div class="fd-period-nav">
+            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
+            <div class="fd-month-label" id="fd-month-label"></div>
+            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
+          </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="fd-kpi-grid" id="fd-kpis"></div>
+
+        <!-- PERIOD CHART -->
+        <div class="chart-box" style="margin:0 0 16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
+            <div class="legend" style="margin:0;">
+              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
+              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
+            </div>
+          </div>
+          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
+        </div>
+
+        <!-- MONEY OWED -->
+        <div class="fd-owed-section">
+          <div class="fd-panel-hdr" style="margin-bottom:10px;">
+            <div class="fd-panel-title">💳 Money owed</div>
+            <div style="display:flex;gap:8px;">
+              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
+              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+            </div>
+          </div>
+          <div id="fd-owed-list"></div>
+        </div>
+
         <div class="nf">
           <div class="nf-ttl">＋ New entry</div>
           <div class="fr">
@@ -1816,31 +1875,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       <!-- TAB: BILLS -->
       <div id="ftab-bills-body" style="display:none;">
 
-        <!-- MY BUDGET QUADRANT (replaces quarterly overview) -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
-          <span class="bl-month-pill">📅 <span id="bl-month-lbl"></span></span>
-          <span style="font-size:12px;color:var(--ts);">Bills auto-refresh each month · check off as you pay</span>
-        </div>
-        <div class="bq-grid">
-          <div class="bq-card"><div class="bq-ttl">🧾 Unpaid Bills</div><div id="bq-unpaid"></div></div>
-          <div class="bq-card"><div class="bq-ttl">💸 Living Expenses Budget</div><div id="bq-living"></div></div>
-          <div class="bq-card"><div class="bq-ttl">📊 Monthly Snapshot</div><div id="bq-snap"></div></div>
-          <div class="bq-card"><div class="bq-ttl">⏰ Due Next 14 Days</div><div id="bq-due"></div></div>
-        </div>
-
-        <!-- BILL CALENDAR -->
-        <div class="bl-section">
-          <span>📅 Bill Calendar — <span id="bl-cal-lbl"></span></span>
-          <div style="display:flex;gap:4px;">
-            <button class="btn xs" onclick="blCalNav(-1)">‹ Prev</button>
-            <button class="btn xs" onclick="blCalNav(0)">Today</button>
-            <button class="btn xs" onclick="blCalNav(1)">Next ›</button>
-          </div>
-        </div>
-        <div id="bl-calendar"></div>
-
         <!-- ADD BILL FORM -->
-        <div class="bl-section" style="margin-top:20px;"><span>＋ Add Bill or Subscription</span></div>
+        <div class="bl-section" style="margin-top:16px;"><span>＋ Add Bill or Subscription</span></div>
         <div class="nf">
           <div class="fr">
             <input class="fi" type="text" id="bl-n" placeholder="Bill name (e.g. Rent, Netflix)">
@@ -1871,40 +1907,6 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         <table class="nt"><thead><tr><th style="width:28px;"></th><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th>Notes</th><th style="width:52px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
         <div class="add-row" onclick="G('bl-n').focus()">＋ Add bill</div>
 
-        <!-- SUBSCRIPTIONS SECTION -->
-        <div class="bl-section" style="margin-top:8px;">
-          <span>📱 Subscriptions</span>
-          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
-        </div>
-        <div id="sub-cards"></div>
-
-        <!-- LIVING EXPENSES SECTION -->
-        <div class="bl-section">
-          <span>🛒 Living Expenses</span>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:11px;color:var(--th);font-weight:400;text-transform:none;letter-spacing:0;">Groceries · Gas · Eating Out · Laundry · etc.</span>
-            <button class="btn xs" onclick="G('live-form').classList.toggle('hidden')">＋ Add category</button>
-          </div>
-        </div>
-        <div class="nf hidden" id="live-form">
-          <div class="fr">
-            <input class="fi" type="text" id="live-name" placeholder="Category name (e.g. Groceries)">
-            <input class="fi" type="text" id="live-icon" placeholder="Icon 🛒" style="max-width:72px;">
-            <input class="fi" type="number" id="live-amt" placeholder="Monthly budget $" step="1" style="max-width:170px;">
-            <button class="btn pri" onclick="addLiveCategory()">Save</button>
-          </div>
-        </div>
-        <div class="live-grid" id="live-grid"></div>
-        <div class="nf">
-          <div class="nf-ttl">＋ Log spending</div>
-          <div class="fr">
-            <select class="fi" id="live-sp-cat" style="max-width:170px;"><option value="">Select category...</option></select>
-            <input class="fi" type="number" id="live-sp-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
-            <input class="fi" type="text" id="live-sp-note" placeholder="Note (optional)">
-            <input class="fi" type="date" id="live-sp-date" style="max-width:150px;">
-            <button class="btn pri" onclick="addLiveSpend()">Log</button>
-          </div>
-        </div>
       </div>
 
       <!-- TAB: OTHER PAYMENTS -->
@@ -2449,7 +2451,7 @@ function openSB(){G('sb').classList.add('open');G('sb-overlay').classList.add('o
 function closeSB(){G('sb').classList.remove('open');G('sb-overlay').classList.remove('open');}
 
 // NAV
-const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals & Projects'},planning:{ic:'🗓️',ttl:'Planning'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'},routinizer:{ic:'🔁',ttl:'Routinizer'},settings:{ic:'⚙️',ttl:'Settings'}};
+const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'🧾',ttl:'Bills & Budgets'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals & Projects'},planning:{ic:'🗓️',ttl:'Planning'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'},routinizer:{ic:'🔁',ttl:'Routinizer'},settings:{ic:'⚙️',ttl:'Settings'}};
 function go(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -3153,30 +3155,23 @@ function renderFinance(){
       </div>
     </div>`;
 
-  // Summary bar — current quarter stats
+  // Summary bar — bills snapshot (replaces quarterly)
   const fsum=G('f-sum');
   if(fsum){
-    const now=new Date();
-    const qStartMonth=Math.floor(now.getMonth()/3)*3;
-    const qStart=now.getFullYear()+'-'+String(qStartMonth+1).padStart(2,'0')+'-01';
-    const qEndDate=new Date(now.getFullYear(), qStartMonth+3, 0);
-    const qEnd=localDate(qEndDate);
-    const qNum=Math.floor(now.getMonth()/3)+1;
-    const qLabel='Q'+qNum+' '+now.getFullYear();
-    const qFin=S.finance.filter(f=>f.dt&&f.dt>=qStart&&f.dt<=qEnd);
-    const qInc=qFin.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
-    const qExp=qFin.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
-    const qNet=qInc-qExp;
+    const billsUnpaidAmt=S.bills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
+    const billsAutoAmt=S.bills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
+    const livTot=(S.liveCategories||[]).reduce((s,c)=>s+c.budget,0);
+    const livSpent=(S.liveSpend||[]).filter(sp=>sp.date&&sp.date.startsWith(currentMonth)).reduce((s,sp)=>s+sp.amt,0);
     fsum.innerHTML=`
-      <div class="sum-item"><div class="sum-lb">${qLabel} income</div><div class="sum-vl up">${fmt(qInc)}</div></div>
-      <div class="sum-item"><div class="sum-lb">${qLabel} expenses</div><div class="sum-vl dn">${fmt(qExp)}</div></div>
-      <div class="sum-item"><div class="sum-lb">${qLabel} net</div><div class="sum-vl ${qNet>=0?'up':'dn'}">${fmtS(qNet)}</div></div>
       <div class="sum-item"><div class="sum-lb">Bills / mo</div><div class="sum-vl">${fmt(billsTotal)}</div></div>
-      <div class="sum-item"><div class="sum-lb">Debts outstanding</div><div class="sum-vl ${opTotal>0?'dn':''}">${fmt(opTotal)}</div></div>`;
+      <div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl ${billsUnpaidAmt>0?'dn':''}">${fmt(billsUnpaidAmt)}</div></div>
+      <div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(billsAutoAmt)}</div></div>
+      <div class="sum-item"><div class="sum-lb">Living budget</div><div class="sum-vl">${fmt(livTot)}</div></div>
+      <div class="sum-item"><div class="sum-lb">Living spent</div><div class="sum-vl ${livSpent>livTot?'dn':''}">${fmt(livSpent)}</div></div>`;
   }
 
-  // ── OVERVIEW TAB ──
-  if(activeFinTab==='overview') renderFinOverview();
+  // ── TRANSACTIONS TAB — render finance calendar/KPIs/chart ──
+  if(activeFinTab==='entries') renderFinOverview();
 
   // ── TRANSACTIONS TAB ──
   let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
@@ -5415,7 +5410,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 // ══ COMMAND PALETTE ══
 const CMD_PAGES=[
   {ic:'∞', name:'Home',              sub:'Dashboard & overview',       action:()=>navToPage('home')},
-  {ic:'💰',name:'Finance & Bills',   sub:'Transactions, bills, debts', action:()=>navToPage('finance')},
+  {ic:'🧾',name:'Bills & Budgets',    sub:'Bills, subscriptions, living expenses', action:()=>navToPage('finance')},
   {ic:'🗓️',name:'Planning',          sub:'Tasks & habits',             action:()=>navToPage('planning')},
   {ic:'📈',name:'Trades',            sub:'Trade journal & backtests',  action:()=>navToPage('trades')},
   {ic:'🎯',name:'Goals',             sub:'Objectives & action steps',  action:()=>navToPage('goals')},
@@ -6481,7 +6476,7 @@ function openBlocksModal(){
     <input class="em-inp" id="em-note-inp" placeholder="Type your note here..." autocomplete="off">
     <select class="em-inp" id="em-note-page" style="margin-top:6px;">
       <option value="p-home">Home</option>
-      <option value="p-finance">Finance & Bills</option>
+      <option value="p-finance">Bills &amp; Budgets</option>
       <option value="p-trades">Trades</option>
       <option value="p-goals">Goals</option>
       <option value="p-todos">Admin & Todos</option>
@@ -7650,8 +7645,8 @@ function resetAllData(){
     <span class="bn-label">Home</span>
   </button>
   <button class="bn-item" id="bn-finance" onclick="go('finance',document.getElementById('ni-finance'));updateBN('finance')">
-    <span class="bn-icon">💰</span>
-    <span class="bn-label">Finance</span>
+    <span class="bn-icon">🧾</span>
+    <span class="bn-label">Bills</span>
   </button>
   <button class="bn-item" id="bn-trades" onclick="go('trades',document.getElementById('ni-trades'));updateBN('trades')">
     <span class="bn-icon">📈</span>
