@@ -1443,11 +1443,11 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bq-tot{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;font-size:13px;font-weight:700;color:var(--t);margin-top:4px;border-top:2px solid var(--bd2);}
 
 /* ── BILL CALENDAR IN BILLS TAB ── */
-.bl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:8px;}
+.bl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:80px;gap:2px;margin-top:8px;}
 .bl-cal-hdr{text-align:center;font-size:10px;font-weight:700;color:var(--th);padding:4px 0 6px;text-transform:uppercase;letter-spacing:0.04em;}
-.bl-cal-day{min-height:56px;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);padding:4px 5px;}
+.bl-cal-day{height:100%;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);padding:4px 5px;overflow:hidden;display:flex;flex-direction:column;}
 .bl-cal-day.today{border-color:var(--blue);background:var(--bbg);}
-.bl-cal-day.other{background:var(--bg-h);border-color:transparent;opacity:0.35;}
+.bl-cal-day.other{background:transparent;border-color:transparent;}
 .bl-cal-day-num{font-size:11px;font-weight:600;color:var(--ts);margin-bottom:2px;}
 .bl-cal-day.today .bl-cal-day-num{color:var(--blue);}
 .bl-cal-pill{display:flex;align-items:center;justify-content:space-between;gap:2px;margin-top:2px;padding:1px 3px;border-radius:3px;background:var(--rbg);color:var(--red);}
@@ -1742,6 +1742,48 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           </div>
         </div>
 
+        <!-- QUARTERLY / CASH FLOW SUMMARY -->
+        <div class="divider" style="margin:20px 0 16px;"></div>
+
+        <!-- PERIOD SELECTOR -->
+        <div class="fd-period-bar">
+          <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
+          <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
+          <button class="fd-period-btn" id="fpb-yearly" onclick="setFinPeriod('yearly',this)">Yearly</button>
+          <div class="fd-period-nav">
+            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
+            <div class="fd-month-label" id="fd-month-label"></div>
+            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
+          </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="fd-kpi-grid" id="fd-kpis"></div>
+
+        <!-- CASH FLOW CHART -->
+        <div class="chart-box" style="margin:0 0 16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
+            <div class="legend" style="margin:0;">
+              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
+              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
+            </div>
+          </div>
+          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
+        </div>
+
+        <!-- MONEY OWED -->
+        <div class="fd-owed-section">
+          <div class="fd-panel-hdr" style="margin-bottom:10px;">
+            <div class="fd-panel-title">💳 Money owed</div>
+            <div style="display:flex;gap:8px;">
+              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
+              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+            </div>
+          </div>
+          <div id="fd-owed-list"></div>
+        </div>
+
         <!-- FINANCIAL MILESTONE -->
         <div id="finance-milestone"></div>
 
@@ -1789,65 +1831,6 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
       <!-- TAB: TRANSACTIONS -->
       <div id="ftab-entries-body" style="display:none;">
-
-        <!-- MONTHLY CALENDAR -->
-        <div id="fd-cal-section" style="margin-top:16px;">
-          <div class="fd-cal-wrap">
-            <div class="fd-cal-top-bar">
-              <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-              <div class="fd-cal-legend">
-                <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-              </div>
-            </div>
-            <div class="fd-cal-header">
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-            </div>
-            <div class="fd-cal-grid" id="fd-cal-grid"></div>
-          </div>
-        </div>
-
-        <!-- PERIOD SELECTOR -->
-        <div class="fd-period-bar">
-          <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
-          <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
-          <button class="fd-period-btn" id="fpb-yearly" onclick="setFinPeriod('yearly',this)">Yearly</button>
-          <div class="fd-period-nav">
-            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
-            <div class="fd-month-label" id="fd-month-label"></div>
-            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
-          </div>
-        </div>
-
-        <!-- KPI CARDS -->
-        <div class="fd-kpi-grid" id="fd-kpis"></div>
-
-        <!-- PERIOD CHART -->
-        <div class="chart-box" style="margin:0 0 16px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
-            <div class="legend" style="margin:0;">
-              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
-              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
-            </div>
-          </div>
-          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
-        </div>
-
-        <!-- MONEY OWED -->
-        <div class="fd-owed-section">
-          <div class="fd-panel-hdr" style="margin-bottom:10px;">
-            <div class="fd-panel-title">💳 Money owed</div>
-            <div style="display:flex;gap:8px;">
-              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
-              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
-            </div>
-          </div>
-          <div id="fd-owed-list"></div>
-        </div>
-
         <div class="nf">
           <div class="nf-ttl">＋ New entry</div>
           <div class="fr">
@@ -3170,8 +3153,8 @@ function renderFinance(){
       <div class="sum-item"><div class="sum-lb">Living spent</div><div class="sum-vl ${livSpent>livTot?'dn':''}">${fmt(livSpent)}</div></div>`;
   }
 
-  // ── TRANSACTIONS TAB — render finance calendar/KPIs/chart ──
-  if(activeFinTab==='entries') renderFinOverview();
+  // ── OVERVIEW TAB — render finance calendar/KPIs/chart/money owed ──
+  if(activeFinTab==='overview') renderFinOverview();
 
   // ── TRANSACTIONS TAB ──
   let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
@@ -3494,15 +3477,17 @@ function renderBillCalendar(){
   const firstDay=new Date(yr,mo,1).getDay();
   const daysInMonth=new Date(yr,mo+1,0).getDate();
   const daysOfWeek=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  let html=`<div class="bl-cal-grid">${daysOfWeek.map(d=>`<div style="text-align:center;font-size:11px;font-weight:700;color:var(--ts);padding:4px 0;">${d}</div>`).join('')}`;
-  for(let i=0;i<firstDay;i++)html+=`<div class="bl-cal-day"></div>`;
+  // Header row doesn't use grid-auto-rows, render separately so it doesn't stretch
+  let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:8px;">${daysOfWeek.map(d=>`<div style="text-align:center;font-size:11px;font-weight:700;color:var(--ts);padding:4px 0;">${d}</div>`).join('')}</div>`;
+  html+=`<div class="bl-cal-grid">`;
+  for(let i=0;i<firstDay;i++)html+=`<div class="bl-cal-day other"></div>`;
   for(let d=1;d<=daysInMonth;d++){
     const dk=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const isToday=dk===today;
     const dueBills=billsDueOn(dk);
     html+=`<div class="bl-cal-day${isToday?' today':''}">
-      <div class="bl-cal-dn">${d}</div>
-      ${dueBills.map(b=>{
+      <div class="bl-cal-day-num">${d}</div>
+      <div style="overflow-y:auto;flex:1;">${dueBills.map(b=>{
         const st=getBillStatus(b);
         const isPaid=st==='Paid';
         const isAuto=st==='Auto-pay';
@@ -3510,7 +3495,7 @@ function renderBillCalendar(){
           <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;">${b.n}</span>
           <span style="font-size:9px;white-space:nowrap;">${fmt(b.a)}</span>
         </div>`;
-      }).join('')}
+      }).join('')}</div>
     </div>`;
   }
   html+=`</div>`;
