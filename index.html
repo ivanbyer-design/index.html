@@ -1224,6 +1224,33 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .home-top-quadrant{align-items:stretch;}
 .home-top-quadrant .home-quad-cell{display:flex;flex-direction:column;}
 
+/* QUICK-ADD WIDGET */
+.qa-widget{display:flex;flex-direction:column;flex:1;gap:8px;}
+.qa-tabs{display:flex;gap:4px;flex-wrap:wrap;}
+.qa-tab{font-family:var(--font);font-size:11px;font-weight:600;padding:4px 9px;border-radius:20px;border:1.5px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;transition:all .12s;white-space:nowrap;line-height:1.4;}
+.qa-tab.on{background:var(--t);color:var(--ti);border-color:var(--t);}
+.qa-tab:hover:not(.on){background:var(--bg-h);color:var(--t);}
+.qa-form{display:none;flex-direction:column;gap:7px;flex:1;}
+.qa-form.on{display:flex;}
+.qa-inp{width:100%;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);box-sizing:border-box;}
+.qa-inp:focus{outline:none;border-color:var(--blue);}
+.qa-inp::placeholder{color:var(--th);}
+.qa-ta{resize:none;min-height:62px;line-height:1.5;}
+.qa-row{display:flex;gap:6px;align-items:stretch;}
+.qa-row .qa-inp{flex:1;}
+.qa-sel{font-family:var(--font);font-size:12px;padding:7px 6px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);}
+.qa-ie{display:flex;border-radius:var(--r);overflow:hidden;border:1px solid var(--bd);flex-shrink:0;}
+.qa-ie-btn{font-family:var(--font);font-size:11px;font-weight:700;padding:5px 10px;border:none;background:var(--bg-in);color:var(--ts);cursor:pointer;transition:background .12s,color .12s;}
+.qa-ie-btn.on{background:var(--t);color:var(--ti);}
+.qa-save{font-family:var(--font);font-size:13px;font-weight:700;padding:8px;border-radius:var(--r);border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;margin-top:auto;transition:opacity .12s;}
+.qa-save:hover{opacity:0.85;}
+.qa-confirm{font-size:12px;font-weight:600;color:var(--green);text-align:center;min-height:18px;transition:opacity .3s;}
+/* NEEDS ATTENTION COLLAPSE */
+.attn-toggle{background:none;border:none;cursor:pointer;font-size:14px;color:var(--ts);padding:0;line-height:1;transition:transform .2s;}
+.attn-collapsed .attn-toggle{transform:rotate(-90deg);}
+.attn-body{overflow:hidden;transition:max-height .25s ease;}
+.attn-collapsed .attn-body{max-height:0!important;}
+
 @media(max-width:768px){
   .home-quadrant{grid-template-columns:1fr;}
 }
@@ -1595,16 +1622,97 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   <button class="home-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
 </div>
 
-      <!-- TOP QUADRANT: Stats | Routines -->
+      <!-- TOP QUADRANT: Quick Add | Needs Attention -->
       <div class="home-quadrant home-top-quadrant">
+
+        <!-- QUICK ADD WIDGET -->
         <div class="home-quad-cell">
-          <div class="home-quad-hdr">📊 Today at a Glance</div>
-          <div id="home-stats-quad"></div>
+          <div class="home-quad-hdr">⚡ Quick Add</div>
+          <div class="qa-widget">
+            <div class="qa-tabs">
+              <button class="qa-tab on" onclick="qaSwitch('task',this)">✅ Task</button>
+              <button class="qa-tab" onclick="qaSwitch('money',this)">💸 Money</button>
+              <button class="qa-tab" onclick="qaSwitch('journal',this)">📓 Journal</button>
+              <button class="qa-tab" onclick="qaSwitch('goal',this)">🎯 Goal</button>
+              <button class="qa-tab" onclick="qaSwitch('bill',this)">🧾 Bill</button>
+              <button class="qa-tab" onclick="qaSwitch('habit',this)">🔄 Habit</button>
+            </div>
+
+            <!-- TASK -->
+            <div class="qa-form on" id="qa-task">
+              <input class="qa-inp" id="qa-task-t" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')qaSave()">
+              <div class="qa-row">
+                <select class="qa-sel" id="qa-task-pri"><option value="med">🟡 Medium</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
+                <input class="qa-inp" type="date" id="qa-task-due">
+                <button class="qa-save" onclick="qaSave()">Add</button>
+              </div>
+            </div>
+
+            <!-- MONEY -->
+            <div class="qa-form" id="qa-money">
+              <div class="qa-row">
+                <div class="qa-ie" id="qa-ie">
+                  <button class="qa-ie-btn on" id="qa-ie-exp" onclick="qaSetIE('expense',this)">Expense</button>
+                  <button class="qa-ie-btn" id="qa-ie-inc" onclick="qaSetIE('income',this)">Income</button>
+                </div>
+                <input class="qa-inp" type="number" id="qa-money-amt" placeholder="Amount $" step="0.01" onkeydown="if(event.key==='Enter')qaSave()">
+              </div>
+              <input class="qa-inp" id="qa-money-desc" placeholder="Description" onkeydown="if(event.key==='Enter')qaSave()">
+              <div class="qa-row">
+                <select class="qa-sel" id="qa-money-cat" style="flex:1;"></select>
+                <button class="qa-save" onclick="qaSave()">Add</button>
+              </div>
+            </div>
+
+            <!-- JOURNAL -->
+            <div class="qa-form" id="qa-journal">
+              <textarea class="qa-inp qa-ta" id="qa-journal-txt" placeholder="What's on your mind today?"></textarea>
+              <button class="qa-save" onclick="qaSave()">Save entry</button>
+            </div>
+
+            <!-- GOAL / PROJECT -->
+            <div class="qa-form" id="qa-goal">
+              <input class="qa-inp" id="qa-goal-t" placeholder="Title" onkeydown="if(event.key==='Enter')qaSave()">
+              <div class="qa-row">
+                <select class="qa-sel" id="qa-goal-type"><option value="Goal">🎯 Goal</option><option value="Project">📁 Project</option></select>
+                <select class="qa-sel" id="qa-goal-pri"><option value="med">🟡 Med</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
+                <button class="qa-save" onclick="qaSave()">Add</button>
+              </div>
+            </div>
+
+            <!-- BILL -->
+            <div class="qa-form" id="qa-bill">
+              <input class="qa-inp" id="qa-bill-n" placeholder="Bill name (e.g. Rent, Netflix)" onkeydown="if(event.key==='Enter')qaSave()">
+              <div class="qa-row">
+                <input class="qa-inp" type="number" id="qa-bill-a" placeholder="Amount $" step="0.01">
+                <select class="qa-sel" id="qa-bill-cat"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
+                <button class="qa-save" onclick="qaSave()">Add</button>
+              </div>
+            </div>
+
+            <!-- HABIT -->
+            <div class="qa-form" id="qa-habit">
+              <div id="qa-habit-list" style="display:flex;flex-direction:column;gap:5px;flex:1;overflow-y:auto;max-height:130px;"></div>
+            </div>
+
+            <div class="qa-confirm" id="qa-confirm"></div>
+          </div>
         </div>
-        <div class="home-quad-cell">
-          <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">🔔 Needs Attention <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a></div>
-          <div id="home-attn" style="margin-top:6px;"></div>
+
+        <!-- NEEDS ATTENTION (collapsible) -->
+        <div class="home-quad-cell" id="attn-cell">
+          <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+            <span>🔔 Needs Attention</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a>
+              <button class="attn-toggle" id="attn-toggle-btn" onclick="toggleAttn()" title="Collapse">▾</button>
+            </div>
+          </div>
+          <div class="attn-body" id="attn-body" style="max-height:600px;">
+            <div id="home-attn" style="margin-top:6px;"></div>
+          </div>
         </div>
+
       </div>
       <div class="divider"></div>
 
@@ -5745,6 +5853,108 @@ function wizardNav(dir){
   renderWizardStep();
 }
 
+// ── QUICK ADD WIDGET ──
+let qaActive='task';
+let qaIEType='expense';
+let attnOpen=localStorage.getItem('lifeOS_attnOpen')!=='0';
+
+function qaSwitch(type,el){
+  qaActive=type;
+  document.querySelectorAll('.qa-tab').forEach(b=>b.classList.remove('on'));
+  if(el)el.classList.add('on');
+  document.querySelectorAll('.qa-form').forEach(f=>f.classList.remove('on'));
+  const f=G('qa-'+type);if(f)f.classList.add('on');
+  G('qa-confirm').textContent='';
+  if(type==='habit')renderQAHabits();
+  if(type==='money'){setTimeout(()=>{if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat',qaIEType);},10);}
+}
+function qaSetIE(t,el){
+  qaIEType=t;
+  document.querySelectorAll('#qa-ie .qa-ie-btn').forEach(b=>b.classList.remove('on'));
+  if(el)el.classList.add('on');
+  if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat',t);
+}
+function renderQAHabits(){
+  const el=G('qa-habit-list');if(!el)return;
+  if(!S.habits.length){el.innerHTML='<div style="font-size:12px;color:var(--ts);">No habits yet — add them in the Habits section.</div>';return;}
+  el.innerHTML=S.habits.map(h=>{
+    const done=S.hlog&&S.hlog[today+'-'+h.id];
+    return`<div class="ci" style="padding:4px 0;">
+      <input type="checkbox" ${done?'checked':''} onchange="togHab(${h.id});setTimeout(renderQAHabits,80);">
+      <span class="ci-lb ${done?'done':''}" style="font-size:13px;">${h.t}</span>
+      ${done?'<span style="font-size:11px;color:var(--green);margin-left:4px;">✓</span>':''}
+    </div>`;
+  }).join('');
+}
+function qaSave(){
+  const conf=G('qa-confirm');
+  if(qaActive==='task'){
+    const t=G('qa-task-t').value.trim();if(!t)return;
+    S.todos.push({t,p:G('qa-task-pri').value,d:G('qa-task-due').value||'',done:false,id:Date.now()});
+    G('qa-task-t').value='';G('qa-task-due').value='';
+    save();renderTodos();renderHome();
+    qaFlash('✓ Task added');
+  } else if(qaActive==='money'){
+    const a=parseFloat(G('qa-money-amt').value);if(!a)return;
+    const d=G('qa-money-desc').value.trim()||qaIEType;
+    const c=G('qa-money-cat').value||'Other';
+    S.finance.push({d,a,t:qaIEType,c,dt:today,biz:'personal',id:Date.now()});
+    G('qa-money-amt').value='';G('qa-money-desc').value='';
+    addFinancialPoints(3,'Quick add transaction');save();renderFinance();renderHome();
+    qaFlash('✓ '+(qaIEType==='income'?'Income':'Expense')+' added');
+  } else if(qaActive==='journal'){
+    const txt=G('qa-journal-txt').value.trim();if(!txt)return;
+    if(!S.routineLog)S.routineLog={};
+    const key=today+'-journal';
+    S.routineLog[key]=(S.routineLog[key]?S.routineLog[key]+'\n\n':'')+txt;
+    G('qa-journal-txt').value='';
+    save();
+    qaFlash('✓ Journal saved');
+  } else if(qaActive==='goal'){
+    const t=G('qa-goal-t').value.trim();if(!t)return;
+    const type=G('qa-goal-type').value,priority=G('qa-goal-pri').value;
+    S.goals.push({t,type,priority,status:'active',todos:[],c:'Personal',dl:'',id:Date.now()});
+    G('qa-goal-t').value='';
+    addPersonalPoints(5,'Quick add '+type.toLowerCase());save();renderGoals();
+    qaFlash('✓ '+type+' added');
+  } else if(qaActive==='bill'){
+    const n=G('qa-bill-n').value.trim();if(!n)return;
+    const a=parseFloat(G('qa-bill-a').value)||0;
+    const cat=G('qa-bill-cat').value;
+    S.bills.push({n,a,f:'Monthly',cat,d:today,ds:'Unpaid',payments:{},notes:'',id:Date.now()});
+    G('qa-bill-n').value='';G('qa-bill-a').value='';
+    addFinancialPoints(5,'Quick add bill');save();renderFinance();renderHome();
+    qaFlash('✓ Bill added');
+  }
+}
+function qaFlash(msg){
+  const el=G('qa-confirm');if(!el)return;
+  el.textContent=msg;
+  setTimeout(()=>{if(el.textContent===msg)el.textContent='';},2200);
+}
+
+// ── NEEDS ATTENTION COLLAPSE ──
+function toggleAttn(){
+  attnOpen=!attnOpen;
+  localStorage.setItem('lifeOS_attnOpen',attnOpen?'1':'0');
+  applyAttnState();
+}
+function applyAttnState(){
+  const cell=G('attn-cell'),body=G('attn-body'),btn=G('attn-toggle-btn');
+  if(!cell)return;
+  if(attnOpen){
+    cell.classList.remove('attn-collapsed');
+    body.style.maxHeight='600px';
+    if(btn)btn.textContent='▾';
+    if(btn)btn.title='Collapse';
+  } else {
+    cell.classList.add('attn-collapsed');
+    body.style.maxHeight='0';
+    if(btn)btn.textContent='▸';
+    if(btn)btn.title='Expand';
+  }
+}
+
 // ── EDIT MODAL ──
 let emType='',emId=0,emExtra=null;
 function openEM(type,id,extra){
@@ -5834,6 +6044,9 @@ function saveEM(){
 // ── RENDER ALL ──
 function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();renderSettings();renderRoutines();renderMilestones();renderWantsNeeds();renderSavingsAccounts();}
 renderAll();
+applyAttnState();
+// Init QA money category dropdown
+setTimeout(()=>{if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat','expense');},80);
 // Init category dropdowns for the transactions form (default: expense)
 setTimeout(()=>{buildCatSelect('fi-c','expense');},50);
 setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},150);
