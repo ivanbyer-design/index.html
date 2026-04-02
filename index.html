@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Life OS">
@@ -90,6 +90,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .sb.open{transform:translateX(0);}
   .sb-overlay.open{display:block;}
   .content{padding:16px 16px 0!important;padding-bottom:calc(76px + env(safe-area-inset-bottom))!important;}
+  /* Prevent iOS zoom on input focus — font-size must be ≥ 16px */
+  input,select,textarea{font-size:16px!important;}
   .page-cover{height:90px!important;}
   .page-title{font-size:26px!important;}
   .metrics-grid{grid-template-columns:repeat(2,1fr)!important;}
@@ -1333,6 +1335,13 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
 @media(max-width:768px){
   .home-quadrant{grid-template-columns:1fr;}
+  /* Weekly snapshot: show exactly 3 days */
+  .week-day{width:calc((100vw - 64px) / 3);}
+  /* Weekly summary KPI cards: 3 per row on mobile */
+  .week-summary{grid-template-columns:repeat(3,1fr);}
+  /* Bills & Budgets: single column, no horizontal overflow */
+  .bq-grid{grid-template-columns:1fr;}
+  .fin-qa-btn{font-size:13px;padding:12px 14px;}
 }
 
 /* ═══════════════════════════════════════════════════
