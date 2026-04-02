@@ -966,7 +966,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-dot-legend{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .fd-cal-dot-legend.income{background:var(--green);}
 .fd-cal-dot-legend.expense{background:var(--red);}
-.fd-cal-dot-legend.bill{background:var(--amber);}
+.fd-cal-dot-legend.bill{background:var(--red);}
 .fd-cal-dot-legend.debt{background:var(--purple);}
 .fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-h);border-bottom:1px solid var(--bd);}
 .fd-cal-header span{padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
@@ -991,7 +991,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-entry{font-size:9.5px;font-weight:600;padding:2px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
 .fd-cal-entry.income{background:var(--gbg);color:var(--green);}
 .fd-cal-entry.expense{background:var(--rbg);color:var(--red);}
-.fd-cal-entry.bill{background:var(--abg);color:var(--amber);}
+.fd-cal-entry.bill{background:var(--rbg);color:var(--red);}
 .fd-cal-entry.debt{background:var(--pbg);color:var(--purple);}
 .fd-cal-entry.more{background:var(--bg-tag);color:var(--ts);}
 .fd-cal-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:auto;padding-top:2px;}
@@ -1333,7 +1333,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .wn-add-row .fi{flex:1;min-width:120px;}
 
 /* ══ FOCUS BLOCK ══ */
-.focus-fab{position:fixed;bottom:90px;right:20px;z-index:900;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#6d28d9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(124,58,237,0.5);transition:transform .15s,box-shadow .15s;color:#fff;font-size:22px;}
+.focus-fab{position:fixed;bottom:90px;left:20px;right:auto;z-index:900;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#6d28d9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(124,58,237,0.5);transition:transform .15s,box-shadow .15s;color:#fff;font-size:22px;}
 .focus-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(124,58,237,0.65);}
 .focus-fab:focus-visible{outline:3px solid #a78bfa;outline-offset:3px;}
 .focus-overlay{position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
@@ -1427,6 +1427,88 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .home-day-btn.end{background:linear-gradient(135deg,#6d28d9,#5b21b6);color:#fff;box-shadow:0 4px 16px rgba(109,40,217,0.4);}
 .home-day-btn.end:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(109,40,217,0.5);}
 .home-day-btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+
+/* ── HIDDEN ── */
+.hidden{display:none!important;}
+
+/* ── BILLS BUDGET QUADRANT ── */
+.bq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.bq-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;}
+.bq-ttl{font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;}
+.bq-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--bd);}
+.bq-row:last-child{border-bottom:none;}
+.bq-row-n{color:var(--t);display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden;}
+.bq-row-n span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bq-row-a{font-weight:700;white-space:nowrap;margin-left:8px;}
+.bq-tot{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;font-size:13px;font-weight:700;color:var(--t);margin-top:4px;border-top:2px solid var(--bd2);}
+
+/* ── BILL CALENDAR IN BILLS TAB ── */
+.bl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:8px;}
+.bl-cal-hdr{text-align:center;font-size:10px;font-weight:700;color:var(--th);padding:4px 0 6px;text-transform:uppercase;letter-spacing:0.04em;}
+.bl-cal-day{min-height:56px;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);padding:4px 5px;}
+.bl-cal-day.today{border-color:var(--blue);background:var(--bbg);}
+.bl-cal-day.other{background:var(--bg-h);border-color:transparent;opacity:0.35;}
+.bl-cal-day-num{font-size:11px;font-weight:600;color:var(--ts);margin-bottom:2px;}
+.bl-cal-day.today .bl-cal-day-num{color:var(--blue);}
+.bl-cal-pill{display:flex;align-items:center;justify-content:space-between;gap:2px;margin-top:2px;padding:1px 3px;border-radius:3px;background:var(--rbg);color:var(--red);}
+.bl-cal-pill.paid{background:var(--gbg);color:var(--green);}
+.bl-cal-pill.auto{background:var(--bbg);color:var(--blue);}
+.bl-cal-pill-n{font-size:10px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;color:inherit;}
+.bl-cal-pill-a{font-size:10px;font-weight:700;white-space:nowrap;color:inherit;}
+
+/* ── SUBSCRIPTION CARDS ── */
+.sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin:10px 0 16px;}
+.sub-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px;border-left:3px solid var(--red);transition:box-shadow .12s;}
+.sub-card:hover{box-shadow:var(--sh-md);}
+.sub-card.is-paid{border-left-color:var(--green);}
+.sub-card.is-auto{border-left-color:var(--purple);}
+.sub-card-name{font-size:14px;font-weight:700;color:var(--t);margin-bottom:6px;}
+.sub-card-amt{font-size:22px;font-weight:800;color:var(--t);letter-spacing:-0.03em;line-height:1.1;}
+.sub-card-meta{font-size:11px;color:var(--ts);margin-top:3px;}
+.sub-card-acts{display:flex;align-items:center;gap:4px;margin-top:10px;flex-wrap:wrap;}
+
+/* ── LIVING EXPENSES / BUDGET ── */
+.live-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:10px 0;}
+.live-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;}
+.live-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.live-card-name{font-size:14px;font-weight:700;color:var(--t);display:flex;align-items:center;gap:6px;}
+.live-amts{font-size:12px;color:var(--ts);margin-top:2px;}
+.live-amts .over{color:var(--red);font-weight:700;}
+.live-amts .ok{color:var(--green);font-weight:700;}
+.live-log{margin-top:8px;border-top:1px solid var(--bd);padding-top:6px;}
+.live-log-row{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:12px;color:var(--ts);}
+.live-log-row span{flex:1;}
+.live-log-amt{font-weight:700;color:var(--t);}
+
+/* ── BILL SECTION DIVIDER ── */
+.bl-section{font-size:12px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;padding:14px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.bl-month-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--bbg);color:var(--blue);text-transform:none;letter-spacing:0;}
+
+/* ── GOAL+PROJECT CARDS ── */
+.gp-filter{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.gp-filter-btn{font-family:var(--font);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;border:1.5px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;transition:all .12s;}
+.gp-filter-btn.on{background:var(--t);color:var(--ti);border-color:var(--t);}
+.gp-type-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;}
+.gp-type-pill.goal{background:var(--pbg);color:var(--purple);}
+.gp-type-pill.project{background:var(--bbg);color:var(--blue);}
+
+/* ── EDIT MODAL ── */
+.em-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:800;display:flex;align-items:center;justify-content:center;}
+.em-overlay.hidden{display:none;}
+.em-box{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);width:min(92vw,480px);max-height:88vh;display:flex;flex-direction:column;box-shadow:var(--sh-lg);}
+.em-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.em-hdr h3{font-size:15px;font-weight:700;color:var(--t);}
+.em-body{padding:16px 20px;overflow-y:auto;flex:1;}
+.em-body .fr{margin-bottom:8px;}
+.em-body label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--ts);}
+.em-body label .fi{margin-top:0;}
+.em-lbl{font-size:12px;font-weight:600;color:var(--ts);margin-bottom:4px;}
+.em-foot{padding:12px 20px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;}
+
+/* ── EDIT BUTTON ── */
+.edit-ic{background:none;border:none;cursor:pointer;color:var(--th);font-size:13px;padding:2px 4px;border-radius:4px;line-height:1;transition:all .1s;}
+.edit-ic:hover{color:var(--blue);background:var(--bbg);}
+.row-acts{display:flex;align-items:center;gap:2px;}
 </style>
 </head>
 <body>
@@ -1733,28 +1815,96 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
       <!-- TAB: BILLS -->
       <div id="ftab-bills-body" style="display:none;">
-        <div class="summary-bar" id="b-sum" style="margin-top:14px;"></div>
+
+        <!-- MY BUDGET QUADRANT (replaces quarterly overview) -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
+          <span class="bl-month-pill">📅 <span id="bl-month-lbl"></span></span>
+          <span style="font-size:12px;color:var(--ts);">Bills auto-refresh each month · check off as you pay</span>
+        </div>
+        <div class="bq-grid">
+          <div class="bq-card"><div class="bq-ttl">🧾 Unpaid Bills</div><div id="bq-unpaid"></div></div>
+          <div class="bq-card"><div class="bq-ttl">💸 Living Expenses Budget</div><div id="bq-living"></div></div>
+          <div class="bq-card"><div class="bq-ttl">📊 Monthly Snapshot</div><div id="bq-snap"></div></div>
+          <div class="bq-card"><div class="bq-ttl">⏰ Due Next 14 Days</div><div id="bq-due"></div></div>
+        </div>
+
+        <!-- BILL CALENDAR -->
+        <div class="bl-section">
+          <span>📅 Bill Calendar — <span id="bl-cal-lbl"></span></span>
+          <div style="display:flex;gap:4px;">
+            <button class="btn xs" onclick="blCalNav(-1)">‹ Prev</button>
+            <button class="btn xs" onclick="blCalNav(0)">Today</button>
+            <button class="btn xs" onclick="blCalNav(1)">Next ›</button>
+          </div>
+        </div>
+        <div id="bl-calendar"></div>
+
+        <!-- ADD BILL FORM -->
+        <div class="bl-section" style="margin-top:20px;"><span>＋ Add Bill or Subscription</span></div>
         <div class="nf">
-          <div class="nf-ttl">＋ Add bill</div>
           <div class="fr">
-            <input class="fi" type="text" id="bl-n" placeholder="Bill name">
-            <input class="fi" type="number" id="bl-a" placeholder="Amount" step="0.01" style="max-width:130px;">
+            <input class="fi" type="text" id="bl-n" placeholder="Bill name (e.g. Rent, Netflix)">
+            <input class="fi" type="number" id="bl-a" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <select class="fi" id="bl-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
             <select class="fi" id="bl-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
-            <select class="fi" id="bl-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
             <input class="fi" type="date" id="bl-d" style="max-width:150px;">
-            <select class="fi" id="bl-s" style="max-width:120px;"><option>Unpaid</option><option>Paid</option><option>Auto-pay</option></select>
+            <select class="fi" id="bl-ds" style="max-width:130px;"><option value="Unpaid">Manual Pay</option><option value="Auto-pay">Auto-pay</option></select>
             <button class="btn pri" onclick="addBill()">Save</button>
           </div>
-        </div>
-        <div class="db-hdr">
-          <div class="db-ttl">📋 All bills</div>
-          <div class="db-acts">
-            <button class="db-btn" onclick="sortBills('due')">By due date</button>
-            <button class="db-btn" onclick="sortBills('amt')">By amount</button>
+          <div class="fr" style="margin-top:4px;">
+            <input class="fi" type="text" id="bl-notes" placeholder="Notes (optional)">
           </div>
         </div>
-        <table class="nt"><thead><tr><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th style="width:28px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
+
+        <!-- ALL BILLS TABLE -->
+        <div class="db-hdr">
+          <div class="db-ttl">📋 All bills</div>
+          <div class="db-acts" id="bl-cat-filters">
+            <button class="db-btn" id="blf-all" onclick="blFilterCat('all',this)" style="font-weight:700;">All</button>
+            <button class="db-btn" id="blf-Housing" onclick="blFilterCat('Housing',this)">🏠 Housing</button>
+            <button class="db-btn" id="blf-Utilities" onclick="blFilterCat('Utilities',this)">⚡ Utilities</button>
+            <button class="db-btn" id="blf-Subscriptions" onclick="blFilterCat('Subscriptions',this)">📱 Subs</button>
+            <button class="db-btn" id="blf-Insurance" onclick="blFilterCat('Insurance',this)">🛡️ Insurance</button>
+            <button class="db-btn" id="blf-Debt" onclick="blFilterCat('Debt',this)">💳 Debt</button>
+          </div>
+        </div>
+        <table class="nt"><thead><tr><th style="width:28px;"></th><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th>Notes</th><th style="width:52px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
         <div class="add-row" onclick="G('bl-n').focus()">＋ Add bill</div>
+
+        <!-- SUBSCRIPTIONS SECTION -->
+        <div class="bl-section" style="margin-top:8px;">
+          <span>📱 Subscriptions</span>
+          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
+        </div>
+        <div id="sub-cards"></div>
+
+        <!-- LIVING EXPENSES SECTION -->
+        <div class="bl-section">
+          <span>🛒 Living Expenses</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:var(--th);font-weight:400;text-transform:none;letter-spacing:0;">Groceries · Gas · Eating Out · Laundry · etc.</span>
+            <button class="btn xs" onclick="G('live-form').classList.toggle('hidden')">＋ Add category</button>
+          </div>
+        </div>
+        <div class="nf hidden" id="live-form">
+          <div class="fr">
+            <input class="fi" type="text" id="live-name" placeholder="Category name (e.g. Groceries)">
+            <input class="fi" type="text" id="live-icon" placeholder="Icon 🛒" style="max-width:72px;">
+            <input class="fi" type="number" id="live-amt" placeholder="Monthly budget $" step="1" style="max-width:170px;">
+            <button class="btn pri" onclick="addLiveCategory()">Save</button>
+          </div>
+        </div>
+        <div class="live-grid" id="live-grid"></div>
+        <div class="nf">
+          <div class="nf-ttl">＋ Log spending</div>
+          <div class="fr">
+            <select class="fi" id="live-sp-cat" style="max-width:170px;"><option value="">Select category...</option></select>
+            <input class="fi" type="number" id="live-sp-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <input class="fi" type="text" id="live-sp-note" placeholder="Note (optional)">
+            <input class="fi" type="date" id="live-sp-date" style="max-width:150px;">
+            <button class="btn pri" onclick="addLiveSpend()">Log</button>
+          </div>
+        </div>
       </div>
 
       <!-- TAB: OTHER PAYMENTS -->
@@ -1836,22 +1986,31 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       </div>
     </div>
 
-    <!-- GOALS -->
+    <!-- GOALS & PROJECTS (merged) -->
     <div class="panel" id="p-goals">
       <button class="mob-menu-float" onclick="openSB()">☰</button>
       <div class="page-cover cg"></div>
       <span class="page-icon">🎯</span>
-      <div class="page-title editable-hdr" data-hdr="goals-title" id="hdr-goals-title">Goals</div>
-      <div class="page-sub">Big objectives and their action steps</div>
+      <div class="page-title editable-hdr" data-hdr="goals-title" id="hdr-goals-title">Goals &amp; Projects</div>
+      <div class="page-sub">Big objectives, projects, and their milestones</div>
       <div class="summary-bar" id="g-sum"></div>
       <div class="nf">
-        <div class="nf-ttl">＋ New goal</div>
+        <div class="nf-ttl">＋ New goal or project</div>
         <div class="fr">
-          <input class="fi" type="text" id="gl-t" placeholder="Goal title">
-          <select class="fi" id="gl-c" style="max-width:130px;"><option>Financial</option><option>Health</option><option>Career</option><option>Personal</option><option>Learning</option><option>Other</option></select>
+          <input class="fi" type="text" id="gl-t" placeholder="Title">
+          <select class="fi" id="gl-type" style="max-width:120px;"><option value="Goal">🎯 Goal</option><option value="Project">📁 Project</option></select>
+          <select class="fi" id="gl-c" style="max-width:130px;"><option>Financial</option><option>Health</option><option>Career</option><option>Personal</option><option>Learning</option><option>Business</option><option>Creative</option><option>Other</option></select>
           <input class="fi" type="date" id="gl-d" style="max-width:150px;">
-          <button class="btn pri" onclick="addGoal()">Add goal</button>
+          <select class="fi" id="gl-pri" style="max-width:110px;"><option value="high">🔴 High</option><option value="med" selected>🟡 Med</option><option value="low">⚪ Low</option></select>
+          <button class="btn pri" onclick="addGoal()">Add</button>
         </div>
+      </div>
+      <div class="gp-filter">
+        <button class="gp-filter-btn on" onclick="setGPFilter('all',this)">All</button>
+        <button class="gp-filter-btn" onclick="setGPFilter('Goal',this)">🎯 Goals</button>
+        <button class="gp-filter-btn" onclick="setGPFilter('Project',this)">📁 Projects</button>
+        <button class="gp-filter-btn" onclick="setGPFilter('active',this)">In Progress</button>
+        <button class="gp-filter-btn" onclick="setGPFilter('done',this)">Completed</button>
       </div>
       <div id="g-list"></div>
     </div>
@@ -2241,7 +2400,35 @@ if(!S.points)S.points={personal:0,financial:0};
 if(!S.milestones)S.milestones={personalLevel:1,financialLevel:1,claimedRewards:[]};
 if(!S.savingsAccounts)S.savingsAccounts=[];
 if(!S.customRoutines)S.customRoutines=[];
+if(!S.liveCategories)S.liveCategories=[];
+if(!S.liveSpend)S.liveSpend=[];
+// Migrate existing bills: add payments{}, ds, notes fields
+S.bills.forEach(b=>{
+  if(!b.payments)b.payments={};
+  if(b.ds===undefined)b.ds=(b.s==='Auto-pay'?'Auto-pay':'Unpaid');
+  if(b.notes===undefined)b.notes='';
+});
+// Migrate existing goals: add type, priority, status fields
+S.goals.forEach(g=>{
+  if(!g.type)g.type='Goal';
+  if(!g.priority)g.priority='med';
+  if(!g.status)g.status='active';
+});
+// Seed default living expense categories if none exist
+if(!S.liveCategories.length){
+  S.liveCategories=[
+    {id:Date.now()+1,name:'Groceries',budget:400,icon:'🛒'},
+    {id:Date.now()+2,name:'Gas',budget:150,icon:'⛽'},
+    {id:Date.now()+3,name:'Eating Out',budget:200,icon:'🍽️'},
+    {id:Date.now()+4,name:'Laundry',budget:30,icon:'🧺'}
+  ];
+}
 const save=()=>{try{localStorage.setItem('lifeOS_v3',JSON.stringify(S));}catch(e){}};
+// Current month key (YYYY-MM) and bill calendar state
+const currentMonth=today.slice(0,7);
+let blCalYear=new Date().getFullYear(),blCalMon=new Date().getMonth();
+let blCatFilter='all';
+let gpFilter='all';
 
 // DARK MODE
 let dark=localStorage.getItem('lifeOS_dark')==='1'||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches&&!localStorage.getItem('lifeOS_dark'));
@@ -2262,7 +2449,7 @@ function openSB(){G('sb').classList.add('open');G('sb-overlay').classList.add('o
 function closeSB(){G('sb').classList.remove('open');G('sb-overlay').classList.remove('open');}
 
 // NAV
-const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals'},planning:{ic:'🗓️',ttl:'Planning'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'},routinizer:{ic:'🔁',ttl:'Routinizer'},settings:{ic:'⚙️',ttl:'Settings'}};
+const PM={home:{ic:'∞',ttl:'Home'},finance:{ic:'💰',ttl:'Finance & Bills'},trades:{ic:'📈',ttl:'Trades & Backtests'},goals:{ic:'🎯',ttl:'Goals & Projects'},planning:{ic:'🗓️',ttl:'Planning'},todos:{ic:'✅',ttl:'Admin & Todos'},habits:{ic:'🔄',ttl:'Habits'},projects:{ic:'🚀',ttl:'Projects'},routinizer:{ic:'🔁',ttl:'Routinizer'},settings:{ic:'⚙️',ttl:'Settings'}};
 function go(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -2383,7 +2570,8 @@ function fqaSaveBill(){
   const amt=parseFloat(G('fqab-amount').value);
   const name=G('fqab-name').value.trim();
   if(!amt||!name){G(!amt?'fqab-amount':'fqab-name').focus();return;}
-  S.bills.push({n:name,a:amt,f:G('fqab-freq').value,cat:G('fqab-cat').value,d:G('fqab-due').value,s:G('fqab-status').value,id:Date.now()});
+  const ds=G('fqab-status').value==='Auto-pay'?'Auto-pay':'Unpaid';
+  S.bills.push({n:name,a:amt,f:G('fqab-freq').value,cat:G('fqab-cat').value,d:G('fqab-due').value,ds,payments:{},notes:'',id:Date.now()});
   addFinancialPoints(5,'Added bill');
   save();renderFinance();renderHome();
   showBackupToast('✓ Bill saved');
@@ -2503,7 +2691,7 @@ function cycleOP(id){
 }
 function markBillPaid(id){
   const b=S.bills.find(b=>b.id===id);
-  if(b){b.s='Paid';save();renderFinance();renderHome();showBackupToast('✓ Bill marked paid');}
+  if(b){if(!b.payments)b.payments={};b.payments[currentMonth]='Paid';addFinancialPoints(20,'Paid a bill');save();renderFinance();renderHome();showBackupToast('✓ Bill marked paid');}
 }
 function markDebtPaid(id){
   const p=S.otherPayments.find(p=>p.id===id);
@@ -2720,7 +2908,7 @@ function renderFinOverview(){
   if(owedEl){
     const OPS={pending:'amber',overdue:'red',scheduled:'blue'};
     const OPL={pending:'Pending',overdue:'Overdue',scheduled:'Scheduled'};
-    const unpaidBills=S.bills.filter(b=>b.s==='Unpaid').sort((a,b)=>(nextBillDue(a)||'9999').localeCompare(nextBillDue(b)||'9999'));
+    const unpaidBills=S.bills.filter(b=>getBillStatus(b)==='Unpaid').sort((a,b)=>(nextBillDue(a)||'9999').localeCompare(nextBillDue(b)||'9999'));
     const activeDebts=(S.otherPayments||[]).filter(p=>p.s!=='paid').sort((a,b)=>{
       const ord={overdue:0,pending:1,scheduled:2};
       return(ord[a.s]||9)-(ord[b.s]||9)||(a.due||'9999').localeCompare(b.due||'9999');
@@ -2878,7 +3066,7 @@ function renderFdDayBody(dk){
   // Bills and debts
   if(dayBills.length){
     html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">🧾 Bills due</div>`;
-    dayBills.forEach(b=>{html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.cat||'Other'} · ${b.f}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(b.a)}</div>${tag(b.s,{Paid:'green',Unpaid:'red','Auto-pay':'blue'}[b.s]||'gray')}</div></div>`;});
+    dayBills.forEach(b=>{const bs=getBillStatus(b);html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.cat||'Other'} · ${b.f}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(b.a)}</div>${tag(bs,{Paid:'green',Unpaid:'red','Auto-pay':'blue'}[bs]||'gray')}</div></div>`;});
     html+=`</div>`;
   }
   if(dayDebts.length){
@@ -2941,7 +3129,7 @@ function renderFinance(){
   const net=inc-exp;
   const billsTotal=S.bills.reduce((s,b)=>s+b.a,0);
   const opTotal=(S.otherPayments||[]).filter(p=>p.s!=='paid').reduce((s,p)=>s+p.a,0);
-  const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
+  const unp=S.bills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
 
   // This month figures for header
   const now=new Date();
@@ -2949,7 +3137,7 @@ function renderFinance(){
   const mInc=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPfx)&&f.t==='income').reduce((s,f)=>s+f.a,0);
   const mExp=S.finance.filter(f=>f.dt&&f.dt.startsWith(mPfx)&&f.t==='expense').reduce((s,f)=>s+f.a,0);
   const mNet=mInc-mExp;
-  const unpaidBillsCount=S.bills.filter(b=>b.s==='Unpaid').length;
+  const unpaidBillsCount=S.bills.filter(b=>getBillStatus(b)==='Unpaid').length;
   const activeDebtsCount=(S.otherPayments||[]).filter(p=>p.s!=='paid').length;
 
   // Modern header meta — live this-month stats
@@ -3047,34 +3235,66 @@ function renderTrades(){
   else btb.innerHTML=[...S.backtests].reverse().map(b=>`<tr><td><strong>${b.n}</strong></td><td>${tag(b.m,'blue')}</td><td style="font-weight:600;color:${b.w>=50?'var(--green)':'var(--red)'};">${b.w}%</td><td style="font-family:monospace;">${b.r}</td><td style="font-weight:600;color:${b.p>=0?'var(--green)':'var(--red)'};">${b.p>=0?'+':''}${b.p}%</td><td style="font-size:12px;color:var(--ts);">${b.dt}</td><td style="font-size:12px;color:var(--ts);">${b.no||''}</td><td><button class="del" onclick="delBt(${b.id})">✕</button></td></tr>`).join('');
 }
 
-// ── GOALS ──
+// ── GOALS & PROJECTS ──
+function setGPFilter(f,el){
+  gpFilter=f;
+  document.querySelectorAll('.gp-filter-btn').forEach(b=>b.classList.remove('on'));
+  if(el)el.classList.add('on');
+  renderGoals();
+}
 function addGoal(){
   const t=G('gl-t').value.trim();if(!t)return;
-  S.goals.push({t,c:G('gl-c').value,dl:G('gl-d').value,todos:[],id:Date.now()});
+  const type=G('gl-type')?G('gl-type').value:'Goal';
+  const priority=G('gl-pri')?G('gl-pri').value:'med';
+  S.goals.push({t,c:G('gl-c')?G('gl-c').value:'Personal',dl:G('gl-d')?G('gl-d').value:'',type,priority,status:'active',todos:[],id:Date.now()});
+  if(type==='Goal')addPersonalPoints(5,'Added goal');
   G('gl-t').value='';save();renderGoals();
 }
 function addGT(gid){const inp=G('gt-'+gid);const txt=inp.value.trim();if(!txt)return;const g=S.goals.find(g=>g.id===gid);if(g){g.todos.push({t:txt,done:false,id:Date.now()});inp.value='';save();renderGoals();}}
-function togGT(gid,tid){const g=S.goals.find(g=>g.id===gid);if(g){const t=g.todos.find(t=>t.id===tid);if(t)t.done=!t.done;save();renderGoals();}}
+function togGT(gid,tid){const g=S.goals.find(g=>g.id===gid);if(g){const t=g.todos.find(t=>t.id===tid);if(t){t.done=!t.done;if(t.done&&g.todos.every(t=>t.done))g.status='done';}save();renderGoals();}}
 function delGoal(id){S.goals=S.goals.filter(g=>g.id!==id);save();renderGoals();}
 function delGT(gid,tid){const g=S.goals.find(g=>g.id===gid);if(g){g.todos=g.todos.filter(t=>t.id!==tid);save();renderGoals();}}
+function markGPDone(id){const g=S.goals.find(g=>g.id===id);if(g){g.status=g.status==='done'?'active':'done';g.todos.forEach(t=>t.done=g.status==='done');save();renderGoals();}}
 function renderGoals(){
-  const tot=S.goals.length;
-  const comp=S.goals.filter(g=>g.todos.length&&g.todos.every(t=>t.done)).length;
-  const avg=tot?Math.round(S.goals.reduce((s,g)=>{const d=g.todos.filter(t=>t.done).length,n=g.todos.length;return s+(n?d/n*100:0);},0)/tot):0;
-  G('g-sum').innerHTML=`<div class="sum-item"><div class="sum-lb">Total goals</div><div class="sum-vl">${tot}</div></div><div class="sum-item"><div class="sum-lb">Avg progress</div><div class="sum-vl">${avg}%</div></div><div class="sum-item"><div class="sum-lb">Completed</div><div class="sum-vl up">${comp}</div></div><div class="sum-item"><div class="sum-lb">In progress</div><div class="sum-vl">${tot-comp}</div></div>`;
-  const list=G('g-list');
-  if(!S.goals.length){list.innerHTML='<div class="empty">No goals yet — add one above</div>';return;}
-  list.innerHTML=S.goals.map(g=>{
-    const d=g.todos.filter(t=>t.done).length,n=g.todos.length,pct=n?Math.round(d/n*100):0,done=n&&pct===100;
-    return`<div style="background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:10px;">
+  const all=S.goals;
+  const tot=all.length;
+  const comp=all.filter(g=>g.status==='done'||( g.todos.length&&g.todos.every(t=>t.done))).length;
+  const goals=all.filter(g=>g.type==='Goal').length;
+  const projs=all.filter(g=>g.type==='Project').length;
+  const gsum=G('g-sum');
+  if(gsum)gsum.innerHTML=`<div class="sum-item"><div class="sum-lb">Total</div><div class="sum-vl">${tot}</div></div><div class="sum-item"><div class="sum-lb">Goals</div><div class="sum-vl">${goals}</div></div><div class="sum-item"><div class="sum-lb">Projects</div><div class="sum-vl">${projs}</div></div><div class="sum-item"><div class="sum-lb">Completed</div><div class="sum-vl up">${comp}</div></div>`;
+  const list=G('g-list');if(!list)return;
+  let filtered=all;
+  if(gpFilter==='Goal')filtered=all.filter(g=>g.type==='Goal');
+  else if(gpFilter==='Project')filtered=all.filter(g=>g.type==='Project');
+  else if(gpFilter==='active')filtered=all.filter(g=>g.status!=='done'&&!(g.todos.length&&g.todos.every(t=>t.done)));
+  else if(gpFilter==='done')filtered=all.filter(g=>g.status==='done'||(g.todos.length&&g.todos.every(t=>t.done)));
+  if(!filtered.length){list.innerHTML=`<div class="empty">${tot?'No items match this filter':'No goals or projects yet — add one above'}</div>`;return;}
+  const PRI={high:'🔴',med:'🟡',low:'⚪'};
+  list.innerHTML=filtered.map(g=>{
+    const d=g.todos.filter(t=>t.done).length,n=g.todos.length,pct=n?Math.round(d/n*100):0;
+    const isDone=g.status==='done'||(n&&pct===100);
+    const typeClass=g.type==='Goal'?'goal':'project';
+    return`<div style="background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:10px;${isDone?'opacity:0.75;':''}">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
-        <div><div style="font-size:15px;font-weight:600;margin-bottom:4px;">${g.t}</div>
-        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">${tag(g.c,CC[g.c]||'gray')}${g.dl?`<span style="font-size:12px;color:var(--ts);">📅 ${g.dl}</span>`:''}${done?tag('Complete','green'):''}</div></div>
-        <button class="del" onclick="delGoal(${g.id})">✕</button>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap;">
+            <span class="gp-type-pill ${typeClass}">${g.type==='Goal'?'🎯 Goal':'📁 Project'}</span>
+            <span style="font-size:12px;" title="${g.priority} priority">${PRI[g.priority||'med']}</span>
+            ${isDone?`<span class="tag green">✓ Done</span>`:''}
+          </div>
+          <div style="font-size:15px;font-weight:600;${isDone?'text-decoration:line-through;color:var(--ts);':''}">${g.t}</div>
+          ${g.dl?`<div style="font-size:12px;color:var(--ts);margin-top:2px;">📅 ${g.dl}</div>`:''}
+        </div>
+        <div class="row-acts">
+          <button class="btn xs" onclick="markGPDone(${g.id})" title="${isDone?'Reopen':'Mark done'}" style="font-size:11px;">${isDone?'↩ Reopen':'✓ Done'}</button>
+          <button class="edit-ic" onclick="openEM('goal',${g.id})" title="Edit">✎</button>
+          <button class="del" onclick="delGoal(${g.id})">✕</button>
+        </div>
       </div>
-      ${n?`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div class="prog" style="flex:1;"><div class="pf ${done?'g':''}" style="width:${pct}%;"></div></div><span style="font-size:12px;color:var(--ts);white-space:nowrap;">${d}/${n} · ${pct}%</span></div>`:''}
+      ${n?`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div class="prog" style="flex:1;"><div class="pf${isDone?' g':''}" style="width:${pct}%;"></div></div><span style="font-size:12px;color:var(--ts);white-space:nowrap;">${d}/${n} · ${pct}%</span></div>`:''}
       <div style="margin-bottom:8px;">${g.todos.map(t=>`<div class="ci"><input type="checkbox" ${t.done?'checked':''} onchange="togGT(${g.id},${t.id})"><span class="ci-lb ${t.done?'done':''}">${t.t}</span><button class="del" style="font-size:11px;" onclick="delGT(${g.id},${t.id})">✕</button></div>`).join('')}</div>
-      <div style="display:flex;gap:6px;"><input class="fi" type="text" id="gt-${g.id}" placeholder="Add action step..." style="font-size:13px;" onkeydown="if(event.key==='Enter')addGT(${g.id})"><button class="btn xs" onclick="addGT(${g.id})">＋ Add</button></div>
+      <div style="display:flex;gap:6px;"><input class="fi" type="text" id="gt-${g.id}" placeholder="Add step / milestone..." style="font-size:13px;" onkeydown="if(event.key==='Enter')addGT(${g.id})"><button class="btn xs" onclick="addGT(${g.id})">＋ Add</button></div>
     </div>`;
   }).join('');
 }
@@ -3082,14 +3302,39 @@ function renderGoals(){
 // ── BILLS ──
 let billSort='due';
 function sortBills(s){billSort=s;renderBills();}
+function getBillStatus(b){
+  if(b.ds==='Auto-pay')return'Auto-pay';
+  return(b.payments&&b.payments[currentMonth])||'Unpaid';
+}
 function addBill(){
   const n=G('bl-n').value.trim();if(!n)return;
-  S.bills.push({n,a:parseFloat(G('bl-a').value)||0,f:G('bl-f').value,cat:G('bl-cat')?G('bl-cat').value:'Other',d:G('bl-d').value,s:G('bl-s').value,id:Date.now()});
+  const ds=G('bl-ds')?G('bl-ds').value:'Unpaid';
+  S.bills.push({n,a:parseFloat(G('bl-a').value)||0,f:G('bl-f').value,cat:G('bl-cat')?G('bl-cat').value:'Other',d:G('bl-d').value,ds,payments:{},notes:G('bl-notes')?G('bl-notes').value.trim():'',id:Date.now()});
   addFinancialPoints(5,'Added bill');
-  G('bl-n').value='';G('bl-a').value='';save();renderFinance();renderHome();
+  G('bl-n').value='';G('bl-a').value='';if(G('bl-notes'))G('bl-notes').value='';save();renderFinance();renderHome();
 }
 function delBill(id){S.bills=S.bills.filter(b=>b.id!==id);save();renderFinance();renderHome();}
-function cycleBill(id){const b=S.bills.find(b=>b.id===id);if(b){const s=['Unpaid','Paid','Auto-pay'];const next=s[(s.indexOf(b.s)+1)%3];if(next==='Paid')addFinancialPoints(20,'Paid a bill');b.s=next;save();renderBills();}}
+function cycleBill(id){
+  const b=S.bills.find(b=>b.id===id);if(!b)return;
+  if(b.ds==='Auto-pay')return;// auto-pay always stays auto-pay
+  const cur=getBillStatus(b);
+  const next=cur==='Unpaid'?'Paid':'Unpaid';
+  if(next==='Paid')addFinancialPoints(20,'Paid a bill');
+  if(!b.payments)b.payments={};
+  b.payments[currentMonth]=next;
+  save();renderBills();
+}
+function blFilterCat(cat,el){
+  blCatFilter=cat;
+  document.querySelectorAll('#bl-cat-filters .db-btn').forEach(b=>b.style.fontWeight='');
+  if(el)el.style.fontWeight='700';
+  renderBills();
+}
+let blCalOffset=0;
+function blCalNav(dir){
+  if(dir===0){blCalOffset=0;}else{blCalOffset+=dir;}
+  renderBillCalendar();
+}
 // ── BILLS RECURRENCE HELPER ──
 // Returns all bills that are due on a given date string (YYYY-MM-DD),
 // respecting each bill's frequency (Monthly, Bi-weekly, Weekly, Annual, One-time).
@@ -3140,33 +3385,222 @@ function nextBillDue(b){
 }
 
 function renderBills(){
+  // Set month label
+  const mn=G('bl-month-lbl');
+  if(mn)mn.textContent=new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  // Summary bar
   const tot=S.bills.reduce((s,b)=>s+b.a,0);
-  const unp=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
-  const auto=S.bills.filter(b=>b.s==='Auto-pay').reduce((s,b)=>s+b.a,0);
-  const paid=S.bills.filter(b=>b.s==='Paid').reduce((s,b)=>s+b.a,0);
+  const unp=S.bills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
+  const auto=S.bills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
+  const paid=S.bills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
   const bsum=G('b-sum');
   if(bsum)bsum.innerHTML=`
     <div class="sum-item"><div class="sum-lb">Monthly total</div><div class="sum-vl">${fmt(tot)}</div></div>
     <div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl dn">${fmt(unp)}</div></div>
     <div class="sum-item"><div class="sum-lb">Paid</div><div class="sum-vl up">${fmt(paid)}</div></div>
     <div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(auto)}</div></div>`;
-  const srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:(nextBillDue(a)||'').localeCompare(nextBillDue(b)||''));
+  // Sub-renders
+  renderBudgetQuadrant();
+  renderBillCalendar();
+  renderSubscriptionCards();
+  renderLivingExpenses();
+  // Bills table
+  let srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:(nextBillDue(a)||'').localeCompare(nextBillDue(b)||''));
+  if(blCatFilter!=='all')srt=srt.filter(b=>(b.cat||'Other')===blCatFilter);
   const tb=G('bl-tb');
   if(!tb)return;
-  if(!S.bills.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty">No bills tracked — add one above</div></td></tr>`;return;}
+  if(!srt.length){tb.innerHTML=`<tr><td colspan="9"><div class="empty">${blCatFilter!=='all'?'No '+blCatFilter+' bills':'No bills tracked — add one above'}</div></td></tr>`;return;}
   tb.innerHTML=srt.map(b=>{
     const nxt=nextBillDue(b);
     const isOverdue=nxt&&nxt<today;
+    const st=getBillStatus(b);
+    const stClass=SC[st]||'gray';
+    const isPaid=st==='Paid';
+    const isAuto=st==='Auto-pay';
+    const checkHtml=isAuto
+      ?`<span title="Auto-pay">🔄</span>`
+      :`<input type="checkbox" ${isPaid?'checked':''} onchange="cycleBill(${b.id})" title="${isPaid?'Mark unpaid':'Mark paid'}">`;
     return`<tr>
-      <td><strong>${b.n}</strong></td>
+      <td style="text-align:center;">${checkHtml}</td>
+      <td><strong style="${isPaid?'text-decoration:line-through;color:var(--ts);':''}">${b.n}</strong></td>
       <td>${tag(b.cat||'Other','gray')}</td>
       <td style="font-weight:700;">${fmt(b.a)}</td>
       <td>${tag(b.f,'gray')}</td>
       <td style="font-size:12px;color:${isOverdue?'var(--red)':'var(--ts)'};">${nxt||'—'}${isOverdue?' ⚠️':''}</td>
-      <td><span class="tag ${SC[b.s]||'gray'}" style="cursor:pointer;" onclick="cycleBill(${b.id})" title="Click to cycle status">${b.s}</span></td>
-      <td><button class="del" onclick="delBill(${b.id})">✕</button></td>
+      <td><span class="tag ${stClass}" style="cursor:${isAuto?'default':'pointer'};" onclick="cycleBill(${b.id})" title="${isAuto?'Auto-pay':'Click to toggle'}">${st}</span></td>
+      <td style="font-size:12px;color:var(--ts);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.notes||'—'}</td>
+      <td class="row-acts"><button class="edit-ic" onclick="openEM('bill',${b.id})" title="Edit">✎</button><button class="del" onclick="delBill(${b.id})">✕</button></td>
     </tr>`;
   }).join('');
+}
+
+function renderBudgetQuadrant(){
+  const unp=G('bq-unpaid'),bqliv=G('bq-living'),snap=G('bq-snap'),due=G('bq-due');
+  if(!unp)return;
+  // Panel 1: Unpaid bills
+  const unpaidBills=S.bills.filter(b=>getBillStatus(b)==='Unpaid');
+  const unpaidAmt=unpaidBills.reduce((s,b)=>s+b.a,0);
+  unp.innerHTML=unpaidBills.length
+    ?`<div style="font-size:22px;font-weight:700;color:var(--red);margin-bottom:4px;">${fmt(unpaidAmt)}</div>
+       <div style="font-size:12px;color:var(--ts);">${unpaidBills.length} bill${unpaidBills.length!==1?'s':''} remaining</div>
+       <div style="margin-top:8px;">${unpaidBills.slice(0,3).map(b=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--bd);"><span>${b.n}</span><span style="color:var(--red);font-weight:600;">${fmt(b.a)}</span></div>`).join('')}${unpaidBills.length>3?`<div style="font-size:11px;color:var(--ts);margin-top:4px;">+${unpaidBills.length-3} more</div>`:''}</div>`
+    :`<div style="color:var(--green);font-size:13px;font-weight:600;margin-top:6px;">✓ All bills paid!</div>`;
+  // Panel 2: Living expenses budget
+  const lm=currentMonth;
+  const livSpendThisMonth=(S.liveSpend||[]).filter(s=>s.date&&s.date.startsWith(lm));
+  const totalLivBudget=(S.liveCategories||[]).reduce((s,c)=>s+c.budget,0);
+  const totalLivSpent=livSpendThisMonth.reduce((s,sp)=>s+sp.amt,0);
+  const livPct=totalLivBudget?Math.min(100,Math.round(totalLivSpent/totalLivBudget*100)):0;
+  const livColor=livPct>=90?'var(--red)':livPct>=70?'var(--amber)':'var(--green)';
+  bqliv.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span style="font-size:18px;font-weight:700;">${fmt(totalLivSpent)}</span><span style="font-size:12px;color:var(--ts);">of ${fmt(totalLivBudget)}</span></div>
+    <div class="prog" style="margin-bottom:6px;"><div class="pf" style="width:${livPct}%;background:${livColor};"></div></div>
+    <div style="font-size:12px;color:var(--ts);">${livPct}% used · ${fmt(totalLivBudget-totalLivSpent)} remaining</div>`;
+  // Panel 3: Monthly snapshot
+  const allBills=S.bills;
+  const totMo=allBills.reduce((s,b)=>s+b.a,0);
+  const paidAmt=allBills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
+  const autoAmt=allBills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
+  snap.innerHTML=`<div style="font-size:12px;line-height:1.8;">
+    <div style="display:flex;justify-content:space-between;"><span>Total bills</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
+    <div style="display:flex;justify-content:space-between;"><span style="color:var(--green);">✓ Paid</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
+    <div style="display:flex;justify-content:space-between;"><span style="color:var(--blue);">🔄 Auto-pay</span><span style="color:var(--blue);font-weight:700;">${fmt(autoAmt)}</span></div>
+    <div style="display:flex;justify-content:space-between;"><span style="color:var(--ts);">Living budget</span><span style="font-weight:700;">${fmt(totalLivBudget)}</span></div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--bd);margin-top:4px;padding-top:4px;"><span style="font-weight:700;">Est. total</span><span style="font-weight:700;">${fmt(totMo+totalLivBudget)}</span></div>
+  </div>`;
+  // Panel 4: Due next 14 days
+  const upcoming=[];
+  for(let i=0;i<=14;i++){
+    const d=new Date(today+'T12:00:00');d.setDate(d.getDate()+i);
+    const dk=localDate(d);
+    billsDueOn(dk).forEach(b=>{
+      if(!upcoming.find(u=>u.id===b.id))upcoming.push({...b,_nxt:dk});
+    });
+  }
+  upcoming.sort((a,b)=>(a._nxt||'').localeCompare(b._nxt||''));
+  due.innerHTML=upcoming.length
+    ?upcoming.slice(0,5).map(b=>{
+        const st=getBillStatus(b);
+        return`<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--bd);">
+          <span>${b.n}</span>
+          <span style="display:flex;gap:6px;align-items:center;"><span style="color:var(--ts);">${b._nxt}</span><span class="tag ${SC[st]||'gray'}" style="font-size:10px;padding:1px 6px;">${st}</span></span>
+        </div>`;
+      }).join('')+(upcoming.length>5?`<div style="font-size:11px;color:var(--ts);margin-top:4px;">+${upcoming.length-5} more</div>`:'')
+    :`<div style="font-size:12px;color:var(--ts);padding-top:6px;">No bills due in next 14 days</div>`;
+}
+
+function renderBillCalendar(){
+  const cal=G('bl-calendar'),lbl=G('bl-cal-lbl');
+  if(!cal)return;
+  const base=new Date();
+  base.setDate(1);
+  base.setMonth(base.getMonth()+blCalOffset);
+  const yr=base.getFullYear(),mo=base.getMonth();
+  if(lbl)lbl.textContent=base.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const firstDay=new Date(yr,mo,1).getDay();
+  const daysInMonth=new Date(yr,mo+1,0).getDate();
+  const daysOfWeek=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html=`<div class="bl-cal-grid">${daysOfWeek.map(d=>`<div style="text-align:center;font-size:11px;font-weight:700;color:var(--ts);padding:4px 0;">${d}</div>`).join('')}`;
+  for(let i=0;i<firstDay;i++)html+=`<div class="bl-cal-day"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const dk=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isToday=dk===today;
+    const dueBills=billsDueOn(dk);
+    html+=`<div class="bl-cal-day${isToday?' today':''}">
+      <div class="bl-cal-dn">${d}</div>
+      ${dueBills.map(b=>{
+        const st=getBillStatus(b);
+        const isPaid=st==='Paid';
+        const isAuto=st==='Auto-pay';
+        return`<div class="bl-cal-pill${isPaid?' paid':isAuto?' auto':''}" title="${b.n} — ${st}">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;">${b.n}</span>
+          <span style="font-size:9px;white-space:nowrap;">${fmt(b.a)}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+  html+=`</div>`;
+  cal.innerHTML=html;
+}
+
+function renderSubscriptionCards(){
+  const sc=G('sub-cards'),lbl=G('sub-lbl');
+  if(!sc)return;
+  const subs=S.bills.filter(b=>(b.cat||'')===('Subscriptions'));
+  if(lbl)lbl.textContent=subs.length?`${subs.length} subscriptions · ${fmt(subs.reduce((s,b)=>s+b.a,0))}/mo`:'No subscriptions added yet';
+  if(!subs.length){sc.innerHTML=`<div class="empty">No subscriptions — add a bill with category "Subscriptions"</div>`;return;}
+  sc.innerHTML=`<div class="sub-grid">${subs.map(b=>{
+    const st=getBillStatus(b);
+    const isPaid=st==='Paid',isAuto=st==='Auto-pay';
+    return`<div class="sub-card${isPaid?' is-paid':isAuto?' is-auto':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div style="font-weight:600;font-size:13px;">${b.n}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--t);">${fmt(b.a)}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--ts);">${b.f}</span>
+        <span class="tag ${SC[st]||'gray'}" style="font-size:10px;padding:1px 6px;cursor:${isAuto?'default':'pointer'};" onclick="cycleBill(${b.id})">${st}</span>
+      </div>
+      ${b.notes?`<div style="font-size:11px;color:var(--ts);margin-top:4px;">${b.notes}</div>`:''}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderLivingExpenses(){
+  const grid=G('live-grid'),catSel=G('live-sp-cat');
+  if(!grid)return;
+  const lm=currentMonth;
+  const cats=S.liveCategories||[];
+  const spend=S.liveSpend||[];
+  // Populate category select
+  if(catSel){
+    catSel.innerHTML=`<option value="">Select category...</option>`+cats.map(c=>`<option value="${c.id}">${c.icon||'💰'} ${c.name}</option>`).join('');
+  }
+  if(!cats.length){grid.innerHTML=`<div class="empty">No living expense categories yet — click "＋ Add category" above</div>`;return;}
+  grid.innerHTML=cats.map(c=>{
+    const catSpend=spend.filter(s=>String(s.catId)===String(c.id)&&s.date&&s.date.startsWith(lm));
+    const spent=catSpend.reduce((s,sp)=>s+sp.amt,0);
+    const pct=c.budget?Math.min(100,Math.round(spent/c.budget*100)):0;
+    const clr=pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--green)';
+    const entries=catSpend.slice(-3).reverse();
+    return`<div class="bq-card" style="position:relative;">
+      <button class="del" onclick="delLiveCategory(${c.id})" style="position:absolute;top:8px;right:8px;font-size:10px;">✕</button>
+      <div style="font-size:18px;margin-bottom:4px;">${c.icon||'💰'}</div>
+      <div style="font-weight:700;font-size:14px;margin-bottom:2px;">${c.name}</div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--ts);">Budget</span><span style="font-weight:700;">${fmt(c.budget)}/mo</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="font-weight:700;color:${clr};">${fmt(spent)}</span><span style="color:var(--ts);font-size:12px;">${pct}% used</span></div>
+      <div class="prog" style="margin-bottom:8px;"><div class="pf" style="width:${pct}%;background:${clr};"></div></div>
+      <div style="font-size:11px;color:var(--ts);">${fmt(c.budget-spent)} remaining</div>
+      ${entries.length?`<div style="margin-top:8px;border-top:1px solid var(--bd);padding-top:6px;">${entries.map(s=>`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ts);padding:1px 0;"><span>${s.note||s.date}</span><span style="color:var(--t);font-weight:600;">${fmt(s.amt)}</span></div>`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function addLiveCategory(){
+  const name=G('live-name').value.trim();if(!name)return;
+  const budget=parseFloat(G('live-amt').value)||0;
+  const icon=G('live-icon').value.trim()||'💰';
+  S.liveCategories.push({id:Date.now(),name,budget,icon});
+  G('live-name').value='';G('live-amt').value='';G('live-icon').value='';
+  G('live-form').classList.add('hidden');
+  save();renderLivingExpenses();
+}
+function delLiveCategory(id){
+  S.liveCategories=S.liveCategories.filter(c=>c.id!==id);
+  S.liveSpend=S.liveSpend.filter(s=>String(s.catId)!==String(id));
+  save();renderLivingExpenses();
+}
+function addLiveSpend(){
+  const catId=G('live-sp-cat').value;if(!catId)return;
+  const amt=parseFloat(G('live-sp-amt').value);if(!amt)return;
+  const note=G('live-sp-note').value.trim();
+  const date=G('live-sp-date').value||today;
+  S.liveSpend.push({id:Date.now(),catId:Number(catId),amt,note,date});
+  G('live-sp-amt').value='';G('live-sp-note').value='';
+  save();renderLivingExpenses();renderBudgetQuadrant();
+}
+function delLiveSpend(id){
+  S.liveSpend=S.liveSpend.filter(s=>s.id!==id);
+  save();renderLivingExpenses();renderBudgetQuadrant();
 }
 
 // ── OTHER PAYMENTS ──
@@ -3583,11 +4017,11 @@ function renderHome(){
     const totalToday=todayTasks.length+todayRec.length;
     const habitsDoneToday=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
     const habitsTotal=S.habits.length;
-    const unpaidBillsAmt=S.bills.filter(b=>b.s==='Unpaid').reduce((s,b)=>s+b.a,0);
+    const unpaidBillsAmt=S.bills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
     const activeDebts=(S.otherPayments||[]).filter(p=>p.s!=='paid');
     const activeDebtsAmt=activeDebts.reduce((s,p)=>s+p.a,0);
     const totalOwed=unpaidBillsAmt+activeDebtsAmt;
-    const unpaidBills=S.bills.filter(b=>b.s==='Unpaid').length;
+    const unpaidBills=S.bills.filter(b=>getBillStatus(b)==='Unpaid').length;
     statsEl.innerHTML=`<div class="home-stats-grid">
       <div class="hsg-card" onclick="navToPage('finance')">
         <div class="hsg-lb">Net month</div>
@@ -3659,7 +4093,7 @@ function renderHome(){
     const mHabitAvg=daysPassed?Math.round(habitSum/daysPassed):0;
 
     // Bills this month
-    const mBillsUnpaid=S.bills.filter(b=>b.s==='Unpaid').length;
+    const mBillsUnpaid=S.bills.filter(b=>getBillStatus(b)==='Unpaid').length;
     const mBillsTotal=S.bills.reduce((s,b)=>s+b.a,0);
 
     // Goals progress
@@ -3715,7 +4149,7 @@ function renderHome(){
         <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Bills">
           <div class="mc-lb">Bills status</div>
           <div class="mc-vl ${mBillsUnpaid>0?'red':'green'}">${fmt(mBillsTotal)}</div>
-          <div class="mc-sub">${mBillsUnpaid} unpaid · ${S.bills.filter(b=>b.s==='Auto-pay').length} auto</div>
+          <div class="mc-sub">${mBillsUnpaid} unpaid · ${S.bills.filter(b=>getBillStatus(b)==='Auto-pay').length} auto</div>
           <div class="mc-arr">→</div>
         </div>
         <div class="mc mc-link" onclick="navToPage('goals')" title="Go to Goals">
@@ -3808,7 +4242,7 @@ function renderHome(){
 
   // ── NEEDS ATTENTION ──
   const tdH=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
-  const unpaidBills=S.bills.filter(b=>b.s==='Unpaid');
+  const unpaidBills=S.bills.filter(b=>getBillStatus(b)==='Unpaid');
   const overdueDebts=(S.otherPayments||[]).filter(p=>p.s==='overdue');
   const highTasks=S.todos.filter(t=>!t.done&&t.p==='high');
   const habitsLeft=S.habits.filter(h=>!(S.hlog&&S.hlog[today+'-'+h.id]));
@@ -5275,6 +5709,92 @@ function wizardNav(dir){
   renderWizardStep();
 }
 
+// ── EDIT MODAL ──
+let emType='',emId=0,emExtra=null;
+function openEM(type,id,extra){
+  emType=type;emId=id;emExtra=extra||null;
+  const ov=G('em-overlay'),title=G('em-title'),body=G('em-body');
+  if(!ov||!body)return;
+  let html='',ttl='Edit';
+  if(type==='bill'){
+    const b=S.bills.find(b=>b.id===id);if(!b)return;
+    ttl='Edit Bill';
+    html=`<label>Name<input class="fi" id="em-f-n" value="${b.n}"></label>
+    <label>Amount<input class="fi" type="number" id="em-f-a" value="${b.a}" step="0.01"></label>
+    <label>Category<select class="fi" id="em-f-cat"><option${b.cat==='Housing'?' selected':''}>Housing</option><option${b.cat==='Utilities'?' selected':''}>Utilities</option><option${b.cat==='Insurance'?' selected':''}>Insurance</option><option${b.cat==='Subscriptions'?' selected':''}>Subscriptions</option><option${b.cat==='Debt'?' selected':''}>Debt</option><option${b.cat==='Phone'?' selected':''}>Phone</option><option${b.cat==='Internet'?' selected':''}>Internet</option><option${b.cat==='Transport'?' selected':''}>Transport</option><option${b.cat==='Healthcare'?' selected':''}>Healthcare</option><option${b.cat==='Other'?' selected':''}>Other</option></select></label>
+    <label>Frequency<select class="fi" id="em-f-f"><option${b.f==='Monthly'?' selected':''}>Monthly</option><option${b.f==='Bi-weekly'?' selected':''}>Bi-weekly</option><option${b.f==='Weekly'?' selected':''}>Weekly</option><option${b.f==='Annual'?' selected':''}>Annual</option><option${b.f==='One-time'?' selected':''}>One-time</option></select></label>
+    <label>Due date<input class="fi" type="date" id="em-f-d" value="${b.d||''}"></label>
+    <label>Default status<select class="fi" id="em-f-ds"><option value="Unpaid"${b.ds==='Unpaid'?' selected':''}>Manual Pay</option><option value="Auto-pay"${b.ds==='Auto-pay'?' selected':''}>Auto-pay</option></select></label>
+    <label>Notes<input class="fi" id="em-f-notes" value="${b.notes||''}"></label>`;
+  } else if(type==='goal'){
+    const g=S.goals.find(g=>g.id===id);if(!g)return;
+    ttl='Edit '+(g.type||'Goal');
+    html=`<label>Title<input class="fi" id="em-f-t" value="${g.t}"></label>
+    <label>Type<select class="fi" id="em-f-type"><option value="Goal"${g.type==='Goal'?' selected':''}>🎯 Goal</option><option value="Project"${g.type==='Project'?' selected':''}>📁 Project</option></select></label>
+    <label>Priority<select class="fi" id="em-f-pri"><option value="high"${g.priority==='high'?' selected':''}>🔴 High</option><option value="med"${g.priority==='med'?' selected':''}>🟡 Med</option><option value="low"${g.priority==='low'?' selected':''}>⚪ Low</option></select></label>
+    <label>Deadline<input class="fi" type="date" id="em-f-dl" value="${g.dl||''}"></label>`;
+  } else if(type==='todo'){
+    const td=S.todos.find(t=>t.id===id);if(!td)return;
+    ttl='Edit Task';
+    html=`<label>Task<input class="fi" id="em-f-t" value="${td.t}"></label>
+    <label>Priority<select class="fi" id="em-f-pri"><option value="high"${td.pri==='high'?' selected':''}>🔴 High</option><option value="med"${(td.pri==='med'||!td.pri)?' selected':''}>🟡 Med</option><option value="low"${td.pri==='low'?' selected':''}>⚪ Low</option></select></label>
+    <label>Due date<input class="fi" type="date" id="em-f-dl" value="${td.due||''}"></label>
+    <label>Notes<input class="fi" id="em-f-notes" value="${td.notes||''}"></label>`;
+  } else if(type==='habit'){
+    const h=S.habits.find(h=>h.id===id);if(!h)return;
+    ttl='Edit Habit';
+    html=`<label>Habit name<input class="fi" id="em-f-t" value="${h.t}"></label>
+    <label>Target (days/week)<input class="fi" type="number" id="em-f-tgt" value="${h.target||7}" min="1" max="7"></label>`;
+  } else if(type==='livecat'){
+    const c=(S.liveCategories||[]).find(c=>c.id===id);if(!c)return;
+    ttl='Edit Living Category';
+    html=`<label>Name<input class="fi" id="em-f-t" value="${c.name}"></label>
+    <label>Icon<input class="fi" id="em-f-icon" value="${c.icon||''}" style="max-width:80px;"></label>
+    <label>Monthly budget<input class="fi" type="number" id="em-f-budget" value="${c.budget}" step="1"></label>`;
+  }
+  G('em-title').textContent=ttl;
+  body.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px;">${html}</div>`;
+  ov.classList.remove('hidden');
+}
+function closeEM(){const ov=G('em-overlay');if(ov)ov.classList.add('hidden');}
+function saveEM(){
+  if(emType==='bill'){
+    const b=S.bills.find(b=>b.id===emId);if(!b)return closeEM();
+    b.n=G('em-f-n').value.trim()||b.n;
+    b.a=parseFloat(G('em-f-a').value)||b.a;
+    b.cat=G('em-f-cat').value;b.f=G('em-f-f').value;
+    b.d=G('em-f-d').value||b.d;
+    const newDs=G('em-f-ds').value;
+    if(newDs!==b.ds){b.ds=newDs;if(newDs==='Auto-pay'&&b.payments)delete b.payments[currentMonth];}
+    b.notes=G('em-f-notes').value.trim();
+    save();renderFinance();
+  } else if(emType==='goal'){
+    const g=S.goals.find(g=>g.id===emId);if(!g)return closeEM();
+    g.t=G('em-f-t').value.trim()||g.t;
+    g.type=G('em-f-type').value;g.priority=G('em-f-pri').value;
+    g.dl=G('em-f-dl').value||'';
+    save();renderGoals();
+  } else if(emType==='todo'){
+    const td=S.todos.find(t=>t.id===emId);if(!td)return closeEM();
+    td.t=G('em-f-t').value.trim()||td.t;
+    td.pri=G('em-f-pri').value;td.due=G('em-f-dl').value||'';
+    td.notes=G('em-f-notes').value.trim();
+    save();renderTodos();
+  } else if(emType==='habit'){
+    const h=S.habits.find(h=>h.id===emId);if(!h)return closeEM();
+    h.t=G('em-f-t').value.trim()||h.t;
+    h.target=parseInt(G('em-f-tgt').value)||7;
+    save();renderHabits();
+  } else if(emType==='livecat'){
+    const c=(S.liveCategories||[]).find(c=>c.id===emId);if(!c)return closeEM();
+    c.name=G('em-f-t').value.trim()||c.name;
+    c.icon=G('em-f-icon').value.trim()||c.icon;
+    c.budget=parseFloat(G('em-f-budget').value)||c.budget;
+    save();renderLivingExpenses();
+  }
+  closeEM();
+}
+
 // ── RENDER ALL ──
 function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHome();renderRecurring();renderProjects();renderSettings();renderRoutines();renderMilestones();renderWantsNeeds();renderSavingsAccounts();}
 renderAll();
@@ -5482,7 +6002,8 @@ function runDebug(){
 
   S.bills.forEach((b,i)=>{
     if(!b.id){S.bills[i].id=Date.now()+i;badBill++;}
-    if(!b.s||!['Unpaid','Paid','Auto-pay'].includes(b.s)){S.bills[i].s='Unpaid';badBill++;}
+    if(!b.payments)b.payments={};
+    if(b.ds===undefined)b.ds='Unpaid';
     if(typeof b.a !== 'number'||isNaN(b.a)){S.bills[i].a=0;badBill++;}
   });
   if(badBill) dbLog('fix',`Fixed ${badBill} bill issues`,'');
@@ -6670,7 +7191,7 @@ function renderDayDetail(dk){
       <div class="mc mc-link" onclick="go('planning',G('ni-planning'))" title="Go to Todos"><div class="mc-lb">Tasks</div><div class="mc-vl ${doneTasks===allTasks.length&&allTasks.length?'green':allTasks.length?'':'green'}">${doneTasks}/${allTasks.length}</div><div class="mc-sub">${taskPct}% complete</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('planning',G('ni-planning'))" title="Go to Habits"><div class="mc-lb">Habits</div><div class="mc-vl ${habitsDone===S.habits.length&&S.habits.length?'green':''}">${habitsDone}/${S.habits.length}</div><div class="mc-sub">${S.habits.length?Math.round(habitsDone/S.habits.length*100):0}% done</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('finance',G('ni-finance'))" title="Go to Finance"><div class="mc-lb">Net</div><div class="mc-vl ${(finInc-finExp)>0?'green':(finInc-finExp)<0?'red':''}">${fmtS(finInc-finExp)}</div><div class="mc-sub">${fmt(finInc)} in · ${fmt(finExp)} out</div><div class="mc-arr">→</div></div>
-      <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Bills"><div class="mc-lb">Bills due</div><div class="mc-vl ${bills.length>0?'red':'green'}">${bills.length}</div><div class="mc-sub">${bills.filter(b=>b.s==='Unpaid').length} unpaid</div><div class="mc-arr">→</div></div>
+      <div class="mc mc-link" onclick="navToPage('finance')" title="Go to Bills"><div class="mc-lb">Bills due</div><div class="mc-vl ${bills.length>0?'red':'green'}">${bills.length}</div><div class="mc-sub">${bills.filter(b=>getBillStatus(b)==='Unpaid').length} unpaid</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('planning',G('ni-planning'))" title="Go to Todos"><div class="mc-lb">High priority</div><div class="mc-vl ${allTasks.filter(t=>t.p==='high').length>0?'red':''}">${allTasks.filter(t=>t.p==='high').length}</div><div class="mc-sub">tasks today</div><div class="mc-arr">→</div></div>
       <div class="mc mc-link" onclick="go('finance',G('ni-finance'))" title="Go to Finance"><div class="mc-lb">Finance entries</div><div class="mc-vl">${finEntries.length}</div><div class="mc-sub">${finEntries.length?'logged':'nothing yet'}</div><div class="mc-arr">→</div></div>
     </div>
@@ -6715,8 +7236,8 @@ function renderDayDetail(dk){
       ${bills.length?`<div class="day-section-hdr" style="margin-top:16px;">🧾 Bills due</div>${bills.map(b=>`<div class="day-task-row">
         <span style="font-size:15px;">🧾</span>
         <div style="flex:1;"><div class="day-task-txt">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.f}</div></div>
-        <span style="font-weight:600;font-size:13px;color:${b.s==='Unpaid'?'var(--red)':b.s==='Paid'?'var(--green)':'var(--blue)'};">${fmt(b.a)}</span>
-        <span class="tag ${b.s==='Paid'?'green':b.s==='Unpaid'?'red':'blue'}" style="margin-left:4px;">${b.s}</span>
+        <span style="font-weight:600;font-size:13px;color:${getBillStatus(b)==='Unpaid'?'var(--red)':getBillStatus(b)==='Paid'?'var(--green)':'var(--blue)'};">${fmt(b.a)}</span>
+        <span class="tag ${getBillStatus(b)==='Paid'?'green':getBillStatus(b)==='Unpaid'?'red':'blue'}" style="margin-left:4px;">${getBillStatus(b)}</span>
       </div>`).join('')}`:''}
       ${isToday?`<div class="divider"></div>
       <div class="nf" style="margin-top:0;">
@@ -7338,6 +7859,21 @@ function resetAllData(){
     <div class="em-footer">
       <button class="em-btn" onclick="G('new-page-modal-wrap').classList.remove('open')">Cancel</button>
       <button class="em-btn pri" onclick="createCustomPage()">Create page</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="em-overlay hidden" id="em-overlay" onclick="if(event.target===this)closeEM()">
+  <div class="em-box">
+    <div class="em-hdr">
+      <h3 id="em-title">Edit</h3>
+      <button class="del" onclick="closeEM()" style="font-size:16px;padding:4px 8px;">✕</button>
+    </div>
+    <div class="em-body" id="em-body"></div>
+    <div class="em-foot">
+      <button class="btn" onclick="closeEM()">Cancel</button>
+      <button class="btn pri" onclick="saveEM()">Save changes</button>
     </div>
   </div>
 </div>
