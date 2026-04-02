@@ -1433,7 +1433,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
 /* ── BILLS BUDGET QUADRANT ── */
 .bq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
-.bq-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;}
+.bq-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;transition:box-shadow .15s;}
+.bq-card:hover{box-shadow:var(--sh-md);}
 .bq-ttl{font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;}
 .bq-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--bd);}
 .bq-row:last-child{border-bottom:none;}
@@ -1696,49 +1697,22 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
           <div class="bq-card"><div class="bq-ttl">⏰ Due Next 14 Days</div><div id="bq-due"></div></div>
         </div>
 
-        <!-- BILL CALENDAR -->
-        <div class="bl-section">
-          <span>📅 Bill Calendar — <span id="bl-cal-lbl"></span></span>
-          <div style="display:flex;gap:4px;">
-            <button class="btn xs" onclick="blCalNav(-1)">‹ Prev</button>
-            <button class="btn xs" onclick="blCalNav(0)">Today</button>
-            <button class="btn xs" onclick="blCalNav(1)">Next ›</button>
-          </div>
-        </div>
-        <div id="bl-calendar"></div>
-
-        <!-- SUBSCRIPTIONS SECTION -->
-        <div class="bl-section" style="margin-top:8px;">
-          <span>📱 Subscriptions</span>
-          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
-        </div>
-        <div id="sub-cards"></div>
-
-        <!-- LIVING EXPENSES SECTION -->
-        <div class="bl-section">
-          <span>🛒 Living Expenses</span>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:11px;color:var(--th);font-weight:400;text-transform:none;letter-spacing:0;">Groceries · Gas · Eating Out · Laundry · etc.</span>
-            <button class="btn xs" onclick="G('live-form').classList.toggle('hidden')">＋ Add category</button>
-          </div>
-        </div>
-        <div class="nf hidden" id="live-form">
-          <div class="fr">
-            <input class="fi" type="text" id="live-name" placeholder="Category name (e.g. Groceries)">
-            <input class="fi" type="text" id="live-icon" placeholder="Icon 🛒" style="max-width:72px;">
-            <input class="fi" type="number" id="live-amt" placeholder="Monthly budget $" step="1" style="max-width:170px;">
-            <button class="btn pri" onclick="addLiveCategory()">Save</button>
-          </div>
-        </div>
-        <div class="live-grid" id="live-grid"></div>
-        <div class="nf">
-          <div class="nf-ttl">＋ Log spending</div>
-          <div class="fr">
-            <select class="fi" id="live-sp-cat" style="max-width:170px;"><option value="">Select category...</option></select>
-            <input class="fi" type="number" id="live-sp-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
-            <input class="fi" type="text" id="live-sp-note" placeholder="Note (optional)">
-            <input class="fi" type="date" id="live-sp-date" style="max-width:150px;">
-            <button class="btn pri" onclick="addLiveSpend()">Log</button>
+        <!-- FINANCE CALENDAR -->
+        <div id="fd-cal-section" style="margin-top:16px;">
+          <div class="fd-cal-wrap">
+            <div class="fd-cal-top-bar">
+              <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+              <div class="fd-cal-legend">
+                <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+              </div>
+            </div>
+            <div class="fd-cal-header">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="fd-cal-grid" id="fd-cal-grid"></div>
           </div>
         </div>
 
@@ -1889,6 +1863,41 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         </div>
         <table class="nt"><thead><tr><th style="width:28px;"></th><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th>Notes</th><th style="width:52px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
         <div class="add-row" onclick="G('bl-n').focus()">＋ Add bill</div>
+
+        <!-- SUBSCRIPTIONS SECTION -->
+        <div class="bl-section" style="margin-top:8px;">
+          <span>📱 Subscriptions</span>
+          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
+        </div>
+        <div id="sub-cards"></div>
+
+        <!-- LIVING EXPENSES SECTION -->
+        <div class="bl-section">
+          <span>🛒 Living Expenses</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:var(--th);font-weight:400;text-transform:none;letter-spacing:0;">Groceries · Gas · Eating Out · Laundry · etc.</span>
+            <button class="btn xs" onclick="G('live-form').classList.toggle('hidden')">＋ Add category</button>
+          </div>
+        </div>
+        <div class="nf hidden" id="live-form">
+          <div class="fr">
+            <input class="fi" type="text" id="live-name" placeholder="Category name (e.g. Groceries)">
+            <input class="fi" type="text" id="live-icon" placeholder="Icon 🛒" style="max-width:72px;">
+            <input class="fi" type="number" id="live-amt" placeholder="Monthly budget $" step="1" style="max-width:170px;">
+            <button class="btn pri" onclick="addLiveCategory()">Save</button>
+          </div>
+        </div>
+        <div class="live-grid" id="live-grid"></div>
+        <div class="nf">
+          <div class="nf-ttl">＋ Log spending</div>
+          <div class="fr">
+            <select class="fi" id="live-sp-cat" style="max-width:170px;"><option value="">Select category...</option></select>
+            <input class="fi" type="number" id="live-sp-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <input class="fi" type="text" id="live-sp-note" placeholder="Note (optional)">
+            <input class="fi" type="date" id="live-sp-date" style="max-width:150px;">
+            <button class="btn pri" onclick="addLiveSpend()">Log</button>
+          </div>
+        </div>
 
       </div>
 
@@ -3412,40 +3421,82 @@ function renderBills(){
   }).join('');
 }
 
+function bqPayBill(id){cycleBill(id);renderBudgetQuadrant();}
+function bqLogSpend(catId,amt){
+  if(!amt||isNaN(amt))return;
+  if(!S.liveSpend)S.liveSpend=[];
+  S.liveSpend.push({id:Date.now(),catId:Number(catId),amt:parseFloat(amt),note:'',date:today});
+  save();renderBudgetQuadrant();renderLivingExpenses();
+}
 function renderBudgetQuadrant(){
   const unp=G('bq-unpaid'),bqliv=G('bq-living'),snap=G('bq-snap'),due=G('bq-due');
   if(!unp)return;
-  // Panel 1: Unpaid bills
+
+  // ── Panel 1: Unpaid bills — click each to mark paid ──
   const unpaidBills=S.bills.filter(b=>getBillStatus(b)==='Unpaid');
   const unpaidAmt=unpaidBills.reduce((s,b)=>s+b.a,0);
-  unp.innerHTML=unpaidBills.length
-    ?`<div style="font-size:22px;font-weight:700;color:var(--red);margin-bottom:4px;">${fmt(unpaidAmt)}</div>
-       <div style="font-size:12px;color:var(--ts);">${unpaidBills.length} bill${unpaidBills.length!==1?'s':''} remaining</div>
-       <div style="margin-top:8px;">${unpaidBills.slice(0,3).map(b=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--bd);"><span>${b.n}</span><span style="color:var(--red);font-weight:600;">${fmt(b.a)}</span></div>`).join('')}${unpaidBills.length>3?`<div style="font-size:11px;color:var(--ts);margin-top:4px;">+${unpaidBills.length-3} more</div>`:''}</div>`
-    :`<div style="color:var(--green);font-size:13px;font-weight:600;margin-top:6px;">✓ All bills paid!</div>`;
-  // Panel 2: Living expenses budget
+  if(!unpaidBills.length){
+    unp.innerHTML=`<div style="color:var(--green);font-size:13px;font-weight:600;margin-top:6px;">✓ All bills paid!</div>`;
+  } else {
+    unp.innerHTML=`<div style="font-size:20px;font-weight:700;color:var(--red);margin-bottom:6px;">${fmt(unpaidAmt)} <span style="font-size:12px;font-weight:400;color:var(--ts);">${unpaidBills.length} remaining</span></div>`
+      +unpaidBills.map(b=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 0;border-bottom:1px solid var(--bd);">
+          <span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.n}</span>
+          <span style="font-size:12px;font-weight:700;color:var(--red);flex-shrink:0;">${fmt(b.a)}</span>
+          <button onclick="bqPayBill(${b.id})" style="font-family:var(--font);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:none;background:var(--gbg);color:var(--green);cursor:pointer;flex-shrink:0;">✓ Pay</button>
+        </div>`).join('');
+  }
+
+  // ── Panel 2: Living expenses — per-category quick-log ──
   const lm=currentMonth;
   const livSpendThisMonth=(S.liveSpend||[]).filter(s=>s.date&&s.date.startsWith(lm));
   const totalLivBudget=(S.liveCategories||[]).reduce((s,c)=>s+c.budget,0);
   const totalLivSpent=livSpendThisMonth.reduce((s,sp)=>s+sp.amt,0);
   const livPct=totalLivBudget?Math.min(100,Math.round(totalLivSpent/totalLivBudget*100)):0;
   const livColor=livPct>=90?'var(--red)':livPct>=70?'var(--amber)':'var(--green)';
-  bqliv.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span style="font-size:18px;font-weight:700;">${fmt(totalLivSpent)}</span><span style="font-size:12px;color:var(--ts);">of ${fmt(totalLivBudget)}</span></div>
-    <div class="prog" style="margin-bottom:6px;"><div class="pf" style="width:${livPct}%;background:${livColor};"></div></div>
-    <div style="font-size:12px;color:var(--ts);">${livPct}% used · ${fmt(totalLivBudget-totalLivSpent)} remaining</div>`;
-  // Panel 3: Monthly snapshot
+  const cats=S.liveCategories||[];
+  bqliv.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+      <span style="font-size:18px;font-weight:700;">${fmt(totalLivSpent)}</span>
+      <span style="font-size:11px;color:var(--ts);">of ${fmt(totalLivBudget)}</span>
+    </div>
+    <div class="prog" style="margin-bottom:8px;"><div class="pf" style="width:${livPct}%;background:${livColor};"></div></div>
+    ${cats.slice(0,4).map(c=>{
+      const spent=livSpendThisMonth.filter(s=>String(s.catId)===String(c.id)).reduce((s,sp)=>s+sp.amt,0);
+      const pct=c.budget?Math.min(100,Math.round(spent/c.budget*100)):0;
+      const clr=pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--green)';
+      return`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
+        <span style="width:16px;text-align:center;">${c.icon||'💰'}</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.name}</span>
+        <span style="color:${clr};font-weight:700;flex-shrink:0;">${fmt(spent)}<span style="color:var(--th);font-weight:400;">/${fmt(c.budget)}</span></span>
+        <input type="number" placeholder="$" min="0" step="0.01"
+          style="width:54px;font-family:var(--font);font-size:11px;border:1px solid var(--bd);border-radius:4px;padding:2px 4px;background:var(--bg-in);color:var(--t);"
+          onkeydown="if(event.key==='Enter'){bqLogSpend(${c.id},this.value);this.value='';}"
+          title="Type amount + Enter to log spending for ${c.name}">
+      </div>`;
+    }).join('')}
+    ${cats.length>4?`<div style="font-size:11px;color:var(--ts);margin-top:4px;">+${cats.length-4} more → Bills tab</div>`:''}`;
+
+  // ── Panel 3: Monthly snapshot — link to tabs ──
   const allBills=S.bills;
   const totMo=allBills.reduce((s,b)=>s+b.a,0);
   const paidAmt=allBills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
   const autoAmt=allBills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
-  snap.innerHTML=`<div style="font-size:12px;line-height:1.8;">
-    <div style="display:flex;justify-content:space-between;"><span>Total bills</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
-    <div style="display:flex;justify-content:space-between;"><span style="color:var(--green);">✓ Paid</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
-    <div style="display:flex;justify-content:space-between;"><span style="color:var(--blue);">🔄 Auto-pay</span><span style="color:var(--blue);font-weight:700;">${fmt(autoAmt)}</span></div>
-    <div style="display:flex;justify-content:space-between;"><span style="color:var(--ts);">Living budget</span><span style="font-weight:700;">${fmt(totalLivBudget)}</span></div>
-    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--bd);margin-top:4px;padding-top:4px;"><span style="font-weight:700;">Est. total</span><span style="font-weight:700;">${fmt(totMo+totalLivBudget)}</span></div>
-  </div>`;
-  // Panel 4: Due next 14 days
+  snap.innerHTML=`<div style="font-size:12px;line-height:2;">
+    <div style="display:flex;justify-content:space-between;cursor:pointer;" onclick="switchFinTab('bills',G('ftab-bills'))" title="View all bills">
+      <span>Total bills/mo</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
+    <div style="display:flex;justify-content:space-between;cursor:pointer;" onclick="switchFinTab('bills',G('ftab-bills'))" title="View all bills">
+      <span style="color:var(--green);">✓ Paid this month</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
+    <div style="display:flex;justify-content:space-between;">
+      <span style="color:var(--blue);">🔄 Auto-pay</span><span style="color:var(--blue);font-weight:700;">${fmt(autoAmt)}</span></div>
+    <div style="display:flex;justify-content:space-between;">
+      <span style="color:var(--ts);">Living budget</span><span style="font-weight:700;">${fmt(totalLivBudget)}</span></div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--bd);padding-top:4px;margin-top:2px;">
+      <span style="font-weight:700;">Est. monthly total</span><span style="font-weight:700;">${fmt(totMo+totalLivBudget)}</span></div>
+  </div>
+  <button onclick="switchFinTab('entries',G('ftab-entries'))" style="margin-top:8px;font-family:var(--font);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;width:100%;">📋 View transactions →</button>`;
+
+  // ── Panel 4: Due next 14 days — checkboxes to mark paid inline ──
   const upcoming=[];
   for(let i=0;i<=14;i++){
     const d=new Date(today+'T12:00:00');d.setDate(d.getDate()+i);
@@ -3456,13 +3507,18 @@ function renderBudgetQuadrant(){
   }
   upcoming.sort((a,b)=>(a._nxt||'').localeCompare(b._nxt||''));
   due.innerHTML=upcoming.length
-    ?upcoming.slice(0,5).map(b=>{
+    ?upcoming.map(b=>{
         const st=getBillStatus(b);
-        return`<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--bd);">
-          <span>${b.n}</span>
-          <span style="display:flex;gap:6px;align-items:center;"><span style="color:var(--ts);">${b._nxt}</span><span class="tag ${SC[st]||'gray'}" style="font-size:10px;padding:1px 6px;">${st}</span></span>
+        const isPaid=st==='Paid',isAuto=st==='Auto-pay';
+        const daysAway=Math.round((new Date(b._nxt+'T12:00:00')-new Date(today+'T12:00:00'))/(1000*60*60*24));
+        const dueLbl=daysAway===0?'Today':daysAway===1?'Tomorrow':`${daysAway}d`;
+        return`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--bd);font-size:12px;">
+          ${isAuto?`<span title="Auto-pay" style="font-size:14px;">🔄</span>`:`<input type="checkbox" ${isPaid?'checked':''} onchange="cycleBill(${b.id});renderBudgetQuadrant();" title="${isPaid?'Mark unpaid':'Mark paid'}">`}
+          <span style="flex:1;${isPaid?'text-decoration:line-through;color:var(--ts);':''}">${b.n}</span>
+          <span style="font-weight:700;color:${isPaid?'var(--green)':'var(--t)'};">${fmt(b.a)}</span>
+          <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;background:${daysAway===0?'var(--rbg)':daysAway<=3?'var(--abg)':'var(--bg-in)'};color:${daysAway===0?'var(--red)':daysAway<=3?'var(--amber)':'var(--ts)'};">${dueLbl}</span>
         </div>`;
-      }).join('')+(upcoming.length>5?`<div style="font-size:11px;color:var(--ts);margin-top:4px;">+${upcoming.length-5} more</div>`:'')
+      }).join('')+(upcoming.length===0?`<div style="font-size:12px;color:var(--ts);padding-top:6px;">No bills due in next 14 days</div>`:'')
     :`<div style="font-size:12px;color:var(--ts);padding-top:6px;">No bills due in next 14 days</div>`;
 }
 
