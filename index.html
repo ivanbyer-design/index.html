@@ -1225,23 +1225,71 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .home-top-quadrant .home-quad-cell{display:flex;flex-direction:column;}
 
 /* QUICK-ADD WIDGET */
-.qa-widget{display:flex;flex-direction:column;flex:1;gap:10px;}
-.qa-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;}
-.qa-tab{font-family:var(--font);font-size:10px;font-weight:600;padding:8px 4px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg-in);color:var(--ts);cursor:pointer;transition:all .14s;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1.2;}
-.qa-tab-ic{font-size:18px;line-height:1;}
-.qa-tab:hover:not(.on){background:var(--bg-h);color:var(--t);border-color:var(--bd2);}
-.qa-tab.on{border-color:transparent;color:#fff;}
-.qa-tab.on.t-task{background:linear-gradient(135deg,#0a7c6e,#3da892);}
-.qa-tab.on.t-money{background:linear-gradient(135deg,#2d78a4,#5ca4cf);}
-.qa-tab.on.t-journal{background:linear-gradient(135deg,#8a5fae,#b88ed4);}
-.qa-tab.on.t-goal{background:linear-gradient(135deg,#c58c1e,#f0a500);}
-.qa-tab.on.t-bill{background:linear-gradient(135deg,#c0342c,#e05c5c);}
-.qa-tab.on.t-habit{background:linear-gradient(135deg,#1e6b4a,#3da892);}
+@keyframes qa-pop{0%{transform:scale(0.82) translateY(0);}55%{transform:scale(1.13) translateY(-4px);}80%{transform:scale(0.96) translateY(-1px);}100%{transform:scale(1.06) translateY(-2px);}}
+@keyframes qa-float{0%,100%{transform:scale(1.06) translateY(-2px);}50%{transform:scale(1.06) translateY(-5px);}}
+@keyframes qa-ic-wiggle{0%{transform:rotate(0) scale(1);}15%{transform:rotate(-18deg) scale(1.3);}35%{transform:rotate(14deg) scale(1.2);}55%{transform:rotate(-8deg) scale(1.1);}75%{transform:rotate(4deg) scale(1.05);}100%{transform:rotate(0) scale(1);}}
+@keyframes qa-ic-bounce{0%,100%{transform:translateY(0) scale(1);}35%{transform:translateY(-6px) scale(1.18);}65%{transform:translateY(-2px) scale(1.06);}}
+@keyframes qa-shine{0%{left:-60%;}100%{left:130%;}}
+.qa-widget{display:flex;flex-direction:column;flex:1;gap:12px;}
+.qa-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.qa-tab{
+  font-family:var(--font);font-size:9.5px;font-weight:800;
+  padding:11px 4px 9px;border-radius:18px;
+  border:2px solid transparent;
+  background:var(--bg-in);color:var(--ts);
+  cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;
+  position:relative;overflow:hidden;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1),
+             box-shadow .2s ease,
+             background .18s ease,
+             color .15s ease,
+             border-color .15s ease;
+  -webkit-tap-highlight-color:transparent;
+  letter-spacing:0.03em;
+  text-transform:uppercase;
+}
+/* Gloss sheen */
+.qa-tab::before{content:'';position:absolute;top:0;left:0;right:0;height:48%;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent);border-radius:16px 16px 0 0;pointer-events:none;opacity:0;transition:opacity .15s;}
+/* Sweep shine on hover */
+.qa-tab::after{content:'';position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.22),transparent);pointer-events:none;opacity:0;transition:opacity .1s;}
+/* Inactive per-type tint border */
+.qa-tab.t-task{border-color:rgba(61,168,146,.28);background:rgba(61,168,146,.06);}
+.qa-tab.t-money{border-color:rgba(61,143,194,.28);background:rgba(61,143,194,.06);}
+.qa-tab.t-journal{border-color:rgba(160,112,200,.28);background:rgba(160,112,200,.06);}
+.qa-tab.t-goal{border-color:rgba(224,154,32,.28);background:rgba(224,154,32,.06);}
+.qa-tab.t-bill{border-color:rgba(216,64,64,.28);background:rgba(216,64,64,.06);}
+.qa-tab.t-habit{border-color:rgba(39,144,96,.28);background:rgba(39,144,96,.06);}
+/* Hover: lift + shine sweep + icon bounce */
+.qa-tab:hover:not(.on){transform:translateY(-4px) scale(1.07);box-shadow:0 8px 20px rgba(0,0,0,.14);}
+.qa-tab:hover:not(.on)::before{opacity:1;}
+.qa-tab:hover:not(.on)::after{opacity:1;animation:qa-shine .55s ease forwards;}
+.qa-tab:hover:not(.on) .qa-tab-ic{animation:qa-ic-bounce .48s cubic-bezier(.34,1.56,.64,1) forwards;}
+.qa-tab:hover:not(.on){color:var(--t);}
+/* Press feel */
+.qa-tab:active:not(.on){transform:scale(0.9)!important;box-shadow:none!important;}
+/* Active bubble */
+.qa-tab.on{
+  border-color:rgba(255,255,255,.3);
+  color:#fff;
+  box-shadow:0 6px 20px var(--qa-glow,rgba(0,0,0,.3)),0 2px 6px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.25);
+  animation:qa-pop .38s cubic-bezier(.34,1.56,.64,1) forwards, qa-float 3s ease-in-out .38s infinite;
+}
+.qa-tab.on::before{opacity:1;}
+.qa-tab.on .qa-tab-ic{animation:qa-ic-wiggle .52s cubic-bezier(.34,1.56,.64,1) forwards;}
+/* Active per-type gradients + glow vars */
+.qa-tab.on.t-task{background:linear-gradient(145deg,#0d9980,#3da892,#62d4b8);--qa-glow:rgba(61,168,146,.55);}
+.qa-tab.on.t-money{background:linear-gradient(145deg,#1a6fa3,#3d8fc2,#65b5e0);--qa-glow:rgba(61,143,194,.55);}
+.qa-tab.on.t-journal{background:linear-gradient(145deg,#7a4fa0,#a070c8,#c090e8);--qa-glow:rgba(160,112,200,.55);}
+.qa-tab.on.t-goal{background:linear-gradient(145deg,#c07a10,#e09a20,#f5be50);--qa-glow:rgba(224,154,32,.55);}
+.qa-tab.on.t-bill{background:linear-gradient(145deg,#b02820,#d84040,#f07070);--qa-glow:rgba(216,64,64,.55);}
+.qa-tab.on.t-habit{background:linear-gradient(145deg,#186040,#279060,#40bc80);--qa-glow:rgba(39,144,96,.55);}
+.qa-tab-ic{font-size:20px;line-height:1;display:block;will-change:transform;}
 .qa-form{display:none;flex-direction:column;gap:8px;flex:1;}
 .qa-form.on{display:flex;}
 .qa-lbl{font-size:11px;font-weight:600;color:var(--ts);margin-bottom:2px;}
-.qa-inp{width:100%;font-family:var(--font);font-size:13px;padding:9px 11px;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);box-sizing:border-box;transition:border-color .15s;}
-.qa-inp:focus{outline:none;border-color:var(--blue);background:var(--bg-card);}
+.qa-inp{width:100%;font-family:var(--font);font-size:13px;padding:9px 11px;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+.qa-inp:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.13);background:var(--bg-card);}
 .qa-inp::placeholder{color:var(--th);}
 .qa-ta{resize:none;min-height:70px;line-height:1.55;}
 .qa-row{display:flex;gap:6px;align-items:stretch;}
@@ -1252,9 +1300,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .qa-ie-btn{font-family:var(--font);font-size:12px;font-weight:700;padding:8px 12px;border:none;background:var(--bg-in);color:var(--ts);cursor:pointer;transition:background .12s,color .12s;}
 .qa-ie-btn.on.exp{background:var(--red);color:#fff;}
 .qa-ie-btn.on.inc{background:var(--green);color:#fff;}
-.qa-save{font-family:var(--font);font-size:13px;font-weight:700;padding:10px;border-radius:var(--r);border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;margin-top:4px;letter-spacing:0.01em;transition:opacity .12s,transform .1s;}
-.qa-save:hover{opacity:0.88;transform:translateY(-1px);}
-.qa-save:active{transform:translateY(0);}
+.qa-save{font-family:var(--font);font-size:13px;font-weight:700;padding:10px;border-radius:var(--r);border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;margin-top:4px;letter-spacing:0.01em;transition:opacity .12s,transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s;}
+.qa-save:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.18);}
+.qa-save:active{transform:scale(0.96);box-shadow:none;}
 .qa-confirm{font-size:12px;font-weight:700;color:var(--green);text-align:center;min-height:20px;padding:2px 0;}
 /* NEEDS ATTENTION — fixed height scroll */
 .attn-scroll{overflow-y:auto;flex:1;max-height:260px;padding-right:2px;}
@@ -5874,7 +5922,15 @@ let attnOpen=localStorage.getItem('lifeOS_attnOpen')!=='0';
 function qaSwitch(type,el){
   qaActive=type;
   document.querySelectorAll('.qa-tab').forEach(b=>b.classList.remove('on'));
-  if(el)el.classList.add('on');
+  if(el){
+    // force animation restart for re-click on same tab
+    el.style.animation='none';
+    el.offsetHeight;
+    el.style.animation='';
+    el.classList.add('on');
+    const ic=el.querySelector('.qa-tab-ic');
+    if(ic){ic.style.animation='none';ic.offsetHeight;ic.style.animation='';}
+  }
   document.querySelectorAll('.qa-form').forEach(f=>f.classList.remove('on'));
   const f=G('qa-'+type);if(f)f.classList.add('on');
   G('qa-confirm').textContent='';
