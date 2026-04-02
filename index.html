@@ -925,6 +925,10 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fqa-save-btn:hover{opacity:0.88;transform:translateY(-1px);}
 .fqa-save-btn:active{transform:translateY(0);}
 @media(max-width:600px){.fqa-amount-inp{font-size:28px;}.fqa-currency{font-size:24px;}.fqa-fi{font-size:16px!important;}}
+/* FINANCE PAGE QUICK ADD BUTTON */
+.fin-qa-btn{display:flex;align-items:center;gap:10px;width:100%;font-family:var(--font);font-size:14px;font-weight:700;padding:13px 16px;margin:10px 0 0;border-radius:14px;border:2px solid var(--blue);background:var(--bbg);color:var(--blue);cursor:pointer;letter-spacing:0.01em;transition:all .18s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 8px rgba(45,120,164,.15);}
+.fin-qa-btn:hover{background:var(--blue);color:#fff;transform:translateY(-2px);box-shadow:0 6px 18px rgba(45,120,164,.35);}
+.fin-qa-btn:active{transform:scale(0.97);}
 
 /* FINANCE DASHBOARD — KPI CARDS */
 .fd-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
@@ -1240,12 +1244,12 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 @keyframes qa-ic-wiggle{0%{transform:rotate(0) scale(1);}15%{transform:rotate(-18deg) scale(1.3);}35%{transform:rotate(14deg) scale(1.2);}55%{transform:rotate(-8deg) scale(1.1);}75%{transform:rotate(4deg) scale(1.05);}100%{transform:rotate(0) scale(1);}}
 @keyframes qa-ic-bounce{0%,100%{transform:translateY(0) scale(1);}35%{transform:translateY(-6px) scale(1.18);}65%{transform:translateY(-2px) scale(1.06);}}
 @keyframes qa-shine{0%{left:-60%;}100%{left:130%;}}
-.qa-widget{display:flex;flex-direction:column;flex:1;gap:12px;}
-.qa-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.qa-widget{display:flex;flex-direction:column;flex:1;gap:10px;}
+.qa-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 .qa-tab{
-  font-family:var(--font);font-size:9.5px;font-weight:800;
-  padding:11px 4px 9px;border-radius:18px;
-  border:2px solid transparent;
+  font-family:var(--font);font-size:11px;font-weight:700;
+  padding:11px 6px 9px;border-radius:14px;
+  border:1.5px solid var(--bd);
   background:var(--bg-in);color:var(--ts);
   cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;
@@ -1256,8 +1260,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
              color .15s ease,
              border-color .15s ease;
   -webkit-tap-highlight-color:transparent;
-  letter-spacing:0.03em;
-  text-transform:uppercase;
+  letter-spacing:0.01em;
 }
 /* Gloss sheen */
 .qa-tab::before{content:'';position:absolute;top:0;left:0;right:0;height:48%;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent);border-radius:16px 16px 0 0;pointer-events:none;opacity:0;transition:opacity .15s;}
@@ -1294,26 +1297,31 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .qa-tab.on.t-goal{background:linear-gradient(145deg,#c07a10,#e09a20,#f5be50);--qa-glow:rgba(224,154,32,.55);}
 .qa-tab.on.t-bill{background:linear-gradient(145deg,#b02820,#d84040,#f07070);--qa-glow:rgba(216,64,64,.55);}
 .qa-tab.on.t-habit{background:linear-gradient(145deg,#186040,#279060,#40bc80);--qa-glow:rgba(39,144,96,.55);}
-.qa-tab-ic{font-size:20px;line-height:1;display:block;will-change:transform;}
+.qa-tab-ic{font-size:22px;line-height:1;display:block;will-change:transform;}
 .qa-form{display:none;flex-direction:column;gap:8px;flex:1;}
 .qa-form.on{display:flex;}
-.qa-lbl{font-size:11px;font-weight:600;color:var(--ts);margin-bottom:2px;}
-.qa-inp{width:100%;font-family:var(--font);font-size:13px;padding:9px 11px;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
-.qa-inp:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.13);background:var(--bg-card);}
-.qa-inp::placeholder{color:var(--th);}
-.qa-ta{resize:none;min-height:70px;line-height:1.55;}
+/* Shared field style matching finance modal */
+.qa-fi{width:100%;font-family:var(--font);font-size:13px;padding:10px 13px;border:1.5px solid var(--bd);border-radius:12px;background:var(--bg-in);color:var(--t);box-sizing:border-box;transition:border-color .15s,box-shadow .15s;}
+.qa-fi:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,120,164,.12);background:var(--bg-card);}
+.qa-fi::placeholder{color:var(--th);}
+.qa-ta{resize:none;min-height:68px;line-height:1.55;}
 .qa-row{display:flex;gap:6px;align-items:stretch;}
-.qa-row .qa-inp,.qa-row .qa-sel{flex:1;}
-.qa-sel{font-family:var(--font);font-size:12px;padding:8px 7px;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--bg-in);color:var(--t);transition:border-color .15s;}
-.qa-sel:focus{outline:none;border-color:var(--blue);}
-.qa-ie{display:flex;border-radius:var(--r);overflow:hidden;border:1.5px solid var(--bd);flex-shrink:0;}
-.qa-ie-btn{font-family:var(--font);font-size:12px;font-weight:700;padding:8px 12px;border:none;background:var(--bg-in);color:var(--ts);cursor:pointer;transition:background .12s,color .12s;}
+/* Big amount input matching finance modal */
+.qa-amount-wrap{display:flex;align-items:center;background:var(--bg-in);border:1.5px solid var(--bd);border-radius:12px;padding:0 14px;transition:border-color .15s;}
+.qa-amount-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,120,164,.12);}
+.qa-currency{font-size:24px;font-weight:800;color:var(--ts);flex-shrink:0;margin-right:4px;line-height:1;}
+.qa-amount-inp{flex:1;font-family:var(--font);font-size:28px;font-weight:800;color:var(--t);background:transparent;border:none;outline:none;padding:12px 0;letter-spacing:-0.02em;min-width:0;}
+.qa-amount-inp::placeholder{color:var(--th);}
+/* IE toggle matching finance modal */
+.qa-ie-toggle{display:flex;background:var(--bg-in);border-radius:12px;padding:4px;gap:4px;}
+.qa-ie-btn{flex:1;padding:8px;border-radius:9px;border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:700;color:var(--ts);cursor:pointer;transition:all .15s;}
+.qa-ie-btn:hover{color:var(--t);}
 .qa-ie-btn.on.exp{background:var(--red);color:#fff;}
 .qa-ie-btn.on.inc{background:var(--green);color:#fff;}
-.qa-save{font-family:var(--font);font-size:13px;font-weight:700;padding:10px;border-radius:var(--r);border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;margin-top:4px;letter-spacing:0.01em;transition:opacity .12s,transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s;}
-.qa-save:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.18);}
-.qa-save:active{transform:scale(0.96);box-shadow:none;}
-.qa-confirm{font-size:12px;font-weight:700;color:var(--green);text-align:center;min-height:20px;padding:2px 0;}
+.qa-save{font-family:var(--font);font-size:14px;font-weight:700;padding:12px;border-radius:12px;border:none;background:var(--t);color:var(--ti);cursor:pointer;width:100%;margin-top:2px;letter-spacing:-0.01em;box-shadow:var(--sh);transition:opacity .15s,transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s;}
+.qa-save:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.2);}
+.qa-save:active{transform:scale(0.97);box-shadow:none;}
+.qa-confirm{font-size:12px;font-weight:700;color:var(--green);text-align:center;min-height:18px;padding:2px 0;}
 /* NEEDS ATTENTION — fixed height scroll */
 .attn-scroll{overflow-y:auto;flex:1;max-height:260px;padding-right:2px;}
 .attn-scroll::-webkit-scrollbar{width:4px;}
@@ -1708,70 +1716,72 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         <div class="home-quad-cell">
           <div class="home-quad-hdr">⚡ Quick Add</div>
           <div class="qa-widget">
+
+            <!-- TYPE TABS — 3 columns × 2 rows, matching finance modal style -->
             <div class="qa-tabs">
-              <button class="qa-tab on t-task" onclick="qaSwitch('task',this)"><span class="qa-tab-ic">✅</span>Task</button>
-              <button class="qa-tab t-money" onclick="qaSwitch('money',this)"><span class="qa-tab-ic">💸</span>Money</button>
-              <button class="qa-tab t-journal" onclick="qaSwitch('journal',this)"><span class="qa-tab-ic">📓</span>Journal</button>
-              <button class="qa-tab t-goal" onclick="qaSwitch('goal',this)"><span class="qa-tab-ic">🎯</span>Goal</button>
-              <button class="qa-tab t-bill" onclick="qaSwitch('bill',this)"><span class="qa-tab-ic">🧾</span>Bill</button>
-              <button class="qa-tab t-habit" onclick="qaSwitch('habit',this)"><span class="qa-tab-ic">🔄</span>Habit</button>
+              <button class="qa-tab on t-task"    onclick="qaSwitch('task',this)">   <span class="qa-tab-ic">✅</span>Task</button>
+              <button class="qa-tab t-money"       onclick="qaSwitch('money',this)">  <span class="qa-tab-ic">💸</span>Money</button>
+              <button class="qa-tab t-journal"     onclick="qaSwitch('journal',this)"><span class="qa-tab-ic">📓</span>Journal</button>
+              <button class="qa-tab t-goal"        onclick="qaSwitch('goal',this)">   <span class="qa-tab-ic">🎯</span>Goal</button>
+              <button class="qa-tab t-bill"        onclick="qaSwitch('bill',this)">   <span class="qa-tab-ic">🧾</span>Bill</button>
+              <button class="qa-tab t-habit"       onclick="qaSwitch('habit',this)">  <span class="qa-tab-ic">🔄</span>Habit</button>
             </div>
 
             <!-- TASK -->
             <div class="qa-form on" id="qa-task">
-              <input class="qa-inp" id="qa-task-t" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')qaSave()">
+              <input class="qa-fi" id="qa-task-t" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')qaSave()">
               <div class="qa-row">
-                <select class="qa-sel" id="qa-task-pri"><option value="med">🟡 Medium</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
-                <input class="qa-inp" type="date" id="qa-task-due">
-                <button class="qa-save" onclick="qaSave()">Add</button>
+                <select class="qa-fi" id="qa-task-pri" style="flex:1;"><option value="med">🟡 Medium</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
+                <input class="qa-fi" type="date" id="qa-task-due" style="flex:1;">
               </div>
+              <button class="qa-save" onclick="qaSave()">Add Task</button>
             </div>
 
             <!-- MONEY -->
             <div class="qa-form" id="qa-money">
-              <div class="qa-row">
-                <div class="qa-ie" id="qa-ie">
-                  <button class="qa-ie-btn on" id="qa-ie-exp" onclick="qaSetIE('expense',this)">Expense</button>
-                  <button class="qa-ie-btn" id="qa-ie-inc" onclick="qaSetIE('income',this)">Income</button>
-                </div>
-                <input class="qa-inp" type="number" id="qa-money-amt" placeholder="Amount $" step="0.01" onkeydown="if(event.key==='Enter')qaSave()">
+              <div class="qa-ie-toggle">
+                <button class="qa-ie-btn on exp" id="qa-ie-exp" onclick="qaSetIE('expense',this)">Expense</button>
+                <button class="qa-ie-btn" id="qa-ie-inc" onclick="qaSetIE('income',this)">Income</button>
               </div>
-              <input class="qa-inp" id="qa-money-desc" placeholder="Description" onkeydown="if(event.key==='Enter')qaSave()">
-              <div class="qa-row">
-                <select class="qa-sel" id="qa-money-cat" style="flex:1;"></select>
-                <button class="qa-save" onclick="qaSave()">Add</button>
+              <div class="qa-amount-wrap">
+                <span class="qa-currency">$</span>
+                <input class="qa-amount-inp" type="number" id="qa-money-amt" placeholder="0.00" step="0.01" inputmode="decimal" onkeydown="if(event.key==='Enter')qaSave()">
               </div>
+              <input class="qa-fi" id="qa-money-desc" placeholder="Description" onkeydown="if(event.key==='Enter')qaSave()">
+              <select class="qa-fi" id="qa-money-cat"></select>
+              <button class="qa-save" onclick="qaSave()">Add Transaction</button>
             </div>
 
             <!-- JOURNAL -->
             <div class="qa-form" id="qa-journal">
-              <textarea class="qa-inp qa-ta" id="qa-journal-txt" placeholder="What's on your mind today?"></textarea>
-              <button class="qa-save" onclick="qaSave()">Save entry</button>
+              <textarea class="qa-fi qa-ta" id="qa-journal-txt" placeholder="What's on your mind today?"></textarea>
+              <button class="qa-save" onclick="qaSave()">Save Entry</button>
             </div>
 
             <!-- GOAL / PROJECT -->
             <div class="qa-form" id="qa-goal">
-              <input class="qa-inp" id="qa-goal-t" placeholder="Title" onkeydown="if(event.key==='Enter')qaSave()">
+              <input class="qa-fi" id="qa-goal-t" placeholder="Title" onkeydown="if(event.key==='Enter')qaSave()">
               <div class="qa-row">
-                <select class="qa-sel" id="qa-goal-type"><option value="Goal">🎯 Goal</option><option value="Project">📁 Project</option></select>
-                <select class="qa-sel" id="qa-goal-pri"><option value="med">🟡 Med</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
-                <button class="qa-save" onclick="qaSave()">Add</button>
+                <select class="qa-fi" id="qa-goal-type" style="flex:1;"><option value="Goal">🎯 Goal</option><option value="Project">📁 Project</option></select>
+                <select class="qa-fi" id="qa-goal-pri"  style="flex:1;"><option value="med">🟡 Med</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
               </div>
+              <button class="qa-save" onclick="qaSave()">Add Goal</button>
             </div>
 
             <!-- BILL -->
             <div class="qa-form" id="qa-bill">
-              <input class="qa-inp" id="qa-bill-n" placeholder="Bill name (e.g. Rent, Netflix)" onkeydown="if(event.key==='Enter')qaSave()">
-              <div class="qa-row">
-                <input class="qa-inp" type="number" id="qa-bill-a" placeholder="Amount $" step="0.01">
-                <select class="qa-sel" id="qa-bill-cat"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
-                <button class="qa-save" onclick="qaSave()">Add</button>
+              <div class="qa-amount-wrap">
+                <span class="qa-currency">$</span>
+                <input class="qa-amount-inp" type="number" id="qa-bill-a" placeholder="0.00" step="0.01" inputmode="decimal">
               </div>
+              <input class="qa-fi" id="qa-bill-n" placeholder="Bill name (e.g. Rent, Netflix)" onkeydown="if(event.key==='Enter')qaSave()">
+              <select class="qa-fi" id="qa-bill-cat"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
+              <button class="qa-save" onclick="qaSave()">Add Bill</button>
             </div>
 
             <!-- HABIT -->
             <div class="qa-form" id="qa-habit">
-              <div id="qa-habit-list" style="display:flex;flex-direction:column;gap:5px;flex:1;overflow-y:auto;max-height:130px;"></div>
+              <div id="qa-habit-list" style="display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;max-height:140px;"></div>
             </div>
 
             <div class="qa-confirm" id="qa-confirm"></div>
@@ -1850,6 +1860,13 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
       <!-- SUMMARY BAR (dynamic) -->
       <div class="summary-bar" id="f-sum"></div>
+
+      <!-- QUICK ADD BUTTON -->
+      <button class="fin-qa-btn" onclick="openFinQuickAdd()">
+        <span style="font-size:20px;line-height:1;">⚡</span>
+        <span>Quick Add</span>
+        <span style="font-size:16px;font-weight:900;margin-left:auto;">＋</span>
+      </button>
 
       <!-- FINANCE TABS -->
       <div class="fin-tabs" id="fin-tabs">
@@ -3490,13 +3507,17 @@ function addBill(){
 function delBill(id){S.bills=S.bills.filter(b=>b.id!==id);save();renderFinance();renderHome();}
 function cycleBill(id){
   const b=S.bills.find(b=>b.id===id);if(!b)return;
-  if(b.ds==='Auto-pay')return;// auto-pay always stays auto-pay
+  if(b.ds==='Auto-pay')return;
   const cur=getBillStatus(b);
   const next=cur==='Unpaid'?'Paid':'Unpaid';
-  if(next==='Paid')addFinancialPoints(20,'Paid a bill');
   if(!b.payments)b.payments={};
   b.payments[currentMonth]=next;
-  save();renderBills();
+  if(next==='Paid'){
+    S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:today,id:Date.now()});
+    addFinancialPoints(20,'Paid a bill');
+    showBackupToast('✓ '+b.n+' paid · $'+b.a.toFixed(2)+' logged as expense');
+  }
+  save();renderBills();renderFinance();renderHome();
 }
 function blFilterCat(cat,el){
   blCatFilter=cat;
