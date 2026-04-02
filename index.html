@@ -2865,7 +2865,14 @@ function cycleOP(id){
 }
 function markBillPaid(id){
   const b=S.bills.find(b=>b.id===id);
-  if(b){if(!b.payments)b.payments={};b.payments[currentMonth]='Paid';addFinancialPoints(20,'Paid a bill');save();renderFinance();renderHome();showBackupToast('✓ Bill marked paid');}
+  if(b){
+    if(!b.payments)b.payments={};
+    b.payments[currentMonth]='Paid';
+    S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:today,id:Date.now()});
+    addFinancialPoints(20,'Paid a bill');
+    save();renderFinance();renderHome();
+    showBackupToast('✓ Bill paid · $'+b.a.toFixed(2)+' logged as expense');
+  }
 }
 function markDebtPaid(id){
   const p=S.otherPayments.find(p=>p.id===id);
