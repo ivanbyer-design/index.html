@@ -344,15 +344,80 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 .theme-label{font-size:11px;font-weight:600;color:var(--ts);text-align:center;padding:6px 4px;background:var(--bg-card);}
 .theme-opt.on .theme-label{color:var(--blue);}
 
+/* ── DASHBOARD SECTOR CARDS ─────────────────────── */
+.sector-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:22px;}
+.sector-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px 13px;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--sh);display:flex;flex-direction:column;gap:3px;position:relative;overflow:hidden;}
+.sector-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md);}
+.sector-card:active{transform:scale(.97);}
+.sector-card-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0;}
+.sector-card-icon{font-size:22px;margin-bottom:4px;line-height:1;}
+.sector-card-val{font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--t);line-height:1;}
+.sector-card-val.up{color:var(--green);}
+.sector-card-val.dn{color:var(--red);}
+.sector-card-val.blue{color:var(--blue);}
+.sector-card-lbl{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.07em;margin-top:2px;}
+.sector-card-sub{font-size:11px;color:var(--th);}
+
+/* ── LIFE OS HERO ────────────────────────────────── */
+.los-hero{padding:22px 0 20px;border-bottom:1px solid var(--bd);margin-bottom:20px;}
+.los-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.los-hero-left{flex:1;}
+.los-hero-label{font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;}
+.los-hero-title{font-size:28px;font-weight:800;color:var(--t);letter-spacing:-.03em;line-height:1.15;margin-bottom:3px;}
+.los-hero-date{font-size:13px;color:var(--ts);}
+.los-streak-badge{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--t),color-mix(in srgb,var(--t) 75%,var(--blue)));border-radius:var(--rl);padding:12px 16px;min-width:72px;box-shadow:var(--sh-md);flex-shrink:0;}
+.los-streak-num{font-size:28px;font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1;}
+.los-streak-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.08em;margin-top:3px;text-align:center;}
+
+/* ── FINANCE VISUAL MODEL ────────────────────────── */
+.fin-overview{background:var(--t);border-radius:16px;padding:22px 20px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.fin-overview::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.05);}
+.fin-overview::after{content:'';position:absolute;bottom:-70px;right:10px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.04);}
+.fin-ov-month{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px;position:relative;}
+.fin-ov-net{font-size:38px;font-weight:800;letter-spacing:-.04em;line-height:1;position:relative;}
+.fin-ov-net.pos{color:#4ade80;}
+.fin-ov-net.neg{color:#f87171;}
+.fin-ov-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:18px;position:relative;}
+.fin-ov-bars{display:flex;flex-direction:column;gap:9px;position:relative;}
+.fin-bar-row{display:flex;align-items:center;gap:10px;}
+.fin-bar-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.65);min-width:58px;}
+.fin-bar-track{flex:1;height:7px;background:rgba(255,255,255,.12);border-radius:10px;overflow:hidden;}
+.fin-bar-fill{height:100%;border-radius:10px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.fin-bar-fill.inc{background:linear-gradient(90deg,#34d399,#4ade80);}
+.fin-bar-fill.exp{background:linear-gradient(90deg,#f87171,#fb923c);}
+.fin-bar-amount{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);min-width:68px;text-align:right;}
+.fin-ov-pills{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;position:relative;}
+.fin-ov-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.1);font-size:12px;font-weight:600;color:rgba(255,255,255,.85);cursor:pointer;border:1px solid rgba(255,255,255,.08);transition:background .15s;}
+.fin-ov-pill:hover{background:rgba(255,255,255,.18);}
+.fin-month-nav{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.fin-month-nav-title{flex:1;font-size:15px;font-weight:700;color:var(--t);}
+.fin-month-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--bd);background:var(--bg-card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--ts);transition:background .12s;}
+.fin-month-btn:hover{background:var(--bg-h);}
+.fin-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.fin-stat{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 10px;text-align:center;box-shadow:var(--sh);}
+.fin-stat-val{font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--t);line-height:1;}
+.fin-stat-val.up{color:var(--green);}
+.fin-stat-val.dn{color:var(--red);}
+.fin-stat-lbl{font-size:9px;font-weight:700;color:var(--th);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;}
+
+/* ── FINANCE FAB ─────────────────────────────────── */
+.fin-fab{position:fixed;right:20px;bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;background:var(--t);color:#fff;border:none;cursor:pointer;font-size:26px;font-weight:300;line-height:1;box-shadow:0 4px 20px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.16);z-index:130;display:none;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;}
+.fin-fab:hover{box-shadow:0 6px 26px rgba(0,0,0,.32);}
+.fin-fab:active{transform:scale(.92);}
+.fin-fab.visible{display:flex;}
+
 /* ── MOBILE ─────────────────────────────────────── */
 @media(max-width:600px){
   .pcontent{padding:14px 14px calc(var(--tab-h) + 20px + env(safe-area-inset-bottom));}
   input,select,textarea{font-size:16px!important;}
   .summary-row.cols-4{grid-template-columns:repeat(2,1fr);}
   .stack-routine{font-size:19px;}
-  .balance-hero-amount{font-size:28px;}
   .modal-sheet{max-height:95dvh;}
   .section-hdr:first-child{margin-top:0;}
+  .sector-grid{grid-template-columns:repeat(2,1fr);}
+  .fin-ov-net{font-size:30px;}
+  .los-hero-title{font-size:24px;}
+  .fin-fab{right:16px;}
 }
 </style>
 </head>
@@ -361,7 +426,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 
   <!-- TOPBAR -->
   <header class="topbar">
-    <div class="tb-title" id="tb-title">Today</div>
+    <div class="tb-title" id="tb-title">Life OS</div>
     <div id="tb-streak" class="tb-streak" style="display:none">
       <span>🔥</span><span class="tb-streak-num" id="tb-streak-num">0</span><span>day streak</span>
     </div>
@@ -373,10 +438,18 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 
     <div class="panel on" id="p-today">
       <div class="pcontent">
-        <div class="today-greeting">
-          <div class="today-greeting-label" id="today-greeting-label">Good morning</div>
-          <div class="today-greeting-title" id="today-greeting-name">Life OS</div>
-          <div class="today-greeting-date" id="today-greeting-date"></div>
+        <div class="los-hero">
+          <div class="los-hero-top">
+            <div class="los-hero-left">
+              <div class="los-hero-label" id="today-greeting-label">Good morning</div>
+              <div class="los-hero-title">Life OS</div>
+              <div class="los-hero-date" id="today-greeting-date"></div>
+            </div>
+            <div class="los-streak-badge" id="los-streak-badge" style="display:none">
+              <div class="los-streak-num" id="los-streak-num">0</div>
+              <div class="los-streak-lbl">day<br>streak</div>
+            </div>
+          </div>
         </div>
         <div id="today-body"></div>
       </div>
@@ -713,6 +786,9 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </div>
 
+<!-- Finance FAB -->
+<button class="fin-fab" id="fin-fab" onclick="openTxModal(null)" title="Add transaction">+</button>
+
 <script>
 /* ── UTILITIES ──────────────────────────────────── */
 const localDate=d=>{const D=d||new Date();return D.getFullYear()+'-'+String(D.getMonth()+1).padStart(2,'0')+'-'+String(D.getDate()).padStart(2,'0');};
@@ -761,8 +837,9 @@ applyTheme();
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
 
 /* ── NAVIGATION ─────────────────────────────────── */
-const TITLES={today:'Today',finance:'Finance',goals:'Goals',health:'Health',notes:'Notes',settings:'Settings'};
+const TITLES={today:'Life OS',finance:'Finance',goals:'Goals',health:'Health',notes:'Notes',settings:'Settings'};
 let currentPanel='today';
+let viewMonth=currentMonth;
 function go(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
@@ -771,6 +848,9 @@ function go(id){
   const tab=document.querySelector('[data-tab="'+id+'"]');if(tab)tab.classList.add('on');
   G('tb-title').textContent=TITLES[id]||id;
   currentPanel=id;
+  // FAB: only show on finance panel
+  const fab=G('fin-fab');
+  if(fab)fab.className='fin-fab'+(id==='finance'?' visible':'');
   updateStreakBadge();
   ({today:renderToday,finance:renderFinance,goals:renderGoals,health:renderHealth,notes:renderNotes,settings:renderSettings}[id]||function(){})();
 }
@@ -788,9 +868,14 @@ function getStackStreak(){
   return streak;
 }
 function updateStreakBadge(){
-  const s=getStackStreak(),el=G('tb-streak');
-  if(s>0){el.style.display='flex';G('tb-streak-num').textContent=s;el.className='tb-streak'+(s>=3?' hot':'');}
+  const s=getStackStreak();
+  // Topbar badge (non-today panels)
+  const el=G('tb-streak');
+  if(s>0&&currentPanel!=='today'){el.style.display='flex';G('tb-streak-num').textContent=s;el.className='tb-streak'+(s>=3?' hot':'');}
   else el.style.display='none';
+  // Hero badge (today panel)
+  const heroB=G('los-streak-badge'),heroN=G('los-streak-num');
+  if(heroB&&heroN){heroB.style.display=s>0?'flex':'none';heroN.textContent=s;}
 }
 
 /* ── MODALS ─────────────────────────────────────── */
@@ -813,6 +898,12 @@ function renderToday(){
   G('today-greeting-label').textContent=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
   G('today-greeting-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   updateStreakBadge();
+  // Sector snapshot data
+  const mnTxSnap=S.finance.filter(t=>t.date&&t.date.startsWith(currentMonth));
+  const netSnap=mnTxSnap.filter(t=>t.type==='income').reduce((s,t)=>s+Number(t.amount||0),0)-mnTxSnap.filter(t=>t.type==='expense').reduce((s,t)=>s+Number(t.amount||0),0);
+  const activeGoals=S.goals.filter(g=>g.status==='active').length;
+  const pendingTasks=S.todos.filter(t=>!t.done).length;
+  const todayWaterSnap=S.water[today]||0;
 
   const stack=getStackHabits();
   const log=getTodayLog();
@@ -895,8 +986,43 @@ function renderToday(){
     html+=`</div>`;
   }
 
+  // SECTOR SNAPSHOT GRID (always shown)
+  const netColor=netSnap>=0?'up':'dn';
+  const netFmt=(netSnap>=0?'+':'\u2013')+fmtMoney(netSnap);
+  html+=`<div class="section-hdr">Life at a glance</div>
+  <div class="sector-grid">
+    <div class="sector-card" onclick="go('finance')">
+      <div class="sector-card-bar" style="background:linear-gradient(90deg,#2d78a4,#5ca4cf)"></div>
+      <div class="sector-card-icon">💳</div>
+      <div class="sector-card-val ${netColor}">${netFmt}</div>
+      <div class="sector-card-lbl">Finance</div>
+      <div class="sector-card-sub">Net this month</div>
+    </div>
+    <div class="sector-card" onclick="go('goals')">
+      <div class="sector-card-bar" style="background:linear-gradient(90deg,#0a7c6e,#3da892)"></div>
+      <div class="sector-card-icon">🎯</div>
+      <div class="sector-card-val">${activeGoals}</div>
+      <div class="sector-card-lbl">Goals</div>
+      <div class="sector-card-sub">Active objective${activeGoals!==1?'s':''}</div>
+    </div>
+    <div class="sector-card" onclick="go('health')">
+      <div class="sector-card-bar" style="background:linear-gradient(90deg,#8a5fae,#b88ed4)"></div>
+      <div class="sector-card-icon">💧</div>
+      <div class="sector-card-val blue">${todayWaterSnap}/8</div>
+      <div class="sector-card-lbl">Health</div>
+      <div class="sector-card-sub">Glasses of water</div>
+    </div>
+    <div class="sector-card" onclick="openTaskModal(null)">
+      <div class="sector-card-bar" style="background:linear-gradient(90deg,#c58c1e,#cc9840)"></div>
+      <div class="sector-card-icon">✅</div>
+      <div class="sector-card-val">${pendingTasks}</div>
+      <div class="sector-card-lbl">Tasks</div>
+      <div class="sector-card-sub">Pending</div>
+    </div>
+  </div>`;
+
   // TASKS (always shown)
-  html+=`<div class="flex-hdr" style="margin-top:${(started||!stack.length)?'20px':'18px'}">
+  html+=`<div class="flex-hdr" style="margin-top:4px;">
     <div class="section-hdr" style="margin:0;">Tasks</div>
     <button class="btn ghost sm" onclick="openTaskModal(null)">+ Add</button>
   </div>`;
@@ -1051,46 +1177,106 @@ function setTxType(t){
 function getCatIcon(c){const m={Housing:'🏠',Utilities:'⚡',Insurance:'🛡️',Subscription:'📱',Transport:'🚗',Food:'🍽️',Health:'💊',Debt:'💳',Groceries:'🛒',Gas:'⛽','Eating Out':'🍔',Income:'💰',Other:'📦'};return m[c]||'📦';}
 function ordinal(n){const s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s[0];}
 
+function shiftViewMonth(delta){
+  const d=new Date(viewMonth+'-01');
+  d.setMonth(d.getMonth()+delta);
+  viewMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  renderFinance();
+}
+
 function renderFinance(){
-  const mnTx=S.finance.filter(t=>t.date&&t.date.startsWith(currentMonth));
+  const mnTx=S.finance.filter(t=>t.date&&t.date.startsWith(viewMonth));
   const income=mnTx.filter(t=>t.type==='income').reduce((s,t)=>s+Number(t.amount||0),0);
   const expense=mnTx.filter(t=>t.type==='expense').reduce((s,t)=>s+Number(t.amount||0),0);
   const net=income-expense;
-  const mnName=new Date().toLocaleString('en-US',{month:'long',year:'numeric'});
+  const billsTotal=S.bills.reduce((s,b)=>s+Number(b.amount||0),0);
+  const mnDate=new Date(viewMonth+'-01');
+  const mnName=mnDate.toLocaleString('en-US',{month:'long',year:'numeric'});
+  const isCurrentMn=viewMonth===currentMonth;
   const catSpend={};
   mnTx.filter(t=>t.type==='expense').forEach(t=>{catSpend[t.category||'Other']=(catSpend[t.category||'Other']||0)+Number(t.amount||0);});
-  const catKeys=Object.keys(catSpend);
+  const catKeys=Object.keys(catSpend).sort((a,b)=>catSpend[b]-catSpend[a]);
   const today_d=new Date();
+  const maxBar=Math.max(income,expense)||1;
 
-  let html=`<div class="balance-hero">
-    <div class="balance-hero-label">Net · ${mnName}</div>
-    <div class="balance-hero-amount ${net>=0?'up':'dn'}">${net>=0?'+':'–'}${fmtMoney(net)}</div>
-    <div class="balance-hero-row">
-      <div><div class="balance-hero-stat-val up">+${fmtMoney(income)}</div><div class="balance-hero-stat-lbl">Income</div></div>
-      <div><div class="balance-hero-stat-val dn">–${fmtMoney(expense)}</div><div class="balance-hero-stat-lbl">Expenses</div></div>
+  // ── OVERVIEW CARD ───────────────────────────────
+  let html=`<div class="fin-overview">
+    <div class="fin-ov-month">${mnName}</div>
+    <div class="fin-ov-net ${net>=0?'pos':'neg'}">${net>=0?'+':'–'}${fmtMoney(net)}</div>
+    <div class="fin-ov-sub">${net>=0?'You\'re ahead this month':'Watch your spending this month'}</div>
+    <div class="fin-ov-bars">
+      <div class="fin-bar-row">
+        <div class="fin-bar-label">Income</div>
+        <div class="fin-bar-track"><div class="fin-bar-fill inc" style="width:${Math.round(income/maxBar*100)}%"></div></div>
+        <div class="fin-bar-amount">+${fmtMoney(income)}</div>
+      </div>
+      <div class="fin-bar-row">
+        <div class="fin-bar-label">Expenses</div>
+        <div class="fin-bar-track"><div class="fin-bar-fill exp" style="width:${Math.round(expense/maxBar*100)}%"></div></div>
+        <div class="fin-bar-amount">–${fmtMoney(expense)}</div>
+      </div>
+    </div>
+    <div class="fin-ov-pills">
+      <div class="fin-ov-pill" onclick="openTxModal(null)">+ Add transaction</div>
+      <div class="fin-ov-pill" onclick="openBillModal(null)">+ Add bill</div>
     </div>
   </div>`;
 
+  // ── MONTH NAVIGATOR ─────────────────────────────
+  html+=`<div class="fin-month-nav">
+    <button class="fin-month-btn" onclick="shiftViewMonth(-1)">‹</button>
+    <div class="fin-month-nav-title">${mnName}</div>
+    <button class="fin-month-btn" onclick="shiftViewMonth(1)" ${isCurrentMn?'disabled style="opacity:.35;cursor:default;"':''}>›</button>
+  </div>`;
+
+  // ── STATS ROW ───────────────────────────────────
+  const txCount=mnTx.length;
+  const avgExp=txCount?expense/mnTx.filter(t=>t.type==='expense').length:0;
+  html+=`<div class="fin-stats-row">
+    <div class="fin-stat"><div class="fin-stat-val">${txCount}</div><div class="fin-stat-lbl">Transactions</div></div>
+    <div class="fin-stat"><div class="fin-stat-val dn">${fmtMoney(expense)}</div><div class="fin-stat-lbl">Total spent</div></div>
+    <div class="fin-stat"><div class="fin-stat-val">${fmtMoney(billsTotal)}</div><div class="fin-stat-lbl">Monthly bills</div></div>
+  </div>`;
+
+  // ── SPENDING CHART ──────────────────────────────
   if(catKeys.length){
-    html+=`<div class="chart-wrap"><div class="chart-title">Spending by category</div><div style="max-width:260px;margin:0 auto;"><canvas id="fin-chart" height="190"></canvas></div></div>`;
+    html+=`<div class="chart-wrap">
+      <div class="chart-title">Spending breakdown</div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <div style="max-width:180px;flex-shrink:0;"><canvas id="fin-chart" height="180"></canvas></div>
+        <div style="flex:1;min-width:140px;">
+          ${catKeys.slice(0,6).map((k,i)=>{
+            const colors=['#2d78a4','#0a7c6e','#c58c1e','#8a5fae','#c0342c','#3da892'];
+            const pct=expense?Math.round(catSpend[k]/expense*100):0;
+            return`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;${i>0?'border-top:1px solid var(--bd)':''}">
+              <div style="width:10px;height:10px;border-radius:50%;background:${colors[i%colors.length]};flex-shrink:0;"></div>
+              <div style="flex:1;font-size:12px;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(k)}</div>
+              <div style="font-size:12px;font-weight:700;color:var(--ts);">${pct}%</div>
+              <div style="font-size:12px;font-weight:600;color:var(--t);">${fmtMoney(catSpend[k])}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>`;
   }
 
+  // ── BILLS ───────────────────────────────────────
   html+=`<div class="flex-hdr"><div class="section-hdr" style="margin:0;">Bills</div><button class="btn ghost sm" onclick="openBillModal(null)">+ Add</button></div>`;
   const bills=[...S.bills].sort((a,b)=>(a.due||0)-(b.due||0));
   if(bills.length){
     html+=`<div class="card">`;
     bills.forEach(b=>{
-      const isPaid=b.ds==='Paid'||(b.payments&&b.payments[currentMonth]);
+      const isPaid=b.ds==='Paid'||(b.payments&&b.payments[viewMonth]);
       const isAuto=b.ds==='Auto-pay';
       const dueD=b.due?new Date(today_d.getFullYear(),today_d.getMonth(),b.due):null;
-      const isOver=dueD&&dueD<today_d&&!isPaid&&!isAuto;
+      const isOver=dueD&&dueD<today_d&&!isPaid&&!isAuto&&isCurrentMn;
       const dotCls=isPaid||isAuto?'paid':isOver?'overdue':'due';
-      const statusTxt=isPaid?'Paid':isAuto?'Auto-pay':isOver?'Overdue':`Due ${b.due}${ordinal(b.due)}`;
+      const statusTxt=isPaid?'✓ Paid':isAuto?'↺ Auto-pay':isOver?'⚠ Overdue':`Due ${b.due}${ordinal(b.due)}`;
       html+=`<div class="bill-item">
         <div class="bill-dot ${dotCls}"></div>
         <div style="flex:1;min-width:0;">
           <div class="bill-name">${esc(b.name)}</div>
-          <div class="bill-status-txt">${statusTxt}</div>
+          <div class="bill-status-txt" style="color:${isOver?'var(--red)':isPaid?'var(--green)':'var(--ts)'}">${statusTxt}</div>
         </div>
         <div style="font-size:14px;font-weight:700;color:var(--t);margin-right:6px;">${fmtMoney(b.amount)}</div>
         ${!isPaid&&!isAuto?`<button class="btn green sm" onclick="markBillPaid('${b.id}')">Pay</button>`:''}
@@ -1099,34 +1285,45 @@ function renderFinance(){
       </div>`;
     });
     html+=`</div>`;
-  } else html+=`<div class="empty"><div class="empty-icon">🧾</div><div class="empty-title">No bills added</div></div>`;
+  } else html+=`<div class="empty"><div class="empty-icon">🧾</div><div class="empty-title">No bills added</div><p style="margin-top:4px;">Add recurring bills to track them each month.</p></div>`;
 
-  html+=`<div class="flex-hdr" style="margin-top:20px;"><div class="section-hdr" style="margin:0;">Transactions · ${mnName}</div><button class="btn ghost sm" onclick="openTxModal(null)">+ Add</button></div>`;
-  const recentTx=[...mnTx].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,25);
+  // ── TRANSACTIONS ────────────────────────────────
+  html+=`<div class="flex-hdr" style="margin-top:20px;">
+    <div class="section-hdr" style="margin:0;">Transactions</div>
+    <button class="btn ghost sm" onclick="openTxModal(null)">+ Add</button>
+  </div>`;
+  const recentTx=[...mnTx].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   if(recentTx.length){
     html+=`<div class="card">`;
     recentTx.forEach(t=>{
       const isInc=t.type==='income';
       html+=`<div class="tx-item">
         <div class="tx-cat-icon">${getCatIcon(t.category)}</div>
-        <div class="tx-desc"><div class="tx-name">${esc(t.desc||t.category||'')}</div><div class="tx-date">${t.date} · ${esc(t.category||'')}</div></div>
-        <div class="tx-amount ${isInc?'inc':''}">${isInc?'+':'–'}${fmtMoney(t.amount)}</div>
+        <div class="tx-desc">
+          <div class="tx-name">${esc(t.desc||t.category||'')}</div>
+          <div class="tx-date">${t.date}${t.category?' · '+esc(t.category):''}</div>
+        </div>
+        <div class="tx-amount ${isInc?'inc':''}" style="${isInc?'':'color:var(--t)'}">${isInc?'+':'–'}${fmtMoney(t.amount)}</div>
         <button class="btn ghost icon" style="color:var(--red)" onclick="deleteTx('${t.id}')">✕</button>
       </div>`;
     });
-    html+=`</div>`;
-  } else html+=`<div class="empty"><div class="empty-icon">💸</div><div class="empty-title">No transactions this month</div></div>`;
+    html+=`</div><div style="height:72px;"></div>`; // FAB clearance
+  } else {
+    html+=`<div class="empty"><div class="empty-icon">💸</div><div class="empty-title">No transactions</div>Tap the <strong>+</strong> button to log income or expenses.</div>`;
+  }
 
   G('finance-body').innerHTML=html;
 
+  // Render chart after DOM update
   if(catKeys.length){
     setTimeout(()=>{
       if(finChart)finChart.destroy();
       const ctx=G('fin-chart');if(!ctx)return;
+      const colors=['#2d78a4','#0a7c6e','#c58c1e','#8a5fae','#c0342c','#3da892','#cc9840'];
       finChart=new Chart(ctx.getContext('2d'),{
         type:'doughnut',
-        data:{labels:catKeys,datasets:[{data:catKeys.map(k=>catSpend[k]),backgroundColor:['#2d78a4','#0a7c6e','#c58c1e','#8a5fae','#c0342c','#3da892','#cc9840'],borderWidth:0,hoverOffset:4}]},
-        options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11,family:'Inter'},padding:12,boxWidth:10,color:'#706e6b'}},tooltip:{callbacks:{label:c=>` ${c.label}: ${fmtMoney(c.parsed)}`}}}}
+        data:{labels:catKeys,datasets:[{data:catKeys.map(k=>catSpend[k]),backgroundColor:catKeys.map((_,i)=>colors[i%colors.length]),borderWidth:0,hoverOffset:6}]},
+        options:{responsive:true,cutout:'70%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${fmtMoney(c.parsed)}`}}}}
       });
     },0);
   }
