@@ -400,6 +400,42 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 .fin-stat-val.dn{color:var(--red);}
 .fin-stat-lbl{font-size:9px;font-weight:700;color:var(--th);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;}
 
+/* ── PULL-TO-REFRESH ─────────────────────────────── */
+.ptr-indicator{position:absolute;top:0;left:0;right:0;height:0;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;z-index:40;transition:height .2s;pointer-events:none;}
+.ptr-spinner{width:28px;height:28px;border-radius:50%;border:2.5px solid var(--bd2);border-top-color:var(--blue);animation:spin .7s linear infinite;margin-bottom:10px;opacity:0;transition:opacity .2s;}
+.ptr-indicator.ready .ptr-spinner{border-top-color:var(--green);}
+.ptr-indicator.active .ptr-spinner{opacity:1;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── BILLS CALENDAR ──────────────────────────────── */
+.bil-view-toggle{display:flex;gap:6px;margin-bottom:12px;}
+.bil-view-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-card);font-size:12px;font-weight:600;color:var(--ts);cursor:pointer;transition:background .12s;}
+.bil-view-btn.on{background:var(--t);color:var(--ti);border-color:var(--t);}
+.bil-calendar{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px;box-shadow:var(--sh);margin-bottom:10px;}
+.bil-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.bil-cal-dow{font-size:10px;font-weight:700;color:var(--th);text-align:center;padding:4px 0;text-transform:uppercase;}
+.bil-cal-day{min-height:42px;border-radius:var(--r);padding:4px 3px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;cursor:default;}
+.bil-cal-day.other-month{opacity:.3;}
+.bil-cal-day.today-cal{background:var(--bbg);}
+.bil-cal-dn{font-size:11px;font-weight:600;color:var(--ts);line-height:1;}
+.bil-cal-day.today-cal .bil-cal-dn{color:var(--blue);font-weight:800;}
+.bil-cal-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ── LIFE EXPENSES ───────────────────────────────── */
+.lx-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;margin-bottom:8px;}
+.lx-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border-top:1px solid var(--bd);}
+.lx-item:first-child{border-top:none;}
+.lx-icon-wrap{width:38px;height:38px;border-radius:var(--r);background:var(--bg-a);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.lx-body{flex:1;min-width:0;}
+.lx-name{font-size:14px;font-weight:600;color:var(--t);}
+.lx-meta{font-size:11px;color:var(--ts);margin-top:1px;}
+.lx-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.lx-cost{font-size:14px;font-weight:700;color:var(--t);}
+.lx-status{font-size:11px;font-weight:700;padding:2px 7px;border-radius:8px;}
+.lx-status.ok{background:var(--gbg);color:var(--green);}
+.lx-status.soon{background:var(--abg);color:var(--amber);}
+.lx-status.over{background:var(--rbg);color:var(--red);}
+
 /* ── FINANCE FAB ─────────────────────────────────── */
 .fin-fab{position:fixed;right:20px;bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;background:var(--t);color:#fff;border:none;cursor:pointer;font-size:26px;font-weight:300;line-height:1;box-shadow:0 4px 20px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.16);z-index:130;display:none;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;}
 .fin-fab:hover{box-shadow:0 6px 26px rgba(0,0,0,.32);}
@@ -786,6 +822,47 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </div>
 
+<!-- Life Expense modal -->
+<div class="modal-overlay" id="lx-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="lx-modal-title">Add Life Expense</div>
+    <input type="hidden" id="lx-modal-id">
+    <div class="modal-field">
+      <label>Name</label>
+      <input class="fi" id="lx-modal-name" placeholder="e.g. Oil Change">
+    </div>
+    <div class="form-row">
+      <div class="modal-field" style="flex:1">
+        <label>Icon (emoji)</label>
+        <input class="fi" id="lx-modal-icon" placeholder="🚗" maxlength="4">
+      </div>
+      <div class="modal-field" style="flex:1">
+        <label>Est. Cost ($)</label>
+        <input class="fi" type="number" id="lx-modal-cost" placeholder="80" min="0" inputmode="decimal">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="modal-field" style="flex:1">
+        <label>Repeat every (months)</label>
+        <input class="fi" type="number" id="lx-modal-interval" placeholder="3" min="1" inputmode="numeric">
+      </div>
+      <div class="modal-field" style="flex:1">
+        <label>Last done</label>
+        <input class="fi" type="date" id="lx-modal-last">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Notes (optional)</label>
+      <input class="fi" id="lx-modal-notes" placeholder="e.g. Jiffy Lube on Main St.">
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('lx-modal')">Cancel</button>
+      <button class="btn pri" onclick="saveLx()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Finance FAB -->
 <button class="fin-fab" id="fin-fab" onclick="openTxModal(null)" title="Add transaction">+</button>
 
@@ -800,12 +877,12 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'
 const fmtMoney=n=>'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 
 /* ── STATE ──────────────────────────────────────── */
-let S={finance:[],bills:[],goals:[],todos:[],habits:[],hlog:{},liveCategories:[],liveSpend:[],savingsAccounts:[],customCategories:[],meals:[],workouts:[],water:{},notes:[],schedule:[],dayLogs:{}};
+let S={finance:[],bills:[],goals:[],todos:[],habits:[],hlog:{},liveCategories:[],liveSpend:[],savingsAccounts:[],customCategories:[],meals:[],workouts:[],water:{},notes:[],schedule:[],dayLogs:{},lifeExpenses:[]};
 
 try{const d=localStorage.getItem('lifeOS_v3');if(d)S=Object.assign(S,JSON.parse(d));}catch(e){}
 
 // New field guards
-['meals','workouts','notes','schedule'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[];});
+['meals','workouts','notes','schedule','lifeExpenses'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[];});
 ['water','dayLogs','hlog'].forEach(k=>{if(!S[k]||typeof S[k]!=='object')S[k]={};});
 ['finance','bills','goals','todos','habits','liveCategories','liveSpend','savingsAccounts','customCategories'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[];});
 
@@ -1168,7 +1245,92 @@ function initDragDrop(){
 }
 
 /* ── FINANCE ─────────────────────────────────────── */
-let finChart=null,txType='expense';
+let finChart=null,txType='expense',billView='list';
+function setBillView(v){billView=v;renderFinance();}
+
+function renderBillsCalendar(bills,vm,todayD,isCurMn){
+  const [y,m]=vm.split('-').map(Number);
+  const firstDow=new Date(y,m-1,1).getDay();
+  const daysInMonth=new Date(y,m,0).getDate();
+  const byDay={};
+  bills.forEach(b=>{
+    const d=b.due;if(!d)return;
+    if(!byDay[d])byDay[d]=[];
+    const isPaid=b.ds==='Paid'||(b.payments&&b.payments[vm]);
+    const isAuto=b.ds==='Auto-pay';
+    const dueDate=new Date(y,m-1,d);
+    const isOver=dueDate<todayD&&!isPaid&&!isAuto&&isCurMn;
+    byDay[d].push({name:b.name,color:isPaid||isAuto?'var(--green)':isOver?'var(--red)':'var(--amber)'});
+  });
+  const dows=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  let html=`<div class="bil-calendar">
+    <div class="bil-cal-grid">
+      ${dows.map(d=>`<div class="bil-cal-dow">${d}</div>`).join('')}`;
+  for(let i=0;i<firstDow;i++)html+=`<div class="bil-cal-day other-month"></div>`;
+  const todayDay=isCurMn?todayD.getDate():-1;
+  for(let d=1;d<=daysInMonth;d++){
+    const isT=d===todayDay;
+    const dots=(byDay[d]||[]).map(b=>`<div class="bil-cal-dot" title="${esc(b.name)}" style="background:${b.color}"></div>`).join('');
+    html+=`<div class="bil-cal-day${isT?' today-cal':''}">
+      <div class="bil-cal-dn">${d}</div>
+      ${dots}
+    </div>`;
+  }
+  html+=`</div>`;
+  if(bills.length){
+    html+=`<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">`;
+    bills.forEach(b=>{
+      const isPaid=b.ds==='Paid'||(b.payments&&b.payments[vm]);
+      const isAuto=b.ds==='Auto-pay';
+      const dueDate=b.due?new Date(y,m-1,b.due):null;
+      const isOver=dueDate&&dueDate<todayD&&!isPaid&&!isAuto&&isCurMn;
+      const dotColor=isPaid||isAuto?'var(--green)':isOver?'var(--red)':'var(--amber)';
+      html+=`<div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ts);">
+        <div style="width:7px;height:7px;border-radius:50%;background:${dotColor};flex-shrink:0;"></div>
+        ${esc(b.name)} · ${b.due?ordinal(b.due):'—'}
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function getLxStatus(lx){
+  if(!lx.lastDate)return{status:'soon',label:'Not done yet',nextDate:'Unknown'};
+  const last=new Date(lx.lastDate+'T00:00:00');
+  const intervalDays=(lx.intervalMonths||1)*30;
+  const nextD=new Date(last.getTime()+intervalDays*24*60*60*1000);
+  const diffDays=Math.round((nextD-new Date())/86400000);
+  const nextDate=nextD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  let status,label;
+  if(diffDays<0){status='over';label=`${Math.abs(diffDays)}d overdue`;}
+  else if(diffDays<=14){status='soon';label=`Due in ${diffDays}d`;}
+  else{status='ok';label=`In ${diffDays}d`;}
+  return{status,label,nextDate};
+}
+
+function openLxModal(id){
+  const lx=id?S.lifeExpenses.find(x=>x.id===id):null;
+  G('lx-modal-id').value=id||'';G('lx-modal-title').textContent=lx?'Edit Expense':'Add Life Expense';
+  G('lx-modal-name').value=lx?lx.name:'';G('lx-modal-icon').value=lx?(lx.icon||''):'';
+  G('lx-modal-cost').value=lx?lx.cost:'';G('lx-modal-interval').value=lx?(lx.intervalMonths||3):3;
+  G('lx-modal-last').value=lx?(lx.lastDate||''):'';G('lx-modal-notes').value=lx?(lx.notes||''):'';
+  openModal('lx-modal');setTimeout(()=>G('lx-modal-name').focus(),300);
+}
+function saveLx(){
+  const id=G('lx-modal-id').value,name=G('lx-modal-name').value.trim();if(!name)return;
+  const icon=G('lx-modal-icon').value.trim()||'🔧';
+  const cost=parseFloat(G('lx-modal-cost').value)||0;
+  const intervalMonths=parseInt(G('lx-modal-interval').value)||3;
+  const lastDate=G('lx-modal-last').value||'';
+  const notes=G('lx-modal-notes').value.trim();
+  if(id){const lx=S.lifeExpenses.find(x=>x.id===id);if(lx)Object.assign(lx,{name,icon,cost,intervalMonths,lastDate,notes});}
+  else S.lifeExpenses.push({id:uid(),name,icon,cost,intervalMonths,lastDate,notes});
+  save();closeModal('lx-modal');renderFinance();
+}
+function markLxDone(id){const lx=S.lifeExpenses.find(x=>x.id===id);if(lx){lx.lastDate=today;save();renderFinance();}}
+function deleteLx(id){if(!confirm('Remove this life expense?'))return;S.lifeExpenses=S.lifeExpenses.filter(x=>x.id!==id);save();renderFinance();}
 function setTxType(t){
   txType=t;
   G('tx-btn-exp').className='tx-type-btn exp'+(t==='expense'?' on':'');
@@ -1178,8 +1340,8 @@ function getCatIcon(c){const m={Housing:'🏠',Utilities:'⚡',Insurance:'🛡�
 function ordinal(n){const s=['th','st','nd','rd'],v=n%100;return s[(v-20)%10]||s[v]||s[0];}
 
 function shiftViewMonth(delta){
-  const d=new Date(viewMonth+'-01');
-  d.setMonth(d.getMonth()+delta);
+  const [y,m]=viewMonth.split('-').map(Number);
+  const d=new Date(y,m-1+delta,1);
   viewMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
   renderFinance();
 }
@@ -1261,31 +1423,75 @@ function renderFinance(){
   }
 
   // ── BILLS ───────────────────────────────────────
-  html+=`<div class="flex-hdr"><div class="section-hdr" style="margin:0;">Bills</div><button class="btn ghost sm" onclick="openBillModal(null)">+ Add</button></div>`;
+  html+=`<div class="flex-hdr">
+    <div class="section-hdr" style="margin:0;">Bills</div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <div class="bil-view-toggle">
+        <button class="bil-view-btn${billView==='list'?' on':''}" onclick="setBillView('list')">List</button>
+        <button class="bil-view-btn${billView==='cal'?' on':''}" onclick="setBillView('cal')">Calendar</button>
+      </div>
+      <button class="btn ghost sm" onclick="openBillModal(null)">+ Add</button>
+    </div>
+  </div>`;
   const bills=[...S.bills].sort((a,b)=>(a.due||0)-(b.due||0));
-  if(bills.length){
-    html+=`<div class="card">`;
-    bills.forEach(b=>{
-      const isPaid=b.ds==='Paid'||(b.payments&&b.payments[viewMonth]);
-      const isAuto=b.ds==='Auto-pay';
-      const dueD=b.due?new Date(today_d.getFullYear(),today_d.getMonth(),b.due):null;
-      const isOver=dueD&&dueD<today_d&&!isPaid&&!isAuto&&isCurrentMn;
-      const dotCls=isPaid||isAuto?'paid':isOver?'overdue':'due';
-      const statusTxt=isPaid?'✓ Paid':isAuto?'↺ Auto-pay':isOver?'⚠ Overdue':`Due ${b.due}${ordinal(b.due)}`;
-      html+=`<div class="bill-item">
-        <div class="bill-dot ${dotCls}"></div>
-        <div style="flex:1;min-width:0;">
-          <div class="bill-name">${esc(b.name)}</div>
-          <div class="bill-status-txt" style="color:${isOver?'var(--red)':isPaid?'var(--green)':'var(--ts)'}">${statusTxt}</div>
+  if(billView==='cal'){
+    html+=renderBillsCalendar(bills,viewMonth,today_d,isCurrentMn);
+  } else {
+    if(bills.length){
+      html+=`<div class="card">`;
+      bills.forEach(b=>{
+        const isPaid=b.ds==='Paid'||(b.payments&&b.payments[viewMonth]);
+        const isAuto=b.ds==='Auto-pay';
+        const dueD=b.due?new Date(today_d.getFullYear(),today_d.getMonth(),b.due):null;
+        const isOver=dueD&&dueD<today_d&&!isPaid&&!isAuto&&isCurrentMn;
+        const dotCls=isPaid||isAuto?'paid':isOver?'overdue':'due';
+        const statusTxt=isPaid?'✓ Paid':isAuto?'↺ Auto-pay':isOver?'⚠ Overdue':`Due ${b.due}${ordinal(b.due)}`;
+        html+=`<div class="bill-item">
+          <div class="bill-dot ${dotCls}"></div>
+          <div style="flex:1;min-width:0;">
+            <div class="bill-name">${esc(b.name)}</div>
+            <div class="bill-status-txt" style="color:${isOver?'var(--red)':isPaid?'var(--green)':'var(--ts)'}">${statusTxt}</div>
+          </div>
+          <div style="font-size:14px;font-weight:700;color:var(--t);margin-right:6px;">${fmtMoney(b.amount)}</div>
+          ${!isPaid&&!isAuto?`<button class="btn green sm" onclick="markBillPaid('${b.id}')">Pay</button>`:''}
+          <button class="btn ghost icon" onclick="openBillModal('${b.id}')">✏</button>
+          <button class="btn ghost icon" style="color:var(--red)" onclick="deleteBill('${b.id}')">✕</button>
+        </div>`;
+      });
+      html+=`</div>`;
+    } else html+=`<div class="empty"><div class="empty-icon">🧾</div><div class="empty-title">No bills added</div><p style="margin-top:4px;">Add recurring bills to track them each month.</p></div>`;
+  }
+
+  // ── LIFE EXPENSES ───────────────────────────────
+  html+=`<div class="flex-hdr" style="margin-top:20px;">
+    <div class="section-hdr" style="margin:0;">Life Expenses</div>
+    <button class="btn ghost sm" onclick="openLxModal(null)">+ Add</button>
+  </div>`;
+  if(S.lifeExpenses.length){
+    html+=`<div class="lx-card">`;
+    S.lifeExpenses.forEach(lx=>{
+      const {status,label,nextDate}=getLxStatus(lx);
+      html+=`<div class="lx-item">
+        <div class="lx-icon-wrap">${esc(lx.icon||'🔧')}</div>
+        <div class="lx-body">
+          <div class="lx-name">${esc(lx.name)}</div>
+          <div class="lx-meta">Every ${lx.intervalMonths||1} mo · Next: ${nextDate}</div>
         </div>
-        <div style="font-size:14px;font-weight:700;color:var(--t);margin-right:6px;">${fmtMoney(b.amount)}</div>
-        ${!isPaid&&!isAuto?`<button class="btn green sm" onclick="markBillPaid('${b.id}')">Pay</button>`:''}
-        <button class="btn ghost icon" onclick="openBillModal('${b.id}')">✏</button>
-        <button class="btn ghost icon" style="color:var(--red)" onclick="deleteBill('${b.id}')">✕</button>
+        <div class="lx-right">
+          <div class="lx-cost">${fmtMoney(lx.cost||0)}</div>
+          <div class="lx-status ${status}">${label}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-left:4px;">
+          <button class="btn sm" style="font-size:11px;padding:4px 8px;" onclick="markLxDone('${lx.id}')">✓ Done</button>
+          <button class="btn ghost icon" onclick="openLxModal('${lx.id}')">✏</button>
+          <button class="btn ghost icon" style="color:var(--red)" onclick="deleteLx('${lx.id}')">✕</button>
+        </div>
       </div>`;
     });
     html+=`</div>`;
-  } else html+=`<div class="empty"><div class="empty-icon">🧾</div><div class="empty-title">No bills added</div><p style="margin-top:4px;">Add recurring bills to track them each month.</p></div>`;
+  } else {
+    html+=`<div class="empty"><div class="empty-icon">🔧</div><div class="empty-title">No life expenses</div><p style="margin-top:4px;">Track oil changes, dental visits, and other recurring maintenance.</p></div>`;
+  }
 
   // ── TRANSACTIONS ────────────────────────────────
   html+=`<div class="flex-hdr" style="margin-top:20px;">
@@ -1690,8 +1896,56 @@ function clearAllData(){
   localStorage.removeItem('lifeOS_v3');location.reload();
 }
 
+/* ── PULL-TO-REFRESH ─────────────────────────────── */
+function initPTR(){
+  const THRESHOLD=65;
+  let startY=0,pulling=false,triggered=false;
+  // Inject indicator into main-content
+  const mc=document.querySelector('.main-content');
+  const ind=document.createElement('div');ind.className='ptr-indicator';
+  const spinner=document.createElement('div');spinner.className='ptr-spinner';
+  ind.appendChild(spinner);mc.insertBefore(ind,mc.firstChild);
+
+  mc.addEventListener('touchstart',e=>{
+    const panel=document.querySelector('.panel.on');
+    if(!panel||panel.scrollTop>0)return;
+    startY=e.touches[0].clientY;pulling=true;triggered=false;
+  },{passive:true});
+
+  mc.addEventListener('touchmove',e=>{
+    if(!pulling)return;
+    const panel=document.querySelector('.panel.on');
+    if(!panel||panel.scrollTop>0){pulling=false;return;}
+    const dy=e.touches[0].clientY-startY;
+    if(dy<=0){ind.style.height='0';return;}
+    const h=Math.min(dy*0.5,THRESHOLD+10);
+    ind.style.height=h+'px';
+    ind.classList.toggle('active',h>20);
+    ind.classList.toggle('ready',h>=THRESHOLD);
+    triggered=h>=THRESHOLD;
+  },{passive:true});
+
+  mc.addEventListener('touchend',()=>{
+    if(!pulling)return;
+    pulling=false;
+    if(triggered){
+      ind.style.height='46px';
+      ind.classList.add('active');
+      setTimeout(()=>{
+        const renders={today:renderToday,finance:renderFinance,goals:renderGoals,health:renderHealth,notes:renderNotes,settings:renderSettings};
+        (renders[currentPanel]||function(){})();
+        ind.style.height='0';ind.classList.remove('active','ready');
+      },600);
+    } else {
+      ind.style.height='0';ind.classList.remove('active','ready');
+    }
+    triggered=false;
+  });
+}
+
 /* ── INIT ────────────────────────────────────────── */
 document.querySelectorAll('input[type=date]').forEach(el=>{if(!el.value)el.value=today;});
+initPTR();
 renderToday();
 updateStreakBadge();
 </script>
