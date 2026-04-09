@@ -1567,6 +1567,34 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .home-day-btn.end:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(109,40,217,0.5);}
 .home-day-btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
 
+/* HERO DAY WIZARD WIDGET — left of avatar */
+.hero-day-widget{
+  display:flex;flex-direction:column;gap:10px;
+  align-self:center;flex-shrink:0;
+}
+.hero-day-btn{
+  font-family:var(--font);font-size:13px;font-weight:800;
+  padding:13px 18px;border-radius:14px;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:8px;white-space:nowrap;
+  letter-spacing:0.01em;transition:all .15s;
+}
+.hero-day-btn.start{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 4px 16px rgba(245,158,11,0.4);}
+.hero-day-btn.start:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(245,158,11,0.5);}
+.hero-day-btn.end{background:linear-gradient(135deg,#6d28d9,#5b21b6);color:#fff;box-shadow:0 4px 16px rgba(109,40,217,0.4);}
+.hero-day-btn.end:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(109,40,217,0.5);}
+.hero-day-btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+
+/* HERO PROGRESS ROW — below avatar row */
+.hero-progress-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin-top:14px;
+}
+@media(max-width:768px){
+  .hero-progress-row{grid-template-columns:1fr;}
+  .hero-day-widget{flex-direction:row;flex-wrap:wrap;}
+  .hero-day-btn{flex:1;min-width:120px;justify-content:center;}
+}
+
 /* ── HIDDEN ── */
 .hidden{display:none!important;}
 
@@ -1966,12 +1994,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <div class="ws-nm">Life OS</div>
     </div>
   </div>
-  <div style="padding:4px 12px 8px;">
-    <div style="display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:var(--r);background:var(--bg-in);color:var(--ts);font-size:13px;border:1.5px solid var(--bd);cursor:text;transition:border-color .15s;" onclick="this.style.borderColor='var(--blue)';" onblur="this.style.borderColor='var(--bd)';">
-      <span style="font-size:14px;opacity:0.5;">🔍</span>
-      <span style="font-size:12.5px;font-weight:500;">Search</span>
-    </div>
-  </div>
   <div class="sb-sec">Workspace</div>
   <div class="ni on" id="ni-home" onclick="go('home',this)"><span class="ni-ic">∞</span><span class="ni-lb">Home</span></div>
   <div class="sb-div"></div>
@@ -2021,6 +2043,11 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <div class="home-hero-title">My Life OS</div>
             <div class="home-hero-date" id="home-date"></div>
           </div>
+          <!-- DAY WIZARD BUTTONS -->
+          <div class="hero-day-widget">
+            <button class="hero-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
+            <button class="hero-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
+          </div>
           <!-- 3D HUMAN AVATAR -->
           <div class="avatar-float">
             <canvas id="avatar-canvas"></canvas>
@@ -2031,6 +2058,17 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
         <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
+        <!-- PROGRESS WIDGETS — below avatar row -->
+        <div class="hero-progress-row">
+          <div class="home-quad-cell">
+            <div class="home-quad-hdr">⚡ Personal Progress</div>
+            <div id="home-personal-milestone"></div>
+          </div>
+          <div class="home-quad-cell">
+            <div class="home-quad-hdr">💰 Finance Progress</div>
+            <div id="home-finance-milestone"></div>
+          </div>
+        </div>
       </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
 
@@ -2038,10 +2076,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <div class="home-weekly-card">
         <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly" style="margin:0 0 10px!important;">📅 Weekly Snapshot</div>
         <div id="home-weekly"></div>
-        <div class="home-day-btns" style="margin-top:14px;">
-          <button class="home-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
-          <button class="home-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
-        </div>
       </div>
       <div class="divider"></div>
 
@@ -2142,17 +2176,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       </div>
       <div class="divider"></div>
 
-      <!-- BOTTOM QUADRANT: Personal Progress | Finance Progress -->
-      <div class="home-quadrant">
-        <div class="home-quad-cell">
-          <div class="home-quad-hdr">⚡ Personal Progress</div>
-          <div id="home-personal-milestone"></div>
-        </div>
-        <div class="home-quad-cell">
-          <div class="home-quad-hdr">💰 Finance Progress</div>
-          <div id="home-finance-milestone"></div>
-        </div>
-      </div>
       <div class="divider"></div>
       <div class="bh2 editable-hdr" data-hdr="home-proj-hdr" id="hdr-home-proj">🚀 Projects</div>
       <div id="home-proj-overview" style="margin:10px 0 4px;"></div>
