@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#191919">
 <title>Life OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
@@ -18,33 +18,40 @@
 :root{
   --sw:290px;
   --font:'Inter',system-ui,sans-serif;
-  --bg:#fafaf9;--bg-h:#f3f2ef;--bg-a:#eceae4;--bg-sb:#f3f2ef;
-  --bg-card:#ffffff;--bg-in:#f3f2ef;--bg-tag:#e8e7e3;
-  --t:#2f2d28;--ts:#706e6b;--th:#b0ada6;--ti:#ffffff;
-  --bd:#e5e4e0;--bd2:#cccbc6;
-  --green:#0a7c6e;--gbg:#dff2ec;
-  --red:#c0342c;--rbg:#fde9e7;
-  --amber:#c58c1e;--abg:#fef3d6;
-  --blue:#2d78a4;--bbg:#e3f1f9;
-  --purple:#8a5fae;--pbg:#f0eaf7;
+  --font-mono:'JetBrains Mono','Fira Code',monospace;
+  /* Light mode — clean slate with gold accent */
+  --bg:#f4f5f7;--bg-h:#eaecf0;--bg-a:#dde1e9;--bg-sb:#edf0f4;
+  --bg-card:#ffffff;--bg-in:#eaecf0;--bg-tag:#dde1e9;
+  --t:#111827;--ts:#4b5563;--th:#9ca3af;--ti:#ffffff;
+  --bd:#d1d5db;--bd2:#9ca3af;
+  --green:#059669;--gbg:#d1fae5;
+  --red:#dc2626;--rbg:#fee2e2;
+  --amber:#d97706;--abg:#fef3c7;
+  --blue:#1d4ed8;--bbg:#dbeafe;
+  --purple:#7c3aed;--pbg:#ede9fe;
+  --gold:#b8860b;--goldbg:#fef9e7;
   --r:6px;--rl:10px;
-  --sh:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
-  --sh-md:0 4px 12px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.05);
-  --sh-lg:0 8px 30px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.06);
+  --sh:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.05);
+  --sh-md:0 4px 16px rgba(0,0,0,0.10),0 2px 4px rgba(0,0,0,0.06);
+  --sh-lg:0 8px 32px rgba(0,0,0,0.12),0 4px 8px rgba(0,0,0,0.07);
+  --accent:var(--gold);--accent-glow:rgba(184,134,11,0.15);
 }
 [data-dark]{
-  --bg:#141414;--bg-h:#242424;--bg-a:#2e2e2e;--bg-sb:#1a1a1a;
-  --bg-card:#1e1e1e;--bg-in:#242424;--bg-tag:#2e2e2e;
-  --t:#dedad3;--ts:#908e8b;--th:#5e5d5a;--ti:#141414;
-  --bd:#2e2e2e;--bd2:#404040;
-  --green:#3da892;--gbg:#172f2b;
-  --red:#d9706a;--rbg:#321a19;
-  --amber:#cc9840;--abg:#312810;
-  --blue:#5ca4cf;--bbg:#152638;
-  --purple:#b88ed4;--pbg:#261a32;
-  --sh:0 1px 3px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);
-  --sh-md:0 4px 12px rgba(0,0,0,0.35),0 2px 4px rgba(0,0,0,0.2);
-  --sh-lg:0 8px 30px rgba(0,0,0,0.4),0 4px 8px rgba(0,0,0,0.25);
+  /* Finance terminal dark — deep navy charcoal */
+  --bg:#0b0e14;--bg-h:#111520;--bg-a:#1a1f2e;--bg-sb:#0d1018;
+  --bg-card:#131820;--bg-in:#1a1f2e;--bg-tag:#1e2435;
+  --t:#e2e8f0;--ts:#8892a4;--th:#4a5568;--ti:#0b0e14;
+  --bd:#1e2535;--bd2:#2d3748;
+  --green:#00c48c;--gbg:#0a2e22;
+  --red:#f75555;--rbg:#2d1111;
+  --amber:#f5a623;--abg:#2d1e09;
+  --blue:#4d9ef7;--bbg:#0d1e38;
+  --purple:#9b72f7;--pbg:#1a1038;
+  --gold:#f0b429;--goldbg:#2a1f08;
+  --sh:0 1px 4px rgba(0,0,0,0.5),0 1px 2px rgba(0,0,0,0.4);
+  --sh-md:0 4px 20px rgba(0,0,0,0.5),0 2px 6px rgba(0,0,0,0.4);
+  --sh-lg:0 8px 40px rgba(0,0,0,0.6),0 4px 10px rgba(0,0,0,0.4);
+  --accent:var(--gold);--accent-glow:rgba(240,180,41,0.12);
 }
 html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);background:var(--bg);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 /* PWA safe area — Dynamic Island / notch at top, home indicator at bottom */
@@ -1680,6 +1687,196 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
 .sb-drag-grip{color:var(--th);font-size:11px;cursor:grab;padding:0 2px;opacity:0.4;flex-shrink:0;}
 .sb-drag-grip:hover{opacity:1;}
+
+/* ═══════════════════════════════════════
+   FINANCE THEME OVERRIDES
+═══════════════════════════════════════ */
+
+/* Base body refinement */
+html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antialiased;}
+
+/* Subtle grid background on main content area */
+[data-dark] .content{
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+/* SIDEBAR — finance panel */
+.sb{background:var(--bg-sb);border-right:1px solid var(--bd);}
+[data-dark] .sb{
+  border-right:1px solid var(--bd);
+  box-shadow:4px 0 24px rgba(0,0,0,0.3);
+}
+.sb-hdr{
+  border-bottom:1px solid var(--bd);
+}
+[data-dark] .sb-hdr{border-bottom:1px solid var(--bd);}
+
+/* Workspace logo */
+.ws-ic{
+  background:linear-gradient(135deg,#f0b429,#d4a20a) !important;
+  color:#0b0e14 !important;
+  box-shadow:0 2px 8px rgba(240,180,41,0.3) !important;
+}
+.ws-nm{font-weight:800;letter-spacing:-0.02em;}
+
+/* TODAY CARD — gold gradient */
+.sb-today-card{
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--gold) 18%,var(--bg-card)),
+    color-mix(in srgb,var(--blue) 8%,var(--bg-card))
+  ) !important;
+  border-color:color-mix(in srgb,var(--gold) 30%,var(--bd)) !important;
+}
+[data-dark] .sb-today-card{
+  background:linear-gradient(135deg,#1e1809,#0d1820) !important;
+  border-color:#2d2410 !important;
+  box-shadow:0 0 0 1px rgba(240,180,41,0.08),var(--sh) !important;
+}
+.sb-today-streak{color:var(--gold) !important;font-family:var(--font-mono);font-size:22px !important;}
+
+/* NAV ITEMS */
+.ni.on{
+  background:color-mix(in srgb,var(--gold) 12%,var(--bg-a)) !important;
+  color:var(--gold) !important;
+  box-shadow:inset 3px 0 0 var(--gold) !important;
+}
+[data-dark] .ni.on{
+  background:color-mix(in srgb,var(--gold) 10%,var(--bg-h)) !important;
+  color:var(--gold) !important;
+}
+.ni:hover{background:var(--bg-a);}
+[data-dark] .ni:hover{background:var(--bg-a);}
+
+/* NAV STAT BADGES */
+.ni-stat.good{background:color-mix(in srgb,var(--green) 15%,var(--bg-card));color:var(--green);}
+.ni-stat.warn{background:color-mix(in srgb,var(--gold) 15%,var(--bg-card));color:var(--gold);}
+.ni-stat.hot{background:color-mix(in srgb,var(--red) 15%,var(--bg-card));color:var(--red);}
+
+/* TOPBAR */
+.topbar{
+  border-bottom:1px solid var(--bd);
+  background:color-mix(in srgb,var(--bg) 95%,transparent) !important;
+}
+[data-dark] .topbar{
+  background:color-mix(in srgb,#0b0e14 97%,transparent) !important;
+  border-bottom:1px solid var(--bd);
+  box-shadow:0 1px 0 var(--bd),0 4px 12px rgba(0,0,0,0.2);
+}
+.bc-cur{font-weight:700;letter-spacing:-0.01em;}
+
+/* PRIMARY BUTTON — gold */
+.tb-btn.pri,.btn.pri{
+  background:linear-gradient(135deg,#f0b429,#d4a20a) !important;
+  color:#0b0e14 !important;
+  font-weight:700 !important;
+  box-shadow:0 2px 8px rgba(240,180,41,0.25) !important;
+}
+.tb-btn.pri:hover,.btn.pri:hover{
+  opacity:1 !important;
+  box-shadow:0 4px 16px rgba(240,180,41,0.35) !important;
+  transform:translateY(-1px) !important;
+}
+.mob-fab{
+  background:linear-gradient(135deg,#f0b429,#d4a20a) !important;
+  color:#0b0e14 !important;
+  box-shadow:0 4px 20px rgba(240,180,41,0.4),0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+/* CARDS */
+.bg-card,.nf,.mc,.chart-box,.hero-stat,.ws-cell,.callout.def{
+  border:1px solid var(--bd);
+}
+[data-dark] .nf,[data-dark] .mc,[data-dark] .chart-box,[data-dark] .hero-stat,[data-dark] .ws-cell{
+  border-color:var(--bd);
+  box-shadow:0 1px 0 rgba(255,255,255,0.03) inset;
+}
+
+/* PAGE COVERS — finance gradients */
+.cf{background:linear-gradient(135deg,#0a0d12,#111a28,#1a2d4a) !important;}
+.ct{background:linear-gradient(135deg,#0a0f0a,#0f2010,#1a3a1a) !important;}
+.cg{background:linear-gradient(135deg,#0f0a00,#261800,#3d2800) !important;}
+.cb2{background:linear-gradient(135deg,#0a0814,#16082e,#260a52) !important;}
+.cto{background:linear-gradient(135deg,#0a0b10,#0f1220,#1a1d35) !important;}
+.ch{background:linear-gradient(135deg,#0a1209,#102010,#183018) !important;}
+
+/* PAGE COVERS — gold shimmer overlay */
+.page-cover::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(105deg,rgba(240,180,41,0.06) 0%,transparent 50%,rgba(77,158,247,0.04) 100%);
+  pointer-events:none;
+}
+
+/* NUMBERS — monospace tabular */
+.hero-stat-vl,.ws-cell-vl,.home-hero-streak-num,.mc-vl,.sum-vl,.wd-num,
+.metric-val,.fmt-num,.balance-val{
+  font-family:var(--font-mono) !important;
+  font-feature-settings:"tnum" 1;
+}
+
+/* PROFIT / LOSS colors — finance standard */
+.up{color:var(--green) !important;}
+.dn{color:var(--red) !important;}
+
+/* HOME HERO */
+.home-hero-greeting{color:var(--gold) !important;font-weight:700;}
+[data-dark] .home-hero-title{color:var(--t);}
+
+/* HOME STREAK WIDGET */
+.home-hero-streak{
+  background:linear-gradient(135deg,#f0b429,#d4a20a) !important;
+  box-shadow:0 4px 20px rgba(240,180,41,0.3) !important;
+}
+.home-hero-streak-num,.home-hero-streak-lb{color:#0b0e14 !important;}
+
+/* TODAY COLUMN — gold */
+.week-day.is-today .wd-hdr{
+  background:linear-gradient(160deg,#d4a20a,#f0b429) !important;
+}
+.week-day.is-today .wd-name,.week-day.is-today .wd-num{color:#0b0e14 !important;}
+.wd-today-pill{background:rgba(11,14,20,0.25) !important;color:#0b0e14 !important;}
+
+/* SUMMARY BAR */
+[data-dark] .sum-item{border-color:var(--bd);}
+.sum-vl.up{color:var(--green);}
+.sum-vl{font-family:var(--font-mono);}
+
+/* HABIT DOTS */
+.hdot.on{background:var(--gold) !important;}
+
+/* PLANNING TABS */
+.planning-tab.on{color:var(--gold) !important;border-bottom-color:var(--gold) !important;}
+
+/* SECTION HEADERS */
+.bh2,.bh3{letter-spacing:-0.01em;}
+[data-dark] .bh3{color:var(--t);opacity:0.9;}
+
+/* NOTION TABLE */
+[data-dark] .notion-table th{background:var(--bg-h);color:var(--ts);}
+
+/* SCROLLBAR — dark theme */
+[data-dark] ::-webkit-scrollbar{width:6px;height:6px;}
+[data-dark] ::-webkit-scrollbar-track{background:transparent;}
+[data-dark] ::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px;}
+[data-dark] ::-webkit-scrollbar-thumb:hover{background:var(--th);}
+
+/* CHART GRID — dark theme */
+[data-dark] canvas{filter:none;}
+
+/* HABIT STACKING — gold chain */
+.hs-anchor{background:var(--goldbg) !important;color:var(--gold) !important;}
+[data-dark] .hs-anchor{background:rgba(240,180,41,0.12) !important;color:var(--gold) !important;}
+.hs-formula{border-left-color:var(--gold) !important;color:var(--gold) !important;}
+.hs-intro{
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--gold) 8%,var(--bg-card)),
+    color-mix(in srgb,var(--blue) 5%,var(--bg-card))
+  ) !important;
+  border-color:color-mix(in srgb,var(--gold) 20%,var(--bd)) !important;
+}
+
 </style>
 </head>
 <body>
@@ -2723,7 +2920,7 @@ let blCatFilter='all';
 let gpFilter='all';
 
 // DARK MODE
-let dark=localStorage.getItem('lifeOS_dark')==='1'||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches&&!localStorage.getItem('lifeOS_dark'));
+let dark=localStorage.getItem('lifeOS_dark')!=='0';
 const applyDark=()=>{if(dark)document.documentElement.setAttribute('data-dark','');else document.documentElement.removeAttribute('data-dark');};
 // Theme mode (overrides legacy dark flag when set)
 let themeMode='system';
