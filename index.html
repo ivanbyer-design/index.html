@@ -16,7 +16,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --sw:270px;
+  --sw:290px;
   --font:'Inter',system-ui,sans-serif;
   --bg:#fafaf9;--bg-h:#f3f2ef;--bg-a:#eceae4;--bg-sb:#f3f2ef;
   --bg-card:#ffffff;--bg-in:#f3f2ef;--bg-tag:#e8e7e3;
@@ -51,7 +51,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .app{display:flex;height:100vh;height:100dvh;padding-top:env(safe-area-inset-top);background:var(--bg);}
 
 /* SIDEBAR */
-.sb{width:var(--sw);flex-shrink:0;background:var(--bg-sb);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;user-select:none;transition:transform .2s ease;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
+.sb{width:var(--sw);flex-shrink:0;background:var(--bg-sb);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;user-select:none;transition:width .22s ease,transform .22s ease;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
 .sb-hdr{padding:16px 14px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);margin-bottom:6px;}
 .ws{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;border-radius:var(--rl);}
 .ws:hover{background:var(--bg-a);}
@@ -60,7 +60,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .ic-btn{width:30px;height:30px;border-radius:var(--r);border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ts);font-size:15px;transition:background .15s,color .15s;}
 .ic-btn:hover{background:var(--bg-a);color:var(--t);}
 .sb-sec{padding:10px 18px 4px;font-size:10px;font-weight:700;color:var(--th);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px;}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 14px;margin:1px 6px;border-radius:var(--rl);cursor:pointer;font-size:13.5px;font-weight:500;color:var(--ts);transition:background .15s,color .15s,box-shadow .15s;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:2px 6px;border-radius:var(--rl);cursor:pointer;font-size:13.5px;font-weight:500;color:var(--ts);transition:background .15s,color .15s,box-shadow .15s;}
 .ni:hover{background:var(--bg-a);color:var(--t);}
 .ni.on{background:color-mix(in srgb,var(--blue) 10%,var(--bg-a));color:var(--blue);font-weight:600;box-shadow:inset 3px 0 0 var(--blue);}
 .ni-ic{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
@@ -1662,6 +1662,24 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .hs-formula{background:var(--bg-card);border-radius:var(--r);padding:8px 12px;margin-top:8px;font-size:12px;font-weight:600;color:var(--blue);border-left:3px solid var(--blue);}
 .hs-empty{text-align:center;padding:32px 16px;color:var(--ts);font-size:13px;}
 .hs-empty-ic{font-size:32px;margin-bottom:8px;}
+
+/* SIDEBAR DASHBOARD ENHANCEMENTS */
+.ni-stat{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--bg-a);color:var(--ts);white-space:nowrap;flex-shrink:0;line-height:1.4;min-width:18px;text-align:center;}
+.ni-stat.hot{background:var(--rbg);color:var(--red);}
+.ni-stat.good{background:var(--gbg);color:var(--green);}
+.ni-stat.warn{background:var(--abg);color:var(--amber);}
+
+.sb-today-card{margin:6px 10px 4px;padding:10px 14px;border-radius:var(--rl);background:linear-gradient(135deg,color-mix(in srgb,var(--blue) 12%,var(--bg-card)),color-mix(in srgb,var(--purple) 8%,var(--bg-card)));border:1px solid var(--bd);cursor:pointer;}
+.sb-today-card:hover{box-shadow:var(--sh-md);}
+.sb-today-date{font-size:10.5px;font-weight:600;color:var(--ts);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:3px;}
+.sb-today-row{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.sb-today-streak{font-size:18px;font-weight:700;color:var(--t);letter-spacing:-0.02em;line-height:1.1;}
+.sb-today-streak-lb{font-size:10px;color:var(--ts);font-weight:500;}
+.sb-today-habits{font-size:11px;font-weight:600;color:var(--ts);}
+.sb-today-habits span{color:var(--green);font-size:13px;}
+
+.sb-drag-grip{color:var(--th);font-size:11px;cursor:grab;padding:0 2px;opacity:0.4;flex-shrink:0;}
+.sb-drag-grip:hover{opacity:1;}
 </style>
 </head>
 <body>
@@ -6353,7 +6371,7 @@ function saveEM(){
 }
 
 // ── RENDER ALL ──
-function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHabitStacks();renderHome();renderRecurring();renderProjects();renderSettings();renderRoutines();renderMilestones();renderWantsNeeds();renderSavingsAccounts();}
+function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();renderHabits();renderHabitStacks();renderHome();updateSidebarStats();renderRecurring();renderProjects();renderSettings();renderRoutines();renderMilestones();renderWantsNeeds();renderSavingsAccounts();}
 renderAll();
 // Init QA money category dropdown
 setTimeout(()=>{if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat','expense');},80);
@@ -7169,8 +7187,89 @@ applyCustomLabels();
 attachLongPress();
 
 
+
+// ── SIDEBAR DASHBOARD STATS ──
+function updateSidebarStats(){
+  if(!S)return;
+  // Today's date label
+  const dateEl=G('sb-today-date');
+  if(dateEl){const d=new Date();const opts={weekday:'short',month:'short',day:'numeric'};dateEl.textContent=d.toLocaleDateString('en-US',opts);}
+
+  // Streak (reuse from home)
+  const strEl=G('sb-streak-num');
+  if(strEl){
+    const best=S.habits.reduce((m,h)=>Math.max(m,h.streak||0),0);
+    strEl.textContent=best||'0';
+  }
+
+  // Habits today
+  const habEl=G('sb-habits-today');
+  if(habEl&&S.habits){
+    const done=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
+    const total=S.habits.length;
+    habEl.innerHTML='<span>'+done+'</span> / '+total;
+  }
+
+  // Finance — bills due this week
+  const nsFin=G('ns-finance');
+  if(nsFin){
+    const soon=(S.bills||[]).filter(b=>{
+      if(!b.d)return false;
+      const diff=(new Date(b.d)-new Date(today))/(1000*60*60*24);
+      return diff>=0&&diff<=7;
+    }).length;
+    if(soon>0){nsFin.textContent=soon+' due';nsFin.className='ni-stat warn';}
+    else{nsFin.textContent='';nsFin.className='ni-stat';}
+  }
+
+  // Trades — open trades count
+  const nsTrd=G('ns-trades');
+  if(nsTrd){
+    const open=(S.trades||[]).filter(t=>!t.closed).length;
+    if(open>0){nsTrd.textContent=open+' open';nsTrd.className='ni-stat good';}
+    else{nsTrd.textContent='';nsTrd.className='ni-stat';}
+  }
+
+  // Goals — active count
+  const nsGoals=G('ns-goals');
+  if(nsGoals){
+    const active=(S.goals||[]).filter(g=>!g.done).length;
+    if(active>0){nsGoals.textContent=active+' active';nsGoals.className='ni-stat good';}
+    else{nsGoals.textContent='';nsGoals.className='ni-stat';}
+  }
+
+  // Planning — tasks due today or overdue
+  const nsPlan=G('ns-planning');
+  if(nsPlan){
+    const due=(S.todos||[]).filter(t=>!t.done&&t.d&&t.d<=today).length;
+    const habDone=S.habits.filter(h=>S.hlog&&S.hlog[today+'-'+h.id]).length;
+    const habTotal=S.habits.length;
+    if(due>0){nsPlan.textContent=due+' due';nsPlan.className='ni-stat hot';}
+    else if(habTotal>0){nsPlan.textContent=habDone+'/'+habTotal+' habits';nsPlan.className='ni-stat'+(habDone===habTotal?' good':'');}
+    else{nsPlan.textContent='';nsPlan.className='ni-stat';}
+  }
+
+  // Projects — active count
+  const nsProj=G('ns-projects');
+  if(nsProj){
+    const active=(S.projects||[]).filter(p=>p.status!=='done'&&p.status!=='archived').length;
+    if(active>0){nsProj.textContent=active+' active';nsProj.className='ni-stat good';}
+    else{nsProj.textContent='';nsProj.className='ni-stat';}
+  }
+
+  // Routinizer — routines count
+  const nsRout=G('ns-routinizer');
+  if(nsRout){
+    const total=(S.routines&&S.routines.morning?S.routines.morning.length:0)+
+                (S.routines&&S.routines.midday?S.routines.midday.length:0)+
+                (S.routines&&S.routines.night?S.routines.night.length:0);
+    if(total>0){nsRout.textContent=total+' items';nsRout.className='ni-stat';}
+    else{nsRout.textContent='';nsRout.className='ni-stat';}
+  }
+}
+
 // ── SIDEBAR TOGGLE ──
-let sbCollapsed = localStorage.getItem('lifeOS_sbcollapsed')==='1';
+let sbCollapsed = false; // always open by default
 function toggleSidebar(){
   sbCollapsed=!sbCollapsed;
   const sb=G('sb');
