@@ -189,7 +189,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   margin-bottom:24px;
 }
 .home-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-.home-hero-left{flex:1;}
+.home-hero-left{
+  flex:1;
+  display:flex;flex-direction:column;
+  padding-top:18px; /* align title with avatar head */
+}
 .home-hero-greeting{
   font-size:12px;font-weight:600;
   color:var(--ts);text-transform:uppercase;
@@ -202,6 +206,23 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 }
 .home-hero-date{
   font-size:13px;color:var(--ts);font-weight:400;
+  margin-bottom:14px;
+}
+/* RIGHT COLUMN — streak + progress stacked */
+.hero-right-col{
+  display:flex;flex-direction:column;gap:8px;
+  align-self:stretch;flex-shrink:0;width:140px;
+}
+.hero-mini-progress{display:flex;flex-direction:column;gap:6px;flex:1;}
+.hero-prog-cell{
+  padding:10px 12px !important;
+  min-height:unset !important;
+  flex:1;
+}
+.hero-prog-cell .home-quad-hdr{
+  font-size:9px !important;
+  margin-bottom:5px !important;
+  padding-bottom:4px !important;
 }
 .home-hero-stats{
   display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;
@@ -231,10 +252,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 @media(max-width:768px){
   .home-hero{padding:16px 0 16px;}
   .home-hero-title{font-size:22px;}
+  .home-hero-left{padding-top:10px;}
   .hero-stat{min-width:80px;padding:10px 12px;}
   .hero-stat-vl{font-size:17px;}
   .home-hero-streak{padding:12px 14px;min-width:72px;}
   .home-hero-streak-num{font-size:24px;}
+  .hero-right-col{width:110px;}
+  .hero-day-widget{flex-direction:row;flex-wrap:wrap;}
+  .hero-day-btn{flex:1;min-width:120px;font-size:12px;padding:10px 12px;}
 }
 
 /* WEEKLY SNAPSHOT */
@@ -1584,16 +1609,6 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .hero-day-btn.end:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(109,40,217,0.5);}
 .hero-day-btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
 
-/* HERO PROGRESS ROW — below avatar row */
-.hero-progress-row{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  margin-top:14px;
-}
-@media(max-width:768px){
-  .hero-progress-row{grid-template-columns:1fr;}
-  .hero-day-widget{flex-direction:row;flex-wrap:wrap;}
-  .hero-day-btn{flex:1;min-width:120px;justify-content:center;}
-}
 
 /* ── HIDDEN ── */
 .hidden{display:none!important;}
@@ -2038,37 +2053,39 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
     <div class="panel on" id="p-home">
       <div class="home-hero">
         <div class="home-hero-top">
+          <!-- LEFT: title at head height + day buttons below -->
           <div class="home-hero-left">
             <div class="home-hero-greeting" id="home-greeting">Good morning</div>
             <div class="home-hero-title">My Life OS</div>
             <div class="home-hero-date" id="home-date"></div>
+            <div class="hero-day-widget">
+              <button class="hero-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
+              <button class="hero-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
+            </div>
           </div>
-          <!-- DAY WIZARD BUTTONS -->
-          <div class="hero-day-widget">
-            <button class="hero-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
-            <button class="hero-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
-          </div>
-          <!-- 3D HUMAN AVATAR -->
+          <!-- CENTER: 3D spinning avatar -->
           <div class="avatar-float">
             <canvas id="avatar-canvas"></canvas>
           </div>
-          <div class="home-hero-streak">
-            <div class="home-hero-streak-num" id="home-streak-num">—</div>
-            <div class="home-hero-streak-lb">day streak</div>
+          <!-- RIGHT: streak + progress stacked -->
+          <div class="hero-right-col">
+            <div class="home-hero-streak">
+              <div class="home-hero-streak-num" id="home-streak-num">—</div>
+              <div class="home-hero-streak-lb">day streak</div>
+            </div>
+            <div class="hero-mini-progress">
+              <div class="home-quad-cell hero-prog-cell">
+                <div class="home-quad-hdr">⚡ Personal</div>
+                <div id="home-personal-milestone"></div>
+              </div>
+              <div class="home-quad-cell hero-prog-cell">
+                <div class="home-quad-hdr">💰 Finance</div>
+                <div id="home-finance-milestone"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
-        <!-- PROGRESS WIDGETS — below avatar row -->
-        <div class="hero-progress-row">
-          <div class="home-quad-cell">
-            <div class="home-quad-hdr">⚡ Personal Progress</div>
-            <div id="home-personal-milestone"></div>
-          </div>
-          <div class="home-quad-cell">
-            <div class="home-quad-hdr">💰 Finance Progress</div>
-            <div id="home-finance-milestone"></div>
-          </div>
-        </div>
       </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
 
@@ -5536,37 +5553,34 @@ function initAvatar(){
   );
   shadow.rotation.x=-Math.PI/2;shadow.position.set(0,-1.15,0);scene.add(shadow);
 
-  // ── IDLE ANIMATION ──
+  // ── SPIN + HOVER ANIMATION ──
   let t=0;
   let blinkTimer=0, blinkDur=0;
   let blinkCool=2.5+Math.random()*3.5;
   const BLINK_T=0.12;
+  const SPIN_SPEED=0.011; // ~9s per full 360°
 
   (function animate(){
     requestAnimationFrame(animate);
     t+=0.016;
 
-    // Gentle head look-around (stays mostly forward)
-    hg.rotation.y = Math.sin(t*0.28)*0.22 + Math.sin(t*0.13)*0.08;
-    hg.rotation.x = Math.sin(t*0.21)*0.055;
-    hg.rotation.z = Math.sin(t*0.19)*0.035;
+    // Continuous 360° Y-axis spin at steady rate
+    fig.rotation.y += SPIN_SPEED;
 
-    // Breathing — torso subtle scale
-    torsoG.scale.y = 1 + Math.sin(t*1.25)*0.011;
+    // Hover float — gentle sine bob
+    fig.position.y = Math.sin(t*1.4)*0.032;
 
-    // Weight-shift sway
-    const sway = Math.sin(t*0.38)*0.016;
-    fig.rotation.z = sway;
-    fig.position.x  = sway*0.5;
+    // Subtle torso breathing
+    torsoG.scale.y = 1 + Math.sin(t*1.25)*0.010;
 
-    // Slow facing left-right (stays front-ish)
-    fig.rotation.y = Math.sin(t*0.22)*0.18;
+    // Arms drift slightly with the hover
+    armLG.rotation.z = -0.04 + Math.sin(t*1.4)*0.03;
+    armRG.rotation.z =  0.04 - Math.sin(t*1.4)*0.03;
 
-    // Arm pendulum (natural idle hang)
-    armLG.rotation.z = Math.sin(t*0.38+Math.PI)*0.07 - 0.04;
-    armRG.rotation.z = Math.sin(t*0.38)*0.07 + 0.04;
-    armLG.rotation.x = Math.sin(t*0.38)*0.05;
-    armRG.rotation.x = Math.sin(t*0.38+Math.PI)*0.05;
+    // Ground shadow fades slightly on hover up
+    const hoverFactor = (Math.sin(t*1.4)+1)*0.5;
+    shadow.material.opacity = 0.08 + hoverFactor*0.08;
+    shadow.scale.setScalar(1 - hoverFactor*0.12);
 
     // Blink
     blinkTimer += 0.016;
@@ -5585,8 +5599,6 @@ function initAvatar(){
       }
     }
 
-    // Subtle camera drift
-    camera.position.y=0.08+Math.sin(t*0.24)*0.025;
     renderer.render(scene,camera);
   })();
 }
