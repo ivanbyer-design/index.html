@@ -37,21 +37,21 @@
   --accent:var(--gold);--accent-glow:rgba(184,134,11,0.15);
 }
 [data-dark]{
-  /* Finance terminal dark — deep navy charcoal */
-  --bg:#0a1628;--bg-h:#0f1f38;--bg-a:#162844;--bg-sb:#081220;
-  --bg-card:#0d1c30;--bg-in:#162844;--bg-tag:#1a2d4a;
-  --t:#e2e8f0;--ts:#8892a4;--th:#4a5568;--ti:#0b0e14;
-  --bd:#1e2535;--bd2:#2d3748;
-  --green:#00c48c;--gbg:#0a2e22;
-  --red:#f75555;--rbg:#2d1111;
-  --amber:#f5a623;--abg:#2d1e09;
-  --blue:#4d9ef7;--bbg:#0d1e38;
-  --purple:#9b72f7;--pbg:#1a1038;
-  --gold:#f0b429;--goldbg:#2a1f08;
-  --sh:0 1px 4px rgba(0,0,0,0.5),0 1px 2px rgba(0,0,0,0.4);
-  --sh-md:0 4px 20px rgba(0,0,0,0.5),0 2px 6px rgba(0,0,0,0.4);
-  --sh-lg:0 8px 40px rgba(0,0,0,0.6),0 4px 10px rgba(0,0,0,0.4);
-  --accent:var(--gold);--accent-glow:rgba(240,180,41,0.12);
+  /* Finance terminal dark — deep charcoal, ref-match */
+  --bg:#0c0e15;--bg-h:#111420;--bg-a:#161a26;--bg-sb:#090b11;
+  --bg-card:#111520;--bg-in:#161a26;--bg-tag:#1a2030;
+  --t:#e2e4ee;--ts:#8b93a8;--th:#4a5168;--ti:#09090f;
+  --bd:#1d2030;--bd2:#2a2f44;
+  --green:#00c896;--gbg:#091f18;
+  --red:#f04a5c;--rbg:#200a10;
+  --amber:#f5a623;--abg:#241808;
+  --blue:#4d9ef7;--bbg:#0b1b32;
+  --purple:#9b72f7;--pbg:#160e30;
+  --gold:#f0b429;--goldbg:#221a06;
+  --sh:0 1px 4px rgba(0,0,0,0.6),0 1px 2px rgba(0,0,0,0.5);
+  --sh-md:0 4px 20px rgba(0,0,0,0.6),0 2px 6px rgba(0,0,0,0.5);
+  --sh-lg:0 8px 40px rgba(0,0,0,0.7),0 4px 10px rgba(0,0,0,0.5);
+  --accent:var(--gold);--accent-glow:rgba(240,180,41,0.10);
 }
 html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);background:var(--bg);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 /* PWA safe area — Dynamic Island / notch at top, home indicator at bottom */
@@ -1695,24 +1695,23 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 /* Base body refinement */
 html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antialiased;}
 
-/* Subtle grid background on main content area */
+/* Subtle dot grid background on main content area — matches reference */
 [data-dark] .content{
-  background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
-  background-size:40px 40px;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size:28px 28px;
 }
 
 /* SIDEBAR — finance panel */
 .sb{background:var(--bg-sb);border-right:1px solid var(--bd);}
 [data-dark] .sb{
-  border-right:1px solid var(--bd);
-  box-shadow:4px 0 24px rgba(0,0,0,0.3);
+  background:#090b11;
+  border-right:1px solid #181b28;
+  box-shadow:4px 0 32px rgba(0,0,0,0.5);
 }
 .sb-hdr{
   border-bottom:1px solid var(--bd);
 }
-[data-dark] .sb-hdr{border-bottom:1px solid var(--bd);}
+[data-dark] .sb-hdr{border-bottom:1px solid #181b28;}
 
 /* Workspace logo */
 .ws-ic{
@@ -1744,11 +1743,14 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
   box-shadow:inset 3px 0 0 var(--gold) !important;
 }
 [data-dark] .ni.on{
-  background:color-mix(in srgb,var(--gold) 10%,var(--bg-h)) !important;
+  background:#161a26 !important;
   color:var(--gold) !important;
+  box-shadow:inset 3px 0 0 var(--gold) !important;
+  border-radius:var(--rl);
 }
 .ni:hover{background:var(--bg-a);}
-[data-dark] .ni:hover{background:var(--bg-a);}
+[data-dark] .ni:hover{background:#141720;}
+[data-dark] .sb-sec{color:#404858;letter-spacing:0.12em;font-size:10px;}
 
 /* NAV STAT BADGES */
 .ni-stat.good{background:color-mix(in srgb,var(--green) 15%,var(--bg-card));color:var(--green);}
@@ -1761,9 +1763,9 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
   background:color-mix(in srgb,var(--bg) 95%,transparent) !important;
 }
 [data-dark] .topbar{
-  background:color-mix(in srgb,#0b0e14 97%,transparent) !important;
-  border-bottom:1px solid var(--bd);
-  box-shadow:0 1px 0 var(--bd),0 4px 12px rgba(0,0,0,0.2);
+  background:rgba(9,11,17,0.97) !important;
+  border-bottom:1px solid #181b28;
+  box-shadow:0 1px 0 #181b28,0 4px 16px rgba(0,0,0,0.4);
 }
 .bc-cur{font-weight:700;letter-spacing:-0.01em;}
 
@@ -1790,17 +1792,18 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
   border:1px solid var(--bd);
 }
 [data-dark] .nf,[data-dark] .mc,[data-dark] .chart-box,[data-dark] .hero-stat,[data-dark] .ws-cell{
-  border-color:var(--bd);
-  box-shadow:0 1px 0 rgba(255,255,255,0.03) inset;
+  background:#111520;
+  border-color:#1d2030;
+  box-shadow:0 1px 0 rgba(255,255,255,0.025) inset,0 2px 8px rgba(0,0,0,0.4);
 }
 
 /* PAGE COVERS — finance gradients */
-.cf{background:linear-gradient(135deg,#060e1c,#0a1628,#0f2040) !important;}
-.ct{background:linear-gradient(135deg,#0a0f0a,#0f2010,#1a3a1a) !important;}
-.cg{background:linear-gradient(135deg,#0f0a00,#261800,#3d2800) !important;}
-.cb2{background:linear-gradient(135deg,#0a0814,#16082e,#260a52) !important;}
-.cto{background:linear-gradient(135deg,#060c1a,#0a1425,#121e38) !important;}
-.ch{background:linear-gradient(135deg,#0a1209,#102010,#183018) !important;}
+.cf{background:linear-gradient(135deg,#060810,#0c0e18,#101828) !important;}
+.ct{background:linear-gradient(135deg,#060d08,#0c1a0e,#142a18) !important;}
+.cg{background:linear-gradient(135deg,#0d0900,#1c1200,#2e1e00) !important;}
+.cb2{background:linear-gradient(135deg,#080610,#100824,#1c0a42) !important;}
+.cto{background:linear-gradient(135deg,#050a14,#091020,#10182e) !important;}
+.ch{background:linear-gradient(135deg,#060c06,#0c1a0c,#122614) !important;}
 
 /* PAGE COVERS — gold shimmer overlay */
 .page-cover::before{
@@ -1839,7 +1842,8 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 .wd-today-pill{background:rgba(11,14,20,0.25) !important;color:#0b0e14 !important;}
 
 /* SUMMARY BAR */
-[data-dark] .sum-item{border-color:var(--bd);}
+[data-dark] .sum-item{border-color:#1d2030;background:#111520;}
+[data-dark] .summary-bar{border-color:#1d2030;}
 .sum-vl.up{color:var(--green);}
 .sum-vl{font-family:var(--font-mono);}
 
@@ -1851,6 +1855,21 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 
 /* SECTION HEADERS */
 .bh2,.bh3{letter-spacing:-0.01em;}
+[data-dark] .bh2{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.10em;
+  text-transform:uppercase;
+  color:var(--th);
+  margin:24px 0 10px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:8px;
+}
+[data-dark] .bh2::before{
+  content:'';display:inline-block;width:3px;height:12px;
+  background:var(--gold);border-radius:2px;flex-shrink:0;
+}
 [data-dark] .bh3{color:var(--t);opacity:0.9;}
 
 /* NOTION TABLE */
@@ -1927,7 +1946,8 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
   box-shadow:var(--sh-lg) !important;
 }
 [data-dark] .nf:hover,[data-dark] .chart-box:hover,[data-dark] .bq-card:hover,[data-dark] .fd-kpi:hover{
-  box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04) !important;
+  box-shadow:0 8px 32px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.05) !important;
+  border-color:#2a2f44 !important;
 }
 [data-dark] .bh3{
   background:color-mix(in srgb,var(--bg) 90%,transparent);
