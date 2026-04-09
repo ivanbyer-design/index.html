@@ -935,8 +935,8 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fqa-save-btn:active{transform:translateY(0);}
 @media(max-width:600px){.fqa-amount-inp{font-size:28px;}.fqa-currency{font-size:24px;}.fqa-fi{font-size:16px!important;}}
 /* FINANCE PAGE QUICK ADD BUTTON */
-.fin-qa-btn{display:flex;align-items:center;gap:10px;width:100%;font-family:var(--font);font-size:14px;font-weight:700;padding:13px 16px;margin:10px 0 0;border-radius:14px;border:2px solid var(--blue);background:var(--bbg);color:var(--blue);cursor:pointer;letter-spacing:0.01em;transition:all .18s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 8px rgba(45,120,164,.15);}
-.fin-qa-btn:hover{background:var(--blue);color:#fff;transform:translateY(-2px);box-shadow:0 6px 18px rgba(45,120,164,.35);}
+.fin-qa-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;font-family:var(--font);font-size:15px;font-weight:800;padding:16px 20px;margin:12px 0 0;border-radius:14px;border:none;background:linear-gradient(135deg,#f0b429,#d4a20a);color:#0b0e14;cursor:pointer;letter-spacing:0.02em;transition:all .18s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 16px rgba(240,180,41,0.35),0 2px 6px rgba(0,0,0,0.15);text-transform:uppercase;}
+.fin-qa-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(240,180,41,0.45),0 4px 8px rgba(0,0,0,0.2);}
 .fin-qa-btn:active{transform:scale(0.97);}
 
 /* FINANCE DASHBOARD — KPI CARDS */
@@ -1875,6 +1875,62 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
     color-mix(in srgb,var(--blue) 5%,var(--bg-card))
   ) !important;
   border-color:color-mix(in srgb,var(--gold) 20%,var(--bd)) !important;
+}
+
+
+/* ═══════════════════════════════════════
+   FLOATING WIDGET / CARD EFFECTS
+═══════════════════════════════════════ */
+/* All cards get float shadow */
+.nf,.mc,.chart-box,.bq-card,.fd-kpi,.hero-stat,.ws-cell,.proj-card,.hs-card,
+.summary-bar,.callout,.notion-table-wrap{
+  transition:box-shadow .2s ease, transform .2s ease;
+}
+/* Sticky section headers as you scroll */
+.bh3{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:var(--bg);
+  padding-top:6px;
+  padding-bottom:4px;
+  margin-top:20px;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+/* Card hover float */
+.nf:hover,.chart-box:hover,.bq-card:hover,.fd-kpi:hover,.hero-stat:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--sh-lg) !important;
+}
+/* Metric cards float on hover */
+.mc{
+  border-radius:var(--rl);
+  border:1px solid var(--bd);
+  box-shadow:var(--sh);
+}
+.mc:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--sh-lg) !important;
+}
+/* BQ cards (budget quadrant) */
+.bq-card{
+  border-radius:var(--rl);
+  border:1px solid var(--bd);
+  box-shadow:var(--sh);
+  background:var(--bg-card);
+  padding:16px;
+  transition:box-shadow .2s,transform .2s;
+}
+.bq-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--sh-lg) !important;
+}
+[data-dark] .nf:hover,[data-dark] .chart-box:hover,[data-dark] .bq-card:hover,[data-dark] .fd-kpi:hover{
+  box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04) !important;
+}
+[data-dark] .bh3{
+  background:color-mix(in srgb,var(--bg) 90%,transparent);
 }
 
 </style>
@@ -3682,7 +3738,7 @@ function renderFinance(){
       <td>${f.biz==='business'?tag('💼 Business','blue'):tag('👤 Personal','gray')}</td>
       <td style="font-weight:800;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td>
       <td style="font-size:12px;color:var(--ts);">${f.dt}</td>
-      <td><button class="del" onclick="delFin(${f.id})">✕</button></td>
+      <td style="display:flex;gap:4px;"><button class="edit-ic" onclick="openEM('entry',${f.id})" title="Edit">✎</button><button class="del" onclick="delFin(${f.id})">✕</button></td>
     </tr>`).join('');
   }
 
@@ -3719,7 +3775,7 @@ function renderTrades(){
   if(srt.length)mkChart('tc',{type:'line',data:{labels:srt.map(t=>t.s),datasets:[{data:cd,borderColor:'#337ea9',backgroundColor:'rgba(51,126,169,0.06)',fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#337ea9'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:GC},ticks:{callback:v=>fmtS(v),font:{size:10}}}}}});
   const tb=G('t-tb');
   if(!S.trades.length){tb.innerHTML=`<tr><td colspan="10"><div class="empty">No trades logged</div></td></tr>`;}
-  else tb.innerHTML=[...S.trades].reverse().map(t=>{const p=tPnl(t);return`<tr><td><strong>${t.s}</strong></td><td>${tag(t.dir,t.dir==='Long'?'green':'red')}</td><td style="font-family:monospace;">${t.e}</td><td style="font-family:monospace;">${t.x||'—'}</td><td style="font-family:monospace;">${t.sz}</td><td style="font-weight:600;color:${p===null?'var(--ts)':p>=0?'var(--green)':'var(--red)'};">${p===null?'open':fmtS(p)}</td><td>${tag(t.st,t.st==='Open'?'amber':'gray')}</td><td style="font-size:12px;color:var(--ts);">${t.dt}</td><td style="font-size:12px;color:var(--ts);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.n||''}</td><td><button class="del" onclick="delTrade(${t.id})">✕</button></td></tr>`;}).join('');
+  else tb.innerHTML=[...S.trades].reverse().map(t=>{const p=tPnl(t);const acts=`<td style="display:flex;gap:4px;"><button class="edit-ic" onclick="openEM('trade',${t.id})" title="Edit">✎</button><button class="del" onclick="delTrade(${t.id})">✕</button></td>`;return`<tr><td><strong>${t.s}</strong></td><td>${tag(t.dir,t.dir==='Long'?'green':'red')}</td><td style="font-family:monospace;">${t.e}</td><td style="font-family:monospace;">${t.x||'—'}</td><td style="font-family:monospace;">${t.sz}</td><td style="font-weight:600;color:${p===null?'var(--ts)':p>=0?'var(--green)':'var(--red)'};">${p===null?'open':fmtS(p)}</td><td>${tag(t.st,t.st==='Open'?'amber':'gray')}</td><td style="font-size:12px;color:var(--ts);">${t.dt}</td><td style="font-size:12px;color:var(--ts);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.n||''}</td><td><button class="del" onclick="delTrade(${t.id})">✕</button></td></tr>`;}).join('');
   const btb=G('bt-tb');
   if(!S.backtests.length){btb.innerHTML=`<tr><td colspan="8"><div class="empty">No backtests yet</div></td></tr>`;}
   else btb.innerHTML=[...S.backtests].reverse().map(b=>`<tr><td><strong>${b.n}</strong></td><td>${tag(b.m,'blue')}</td><td style="font-weight:600;color:${b.w>=50?'var(--green)':'var(--red)'};">${b.w}%</td><td style="font-family:monospace;">${b.r}</td><td style="font-weight:600;color:${b.p>=0?'var(--green)':'var(--red)'};">${b.p>=0?'+':''}${b.p}%</td><td style="font-size:12px;color:var(--ts);">${b.dt}</td><td style="font-size:12px;color:var(--ts);">${b.no||''}</td><td><button class="del" onclick="delBt(${b.id})">✕</button></td></tr>`).join('');
@@ -4230,7 +4286,7 @@ function renderTodos(){
           <div class="ci-meta">${tag(t.c,'blue')}${tag(pl[t.p],PC[t.p])}${t.d?`<span style="font-size:11px;color:var(--ts);">📅 ${t.d}</span>`:''}
             ${!subs.length?`<button class="subtask-toggle" onclick="showSubInp(${t.id})">＋ subtask</button>`:''}</div>
         </div>
-        <button class="del" onclick="delTodo(${t.id})">✕</button>
+        <button class="edit-ic" onclick="openEM('todo',${t.id})" title="Edit" style="margin-right:2px;">✎</button><button class="del" onclick="delTodo(${t.id})">✕</button>
       </div>
       ${subHtml}
     </div>`;
@@ -4298,7 +4354,7 @@ function renderHabits(){
   let ws=0;S.habits.forEach(h=>{ws+=days.filter(d=>S.hlog[d+'-'+h.id]).length/7*100;});
   const wavg=S.habits.length?Math.round(ws/S.habits.length):0;
   G('h-sum').innerHTML=`<div class="sum-item"><div class="sum-lb">Today</div><div class="sum-vl ${td===S.habits.length&&S.habits.length?'up':''}">${td} / ${S.habits.length}</div></div><div class="sum-item"><div class="sum-lb">Best streak</div><div class="sum-vl">${best}d</div></div><div class="sum-item"><div class="sum-lb">Week avg</div><div class="sum-vl">${wavg}%</div></div><div class="sum-item"><div class="sum-lb">Habits</div><div class="sum-vl">${S.habits.length}</div></div>`;
-  G('h-ci').innerHTML=S.habits.length?S.habits.map(h=>{const on=!!S.hlog[today+'-'+h.id];return`<div class="hr"><input type="checkbox" ${on?'checked':''} onchange="togHabit(${h.id})" style="width:15px;height:15px;accent-color:var(--green);flex-shrink:0;"><div style="flex:1;"><div style="font-size:14px;${on?'text-decoration:line-through;color:var(--ts);':''}">${h.n}</div>${h.t?`<div style="font-size:11px;color:var(--ts);">⏰ ${h.t}</div>`:''}</div>${h.streak>0?`<span style="font-size:11px;color:var(--amber);font-weight:500;">🔥 ${h.streak}d</span>`:''}<button class="del" onclick="delHabit(${h.id})">✕</button></div>`;}).join(''):'<div class="empty">Add a habit below to get started</div>';
+  G('h-ci').innerHTML=S.habits.length?S.habits.map(h=>{const on=!!S.hlog[today+'-'+h.id];return`<div class="hr"><input type="checkbox" ${on?'checked':''} onchange="togHabit(${h.id})" style="width:15px;height:15px;accent-color:var(--green);flex-shrink:0;"><div style="flex:1;"><div style="font-size:14px;${on?'text-decoration:line-through;color:var(--ts);':''}">${h.n}</div>${h.t?`<div style="font-size:11px;color:var(--ts);">⏰ ${h.t}</div>`:''}</div>${h.streak>0?`<span style="font-size:11px;color:var(--amber);font-weight:500;">🔥 ${h.streak}d</span>`:''}<button class="edit-ic" onclick="openEM('habit',${h.id})" title="Edit" style="margin-right:2px;">✎</button><button class="del" onclick="delHabit(${h.id})">✕</button></div>`;}).join(''):'<div class="empty">Add a habit below to get started</div>';
   G('h-ghdr').innerHTML=`<div style="flex:1;">Habit</div>`+days.map(d=>`<div style="width:18px;text-align:center;">${d.slice(8)}</div>`).join('');
   G('h-grid').innerHTML=S.habits.length?S.habits.map(h=>`<div class="hr"><div style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h.n}</div><div style="display:flex;gap:4px;">${days.map(d=>`<div class="hdot ${S.hlog[d+'-'+h.id]?'on':'off'}"></div>`).join('')}</div></div>`).join(''):'<div class="empty">No habits yet</div>';
   const wl=[],wd=[];
@@ -6523,6 +6579,50 @@ function openEM(type,id,extra){
     html=`<label>Name<input class="fi" id="em-f-t" value="${c.name}"></label>
     <label>Icon<input class="fi" id="em-f-icon" value="${c.icon||''}" style="max-width:80px;"></label>
     <label>Monthly budget<input class="fi" type="number" id="em-f-budget" value="${c.budget}" step="1"></label>`;
+  } else if(type==='entry'){
+    const f=S.finance.find(f=>f.id===id);if(!f)return;
+    ttl='Edit Transaction';
+    html=`<label>Description<input class="fi" id="em-f-desc" value="${f.d||''}"></label>
+    <label>Amount<input class="fi" type="number" id="em-f-a" value="${f.a}" step="0.01" min="0"></label>
+    <label>Type<select class="fi" id="em-f-type"><option value="income"${f.t==='income'?' selected':''}>Income</option><option value="expense"${f.t==='expense'?' selected':''}>Expense</option></select></label>
+    <label>Category<input class="fi" id="em-f-cat" value="${f.c||''}"></label>
+    <label>Date<input class="fi" type="date" id="em-f-dt" value="${f.dt||''}"></label>
+    <label>Business/Personal<select class="fi" id="em-f-biz"><option value="personal"${f.biz!=='business'?' selected':''}>Personal</option><option value="business"${f.biz==='business'?' selected':''}>Business</option></select></label>`;
+  } else if(type==='trade'){
+    const t=S.trades.find(t=>t.id===id);if(!t)return;
+    ttl='Edit Trade';
+    html=`<label>Symbol<input class="fi" id="em-f-sym" value="${t.s||''}"></label>
+    <label>Direction<select class="fi" id="em-f-dir"><option value="Long"${t.dir==='Long'?' selected':''}>Long</option><option value="Short"${t.dir==='Short'?' selected':''}>Short</option></select></label>
+    <label>Entry price<input class="fi" type="number" id="em-f-entry" value="${t.e||''}" step="any"></label>
+    <label>Exit price<input class="fi" type="number" id="em-f-exit" value="${t.x||''}" step="any" placeholder="Leave blank if open"></label>
+    <label>Size / contracts<input class="fi" type="number" id="em-f-sz" value="${t.sz||''}" step="any"></label>
+    <label>Status<select class="fi" id="em-f-st"><option value="Open"${t.st==='Open'?' selected':''}>Open</option><option value="Closed"${t.st==='Closed'?' selected':''}>Closed</option></select></label>
+    <label>Notes<input class="fi" id="em-f-notes" value="${t.n||''}"></label>`;
+  } else if(type==='project'){
+    const p=(S.projects||[]).find(p=>p.id===id);if(!p)return;
+    ttl='Edit Project';
+    const statOpts=['active','planning','review','paused','blocked','done'].map(s=>`<option value="${s}"${p.status===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('');
+    html=`<label>Name<input class="fi" id="em-f-name" value="${p.name||''}"></label>
+    <label>Description<textarea class="fi" id="em-f-desc" style="min-height:70px;">${p.desc||''}</textarea></label>
+    <label>Status<select class="fi" id="em-f-st">${statOpts}</select></label>
+    <label>Deadline<input class="fi" type="date" id="em-f-dl" value="${p.deadline||''}"></label>
+    <label>Category<input class="fi" id="em-f-cat" value="${p.cat||''}"></label>
+    <label>Budget<input class="fi" type="number" id="em-f-budget" value="${p.budget||0}" step="1"></label>`;
+  } else if(type==='savings'){
+    const sa=(S.savingsAccounts||[]).find(a=>a.id===id);if(!sa)return;
+    ttl='Edit Savings Account';
+    html=`<label>Account name<input class="fi" id="em-f-name" value="${sa.name||''}"></label>
+    <label>Balance<input class="fi" type="number" id="em-f-a" value="${sa.balance||0}" step="0.01"></label>
+    <label>Notes<input class="fi" id="em-f-notes" value="${sa.note||''}"></label>`;
+  } else if(type==='debt'){
+    const dp=(S.otherPayments||[]).find(p=>p.id===id);if(!dp)return;
+    ttl='Edit Debt / Payment';
+    const stOpts=['pending','scheduled','paid','overdue'].map(s=>`<option value="${s}"${dp.s===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('');
+    html=`<label>Name<input class="fi" id="em-f-name" value="${dp.n||''}"></label>
+    <label>Amount<input class="fi" type="number" id="em-f-a" value="${dp.a||0}" step="0.01"></label>
+    <label>Status<select class="fi" id="em-f-st">${stOpts}</select></label>
+    <label>Due date<input class="fi" type="date" id="em-f-dl" value="${dp.d||''}"></label>
+    <label>Notes<input class="fi" id="em-f-notes" value="${dp.notes||''}"></label>`;
   }
   G('em-title').textContent=ttl;
   body.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px;">${html}</div>`;
@@ -6563,6 +6663,49 @@ function saveEM(){
     c.icon=G('em-f-icon').value.trim()||c.icon;
     c.budget=parseFloat(G('em-f-budget').value)||c.budget;
     save();renderLivingExpenses();
+  } else if(emType==='entry'){
+    const f=S.finance.find(f=>f.id===emId);if(!f)return closeEM();
+    f.d=G('em-f-desc').value.trim()||f.d;
+    f.a=parseFloat(G('em-f-a').value)||f.a;
+    f.t=G('em-f-type').value||f.t;
+    f.c=G('em-f-cat').value.trim()||f.c;
+    f.dt=G('em-f-dt').value||f.dt;
+    f.biz=G('em-f-biz').value;
+    save();renderFinance();renderHome();
+  } else if(emType==='trade'){
+    const t=S.trades.find(t=>t.id===emId);if(!t)return closeEM();
+    t.s=G('em-f-sym').value.trim()||t.s;
+    t.dir=G('em-f-dir').value||t.dir;
+    t.e=parseFloat(G('em-f-entry').value)||t.e;
+    const ex=parseFloat(G('em-f-exit').value);
+    t.x=isNaN(ex)?null:ex;
+    t.sz=parseFloat(G('em-f-sz').value)||t.sz;
+    t.st=G('em-f-st').value||t.st;
+    t.n=G('em-f-notes').value.trim();
+    save();renderTrades();
+  } else if(emType==='project'){
+    const p=(S.projects||[]).find(p=>p.id===emId);if(!p)return closeEM();
+    p.name=G('em-f-name').value.trim()||p.name;
+    p.desc=G('em-f-desc').value.trim();
+    p.status=G('em-f-st').value||p.status;
+    p.deadline=G('em-f-dl').value||'';
+    p.cat=G('em-f-cat').value.trim();
+    p.budget=parseFloat(G('em-f-budget').value)||0;
+    save();renderProjects();
+  } else if(emType==='savings'){
+    const sa=(S.savingsAccounts||[]).find(a=>a.id===emId);if(!sa)return closeEM();
+    sa.name=G('em-f-name').value.trim()||sa.name;
+    sa.balance=parseFloat(G('em-f-a').value)||0;
+    sa.note=G('em-f-notes').value.trim();
+    save();renderSavingsAccounts();renderFinance();
+  } else if(emType==='debt'){
+    const dp=(S.otherPayments||[]).find(p=>p.id===emId);if(!dp)return closeEM();
+    dp.n=G('em-f-name').value.trim()||dp.n;
+    dp.a=parseFloat(G('em-f-a').value)||dp.a;
+    dp.s=G('em-f-st').value||dp.s;
+    dp.d=G('em-f-dl').value||'';
+    dp.notes=G('em-f-notes').value.trim();
+    save();renderFinance();renderHome();
   }
   closeEM();
 }
