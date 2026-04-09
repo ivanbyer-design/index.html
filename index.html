@@ -1676,7 +1676,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
     </div>
   </div>
   <div style="padding:4px 12px 8px;">
-    <div style="display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:var(--r);background:var(--bg-in);color:var(--ts);font-size:13px;border:1.5px solid var(--bd);cursor:text;transition:border-color .15s;" onclick="openCmdPalette();this.style.borderColor='var(--blue)';" onblur="this.style.borderColor='var(--bd)';">
+    <div style="display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:var(--r);background:var(--bg-in);color:var(--ts);font-size:13px;border:1.5px solid var(--bd);cursor:text;transition:border-color .15s;" onclick="this.style.borderColor='var(--blue)';" onblur="this.style.borderColor='var(--bd)';">
       <span style="font-size:14px;opacity:0.5;">🔍</span>
       <span style="font-size:12.5px;font-weight:500;">Search</span>
     </div>
@@ -2265,7 +2265,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
       <div class="planning-tabs">
         <button class="planning-tab on" id="ptab-habits" onclick="switchPlanTab('habits',this)">🔄 Habits</button>
         <button class="planning-tab" id="ptab-todos" onclick="switchPlanTab('todos',this)">✅ Tasks</button>
-        <button class="planning-tab" id="ptab-stacking" onclick="switchPlanTab('stacking',this)">⛓️ Habit Stacking</button>
+        <button class="planning-tab" id="ptab-stacking" onclick="switchPlanTab('stacking',this)">&#x26D3;&#xFE0F; Habit Stacking</button>
       </div>
 
       <!-- HABITS TAB -->
@@ -2296,24 +2296,19 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
         </div>
       </div>
 
-
       <!-- HABIT STACKING TAB -->
       <div class="planning-tab-body" id="ptab-stacking-body">
         <div class="hs-intro" style="margin-top:12px;">
-          <div class="hs-intro-ttl">⛓️ What is Habit Stacking?</div>
-          <div class="hs-intro-txt">Habit stacking links a new behavior to an existing anchor habit — using a simple "if-then" cue so the new habit happens automatically after a routine you already do.</div>
+          <div class="hs-intro-ttl">&#x26D3;&#xFE0F; What is Habit Stacking?</div>
+          <div class="hs-intro-txt">Habit stacking links a new behavior to an existing anchor habit using a simple cue so the new habit happens automatically after a routine you already do.</div>
           <div class="hs-formula">"After I <strong>[anchor habit]</strong>, I will <strong>[new habit]</strong>."</div>
         </div>
-
-        <!-- BUILDER -->
         <div class="nf">
-          <div class="nf-ttl">＋ Create a habit stack</div>
+          <div class="nf-ttl">&#xFF0B; Create a habit stack</div>
           <div class="fr" style="flex-wrap:wrap;gap:8px;">
             <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:240px;">
               <span style="font-size:12px;font-weight:600;color:var(--ts);white-space:nowrap;">After I</span>
-              <select class="fi" id="hs-anchor" style="flex:1;">
-                <option value="">— pick an anchor habit —</option>
-              </select>
+              <select class="fi" id="hs-anchor" style="flex:1;"><option value="">&#x2014; pick an anchor habit &#x2014;</option></select>
             </div>
             <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:240px;">
               <span style="font-size:12px;font-weight:600;color:var(--ts);white-space:nowrap;">I will</span>
@@ -2322,16 +2317,12 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
             <input class="fi" type="time" id="hs-time" style="max-width:120px;" title="Optional reminder time">
             <button class="btn pri" onclick="addHabitStack()">Add Stack</button>
           </div>
-          <div style="font-size:11px;color:var(--ts);margin-top:6px;padding-left:2px;">Tip: pick an anchor you already do every day — morning coffee, brushing teeth, lunchtime, etc.</div>
+          <div style="font-size:11px;color:var(--ts);margin-top:6px;padding-left:2px;">Tip: pick an anchor you already do every day &#x2014; morning coffee, brushing teeth, lunchtime, etc.</div>
         </div>
-
-        <!-- STACKS LIST -->
         <div style="margin-top:16px;">
           <div class="bh3">Today's Stacks <span style="font-size:12px;font-weight:400;color:var(--ts);" id="hs-progress-lbl"></span></div>
           <div id="hs-list"></div>
         </div>
-
-        <!-- WEEKLY GRID -->
         <div style="margin-top:20px;">
           <div class="bh3">7-Day Completion Grid</div>
           <div id="hs-ghdr" style="display:flex;align-items:center;gap:8px;padding:4px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:4px;font-size:10px;color:var(--th);font-weight:600;"></div>
@@ -4101,13 +4092,12 @@ function renderHabits(){
 }
 
 
-// ── HABIT STACKING ──
+// -- HABIT STACKING --
 function populateHsAnchor(){
   const sel=G('hs-anchor');if(!sel)return;
   const cur=sel.value;
-  sel.innerHTML='<option value="">\u2014 pick an anchor habit \u2014</option>'+(S.habits.map(h=>`<option value="${h.id}" ${h.id==cur?'selected':''}>${h.n}</option>`).join(''));
+  sel.innerHTML='<option value="">&mdash; pick an anchor habit &mdash;</option>'+(S.habits.map(h=>'<option value="'+h.id+'" '+(h.id==cur?'selected':'')+'>'+h.n+'</option>').join(''));
 }
-
 function addHabitStack(){
   const anchorId=parseInt(G('hs-anchor').value);
   const newH=G('hs-new').value.trim();
@@ -4119,68 +4109,51 @@ function addHabitStack(){
   G('hs-new').value='';G('hs-time').value='';
   save();renderHabitStacks();
 }
-
 function togStack(id){
   if(!S.hslog)S.hslog={};
   const k=today+'-hs-'+id;
   const wasOn=S.hslog[k];
   S.hslog[k]=!S.hslog[k];
   const stk=(S.habitStacks||[]).find(s=>s.id===id);
-  if(stk){
-    let s=0;const d=new Date(today);
-    for(let i=0;i<365;i++){
-      const k2=localDate(d)+'-hs-'+id;
-      if(S.hslog[k2]){s++;d.setDate(d.getDate()-1);}else break;
-    }
-    stk.streak=s;
-  }
+  if(stk){let s=0;const d=new Date(today);for(let i=0;i<365;i++){const k2=localDate(d)+'-hs-'+id;if(S.hslog[k2]){s++;d.setDate(d.getDate()-1);}else break;}stk.streak=s;}
   if(!wasOn)addPersonalPoints(10,'Completed habit stack');
   save();renderHabitStacks();renderMilestones();
 }
-
 function delStack(id){
   S.habitStacks=(S.habitStacks||[]).filter(s=>s.id!==id);
   save();renderHabitStacks();
 }
-
 function renderHabitStacks(){
   if(!S.habitStacks)S.habitStacks=[];
   if(!S.hslog)S.hslog={};
   populateHsAnchor();
-  const done=(S.habitStacks).filter(s=>S.hslog[today+'-hs-'+s.id]).length;
+  const done=S.habitStacks.filter(s=>S.hslog[today+'-hs-'+s.id]).length;
   const lbl=G('hs-progress-lbl');
   if(lbl)lbl.textContent=S.habitStacks.length?'('+done+'/'+S.habitStacks.length+' done today)':'';
-  const list=G('hs-list');
-  if(!list)return;
+  const list=G('hs-list');if(!list)return;
   if(!S.habitStacks.length){
-    list.innerHTML='<div class="hs-empty"><div class="hs-empty-ic">\u26d3\ufe0f</div>No habit stacks yet.<br>Create your first stack above to get started.</div>';
+    list.innerHTML='<div class="hs-empty"><div class="hs-empty-ic">&#x26D3;&#xFE0F;</div>No habit stacks yet.<br>Create your first stack above to get started.</div>';
   }else{
-    list.innerHTML=S.habitStacks.map(stk=>{
+    list.innerHTML=S.habitStacks.map(function(stk){
       const isDone=!!S.hslog[today+'-hs-'+stk.id];
       return '<div class="hs-card'+(isDone?' done':'')+'">'+
         '<div class="hs-chain">'+
-        '<span class="hs-anchor">\ud83d\udccc '+stk.anchorName+'</span>'+
-        '<span class="hs-arrow">\u2192</span>'+
-        '<span class="hs-new">\u2728 '+stk.newHabit+'</span>'+
+        '<span class="hs-anchor">&#128204; '+stk.anchorName+'</span>'+
+        '<span class="hs-arrow">&#x2192;</span>'+
+        '<span class="hs-new">&#x2728; '+stk.newHabit+'</span>'+
         '</div>'+
-        '<div class="hs-meta">'+
-        (stk.t?'<span>\u23f0 '+stk.t+'</span>':'')+
-        '<span>\ud83d\udcc5 Since '+(stk.created||'\u2014')+'</span>'+
-        '<button class="del" onclick="delStack('+stk.id+')" style="margin-left:auto;">\u2715</button>'+
-        '</div>'+
-        '<div class="hs-check">'+
-        '<input type="checkbox" id="hsc-'+stk.id+'" '+(isDone?'checked':'')+' onchange="togStack('+stk.id+')">'+
+        '<div class="hs-meta">'+(stk.t?'<span>&#x23F0; '+stk.t+'</span>':'')+
+        '<span>&#x1F4C5; Since '+(stk.created||'&mdash;')+'</span>'+
+        '<button class="del" onclick="delStack('+stk.id+')" style="margin-left:auto;">&#x2715;</button></div>'+
+        '<div class="hs-check"><input type="checkbox" id="hsc-'+stk.id+'" '+(isDone?'checked':'')+' onchange="togStack('+stk.id+')">'+
         '<label class="hs-check-lb" for="hsc-'+stk.id+'">After I <strong>'+stk.anchorName+'</strong>, I will <strong>'+stk.newHabit+'</strong></label>'+
-        (stk.streak>0?'<span class="hs-streak">\ud83d\udd25 '+stk.streak+'d</span>':'')+
-        '</div>'+
-        '</div>';
+        (stk.streak>0?'<span class="hs-streak">&#x1F525; '+stk.streak+'d</span>':'')+
+        '</div></div>';
     }).join('');
   }
   const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(localDate(d));}
-  const ghdr=G('hs-ghdr');
-  if(ghdr)ghdr.innerHTML='<div style="flex:1;">Stack</div>'+days.map(d=>'<div style="width:18px;text-align:center;">'+d.slice(8)+'</div>').join('');
-  const grid=G('hs-grid');
-  if(grid)grid.innerHTML=S.habitStacks.length?S.habitStacks.map(stk=>'<div class="hr"><div style="flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+stk.anchorName+' \u2192 '+stk.newHabit+'</div><div style="display:flex;gap:4px;">'+days.map(d=>'<div class="hdot '+(S.hslog[d+'-hs-'+stk.id]?'on':'off')+'"></div>').join('')+'</div></div>').join(''):'<div class="empty">No stacks yet</div>';
+  const ghdr=G('hs-ghdr');if(ghdr)ghdr.innerHTML='<div style="flex:1;">Stack</div>'+days.map(function(d){return'<div style="width:18px;text-align:center;">'+d.slice(8)+'</div>';}).join('');
+  const grid=G('hs-grid');if(grid)grid.innerHTML=S.habitStacks.length?S.habitStacks.map(function(stk){return'<div class="hr"><div style="flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+stk.anchorName+' &#x2192; '+stk.newHabit+'</div><div style="display:flex;gap:4px;">'+days.map(function(d){return'<div class="hdot '+(S.hslog[d+'-hs-'+stk.id]?'on':'off')+'"></div>';}).join('')+'</div></div>';}).join(''):'<div class="empty">No stacks yet</div>';
 }
 
 // ── HOME ──
@@ -8521,4 +8494,4 @@ function resetAllData(){
   </div>
 </div>
 </body>
-</html> 
+</html>
