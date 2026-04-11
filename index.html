@@ -1364,6 +1364,89 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .attn-scroll::-webkit-scrollbar{width:4px;}
 .attn-scroll::-webkit-scrollbar-track{background:transparent;}
 .attn-scroll::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
+
+/* DAY CONTROLS PANEL */
+.day-controls-cell{display:flex;flex-direction:column;}
+.day-controls-body{display:flex;flex-direction:column;gap:10px;flex:1;justify-content:center;padding:6px 0;}
+.day-ctrl-btn{width:100%;justify-content:center;font-size:13px;padding:14px 16px;border-radius:12px;}
+
+/* AVATAR GLASS CYLINDER */
+.avatar-cylinder-cell{display:flex;align-items:center;justify-content:center;padding:14px 10px;min-height:240px;overflow:hidden;}
+.avatar-cylinder-wrap{display:flex;flex-direction:column;align-items:center;gap:0;}
+.avatar-cylinder-glass{
+  position:relative;
+  width:120px;height:220px;
+  border-radius:60px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.12) 0%,rgba(255,255,255,0.04) 50%,rgba(255,255,255,0.08) 100%);
+  border:1px solid rgba(255,255,255,0.22);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08) inset,
+    0 8px 32px rgba(0,0,0,0.22),
+    0 2px 8px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.avatar-cylinder-inner{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;
+  position:relative;z-index:2;
+}
+#avatar-canvas{
+  width:90px!important;height:180px!important;
+  display:block;
+}
+/* Sheen — vertical highlight stripe on left side */
+.avatar-cylinder-sheen{
+  position:absolute;top:10%;left:8%;
+  width:14px;height:80%;
+  background:linear-gradient(180deg,rgba(255,255,255,0.28) 0%,rgba(255,255,255,0.06) 60%,transparent 100%);
+  border-radius:7px;
+  pointer-events:none;z-index:3;
+}
+/* Top and bottom rims — ellipse edge of the cylinder */
+.avatar-cylinder-rim{
+  position:absolute;left:0;right:0;height:30px;
+  border-radius:50%;
+  pointer-events:none;z-index:4;
+}
+.avatar-cylinder-rim.top{
+  top:-1px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.04) 100%);
+  border-bottom:1px solid rgba(255,255,255,0.16);
+}
+.avatar-cylinder-rim.bottom{
+  bottom:-1px;
+  background:linear-gradient(0deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.02) 100%);
+  border-top:1px solid rgba(255,255,255,0.12);
+}
+/* Platform base under the cylinder */
+.avatar-cylinder-base{
+  width:90px;height:8px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent);
+  border-radius:50%;
+  filter:blur(3px);
+  margin-top:2px;
+}
+/* Floating animation */
+@keyframes avatarFloat{
+  0%,100%{transform:translateY(0px);}
+  50%{transform:translateY(-8px);}
+}
+.avatar-cylinder-glass{animation:avatarFloat 4s ease-in-out infinite;}
+
+/* Dark mode: deeper glass tint */
+[data-dark] .avatar-cylinder-glass{
+  background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,rgba(100,140,200,0.06) 50%,rgba(255,255,255,0.05) 100%);
+  border-color:rgba(255,255,255,0.14);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05) inset,
+    0 8px 40px rgba(0,0,0,0.5),
+    0 2px 10px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
 /* WEEKLY SNAPSHOT CARD */
 .home-weekly-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px;box-shadow:var(--sh);margin:8px 0 0;}
 .home-weekly-card .bh2{margin:0 0 8px!important;}
@@ -2073,27 +2156,10 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
     <div class="panel on" id="p-home">
       <div class="home-hero">
         <div class="home-hero-top">
-          <!-- LEFT: title at head height + day buttons below -->
-          <div class="home-hero-left">
+          <div class="home-hero-left" style="flex:1;">
             <div class="home-hero-greeting" id="home-greeting">Good morning</div>
             <div class="home-hero-title">My Life OS</div>
             <div class="home-hero-date" id="home-date"></div>
-            <div class="hero-day-widget">
-              <button class="hero-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
-              <button class="hero-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
-              <button class="hero-day-btn quick-add-btn" onclick="openHomeQA()" aria-label="Quick add anything">⚡ Quick Add</button>
-            </div>
-          </div>
-          <!-- CENTER: 3D spinning avatar -->
-          <div class="avatar-float">
-            <canvas id="avatar-canvas"></canvas>
-          </div>
-          <!-- RIGHT: streak only -->
-          <div class="hero-right-col">
-            <div class="home-hero-streak">
-              <div class="home-hero-streak-num" id="home-streak-num">—</div>
-              <div class="home-hero-streak-lb">day streak</div>
-            </div>
           </div>
         </div>
         <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
@@ -2107,101 +2173,47 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       </div>
       <div class="divider"></div>
 
-      <!-- TOP QUADRANT: Quick Add | Needs Attention -->
+      <!-- TOP QUADRANT: Day Buttons | Avatar Cylinder -->
       <div class="home-quadrant home-top-quadrant">
 
-        <!-- QUICK ADD WIDGET -->
-        <div class="home-quad-cell">
-          <div class="home-quad-hdr">⚡ Quick Add</div>
-          <div class="qa-widget">
-
-            <!-- TYPE TABS — 3 columns × 2 rows, matching finance modal style -->
-            <div class="qa-tabs">
-              <button class="qa-tab on t-task"    onclick="qaSwitch('task',this)">   <span class="qa-tab-ic">✅</span>Task</button>
-              <button class="qa-tab t-money"       onclick="qaSwitch('money',this)">  <span class="qa-tab-ic">💸</span>Money</button>
-              <button class="qa-tab t-journal"     onclick="qaSwitch('journal',this)"><span class="qa-tab-ic">📓</span>Journal</button>
-              <button class="qa-tab t-goal"        onclick="qaSwitch('goal',this)">   <span class="qa-tab-ic">🎯</span>Goal</button>
-              <button class="qa-tab t-bill"        onclick="qaSwitch('bill',this)">   <span class="qa-tab-ic">🧾</span>Bill</button>
-              <button class="qa-tab t-habit"       onclick="qaSwitch('habit',this)">  <span class="qa-tab-ic">🔄</span>Habit</button>
-            </div>
-
-            <!-- TASK -->
-            <div class="qa-form on" id="qa-task">
-              <input class="qa-fi" id="qa-task-t" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')qaSave()">
-              <div class="qa-row">
-                <select class="qa-fi" id="qa-task-pri" style="flex:1;"><option value="med">🟡 Medium</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
-                <input class="qa-fi" type="date" id="qa-task-due" style="flex:1;">
-              </div>
-              <button class="qa-save" onclick="qaSave()">Add Task</button>
-            </div>
-
-            <!-- MONEY -->
-            <div class="qa-form" id="qa-money">
-              <div class="qa-ie-toggle">
-                <button class="qa-ie-btn on exp" id="qa-ie-exp" onclick="qaSetIE('expense',this)">Expense</button>
-                <button class="qa-ie-btn" id="qa-ie-inc" onclick="qaSetIE('income',this)">Income</button>
-              </div>
-              <div class="qa-amount-wrap">
-                <span class="qa-currency">$</span>
-                <input class="qa-amount-inp" type="number" id="qa-money-amt" placeholder="0.00" step="0.01" inputmode="decimal" onkeydown="if(event.key==='Enter')qaSave()">
-              </div>
-              <input class="qa-fi" id="qa-money-desc" placeholder="Description" onkeydown="if(event.key==='Enter')qaSave()">
-              <div class="qa-date-row">
-                <label class="qa-date-lbl">📅 Date</label>
-                <input class="qa-fi qa-date-inp" type="date" id="qa-money-date">
-              </div>
-              <select class="qa-fi" id="qa-money-cat"></select>
-              <button class="qa-save" onclick="qaSave()">Add Transaction</button>
-            </div>
-
-            <!-- JOURNAL -->
-            <div class="qa-form" id="qa-journal">
-              <textarea class="qa-fi qa-ta" id="qa-journal-txt" placeholder="What's on your mind today?"></textarea>
-              <button class="qa-save" onclick="qaSave()">Save Entry</button>
-            </div>
-
-            <!-- GOAL / PROJECT -->
-            <div class="qa-form" id="qa-goal">
-              <input class="qa-fi" id="qa-goal-t" placeholder="Title" onkeydown="if(event.key==='Enter')qaSave()">
-              <div class="qa-row">
-                <select class="qa-fi" id="qa-goal-type" style="flex:1;"><option value="Goal">🎯 Goal</option><option value="Project">📁 Project</option></select>
-                <select class="qa-fi" id="qa-goal-pri"  style="flex:1;"><option value="med">🟡 Med</option><option value="high">🔴 High</option><option value="low">⚪ Low</option></select>
-              </div>
-              <button class="qa-save" onclick="qaSave()">Add Goal</button>
-            </div>
-
-            <!-- BILL -->
-            <div class="qa-form" id="qa-bill">
-              <div class="qa-amount-wrap">
-                <span class="qa-currency">$</span>
-                <input class="qa-amount-inp" type="number" id="qa-bill-a" placeholder="0.00" step="0.01" inputmode="decimal">
-              </div>
-              <input class="qa-fi" id="qa-bill-n" placeholder="Bill name (e.g. Rent, Netflix)" onkeydown="if(event.key==='Enter')qaSave()">
-              <select class="qa-fi" id="qa-bill-cat"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
-              <button class="qa-save" onclick="qaSave()">Add Bill</button>
-            </div>
-
-            <!-- HABIT -->
-            <div class="qa-form" id="qa-habit">
-              <div id="qa-habit-list" style="display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;max-height:140px;"></div>
-            </div>
-
-            <div class="qa-confirm" id="qa-confirm"></div>
+        <!-- DAY CONTROLS PANEL -->
+        <div class="home-quad-cell day-controls-cell">
+          <div class="home-quad-hdr">📋 Today</div>
+          <div class="day-controls-body">
+            <button class="hero-day-btn start day-ctrl-btn" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
+            <button class="hero-day-btn end day-ctrl-btn"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
+            <button class="hero-day-btn quick-add-btn day-ctrl-btn" onclick="openHomeQA()" aria-label="Quick add anything">⚡ Quick Add</button>
           </div>
         </div>
 
-        <!-- NEEDS ATTENTION (fixed height scroll) -->
-        <div class="home-quad-cell" id="attn-cell">
-          <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">
-            <span>🔔 Needs Attention</span>
-            <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a>
-          </div>
-          <div class="attn-scroll">
-            <div id="home-attn" style="margin-top:6px;"></div>
+        <!-- AVATAR GLASS CYLINDER -->
+        <div class="home-quad-cell avatar-cylinder-cell">
+          <div class="avatar-cylinder-wrap">
+            <div class="avatar-cylinder-glass">
+              <div class="avatar-cylinder-inner">
+                <canvas id="avatar-canvas"></canvas>
+              </div>
+              <div class="avatar-cylinder-rim top"></div>
+              <div class="avatar-cylinder-rim bottom"></div>
+              <div class="avatar-cylinder-sheen"></div>
+            </div>
+            <div class="avatar-cylinder-base"></div>
           </div>
         </div>
 
       </div>
+
+      <!-- NEEDS ATTENTION (moved below quadrant, full width) -->
+      <div class="home-quad-cell" id="attn-cell" style="margin-top:10px;">
+        <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>🔔 Needs Attention</span>
+          <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a>
+        </div>
+        <div class="attn-scroll">
+          <div id="home-attn" style="margin-top:6px;"></div>
+        </div>
+      </div>
+
       <div class="divider"></div>
 
       <div class="divider"></div>
