@@ -5749,48 +5749,61 @@ function initAvatar(){
   add(BOX(0.060,0.009,0.007),trimBlk, 0,0.048,0.130,fRG, 1,1,1, 0,0, 0.785);
   add(BOX(0.060,0.009,0.007),trimBlk, 0,0.048,0.130,fRG, 1,1,1, 0,0,-0.785);
 
-  // ── LIVE FLOATING ANIMATION ──
-  let t=0;
+  // ── LIVE FLOATING ANIMATION — organic limp / alive ──
+  // Each joint gets two overlapping sine waves at different frequencies + phase
+  // offsets so motion is non-repeating and secondary joints lag behind primaries.
+  let t=0, spinY=0;
 
   (function animate(){
     requestAnimationFrame(animate);
     t+=0.016;
 
-    // Slow continuous Y spin
-    fig.rotation.y += 0.0085;
+    // ── SPIN — slight speed breath so it never feels mechanical
+    spinY += 0.0078 + Math.sin(t*0.28)*0.0012;
+    fig.rotation.y = spinY;
 
-    // Primary float bob — large, smooth, weightless
-    const floatY = Math.sin(t*1.05)*0.046;
-    fig.position.y = floatY;
+    // ── FULL-BODY FLOAT — compound wave (two frequencies = organic, non-repeating)
+    fig.position.y = Math.sin(t*0.92)*0.052 + Math.sin(t*1.68)*0.013;
 
-    // Drifting body tilt — side sway + subtle forward lean
-    fig.rotation.z = 0.10 + Math.sin(t*0.62)*0.024;
-    fig.rotation.x =-0.05 + Math.sin(t*0.50)*0.016;
+    // ── BODY DRIFT — figure tilts like it's caught in slow invisible currents
+    fig.rotation.z = 0.10 + Math.sin(t*0.52)*0.034 + Math.sin(t*1.08)*0.011;
+    fig.rotation.x =-0.05 + Math.sin(t*0.42)*0.024 + Math.sin(t*0.88)*0.009;
 
-    // Breathing torso
-    torsoG.scale.y = 1 + Math.sin(t*1.18)*0.009;
-    torsoG.scale.x = 1 - Math.sin(t*1.18)*0.004;
+    // ── HEAD — loose neck, lags behind body lean (wobbles after body moves)
+    hg.rotation.z = -Math.sin(t*0.52)*0.14 - Math.sin(t*1.1 )*0.045; // counter-lean
+    hg.rotation.x =  Math.sin(t*0.78)*0.09 + Math.sin(t*1.38)*0.032; // nod
+    hg.rotation.y =  Math.sin(t*0.62)*0.11;                            // lazy side-look
 
-    // Left arm — extend and drift as if weightless
-    armLG.rotation.z = 0.78 + Math.sin(t*1.05)*0.042;
-    armLG.rotation.x = 0.30 + Math.sin(t*0.78)*0.030;
-    forearmL.rotation.z=-0.30+Math.sin(t*0.90)*0.025;
-    forearmL.rotation.x= 0.20+Math.sin(t*0.72)*0.018;
+    // ── TORSO — spine curves opposite to body drift (secondary sway)
+    torsoG.rotation.z =-Math.sin(t*0.52)*0.058 - Math.sin(t*1.1)*0.016;
+    torsoG.rotation.x = Math.sin(t*0.42)*0.038 + Math.sin(t*0.9)*0.010;
+    // Breathing — irregular double-wave
+    torsoG.scale.y = 1 + Math.sin(t*1.12)*0.013 + Math.sin(t*2.26)*0.005;
+    torsoG.scale.x = 1 - Math.sin(t*1.12)*0.005;
 
-    // Right arm — gentle drift
-    armRG.rotation.z =-0.30+Math.sin(t*1.05+1.2)*0.030;
-    armRG.rotation.x = 0.16+Math.sin(t*0.82+0.8)*0.022;
-    forearmR.rotation.z= 0.22+Math.sin(t*0.90+1.0)*0.020;
+    // ── LEFT ARM — upper arm drifts, forearm flops heavy behind it (ragdoll lag)
+    armLG.rotation.z = 0.78 + Math.sin(t*0.85 )*0.058 + Math.sin(t*1.72)*0.016;
+    armLG.rotation.x = 0.30 + Math.sin(t*0.64 )*0.040 + Math.sin(t*1.30)*0.012;
+    // Forearm secondary — bigger amplitude, phase-shifted (feels like it's trailing)
+    forearmL.rotation.z=-0.30+Math.sin(t*0.72+0.90)*0.072+Math.sin(t*1.52+0.4)*0.020;
+    forearmL.rotation.x= 0.20+Math.sin(t*0.58+0.55)*0.050+Math.sin(t*1.22+0.3)*0.015;
 
-    // Left raised leg — floats up and down slightly
-    legLG.rotation.x =-0.58+Math.sin(t*0.90)*0.038;
-    legLG.rotation.z = 0.10+Math.sin(t*0.70)*0.020;
-    lowerLL.rotation.x= 0.92+Math.sin(t*0.80)*0.025;
+    // ── RIGHT ARM — looser, slightly more floppy phase
+    armRG.rotation.z =-0.30+Math.sin(t*0.85+1.35)*0.052+Math.sin(t*1.72+0.55)*0.015;
+    armRG.rotation.x = 0.16+Math.sin(t*0.68+1.05)*0.034+Math.sin(t*1.35+0.8)*0.010;
+    forearmR.rotation.z= 0.22+Math.sin(t*0.72+2.05)*0.068+Math.sin(t*1.48+1.1)*0.018;
+    forearmR.rotation.x=-0.10+Math.sin(t*0.60+1.55)*0.042+Math.sin(t*1.20+1.4)*0.013;
 
-    // Right trailing leg — gentle drift
-    legRG.rotation.x = 0.22+Math.sin(t*0.90+1.5)*0.030;
-    legRG.rotation.z =-0.08+Math.sin(t*0.70+1.0)*0.016;
-    lowerRL.rotation.x= 0.14+Math.sin(t*0.80+0.6)*0.018;
+    // ── LEFT LEG — thigh drifts, lower leg dangles behind with gravity lag
+    legLG.rotation.x =-0.58+Math.sin(t*0.75)*0.060+Math.sin(t*1.50)*0.016;
+    legLG.rotation.z = 0.10+Math.sin(t*0.58)*0.030+Math.sin(t*1.18)*0.009;
+    // Lower leg swings like a pendulum off the thigh motion (phase + 0.65)
+    lowerLL.rotation.x= 0.92+Math.sin(t*0.75+0.65)*0.078+Math.sin(t*1.55+0.35)*0.022;
+
+    // ── RIGHT LEG — trailing, foot droops and swings independently
+    legRG.rotation.x = 0.22+Math.sin(t*0.75+1.85)*0.052+Math.sin(t*1.50+1.05)*0.014;
+    legRG.rotation.z =-0.08+Math.sin(t*0.58+1.25)*0.024+Math.sin(t*1.18+0.9)*0.008;
+    lowerRL.rotation.x= 0.14+Math.sin(t*0.75+2.30)*0.065+Math.sin(t*1.45+1.55)*0.018;
 
     renderer.render(scene,camera);
   })();
