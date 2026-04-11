@@ -5587,8 +5587,7 @@ function initAvatar(){
   const trimBlk = mkM(0x0d0d0d,0.84,0.03); // black trim / collar / cuffs
   const pants   = mkM(0x0a0a0a,0.88,0.00); // slim black joggers
   const gloves  = mkM(0x111111,0.80,0.06); // black gloves
-  const headDk  = mkM(0x050505,0.95,0.00); // mysterious void head
-  const hoodIn  = mkM(0x080808,0.92,0.00); // hood dark interior
+  // (headDk / hoodIn removed — replaced with cartoon face)
   const shoeW   = mkM(0xf4f4f4,0.60,0.05); // white high-top sneakers
   const shoeSl  = mkM(0xe8e8e8,0.80,0.00); // shoe sole
   const laceM   = mkM(0xfafafa,0.85,0.00); // laces
@@ -5608,24 +5607,75 @@ function initAvatar(){
   const BOX=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
   const SPHCAP=(r,w=26,h=14,a=0.54)=>new THREE.SphereGeometry(r,w,h,0,Math.PI*2,0,Math.PI*a);
 
-  // ── HEAD — completely dark / void under hood ──
+  // ── HEAD — stylized cartoon: wide rounded face, cobalt pompadour, sunglasses ──
   const hg=new THREE.Group();fig.add(hg);hg.position.set(0,0.90,0);
-  add(SPH(0.195,26,20),headDk, 0,0,0,hg, 1.0,1.12,0.94);
 
-  // ── HOOD (white outside, black inside, pulled up) ──
-  add(SPHCAP(0.300,28,18,0.60),jacketW,  0, 0.06,-0.02,hg, 1.14,1.02,1.08); // outer dome
-  add(SPH(0.195,16,12),jacketW, -0.172,-0.06,-0.04,hg, 0.73,0.97,0.88); // left flap
-  add(SPH(0.195,16,12),jacketW,  0.172,-0.06,-0.04,hg, 0.73,0.97,0.88); // right flap
-  add(SPHCAP(0.218,22,14,0.44),hoodIn, 0,-0.005, 0.06,hg, 1.05,0.74,0.98); // inner shadow ring
-  add(CYL(0.224,0.206,0.095,22),jacketW, 0,-0.21,-0.014,hg); // hood drape around neck
-  // Drawstrings
-  add(CYL(0.007,0.006,0.295,6),jacketS,-0.038,-0.245,0.218,hg, 1,1,1, 0.36,0, 0.06);
-  add(CYL(0.007,0.006,0.295,6),jacketS, 0.038,-0.245,0.218,hg, 1,1,1, 0.36,0,-0.06);
-  add(SPH(0.015,8,6),trimBlk,-0.042,-0.400,0.260,hg); // drawstring tip L
-  add(SPH(0.015,8,6),trimBlk, 0.042,-0.400,0.260,hg); // drawstring tip R
+  // extra materials for head
+  const skin2   = mkM(0xa07864,0.72,0.02); // warm brown skin
+  const skinShd = mkM(0x8a5e4a,0.82,0.01); // shadow/depth tone
+  const hairB   = mkM(0x1255cc,0.58,0.08); // cobalt blue pompadour
+  const hairBDk = mkM(0x0d3d99,0.68,0.06); // hair shadow/depth
+  const glassF  = mkM(0x0c0c0c,0.70,0.08); // sunglass frame
+  const lensM   = mkM(0x020202,0.06,0.50); // reflective dark lens
+  const lensAcc = mkM(0x2255ee,0.28,0.25); // blue diagonal stripe
+  const mouthM  = mkM(0x7a4030,0.88,0.00); // mouth
+  const gemM    = mkM(0xffffff,0.10,0.95); // diamond earring
 
-  // ── NECK ──
-  add(CYL(0.064,0.078,0.105,16),trimBlk, 0,0.626,0);
+  // ── FACE SHAPE — wide, squat, cartoon rounded-rect feel ──
+  add(SPH(0.200,30,24), skin2,   0,  0,    0,   hg, 1.40,1.02,0.92);       // wide main head
+  add(SPH(0.148,18,14), skin2,  -0.196,-0.018,0, hg, 0.80,1.05,0.78);      // left cheek bulge
+  add(SPH(0.148,18,14), skin2,   0.196,-0.018,0, hg, 0.80,1.05,0.78);      // right cheek bulge
+  add(SPH(0.128,16,12), skin2,   0,-0.180,0.012, hg, 1.14,0.70,0.80);      // chin
+  add(SPH(0.108,14,10), skinShd, 0,-0.068,-0.078,hg, 1.10,0.68,0.60);      // under-jaw shadow
+  add(SPH(0.048,10,8),  skin2,  -0.265, 0.010,0, hg, 0.42,0.80,0.48);      // left ear
+  add(SPH(0.048,10,8),  skin2,   0.265, 0.010,0, hg, 0.42,0.80,0.48);      // right ear
+
+  // ── POMPADOUR — cobalt blue, sweeping upward and forward ──
+  add(SPH(0.188,24,18), hairB,   0,  0.138,-0.032,hg, 1.35,0.80,0.90);     // main hair mass
+  add(SPH(0.158,20,16), hairBDk, 0,  0.108,-0.075,hg, 1.28,0.76,0.72);     // back/depth layer
+  add(CYL(0.098,0.118,0.235,18),hairB, 0.008,0.225,0.052,hg,1,1,1,-0.46,0.05,0.06); // sweep column
+  add(SPH(0.094,16,12), hairB,   0.010,0.340,0.070,hg, 1.18,0.62,0.90);    // curl top
+  add(SPH(0.072,12,10), hairB,   0.012,0.404,0.060,hg, 1.00,0.52,0.80);    // curl tip
+  add(SPH(0.055,10,8),  hairBDk, 0.014,0.448,0.050,hg, 0.90,0.45,0.72);    // curl end point
+  add(SPH(0.082,12,10), hairB,  -0.148,0.138,-0.028,hg, 0.72,0.92,0.80);   // left side hair
+  add(SPH(0.082,12,10), hairB,   0.148,0.138,-0.028,hg, 0.72,0.92,0.80);   // right side hair
+  add(SPH(0.062,10,8),  hairB,  -0.088, 0.055,0.155,hg, 0.68,0.55,0.65);   // front-left hairline
+  add(SPH(0.062,10,8),  hairB,   0.088, 0.055,0.155,hg, 0.68,0.55,0.65);   // front-right hairline
+  add(SPH(0.045,8,6),   hairBDk, 0,0.068,0.172,hg, 0.80,0.48,0.60);        // front center hairline
+
+  // ── SUNGLASSES — wide rectangular, thick frames, blue lens stripes ──
+  // Left lens
+  add(BOX(0.165,0.080,0.020), glassF, -0.105, 0.030,0.172,hg);
+  add(BOX(0.140,0.058,0.024), lensM,  -0.105, 0.030,0.178,hg);
+  add(BOX(0.018,0.060,0.028), lensAcc,-0.120, 0.033,0.184,hg, 1,1,1,0,0,0.52);
+  add(BOX(0.018,0.060,0.028), lensAcc,-0.082, 0.026,0.184,hg, 1,1,1,0,0,0.52);
+  // Right lens
+  add(BOX(0.165,0.080,0.020), glassF,  0.105, 0.030,0.172,hg);
+  add(BOX(0.140,0.058,0.024), lensM,   0.105, 0.030,0.178,hg);
+  add(BOX(0.018,0.060,0.028), lensAcc, 0.088, 0.033,0.184,hg, 1,1,1,0,0,0.52);
+  add(BOX(0.018,0.060,0.028), lensAcc, 0.126, 0.026,0.184,hg, 1,1,1,0,0,0.52);
+  // Bridge
+  add(BOX(0.042,0.020,0.018), glassF,  0,     0.030,0.184,hg);
+  // Temples (side arms)
+  add(BOX(0.028,0.014,0.090), glassF, -0.212, 0.030,0.146,hg, 1,1,1,0, 0.40,0);
+  add(BOX(0.028,0.014,0.090), glassF,  0.212, 0.030,0.146,hg, 1,1,1,0,-0.40,0);
+
+  // ── NOSE — simple subtle bump ──
+  add(SPH(0.026,12,8), skin2,   0,-0.032,0.192,hg, 0.88,1.65,0.72);
+  add(SPH(0.016,10,8), skinShd,-0.022,-0.058,0.188,hg, 0.80,0.70,0.60);
+  add(SPH(0.016,10,8), skinShd, 0.022,-0.058,0.188,hg, 0.80,0.70,0.60);
+
+  // ── MOUTH — clean closed smile ──
+  add(BOX(0.098,0.013,0.012), mouthM,  0,-0.102,0.190,hg);
+  add(SPH(0.020,8,6), mouthM, -0.052,-0.096,0.185,hg, 0.70,0.75,0.52); // left corner uptick
+  add(SPH(0.020,8,6), mouthM,  0.052,-0.096,0.185,hg, 0.70,0.75,0.52); // right corner uptick
+
+  // ── DIAMOND EARRING — white gem stud on left ear ──
+  add(BOX(0.024,0.024,0.015), gemM,-0.282,0.002,0.008,hg, 1,1,1,0,0,0.785);
+  add(BOX(0.012,0.012,0.018), gemM,-0.285,0.002,0.012,hg, 1,1,1,0,0,0.785); // depth sparkle
+
+  // ── NECK — skin-toned ──
+  add(CYL(0.064,0.078,0.105,16),skin2, 0,0.626,0);
 
   // ── TORSO — white varsity jacket ──
   const torsoG=new THREE.Group();fig.add(torsoG);
