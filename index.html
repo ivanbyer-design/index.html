@@ -907,17 +907,21 @@ textarea.fi{resize:vertical;min-height:52px;}
 @media(max-width:768px){.fd-period-bar{gap:5px;padding:12px 0 10px;}.fd-period-btn{padding:6px 14px;font-size:12px;}.fd-month-label{font-size:13px;}}
 
 /* FINANCE OWED SECTION */
-.fd-owed-section{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:16px;box-shadow:var(--sh);}
-.fd-owed-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd);}
+.fd-owed-section{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:16px;box-shadow:var(--sh);}
+.fd-owed-scroll{max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
+.fd-owed-scroll::-webkit-scrollbar{width:4px;}
+.fd-owed-scroll::-webkit-scrollbar-track{background:transparent;}
+.fd-owed-scroll::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
+.fd-owed-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd);}
 .fd-owed-item:last-child{border-bottom:none;}
-.fd-owed-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.fd-owed-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .fd-owed-icon.bill{background:var(--abg);}
 .fd-owed-icon.debt{background:var(--rbg);}
 .fd-owed-info{flex:1;min-width:0;}
-.fd-owed-name{font-size:13px;font-weight:700;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fd-owed-name{font-size:12.5px;font-weight:700;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fd-owed-meta{font-size:11px;color:var(--ts);margin-top:1px;display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
 .fd-owed-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;}
-.fd-owed-amount{font-size:13.5px;font-weight:800;color:var(--red);}
+.fd-owed-amount{font-size:13px;font-weight:800;color:var(--red);}
 .fd-nav-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:var(--bg-card);color:var(--t);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:background .12s,transform .1s;flex-shrink:0;}
 .fd-nav-btn:hover{background:var(--bg-h);transform:scale(1.08);}
 
@@ -2307,20 +2311,8 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-overview-body">
 
-        <!-- MONEY OWED — star of the page -->
-        <div class="fd-owed-section" style="margin-top:14px;">
-          <div class="fd-panel-hdr" style="margin-bottom:10px;">
-            <div class="fd-panel-title">💳 Money Owed</div>
-            <div style="display:flex;gap:8px;">
-              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
-              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
-            </div>
-          </div>
-          <div id="fd-owed-list"></div>
-        </div>
-
         <!-- BUDGET SNAPSHOT QUADRANT -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px;margin-bottom:2px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;margin-bottom:2px;">
           <span class="bl-month-pill">📅 <span id="bl-month-lbl"></span></span>
           <span style="font-size:11px;color:var(--ts);">Bills auto-refresh monthly · tap to pay</span>
         </div>
@@ -2332,7 +2324,7 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         </div>
 
         <!-- PERIOD SELECTOR + KPI ROW -->
-        <div class="divider" style="margin:20px 0 0;"></div>
+        <div class="divider" style="margin:16px 0 0;"></div>
         <div class="fd-period-bar">
           <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
           <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
@@ -2346,7 +2338,7 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <div class="fd-kpi-grid" id="fd-kpis"></div>
 
         <!-- CASH FLOW CHART -->
-        <div class="chart-box" style="margin:0 0 16px;">
+        <div class="chart-box" style="margin:0 0 14px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
             <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
             <div class="legend" style="margin:0;">
@@ -2374,6 +2366,18 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             </div>
             <div class="fd-cal-grid" id="fd-cal-grid"></div>
           </div>
+        </div>
+
+        <!-- MONEY OWED — compact scrollable, sorted by soonest due date -->
+        <div class="fd-owed-section" style="margin-top:14px;">
+          <div class="fd-panel-hdr" style="margin-bottom:8px;">
+            <div class="fd-panel-title">💳 Money Owed</div>
+            <div style="display:flex;gap:8px;">
+              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
+              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+            </div>
+          </div>
+          <div id="fd-owed-list" class="fd-owed-scroll"></div>
         </div>
 
         <!-- FINANCIAL MILESTONE -->
@@ -3733,54 +3737,77 @@ function renderFinOverview(){
     }
   }
 
-  // ── UNIFIED MONEY OWED (bills + debts) ──
+  // ── UNIFIED MONEY OWED — sorted by soonest due date ──
   const owedEl=G('fd-owed-list');
   if(owedEl){
     const OPS={pending:'amber',overdue:'red',scheduled:'blue'};
     const OPL={pending:'Pending',overdue:'Overdue',scheduled:'Scheduled'};
-    const unpaidBills=S.bills.filter(b=>getBillStatus(b)==='Unpaid').sort((a,b)=>(nextBillDue(a)||'9999').localeCompare(nextBillDue(b)||'9999'));
-    const activeDebts=(S.otherPayments||[]).filter(p=>p.s!=='paid').sort((a,b)=>{
-      const ord={overdue:0,pending:1,scheduled:2};
-      return(ord[a.s]||9)-(ord[b.s]||9)||(a.due||'9999').localeCompare(b.due||'9999');
-    });
-    const total=unpaidBills.reduce((s,b)=>s+b.a,0)+activeDebts.reduce((s,p)=>s+p.a,0);
 
-    if(!unpaidBills.length&&!activeDebts.length){
+    // Build a unified item list with a sortable due date
+    const items=[];
+    S.bills.filter(b=>getBillStatus(b)==='Unpaid').forEach(b=>{
+      const nxt=nextBillDue(b)||'9999-99-99';
+      items.push({kind:'bill',dueKey:nxt,b});
+    });
+    (S.otherPayments||[]).filter(p=>p.s!=='paid').forEach(p=>{
+      items.push({kind:'debt',dueKey:p.due||'9999-99-99',p});
+    });
+
+    // Sort: overdue first (dueKey < today), then by ascending dueKey
+    items.sort((a,b)=>{
+      const da=a.dueKey, db=b.dueKey;
+      const aOvd=da<today, bOvd=db<today;
+      if(aOvd&&!bOvd) return -1;
+      if(!aOvd&&bOvd) return 1;
+      return da.localeCompare(db);
+    });
+
+    const total=items.reduce((s,it)=>s+(it.kind==='bill'?it.b.a:it.p.a),0);
+
+    if(!items.length){
       owedEl.innerHTML=`<div class="fd-empty-row">✅ Nothing owed — you're all clear!</div>`;
     } else {
-      let rows='';
-      unpaidBills.forEach(b=>{
-        const nxt=nextBillDue(b);
-        const isOvd=nxt&&nxt<today;
-        rows+=`<div class="fd-owed-item">
-          <div class="fd-owed-icon bill">${CAT_ICONS[b.cat||'Other']||'🧾'}</div>
-          <div class="fd-owed-info">
-            <div class="fd-owed-name">${b.n}</div>
-            <div class="fd-owed-meta">${tag('Bill','amber')} ${tag(b.f,'gray')} ${nxt?`<span style="color:${isOvd?'var(--red)':'var(--ts)'};">${isOvd?'⚠️ overdue':'due'} ${nxt}</span>`:''}</div>
-          </div>
-          <div class="fd-owed-right">
-            <div class="fd-owed-amount">${fmt(b.a)}</div>
-            <button class="fd-pay-btn" onclick="markBillPaid(${b.id})">✓ Pay</button>
-          </div>
-        </div>`;
-      });
-      activeDebts.forEach(p=>{
-        rows+=`<div class="fd-owed-item">
-          <div class="fd-owed-icon debt">${CAT_ICONS[p.cat||'Other']||'💸'}</div>
-          <div class="fd-owed-info">
-            <div class="fd-owed-name">${p.n}</div>
-            <div class="fd-owed-meta">${tag(OPL[p.s]||p.s,OPS[p.s]||'gray')} ${p.cat?tag(p.cat,'gray'):''} ${p.due?`<span style="color:var(--ts);">due ${p.due}</span>`:''}</div>
-          </div>
-          <div class="fd-owed-right">
-            <div class="fd-owed-amount">${fmt(p.a)}</div>
-            <button class="fd-pay-btn" onclick="markDebtPaid(${p.id})">✓ Paid</button>
-          </div>
-        </div>`;
-      });
+      const rows=items.map(it=>{
+        if(it.kind==='bill'){
+          const b=it.b, nxt=it.dueKey==='9999-99-99'?null:it.dueKey;
+          const isOvd=nxt&&nxt<today;
+          const daysAway=nxt?Math.round((new Date(nxt)-new Date(today))/(1000*60*60*24)):null;
+          const dueLbl=nxt?(isOvd?`<span style="color:var(--red);font-weight:700;">⚠ overdue ${nxt}</span>`:`<span style="color:${daysAway<=3?'var(--amber)':'var(--ts)'};">due ${nxt}</span>`):'';
+          return `<div class="fd-owed-item">
+            <div class="fd-owed-icon bill">${CAT_ICONS[b.cat||'Other']||'🧾'}</div>
+            <div class="fd-owed-info">
+              <div class="fd-owed-name">${b.n}</div>
+              <div class="fd-owed-meta">${tag('Bill','amber')} ${tag(b.f,'gray')} ${dueLbl}</div>
+            </div>
+            <div class="fd-owed-right">
+              <div class="fd-owed-amount">${fmt(b.a)}</div>
+              <button class="fd-pay-btn" onclick="markBillPaid(${b.id})">✓ Pay</button>
+            </div>
+          </div>`;
+        } else {
+          const p=it.p, nxt=it.dueKey==='9999-99-99'?null:it.dueKey;
+          const isOvd=nxt&&nxt<today;
+          const daysAway=nxt?Math.round((new Date(nxt)-new Date(today))/(1000*60*60*24)):null;
+          const dueLbl=nxt?(isOvd?`<span style="color:var(--red);font-weight:700;">⚠ overdue ${nxt}</span>`:`<span style="color:${daysAway<=3?'var(--amber)':'var(--ts)'};">due ${nxt}</span>`):'';
+          return `<div class="fd-owed-item">
+            <div class="fd-owed-icon debt">${CAT_ICONS[p.cat||'Other']||'💸'}</div>
+            <div class="fd-owed-info">
+              <div class="fd-owed-name">${p.n}</div>
+              <div class="fd-owed-meta">${tag(OPL[p.s]||p.s,OPS[p.s]||'gray')} ${p.cat?tag(p.cat,'gray'):''} ${dueLbl}</div>
+            </div>
+            <div class="fd-owed-right">
+              <div class="fd-owed-amount">${fmt(p.a)}</div>
+              <button class="fd-pay-btn" onclick="markDebtPaid(${p.id})">✓ Paid</button>
+            </div>
+          </div>`;
+        }
+      }).join('');
+      const billCt=items.filter(i=>i.kind==='bill').length;
+      const debtCt=items.filter(i=>i.kind==='debt').length;
       owedEl.innerHTML=`
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
-          <span style="font-size:11.5px;font-weight:600;color:var(--ts);">${unpaidBills.length} bill${unpaidBills.length!==1?'s':''} · ${activeDebts.length} debt${activeDebts.length!==1?'s':''}</span>
-          <span style="font-size:16px;font-weight:800;color:var(--red);letter-spacing:-0.02em;">${fmt(total)} owed</span>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--ts);">${billCt} bill${billCt!==1?'s':''} · ${debtCt} debt${debtCt!==1?'s':''} · sorted by due date</span>
+          <span style="font-size:15px;font-weight:800;color:var(--red);letter-spacing:-0.02em;">${fmt(total)} owed</span>
         </div>${rows}`;
     }
   }
