@@ -5548,7 +5548,7 @@ function logProjExpense(id){
 }
 
 // ════════════════════════════════════════════════════
-// 3D HUMAN AVATAR (Three.js)
+// 3D HUMAN AVATAR (Three.js) — Streetwear floating pose
 // ════════════════════════════════════════════════════
 function initAvatar(){
   const canvas=document.getElementById('avatar-canvas');
@@ -5565,36 +5565,38 @@ function initAvatar(){
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 
   const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(36,W/H,0.1,100);
-  camera.position.set(0,0.08,4.1);
-  camera.lookAt(0,0.05,0);
+  const camera=new THREE.PerspectiveCamera(40,W/H,0.1,100);
+  camera.position.set(0,0.04,3.85);
+  camera.lookAt(0,-0.02,0);
 
-  // ── 5-POINT LIGHTING for skin depth ──
-  const key=new THREE.DirectionalLight(0xfff3e0,1.8);
-  key.position.set(2.5,4,4.5);key.castShadow=true;scene.add(key);
-  const fill=new THREE.DirectionalLight(0xcce8ff,0.7);
-  fill.position.set(-3,0.5,2);scene.add(fill);
-  const rim=new THREE.DirectionalLight(0xff8844,0.55);
-  rim.position.set(0.5,2,-5);scene.add(rim);
-  const bounce=new THREE.DirectionalLight(0xffe8c0,0.3);
-  bounce.position.set(0,-4,2);scene.add(bounce);
-  scene.add(new THREE.AmbientLight(0xffd8b0,0.55));
+  // ── DRAMATIC MONOCHROME LIGHTING ──
+  const key=new THREE.DirectionalLight(0xffffff,2.4);
+  key.position.set(2.5,5,4);key.castShadow=true;scene.add(key);
+  const fill=new THREE.DirectionalLight(0xdde8ff,0.7);
+  fill.position.set(-3,1,2);scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xffffff,1.6);
+  rim.position.set(0,1.5,-5);scene.add(rim);
+  const under=new THREE.DirectionalLight(0xaabbcc,0.22);
+  under.position.set(0,-4,2);scene.add(under);
+  scene.add(new THREE.AmbientLight(0xffffff,0.80));
 
-  // ── PBR MATERIALS ──
+  // ── MATERIALS (monochrome streetwear palette) ──
   const mkM=(c,r=0.72,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
-  const skin    = mkM(0xd4956a,0.65);
-  const skinSub = mkM(0xb87248,0.70);
-  const hair    = new THREE.MeshStandardMaterial({color:0x120906,roughness:0.92,metalness:0.04});
-  const shirt   = new THREE.MeshStandardMaterial({color:0x1e3a5f,roughness:0.78,metalness:0.02});
-  const pants   = new THREE.MeshStandardMaterial({color:0x1c2035,roughness:0.84,metalness:0});
-  const shoe    = new THREE.MeshStandardMaterial({color:0x100e0b,roughness:0.22,metalness:0.18});
-  const sole    = mkM(0xe8e4de,0.78);
-  const eyeW    = mkM(0xf8f4f0,0.82);
-  const irisM   = new THREE.MeshStandardMaterial({color:0x4a2a10,roughness:0.08,metalness:0.35});
-  const pupilM  = new THREE.MeshStandardMaterial({color:0x060300,roughness:0.02,metalness:0.55});
-  const lipM    = mkM(0xb05840,0.48);
+  const jacketW = mkM(0xf0f0f0,0.70,0.02); // white varsity jacket
+  const jacketS = mkM(0xe2e2e2,0.78,0.01); // jacket shading panel
+  const trimBlk = mkM(0x0d0d0d,0.84,0.03); // black trim / collar / cuffs
+  const pants   = mkM(0x0a0a0a,0.88,0.00); // slim black joggers
+  const gloves  = mkM(0x111111,0.80,0.06); // black gloves
+  const headDk  = mkM(0x050505,0.95,0.00); // mysterious void head
+  const hoodIn  = mkM(0x080808,0.92,0.00); // hood dark interior
+  const shoeW   = mkM(0xf4f4f4,0.60,0.05); // white high-top sneakers
+  const shoeSl  = mkM(0xe8e8e8,0.80,0.00); // shoe sole
+  const laceM   = mkM(0xfafafa,0.85,0.00); // laces
 
   const fig=new THREE.Group();scene.add(fig);
+  // Initial pose tilt — body angled slightly as if drifting mid-air
+  fig.rotation.z= 0.10;
+  fig.rotation.x=-0.05;
 
   function add(geo,mat,x,y,z,par=fig,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0){
     const m=new THREE.Mesh(geo,mat);
@@ -5606,158 +5608,189 @@ function initAvatar(){
   const BOX=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
   const SPHCAP=(r,w=26,h=14,a=0.54)=>new THREE.SphereGeometry(r,w,h,0,Math.PI*2,0,Math.PI*a);
 
-  // ── HEAD ──
+  // ── HEAD — completely dark / void under hood ──
   const hg=new THREE.Group();fig.add(hg);hg.position.set(0,0.90,0);
-  add(SPH(0.21,30,22),skin,    0,0,0,hg,   1.02,1.14,0.94);
-  add(SPH(0.18,20,14),skin,    0,-0.12,0.04,hg, 1.05,0.72,0.92);
-  add(SPH(0.13,16,12),skin,   -0.15,-0.05,0.09,hg, 1.1,0.75,0.68);
-  add(SPH(0.13,16,12),skin,    0.15,-0.05,0.09,hg, 1.1,0.75,0.68);
-  add(SPHCAP(0.224,30,16,0.58),hair, 0,0.03,-0.01,hg);
-  add(CYL(0.028,0.058,0.16,12),hair,-0.19,-0.12,-0.03,hg, 1,1,1, 0,0, 0.32);
-  add(CYL(0.028,0.058,0.16,12),hair, 0.19,-0.12,-0.03,hg, 1,1,1, 0,0,-0.32);
-  add(SPH(0.052,14,10),skin,  -0.202,0.01,0,hg,  0.42,0.88,0.54);
-  add(SPH(0.052,14,10),skin,   0.202,0.01,0,hg,  0.42,0.88,0.54);
-  add(SPH(0.034,10,8), skinSub,-0.21, 0.01,0.01,hg, 0.28,0.62,0.38);
-  add(SPH(0.034,10,8), skinSub, 0.21, 0.01,0.01,hg, 0.28,0.62,0.38);
+  add(SPH(0.195,26,20),headDk, 0,0,0,hg, 1.0,1.12,0.94);
 
-  // ── EYES ──
-  const eyeLG=new THREE.Group();hg.add(eyeLG);eyeLG.position.set(-0.076,0.048,0.186);
-  const eyeRG=new THREE.Group();hg.add(eyeRG);eyeRG.position.set( 0.076,0.048,0.186);
-  add(SPH(0.036,18,14),eyeW, 0,0,0,eyeLG, 1.2,0.85,0.55);
-  add(SPH(0.036,18,14),eyeW, 0,0,0,eyeRG, 1.2,0.85,0.55);
-  add(SPH(0.023,14,10),irisM, 0,0,0.014,eyeLG);
-  add(SPH(0.023,14,10),irisM, 0,0,0.014,eyeRG);
-  add(SPH(0.014,12,8), pupilM,0,0,0.025,eyeLG);
-  add(SPH(0.014,12,8), pupilM,0,0,0.025,eyeRG);
-  const lidL=add(SPH(0.038,16,12),skin, 0, 0.013,0.003,eyeLG, 1.25,0.42,0.58);
-  const lidR=add(SPH(0.038,16,12),skin, 0, 0.013,0.003,eyeRG, 1.25,0.42,0.58);
-  add(SPH(0.034,14,10),skinSub, 0,-0.016,0.005,eyeLG, 1.2,0.3,0.5);
-  add(SPH(0.034,14,10),skinSub, 0,-0.016,0.005,eyeRG, 1.2,0.3,0.5);
-  add(BOX(0.072,0.016,0.012),hair,-0.076,0.118,0.205,hg, 1,1,1, 0,0,-0.18);
-  add(BOX(0.072,0.016,0.012),hair, 0.076,0.118,0.205,hg, 1,1,1, 0,0, 0.18);
-
-  // ── NOSE ──
-  add(SPH(0.018,12,8),skin, 0, 0.025,0.217,hg, 0.85,2.0,0.72);
-  add(SPH(0.026,14,10),skin, 0,-0.028,0.222,hg, 1.05,0.80,0.92);
-  add(SPH(0.016,10,8),skinSub,-0.022,-0.038,0.216,hg,1,0.7,0.65);
-  add(SPH(0.016,10,8),skinSub, 0.022,-0.038,0.216,hg,1,0.7,0.65);
-
-  // ── MOUTH ──
-  add(SPH(0.046,14,8),lipM, 0,-0.104,0.198,hg, 1.6,0.4,0.46);
-  add(SPH(0.052,14,8),lipM, 0,-0.132,0.198,hg, 1.5,0.48,0.50);
-  add(BOX(0.07,0.008,0.01),skinSub, 0,-0.117,0.204,hg);
-  add(SPH(0.012,8,6),skinSub,-0.066,-0.11,0.21,hg, 0.6,1.2,0.5);
-  add(SPH(0.012,8,6),skinSub, 0.066,-0.11,0.21,hg, 0.6,1.2,0.5);
+  // ── HOOD (white outside, black inside, pulled up) ──
+  add(SPHCAP(0.300,28,18,0.60),jacketW,  0, 0.06,-0.02,hg, 1.14,1.02,1.08); // outer dome
+  add(SPH(0.195,16,12),jacketW, -0.172,-0.06,-0.04,hg, 0.73,0.97,0.88); // left flap
+  add(SPH(0.195,16,12),jacketW,  0.172,-0.06,-0.04,hg, 0.73,0.97,0.88); // right flap
+  add(SPHCAP(0.218,22,14,0.44),hoodIn, 0,-0.005, 0.06,hg, 1.05,0.74,0.98); // inner shadow ring
+  add(CYL(0.224,0.206,0.095,22),jacketW, 0,-0.21,-0.014,hg); // hood drape around neck
+  // Drawstrings
+  add(CYL(0.007,0.006,0.295,6),jacketS,-0.038,-0.245,0.218,hg, 1,1,1, 0.36,0, 0.06);
+  add(CYL(0.007,0.006,0.295,6),jacketS, 0.038,-0.245,0.218,hg, 1,1,1, 0.36,0,-0.06);
+  add(SPH(0.015,8,6),trimBlk,-0.042,-0.400,0.260,hg); // drawstring tip L
+  add(SPH(0.015,8,6),trimBlk, 0.042,-0.400,0.260,hg); // drawstring tip R
 
   // ── NECK ──
-  add(CYL(0.070,0.086,0.14,18),skin, 0,0.62,0);
-  add(BOX(0.36,0.025,0.055),skin, 0,0.545,0.1,fig);
+  add(CYL(0.064,0.078,0.105,16),trimBlk, 0,0.626,0);
 
-  // ── TORSO GROUP (for breathing) ──
+  // ── TORSO — white varsity jacket ──
   const torsoG=new THREE.Group();fig.add(torsoG);
-  add(CYL(0.258,0.196,0.32,24),shirt, 0,0.356,0,torsoG);
-  add(CYL(0.192,0.212,0.17,22),shirt, 0,0.083,0,torsoG);
-  add(CYL(0.088,0.096,0.07,16),shirt, 0,0.548,0.016,fig);
+  add(CYL(0.264,0.200,0.335,24),jacketW, 0,0.350,0,torsoG); // upper body
+  add(CYL(0.198,0.218,0.172,22),jacketW, 0,0.076,0,torsoG); // lower jacket
+  add(CYL(0.090,0.098,0.070,16),trimBlk, 0,0.546,0.014,fig); // collar trim
+  // Jacket front zipper stripe
+  add(BOX(0.020,0.310,0.010),jacketS, 0,0.278,0.260,torsoG);
+  // Chest X mark (black, approx centre-left)
+  add(BOX(0.084,0.013,0.009),trimBlk,-0.028,0.375,0.262,torsoG, 1,1,1, 0,0, 0.785);
+  add(BOX(0.084,0.013,0.009),trimBlk,-0.028,0.375,0.262,torsoG, 1,1,1, 0,0,-0.785);
+  // Varsity stripe at jacket hem (black band)
+  add(CYL(0.218,0.202,0.038,22),trimBlk, 0,-0.008,0,torsoG);
 
-  // ── HIPS ──
-  add(CYL(0.218,0.208,0.17,22),pants, 0,-0.108,0);
+  // ── HIPS — black pants ──
+  add(CYL(0.222,0.214,0.178,22),pants, 0,-0.112,0);
 
-  // ── SHOULDER CAPS ──
-  add(SPH(0.108,18,14),shirt,-0.334,0.492,0);
-  add(SPH(0.108,18,14),shirt, 0.334,0.492,0);
+  // ── SHOULDER CAPS (white jacket) ──
+  add(SPH(0.114,18,14),jacketW,-0.352,0.490,0);
+  add(SPH(0.114,18,14),jacketW, 0.352,0.490,0);
 
-  // ── LEFT ARM ──
-  const armLG=new THREE.Group();fig.add(armLG);armLG.position.set(-0.372,0.492,0);
-  add(CYL(0.072,0.082,0.29,16),shirt, 0,-0.145,0,armLG);
-  add(SPH(0.078,14,10),skin,   0,-0.308,0,armLG);
-  add(CYL(0.056,0.068,0.25,14),skin, 0,-0.462,0,armLG);
-  add(SPH(0.074,16,10),skin,   0,-0.600,0,armLG, 1.18,0.84,0.62);
+  // ── LEFT ARM — extended down-outward, gloved hand reaching/pointing ──
+  const armLG=new THREE.Group();fig.add(armLG);
+  armLG.position.set(-0.400,0.488,0);
+  armLG.rotation.z= 0.78;  // arm angled down-outward
+  armLG.rotation.x= 0.30;  // slight forward reach
+  // Upper arm (white sleeve)
+  add(CYL(0.075,0.083,0.272,16),jacketW, 0,-0.136,0,armLG);
+  // Cuff trim stripe
+  add(CYL(0.070,0.074,0.038,14),trimBlk, 0,-0.265,0,armLG);
+  // Elbow
+  add(SPH(0.079,14,10),jacketW, 0,-0.286,0,armLG);
+  // X mark on left sleeve
+  add(BOX(0.042,0.009,0.008),trimBlk, 0,-0.130,0.076,armLG, 1,1,1, 0,0, 0.785);
+  add(BOX(0.042,0.009,0.008),trimBlk, 0,-0.130,0.076,armLG, 1,1,1, 0,0,-0.785);
+  // Forearm (pivot at elbow)
+  const forearmL=new THREE.Group();armLG.add(forearmL);
+  forearmL.position.set(0,-0.286,0);
+  forearmL.rotation.z=-0.30;
+  forearmL.rotation.x= 0.20;
+  add(CYL(0.057,0.067,0.225,14),gloves, 0,-0.112,0,forearmL); // gloved forearm
+  // Gloved hand (spread fingers pointing)
+  add(SPH(0.075,14,10),gloves, 0,-0.238,0,forearmL, 1.20,0.80,0.58);
+  add(CYL(0.017,0.013,0.078,8),gloves,-0.042,-0.292,0.042,forearmL, 1,1,1, 0.46,0, 0.30);
+  add(CYL(0.017,0.013,0.078,8),gloves,-0.006,-0.300,0.044,forearmL, 1,1,1, 0.49,0, 0.06);
+  add(CYL(0.016,0.012,0.072,8),gloves, 0.030,-0.294,0.040,forearmL, 1,1,1, 0.45,0,-0.22);
+  add(CYL(0.014,0.010,0.058,8),gloves,-0.054,-0.272,0.030,forearmL, 1,1,1, 0.30,0, 0.56); // pinky
+  add(CYL(0.019,0.015,0.060,8),gloves, 0.052,-0.280,0.026,forearmL, 1,1,1, 0.24,0,-0.52); // thumb
 
-  // ── RIGHT ARM ──
-  const armRG=new THREE.Group();fig.add(armRG);armRG.position.set( 0.372,0.492,0);
-  add(CYL(0.072,0.082,0.29,16),shirt, 0,-0.145,0,armRG);
-  add(SPH(0.078,14,10),skin,   0,-0.308,0,armRG);
-  add(CYL(0.056,0.068,0.25,14),skin, 0,-0.462,0,armRG);
-  add(SPH(0.074,16,10),skin,   0,-0.600,0,armRG, 1.18,0.84,0.62);
+  // ── RIGHT ARM — relaxed float, slight raise ──
+  const armRG=new THREE.Group();fig.add(armRG);
+  armRG.position.set( 0.400,0.488,0);
+  armRG.rotation.z=-0.30;
+  armRG.rotation.x= 0.16;
+  add(CYL(0.075,0.083,0.272,16),jacketW, 0,-0.136,0,armRG);
+  add(CYL(0.070,0.074,0.038,14),trimBlk, 0,-0.265,0,armRG);
+  add(SPH(0.079,14,10),jacketW, 0,-0.286,0,armRG);
+  // X on right sleeve
+  add(BOX(0.042,0.009,0.008),trimBlk, 0,-0.130,0.076,armRG, 1,1,1, 0,0, 0.785);
+  add(BOX(0.042,0.009,0.008),trimBlk, 0,-0.130,0.076,armRG, 1,1,1, 0,0,-0.785);
+  const forearmR=new THREE.Group();armRG.add(forearmR);
+  forearmR.position.set(0,-0.286,0);
+  forearmR.rotation.z= 0.22;
+  forearmR.rotation.x=-0.10;
+  add(CYL(0.057,0.067,0.225,14),gloves, 0,-0.112,0,forearmR);
+  add(SPH(0.075,14,10),gloves, 0,-0.238,0,forearmR, 1.18,0.80,0.58);
+  // Right hand fingers (relaxed float gesture)
+  add(CYL(0.017,0.013,0.078,8),gloves, 0.034,-0.290,0.042,forearmR, 1,1,1, 0.43,0,-0.28);
+  add(CYL(0.017,0.013,0.078,8),gloves, 0.003,-0.298,0.044,forearmR, 1,1,1, 0.47,0,-0.04);
+  add(CYL(0.016,0.012,0.072,8),gloves,-0.028,-0.292,0.040,forearmR, 1,1,1, 0.43,0, 0.24);
+  add(CYL(0.019,0.015,0.060,8),gloves, 0.050,-0.278,0.028,forearmR, 1,1,1, 0.25,0,-0.52);
 
-  // ── THIGHS ──
-  add(CYL(0.102,0.115,0.35,20),pants,-0.124,-0.435,0);
-  add(CYL(0.102,0.115,0.35,20),pants, 0.124,-0.435,0);
+  // ── LEFT LEG — raised/bent knee (key floating pose) ──
+  const legLG=new THREE.Group();fig.add(legLG);
+  legLG.position.set(-0.118,-0.202,0);
+  legLG.rotation.x=-0.58; // thigh swung forward/up
+  legLG.rotation.z= 0.10;
+  // Upper thigh
+  add(CYL(0.103,0.115,0.338,20),pants, 0,-0.169,0,legLG);
+  add(SPH(0.106,14,10),pants, 0,-0.343,0,legLG); // knee cap
+  // Lower leg (bent sharply back at knee)
+  const lowerLL=new THREE.Group();legLG.add(lowerLL);
+  lowerLL.position.set(0,-0.343,0);
+  lowerLL.rotation.x= 0.92;
+  add(CYL(0.077,0.091,0.298,16),pants, 0,-0.149,0,lowerLL);
+  add(SPH(0.076,12,10),pants, 0,-0.308,0,lowerLL, 1,0.88,1); // ankle
+  // Left foot — white high-top Converse-style
+  const fLG=new THREE.Group();lowerLL.add(fLG);
+  fLG.position.set(0,-0.336,0.028);
+  fLG.rotation.x=-0.62;
+  add(BOX(0.155,0.086,0.272),shoeW, 0,0,0,fLG);           // shoe body
+  add(BOX(0.155,0.026,0.272),shoeSl, 0,-0.056,0,fLG);     // sole
+  add(SPH(0.081,10,8),shoeW, 0,0.006,0.130,fLG, 0.92,0.68,0.68); // toe cap
+  add(BOX(0.155,0.060,0.088),shoeW, 0,0.040,-0.098,fLG);  // high-top back
+  add(BOX(0.092,0.010,0.185),laceM, 0,0.046,0.038,fLG);   // laces
+  // Shoe X mark
+  add(BOX(0.060,0.009,0.007),trimBlk, 0,0.048,0.130,fLG, 1,1,1, 0,0, 0.785);
+  add(BOX(0.060,0.009,0.007),trimBlk, 0,0.048,0.130,fLG, 1,1,1, 0,0,-0.785);
 
-  // ── KNEES ──
-  add(SPH(0.103,14,10),pants,-0.124,-0.624,0);
-  add(SPH(0.103,14,10),pants, 0.124,-0.624,0);
+  // ── RIGHT LEG — hanging/trailing loosely down ──
+  const legRG=new THREE.Group();fig.add(legRG);
+  legRG.position.set( 0.118,-0.202,0);
+  legRG.rotation.x= 0.22;
+  legRG.rotation.z=-0.08;
+  add(CYL(0.103,0.115,0.338,20),pants, 0,-0.169,0,legRG);
+  add(SPH(0.106,14,10),pants, 0,-0.343,0,legRG);
+  const lowerRL=new THREE.Group();legRG.add(lowerRL);
+  lowerRL.position.set(0,-0.343,0);
+  lowerRL.rotation.x= 0.14;
+  add(CYL(0.077,0.091,0.298,16),pants, 0,-0.149,0,lowerRL);
+  add(SPH(0.076,12,10),pants, 0,-0.308,0,lowerRL, 1,0.88,1);
+  // Right foot — white high-top
+  const fRG=new THREE.Group();lowerRL.add(fRG);
+  fRG.position.set(0,-0.336,0.028);
+  fRG.rotation.x=-0.14;
+  add(BOX(0.155,0.086,0.272),shoeW, 0,0,0,fRG);
+  add(BOX(0.155,0.026,0.272),shoeSl, 0,-0.056,0,fRG);
+  add(SPH(0.081,10,8),shoeW, 0,0.006,0.130,fRG, 0.92,0.68,0.68);
+  add(BOX(0.155,0.060,0.088),shoeW, 0,0.040,-0.098,fRG);
+  add(BOX(0.092,0.010,0.185),laceM, 0,0.046,0.038,fRG);
+  add(BOX(0.060,0.009,0.007),trimBlk, 0,0.048,0.130,fRG, 1,1,1, 0,0, 0.785);
+  add(BOX(0.060,0.009,0.007),trimBlk, 0,0.048,0.130,fRG, 1,1,1, 0,0,-0.785);
 
-  // ── LOWER LEGS ──
-  add(CYL(0.076,0.090,0.31,16),pants,-0.124,-0.808,0);
-  add(CYL(0.076,0.090,0.31,16),pants, 0.124,-0.808,0);
-
-  // ── ANKLES ──
-  add(SPH(0.075,12,10),skin,-0.124,-0.975,0, fig, 1,0.88,1);
-  add(SPH(0.075,12,10),skin, 0.124,-0.975,0, fig, 1,0.88,1);
-
-  // ── FEET ──
-  const fL=new THREE.Group();fig.add(fL);fL.position.set(-0.124,-1.055,0.038);
-  add(BOX(0.152,0.082,0.265),shoe,0, 0,0,fL);
-  add(BOX(0.152,0.025,0.265),sole,0,-0.054,0,fL);
-  add(SPH(0.078,10,8),shoe, 0,0.005,0.128,fL, 0.92,0.68,0.68);
-  const fR=new THREE.Group();fig.add(fR);fR.position.set( 0.124,-1.055,0.038);
-  add(BOX(0.152,0.082,0.265),shoe,0, 0,0,fR);
-  add(BOX(0.152,0.025,0.265),sole,0,-0.054,0,fR);
-  add(SPH(0.078,10,8),shoe, 0,0.005,0.128,fR, 0.92,0.68,0.68);
-
-  // ── SOFT GROUND SHADOW ──
-  const shadow=new THREE.Mesh(
-    new THREE.CircleGeometry(0.25,32),
-    new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.14})
-  );
-  shadow.rotation.x=-Math.PI/2;shadow.position.set(0,-1.15,0);scene.add(shadow);
-
-  // ── SPIN + HOVER ANIMATION ──
+  // ── LIVE FLOATING ANIMATION ──
   let t=0;
-  let blinkTimer=0, blinkDur=0;
-  let blinkCool=2.5+Math.random()*3.5;
-  const BLINK_T=0.12;
-  const SPIN_SPEED=0.011; // ~9s per full 360°
 
   (function animate(){
     requestAnimationFrame(animate);
     t+=0.016;
 
-    // Continuous 360° Y-axis spin at steady rate
-    fig.rotation.y += SPIN_SPEED;
+    // Slow continuous Y spin
+    fig.rotation.y += 0.0085;
 
-    // Hover float — gentle sine bob
-    fig.position.y = Math.sin(t*1.4)*0.032;
+    // Primary float bob — large, smooth, weightless
+    const floatY = Math.sin(t*1.05)*0.046;
+    fig.position.y = floatY;
 
-    // Subtle torso breathing
-    torsoG.scale.y = 1 + Math.sin(t*1.25)*0.010;
+    // Drifting body tilt — side sway + subtle forward lean
+    fig.rotation.z = 0.10 + Math.sin(t*0.62)*0.024;
+    fig.rotation.x =-0.05 + Math.sin(t*0.50)*0.016;
 
-    // Arms drift slightly with the hover
-    armLG.rotation.z = -0.04 + Math.sin(t*1.4)*0.03;
-    armRG.rotation.z =  0.04 - Math.sin(t*1.4)*0.03;
+    // Breathing torso
+    torsoG.scale.y = 1 + Math.sin(t*1.18)*0.009;
+    torsoG.scale.x = 1 - Math.sin(t*1.18)*0.004;
 
-    // Ground shadow fades slightly on hover up
-    const hoverFactor = (Math.sin(t*1.4)+1)*0.5;
-    shadow.material.opacity = 0.08 + hoverFactor*0.08;
-    shadow.scale.setScalar(1 - hoverFactor*0.12);
+    // Left arm — extend and drift as if weightless
+    armLG.rotation.z = 0.78 + Math.sin(t*1.05)*0.042;
+    armLG.rotation.x = 0.30 + Math.sin(t*0.78)*0.030;
+    forearmL.rotation.z=-0.30+Math.sin(t*0.90)*0.025;
+    forearmL.rotation.x= 0.20+Math.sin(t*0.72)*0.018;
 
-    // Blink
-    blinkTimer += 0.016;
-    if(blinkDur===0 && blinkTimer>=blinkCool){
-      blinkDur=0.001;
-      lidL.scale.y=3.8; lidR.scale.y=3.8;
-      lidL.position.y=-0.016; lidR.position.y=-0.016;
-    }
-    if(blinkDur>0){
-      blinkDur+=0.016;
-      if(blinkDur>=BLINK_T){
-        lidL.scale.y=0.42; lidR.scale.y=0.42;
-        lidL.position.y=0.013; lidR.position.y=0.013;
-        blinkDur=0; blinkTimer=0;
-        blinkCool=2.8+Math.random()*4.2;
-      }
-    }
+    // Right arm — gentle drift
+    armRG.rotation.z =-0.30+Math.sin(t*1.05+1.2)*0.030;
+    armRG.rotation.x = 0.16+Math.sin(t*0.82+0.8)*0.022;
+    forearmR.rotation.z= 0.22+Math.sin(t*0.90+1.0)*0.020;
+
+    // Left raised leg — floats up and down slightly
+    legLG.rotation.x =-0.58+Math.sin(t*0.90)*0.038;
+    legLG.rotation.z = 0.10+Math.sin(t*0.70)*0.020;
+    lowerLL.rotation.x= 0.92+Math.sin(t*0.80)*0.025;
+
+    // Right trailing leg — gentle drift
+    legRG.rotation.x = 0.22+Math.sin(t*0.90+1.5)*0.030;
+    legRG.rotation.z =-0.08+Math.sin(t*0.70+1.0)*0.016;
+    lowerRL.rotation.x= 0.14+Math.sin(t*0.80+0.6)*0.018;
 
     renderer.render(scene,camera);
   })();
