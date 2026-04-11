@@ -303,16 +303,24 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .wd-tag{display:inline-flex;align-items:center;font-size:8px;font-weight:700;padding:1.5px 5px;border-radius:6px;margin-bottom:2px;letter-spacing:0.02em;}
 .wd-tag.bill{background:var(--rbg);color:var(--red);}
 .wd-tag.done{background:var(--gbg);color:var(--green);}
-.wd-net{font-size:9.5px;font-weight:800;padding-top:4px;margin-top:4px;border-top:1px solid var(--bd);}
-.wd-net.up{color:var(--green);}
-.wd-net.dn{color:var(--red);}
+.wd-fin{border-top:1px solid var(--bd);margin-top:4px;padding-top:4px;display:flex;flex-direction:column;gap:2px;}
+.wd-fin-row{display:flex;align-items:center;justify-content:space-between;font-size:9px;font-weight:700;line-height:1.3;}
+.wd-fin-lbl{font-weight:600;color:var(--ts);font-size:8.5px;letter-spacing:0.02em;}
+.wd-fin-row.inc .wd-fin-amt{color:var(--green);}
+.wd-fin-row.exp .wd-fin-amt{color:var(--red);}
+.wd-net{display:flex;align-items:center;justify-content:space-between;font-size:9.5px;font-weight:800;padding-top:3px;margin-top:1px;border-top:1px solid var(--bd);}
+.wd-net-lbl{font-size:8px;font-weight:600;color:var(--ts);letter-spacing:0.02em;}
+.wd-net.up .wd-net-amt{color:var(--green);}
+.wd-net.dn .wd-net-amt{color:var(--red);}
 .wd-empty{font-size:9px;color:var(--th);font-style:italic;margin-top:4px;}
 /* Wizard badges */
 .wd-wiz{display:flex;justify-content:center;gap:3px;margin-top:3px;}
 .wd-wiz span{font-size:8px;}
 /* Weekly KPI summary */
 .week-summary{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px;}
-.ws-cell{background:var(--bg-card);border:1px solid var(--bd);border-radius:12px;padding:9px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.ws-cell{background:var(--bg-card);border:1px solid var(--bd);border-radius:12px;padding:9px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .15s,transform .15s,border-color .15s;}
+.ws-cell:hover{box-shadow:var(--sh-md);transform:translateY(-2px);border-color:var(--bd2);}
+.ws-cell:active{transform:scale(0.97);}
 .ws-cell-ic{font-size:16px;margin-bottom:3px;line-height:1;}
 .ws-cell-lb{font-size:8.5px;font-weight:700;color:var(--th);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
 .ws-cell-vl{font-size:13px;font-weight:900;color:var(--t);letter-spacing:-0.02em;line-height:1.1;}
@@ -4756,7 +4764,11 @@ function renderWeekly(){
           ${dayBills.slice(0,2).map(b=>`<div class="wd-tag bill">🧾 ${b.n}</div>`).join('')}
           ${dayBills.length>2?`<div class="wd-tag bill">+${dayBills.length-2} bills</div>`:''}`:''}
 
-        ${(dayInc>0||dayExp>0)?`<div class="wd-net ${dayNet>=0?'up':'dn'}">${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div>`:'' }
+        ${(dayInc>0||dayExp>0)?`<div class="wd-fin">
+          ${dayInc>0?`<div class="wd-fin-row inc"><span class="wd-fin-lbl">Inc</span><span class="wd-fin-amt">${fmt(dayInc)}</span></div>`:''}
+          ${dayExp>0?`<div class="wd-fin-row exp"><span class="wd-fin-lbl">Exp</span><span class="wd-fin-amt">${fmt(dayExp)}</span></div>`:''}
+          <div class="wd-net ${dayNet>=0?'up':'dn'}"><span class="wd-net-lbl">Net</span><span class="wd-net-amt">${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</span></div>
+        </div>`:''}
 
       </div>
     </div>`;
@@ -4785,32 +4797,32 @@ function renderWeekly(){
       <div class="week-days">${cols}</div>
     </div>
     <div class="week-summary">
-      <div class="ws-cell">
+      <div class="ws-cell" onclick="go('finance',G('ni-finance'));setTimeout(()=>switchFinTab('entries',G('ftab-entries')),80);" title="View transactions">
         <div class="ws-cell-ic">💰</div>
         <div class="ws-cell-lb">Income</div>
         <div class="ws-cell-vl up">${fmt(wkInc)}</div>
       </div>
-      <div class="ws-cell">
+      <div class="ws-cell" onclick="go('finance',G('ni-finance'));setTimeout(()=>switchFinTab('entries',G('ftab-entries')),80);" title="View transactions">
         <div class="ws-cell-ic">💸</div>
         <div class="ws-cell-lb">Expenses</div>
         <div class="ws-cell-vl dn">${fmt(wkExp)}</div>
       </div>
-      <div class="ws-cell">
+      <div class="ws-cell" onclick="go('finance',G('ni-finance'));setTimeout(()=>switchFinTab('overview',G('ftab-overview')),80);" title="View finance overview">
         <div class="ws-cell-ic">${wkNet>=0?'📈':'📉'}</div>
         <div class="ws-cell-lb">Net</div>
         <div class="ws-cell-vl ${wkNet>0?'up':wkNet<0?'dn':''}">${fmtS(wkNet)}</div>
       </div>
-      <div class="ws-cell">
+      <div class="ws-cell" onclick="go('todos',G('ni-todos'));" title="View tasks">
         <div class="ws-cell-ic">✅</div>
         <div class="ws-cell-lb">Tasks</div>
         <div class="ws-cell-vl ${wkDoneTasks===wkTasks.length&&wkTasks.length?'up':'amb'}">${wkDoneTasks}<span style="font-size:9px;font-weight:600;color:var(--th);">/${wkTasks.length}</span></div>
       </div>
-      <div class="ws-cell">
+      <div class="ws-cell" onclick="go('habits',G('ni-habits'));" title="View habits">
         <div class="ws-cell-ic">🔁</div>
         <div class="ws-cell-lb">Habits</div>
         <div class="ws-cell-vl ${wkHabitAvg>=80?'up':wkHabitAvg>=50?'amb':'dn'}">${wkHabitAvg}%</div>
       </div>
-      <div class="ws-cell">
+      <div class="ws-cell" onclick="go('finance',G('ni-finance'));setTimeout(()=>switchFinTab('bills',G('ftab-bills')),80);" title="View bills">
         <div class="ws-cell-ic">🧾</div>
         <div class="ws-cell-lb">Bills due</div>
         <div class="ws-cell-vl ${wkBills.length>0?'dn':''}">${wkBills.length}</div>
