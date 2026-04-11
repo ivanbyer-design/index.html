@@ -1450,8 +1450,15 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 }
 
 /* WEEKLY SNAPSHOT CARD */
-.home-weekly-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px;box-shadow:var(--sh);margin:8px 0 0;}
+.home-weekly-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;box-shadow:var(--sh);margin:8px 0 0;}
 .home-weekly-card .bh2{margin:0 0 8px!important;}
+.home-weekly-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px;}
+.home-weekly-left{flex:1;min-width:0;}
+.home-weekly-greeting{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;}
+.home-weekly-title{font-size:20px;font-weight:800;color:var(--t);letter-spacing:-0.02em;line-height:1.15;}
+.home-weekly-date{font-size:12px;color:var(--ts);margin-top:3px;}
+.home-weekly-day-btns{display:flex;flex-direction:column;gap:7px;flex-shrink:0;width:140px;}
+.home-weekly-day-btns .hero-day-btn{width:100%;margin:0;font-size:12px;padding:8px 10px;}
 
 @media(max-width:768px){
   .home-quadrant{grid-template-columns:1fr;}
@@ -2156,35 +2163,39 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 
     <!-- HOME -->
     <div class="panel on" id="p-home">
-      <div class="home-hero">
-        <div class="home-hero-top">
-          <div class="home-hero-left" style="flex:1;">
-            <div class="home-hero-greeting" id="home-greeting">Good morning</div>
-            <div class="home-hero-title">My Life OS</div>
-            <div class="home-hero-date" id="home-date"></div>
-          </div>
-        </div>
-        <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
-      </div>
       <button class="mob-menu-pill" onclick="openSB()">☰ Menu</button>
 
-      <!-- WEEKLY SNAPSHOT CARD (top of page) -->
+      <!-- WEEKLY SNAPSHOT CARD — greeting + day buttons + calendar merged -->
       <div class="home-weekly-card">
-        <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly" style="margin:0 0 10px!important;">📅 Weekly Snapshot</div>
-        <div id="home-weekly"></div>
-      </div>
-      <div class="divider"></div>
-
-      <!-- TOP QUADRANT: Day Buttons | Avatar Cylinder -->
-      <div class="home-quadrant home-top-quadrant">
-
-        <!-- DAY CONTROLS PANEL -->
-        <div class="home-quad-cell day-controls-cell">
-          <div class="home-quad-hdr">📋 Today</div>
-          <div class="day-controls-body">
+        <div class="home-weekly-top">
+          <div class="home-weekly-left">
+            <div class="home-weekly-greeting" id="home-greeting">Good morning</div>
+            <div class="home-weekly-title">My Life OS</div>
+            <div class="home-weekly-date" id="home-date"></div>
+          </div>
+          <div class="home-weekly-day-btns">
             <button class="hero-day-btn start day-ctrl-btn" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
             <button class="hero-day-btn end day-ctrl-btn"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
             <button class="hero-day-btn quick-add-btn day-ctrl-btn" onclick="openHomeQA()" aria-label="Quick add anything">⚡ Quick Add</button>
+          </div>
+        </div>
+        <div class="bh2 editable-hdr" data-hdr="home-weekly-hdr" id="hdr-home-weekly" style="margin:0 0 10px!important;">📅 Weekly Snapshot</div>
+        <div id="home-weekly"></div>
+      </div>
+      <div class="home-hero-stats" id="home-hero-stats" style="display:none;"></div>
+      <div class="divider"></div>
+
+      <!-- QUADRANT: Needs Attention | Avatar Cylinder -->
+      <div class="home-quadrant home-top-quadrant">
+
+        <!-- NEEDS ATTENTION -->
+        <div class="home-quad-cell day-controls-cell" id="attn-cell">
+          <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+            <span>🔔 Needs Attention</span>
+            <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a>
+          </div>
+          <div class="attn-scroll" style="flex:1;overflow-y:auto;">
+            <div id="home-attn" style="margin-top:6px;"></div>
           </div>
         </div>
 
@@ -2203,17 +2214,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
 
-      </div>
-
-      <!-- NEEDS ATTENTION (moved below quadrant, full width) -->
-      <div class="home-quad-cell" id="attn-cell" style="margin-top:10px;">
-        <div class="home-quad-hdr" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>🔔 Needs Attention</span>
-          <a onclick="go('routinizer',G('ni-routinizer'))" style="font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:none;">Routinizer →</a>
-        </div>
-        <div class="attn-scroll">
-          <div id="home-attn" style="margin-top:6px;"></div>
-        </div>
       </div>
 
       <div class="divider"></div>
