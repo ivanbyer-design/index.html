@@ -881,12 +881,13 @@ textarea.fi{resize:vertical;min-height:52px;}
 .icon-opt{transition:all .12s;}
 
 /* FINANCE TABS */
-.fin-tabs{display:flex;gap:0;border-bottom:2px solid var(--bd);margin:10px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+/* FINANCE TABS — pill style */
+.fin-tabs{display:flex;gap:5px;padding:5px;background:var(--bg-in);border-radius:16px;border:1px solid var(--bd);margin:12px 0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .fin-tabs::-webkit-scrollbar{display:none;}
-.fin-tab{font-family:var(--font);font-size:13px;font-weight:600;padding:10px 18px;border:none;background:transparent;color:var(--ts);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;-webkit-tap-highlight-color:transparent;}
-.fin-tab:hover{color:var(--t);}
-.fin-tab.on{color:var(--blue);border-bottom-color:var(--blue);}
-@media(max-width:768px){.fin-tab{padding:9px 14px;font-size:12px;}.fin-tabs{margin:6px 0 0;}}
+.fin-tab{font-family:var(--font);font-size:12.5px;font-weight:700;padding:8px 15px;border:none;background:transparent;color:var(--ts);cursor:pointer;white-space:nowrap;border-radius:11px;transition:all .18s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.fin-tab:hover{color:var(--t);background:var(--bg-h);}
+.fin-tab.on{background:var(--neon);color:#061412;box-shadow:0 2px 14px rgba(0,229,204,0.40);transform:none;}
+@media(max-width:768px){.fin-tab{padding:7px 12px;font-size:12px;}.fin-tabs{margin:8px 0 8px;}}
 
 /* FINANCE PERIOD SELECTOR */
 .fd-period-bar{display:flex;align-items:center;gap:6px;padding:16px 0 14px;flex-wrap:wrap;}
@@ -1021,7 +1022,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-h);border-bottom:1px solid var(--bd);}
 .fd-cal-header span{padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
 .fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
-.fd-cal-day{min-height:90px;padding:6px 6px 5px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.fd-cal-day{min-height:118px;padding:8px 7px 6px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
 .fd-cal-day:nth-child(7n){border-right:none;}
 .fd-cal-day:hover{background:var(--bg-h);}
 .fd-cal-day:active{background:var(--bg-a);}
@@ -1038,7 +1039,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-day-net.pos{color:var(--green);}
 .fd-cal-day-net.neg{color:var(--red);}
 .fd-cal-day-entries{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0;overflow:hidden;}
-.fd-cal-entry{font-size:9.5px;font-weight:600;padding:2px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
+.fd-cal-entry{font-size:10.5px;font-weight:600;padding:3px 6px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;}
 .fd-cal-entry.income{background:var(--gbg);color:var(--green);}
 .fd-cal-entry.expense{background:var(--rbg);color:var(--red);}
 .fd-cal-entry.bill{background:var(--rbg);color:var(--red);}
@@ -1479,9 +1480,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   /* Finance calendar: scroll horizontally instead of squishing 7 cols */
   #fd-cal-section{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   #fd-cal-section .fd-cal-wrap{min-width:420px;}
-  .fd-cal-day{min-height:65px!important;padding:4px 3px 3px!important;}
-  .fd-cal-entry{font-size:8.5px!important;}
-  .fd-cal-day-net{font-size:9px!important;}
+  .fd-cal-day{min-height:88px!important;padding:5px 4px 4px!important;}
+  .fd-cal-entry{font-size:9.5px!important;}
+  .fd-cal-day-net{font-size:9.5px!important;}
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1762,17 +1763,26 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .sub-card-acts{display:flex;align-items:center;gap:4px;margin-top:10px;flex-wrap:wrap;}
 
 /* ── LIVING EXPENSES / BUDGET ── */
-.live-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:10px 0;}
-.live-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;}
-.live-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.live-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:12px 0;}
+.live-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px;transition:box-shadow .15s,transform .15s;}
+.live-card:hover{box-shadow:var(--sh-md);transform:translateY(-1px);}
+.live-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .live-card-name{font-size:14px;font-weight:700;color:var(--t);display:flex;align-items:center;gap:6px;}
-.live-amts{font-size:12px;color:var(--ts);margin-top:2px;}
+.live-amts{font-size:12.5px;color:var(--ts);margin-top:4px;}
 .live-amts .over{color:var(--red);font-weight:700;}
 .live-amts .ok{color:var(--green);font-weight:700;}
-.live-log{margin-top:8px;border-top:1px solid var(--bd);padding-top:6px;}
-.live-log-row{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:12px;color:var(--ts);}
+.live-log{margin-top:10px;border-top:1px solid var(--bd);padding-top:8px;}
+.live-log-row{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px;color:var(--ts);}
 .live-log-row span{flex:1;}
 .live-log-amt{font-weight:700;color:var(--t);}
+/* Living tab header banner */
+.live-tab-hero{background:linear-gradient(135deg,rgba(0,229,204,0.12),rgba(0,158,144,0.06));border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px;margin:12px 0 6px;display:flex;align-items:center;gap:14px;}
+.live-tab-hero-icon{font-size:28px;flex-shrink:0;}
+.live-tab-hero-title{font-size:16px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
+.live-tab-hero-sub{font-size:12px;color:var(--ts);margin-top:2px;}
+.live-tab-total{margin-left:auto;text-align:right;flex-shrink:0;}
+.live-tab-total-amt{font-size:22px;font-weight:800;letter-spacing:-0.03em;}
+.live-tab-total-lbl{font-size:10px;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
 
 /* ── BILL SECTION DIVIDER ── */
 .bl-section{font-size:12px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;padding:14px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
@@ -2251,7 +2261,7 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
     <div class="panel" id="p-finance">
       <button class="mob-menu-float" onclick="openSB()">☰</button>
 
-      <!-- MODERN FINANCE HEADER -->
+      <!-- COMPACT HEADER -->
       <div class="fin-page-header">
         <div class="fin-page-header-left">
           <div class="fin-page-icon">🧾</div>
@@ -2263,64 +2273,58 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <div class="fin-page-header-right" id="fin-header-meta"></div>
       </div>
 
-      <!-- SUMMARY BAR (dynamic) -->
-      <div class="summary-bar" id="f-sum"></div>
+      <!-- PILL TABS — above everything -->
+      <div class="fin-tabs" id="fin-tabs">
+        <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">🏠 Overview</button>
+        <button class="fin-tab"   id="ftab-bills"       onclick="switchFinTab('bills',this)">🧾 My Bills</button>
+        <button class="fin-tab"   id="ftab-living"      onclick="switchFinTab('living',this)">🛒 Living Budget</button>
+        <button class="fin-tab"   id="ftab-entries"     onclick="switchFinTab('entries',this)">📋 Transactions</button>
+        <button class="fin-tab"   id="ftab-payments"    onclick="switchFinTab('payments',this)">💸 Debts</button>
+        <button class="fin-tab"   id="ftab-savings"     onclick="switchFinTab('savings',this)">🏦 Savings</button>
+        <button class="fin-tab"   id="ftab-wants"       onclick="switchFinTab('wants',this)">🎯 Wants</button>
+      </div>
 
-      <!-- QUICK ADD BUTTON -->
+      <!-- QUICK ADD — always visible, below tabs -->
       <button class="fin-qa-btn" onclick="openFinQuickAdd()">
         <span style="font-size:20px;line-height:1;">⚡</span>
         <span>Quick Add</span>
         <span style="font-size:16px;font-weight:900;margin-left:auto;">＋</span>
       </button>
 
-      <!-- FINANCE TABS -->
-      <div class="fin-tabs" id="fin-tabs">
-        <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">🧾 Overview</button>
-        <button class="fin-tab"   id="ftab-entries"    onclick="switchFinTab('entries',this)">📋 Transactions</button>
-        <button class="fin-tab"   id="ftab-bills"      onclick="switchFinTab('bills',this)">📋 All Bills</button>
-        <button class="fin-tab"   id="ftab-payments"   onclick="switchFinTab('payments',this)">💸 Other Debts</button>
-        <button class="fin-tab"   id="ftab-savings"    onclick="switchFinTab('savings',this)">🏦 Savings</button>
-        <button class="fin-tab"   id="ftab-wants"      onclick="switchFinTab('wants',this)">🎯 Wants & Needs</button>
-      </div>
+      <!-- SUMMARY BAR (dynamic) -->
+      <div class="summary-bar" id="f-sum"></div>
 
-      <!-- FINANCE CALENDAR (pinned below tab bar) -->
-      <div id="fd-cal-section" style="margin-top:14px;">
-        <div class="fd-cal-wrap">
-          <div class="fd-cal-top-bar">
-            <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-            <div class="fd-cal-legend">
-              <span><span class="fd-cal-dot-legend income"></span>Income</span>
-              <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-              <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-              <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-            </div>
-          </div>
-          <div class="fd-cal-header">
-            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-          </div>
-          <div class="fd-cal-grid" id="fd-cal-grid"></div>
-        </div>
-      </div>
-
-      <!-- TAB: OVERVIEW (Bills & Budgets dashboard) -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: OVERVIEW                               -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-overview-body">
 
-        <!-- MY BUDGET QUADRANT -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
+        <!-- MONEY OWED — star of the page -->
+        <div class="fd-owed-section" style="margin-top:14px;">
+          <div class="fd-panel-hdr" style="margin-bottom:10px;">
+            <div class="fd-panel-title">💳 Money Owed</div>
+            <div style="display:flex;gap:8px;">
+              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
+              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+            </div>
+          </div>
+          <div id="fd-owed-list"></div>
+        </div>
+
+        <!-- BUDGET SNAPSHOT QUADRANT -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px;margin-bottom:2px;">
           <span class="bl-month-pill">📅 <span id="bl-month-lbl"></span></span>
-          <span style="font-size:12px;color:var(--ts);">Bills auto-refresh each month · check off as you pay</span>
+          <span style="font-size:11px;color:var(--ts);">Bills auto-refresh monthly · tap to pay</span>
         </div>
         <div class="bq-grid">
           <div class="bq-card"><div class="bq-ttl">🧾 Unpaid Bills</div><div id="bq-unpaid"></div></div>
-          <div class="bq-card"><div class="bq-ttl">💸 Living Expenses Budget</div><div id="bq-living"></div></div>
+          <div class="bq-card"><div class="bq-ttl">🛒 Living Budget</div><div id="bq-living"></div></div>
           <div class="bq-card"><div class="bq-ttl">📊 Monthly Snapshot</div><div id="bq-snap"></div></div>
           <div class="bq-card"><div class="bq-ttl">⏰ Due Next 14 Days</div><div id="bq-due"></div></div>
         </div>
 
-        <!-- QUARTERLY / CASH FLOW SUMMARY -->
-        <div class="divider" style="margin:20px 0 16px;"></div>
-
-        <!-- PERIOD SELECTOR -->
+        <!-- PERIOD SELECTOR + KPI ROW -->
+        <div class="divider" style="margin:20px 0 0;"></div>
         <div class="fd-period-bar">
           <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
           <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
@@ -2331,8 +2335,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
           </div>
         </div>
-
-        <!-- KPI CARDS -->
         <div class="fd-kpi-grid" id="fd-kpis"></div>
 
         <!-- CASH FLOW CHART -->
@@ -2347,16 +2349,23 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
         </div>
 
-        <!-- MONEY OWED -->
-        <div class="fd-owed-section">
-          <div class="fd-panel-hdr" style="margin-bottom:10px;">
-            <div class="fd-panel-title">💳 Money owed</div>
-            <div style="display:flex;gap:8px;">
-              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
-              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+        <!-- CALENDAR — only here in Overview -->
+        <div id="fd-cal-section">
+          <div class="fd-cal-wrap">
+            <div class="fd-cal-top-bar">
+              <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+              <div class="fd-cal-legend">
+                <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+              </div>
             </div>
+            <div class="fd-cal-header">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="fd-cal-grid" id="fd-cal-grid"></div>
           </div>
-          <div id="fd-owed-list"></div>
         </div>
 
         <!-- FINANCIAL MILESTONE -->
@@ -2364,49 +2373,100 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 
       </div>
 
-      <!-- TAB: WANTS & NEEDS -->
-      <!-- TAB: SAVINGS ACCOUNTS -->
-      <div id="ftab-savings-body" style="display:none;">
-        <div id="savings-total-bar" style="margin:14px 0 16px;"></div>
-        <div id="savings-accounts-list"></div>
-        <div class="nf" style="margin-top:14px;">
-          <div class="nf-ttl">＋ Add savings account</div>
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: MY BILLS                               -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="ftab-bills-body" style="display:none;">
+
+        <!-- CATEGORY FILTERS -->
+        <div class="db-hdr" style="margin-top:14px;">
+          <div class="db-ttl">🧾 All Bills</div>
+          <div class="db-acts" id="bl-cat-filters">
+            <button class="db-btn" id="blf-all" onclick="blFilterCat('all',this)" style="font-weight:700;">All</button>
+            <button class="db-btn" id="blf-Housing" onclick="blFilterCat('Housing',this)">🏠 Housing</button>
+            <button class="db-btn" id="blf-Utilities" onclick="blFilterCat('Utilities',this)">⚡ Utilities</button>
+            <button class="db-btn" id="blf-Subscriptions" onclick="blFilterCat('Subscriptions',this)">📱 Subs</button>
+            <button class="db-btn" id="blf-Insurance" onclick="blFilterCat('Insurance',this)">🛡️ Insurance</button>
+            <button class="db-btn" id="blf-Debt" onclick="blFilterCat('Debt',this)">💳 Debt</button>
+          </div>
+        </div>
+        <table class="nt"><thead><tr><th style="width:28px;"></th><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th>Notes</th><th style="width:52px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
+
+        <!-- ADD BILL FORM (collapsible) -->
+        <div class="add-row" onclick="this.nextElementSibling.classList.toggle('hidden');this.style.display='none';">＋ Add bill or subscription</div>
+        <div class="nf hidden" id="bl-add-form">
+          <div class="nf-ttl">＋ New Bill / Subscription</div>
           <div class="fr">
-            <input class="fi" type="text" id="sav-name" placeholder="Account name (e.g. Emergency Fund)" style="min-width:160px;">
-            <input class="fi" type="number" id="sav-bal" placeholder="Current balance ($)" step="0.01" style="max-width:160px;">
-            <input class="fi" type="text" id="sav-note" placeholder="Note (optional)" style="max-width:140px;">
-            <button class="btn pri" onclick="addSavingsAccount()">Add</button>
+            <input class="fi" type="text" id="bl-n" placeholder="Bill name (e.g. Rent, Netflix)">
+            <input class="fi" type="number" id="bl-a" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <select class="fi" id="bl-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
+            <select class="fi" id="bl-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
+            <input class="fi" type="date" id="bl-d" style="max-width:150px;">
+            <select class="fi" id="bl-ds" style="max-width:130px;"><option value="Unpaid">Manual Pay</option><option value="Auto-pay">Auto-pay</option></select>
+            <button class="btn pri" onclick="addBill()">Save</button>
+          </div>
+          <div class="fr" style="margin-top:4px;">
+            <input class="fi" type="text" id="bl-notes" placeholder="Notes (optional)">
           </div>
         </div>
-      </div>
 
-      <div id="ftab-wants-body" style="display:none;">
-        <div class="wn-grid">
-          <div>
-            <div class="wn-col-hdr">⭐ Wants <span style="font-size:11px;font-weight:400;color:var(--ts);">— unlock as milestone rewards</span></div>
-            <div id="wn-wants-list"></div>
-            <div class="wn-add-row">
-              <input class="fi wn-add-inp" id="wn-w-name" placeholder="What do you want?" style="min-width:120px;">
-              <input class="fi wn-add-inp" id="wn-w-note" placeholder="Note (optional)" style="max-width:130px;">
-              <input class="fi wn-add-inp" id="wn-w-price" type="number" placeholder="Price ($)" step="0.01" style="max-width:100px;">
-              <button class="btn pri" onclick="addWant()">Add</button>
-            </div>
-          </div>
-          <div>
-            <div class="wn-col-hdr">✅ Needs <span style="font-size:11px;font-weight:400;color:var(--ts);">— essentials to prioritise</span></div>
-            <div id="wn-needs-list"></div>
-            <div class="wn-add-row">
-              <input class="fi wn-add-inp" id="wn-n-name" placeholder="What do you need?" style="min-width:120px;">
-              <input class="fi wn-add-inp" id="wn-n-note" placeholder="Note (optional)" style="max-width:140px;">
-              <button class="btn pri" onclick="addNeed()">Add</button>
-            </div>
-          </div>
+        <!-- SUBSCRIPTIONS -->
+        <div class="bl-section" style="margin-top:16px;">
+          <span>📱 Subscriptions</span>
+          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
         </div>
+        <div id="sub-cards"></div>
+
       </div>
 
-      <!-- TAB: TRANSACTIONS -->
-      <div id="ftab-entries-body" style="display:none;">
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: LIVING BUDGET                          -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="ftab-living-body" style="display:none;">
+
+        <!-- HERO BANNER -->
+        <div class="live-tab-hero">
+          <div class="live-tab-hero-icon">🛒</div>
+          <div>
+            <div class="live-tab-hero-title">Living Budget</div>
+            <div class="live-tab-hero-sub">Track spending against your monthly budget per category</div>
+          </div>
+          <div class="live-tab-total" id="live-tab-totals"></div>
+        </div>
+
+        <!-- BUDGET CATEGORY CARDS -->
+        <div class="live-grid" id="live-grid"></div>
+
+        <!-- LOG SPENDING FORM -->
         <div class="nf">
+          <div class="nf-ttl">⚡ Log spending</div>
+          <div class="fr">
+            <select class="fi" id="live-sp-cat" style="max-width:170px;"><option value="">Select category...</option></select>
+            <input class="fi" type="number" id="live-sp-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <input class="fi" type="text" id="live-sp-note" placeholder="Note (optional)">
+            <input class="fi" type="date" id="live-sp-date" style="max-width:150px;">
+            <button class="btn pri" onclick="addLiveSpend()">Log</button>
+          </div>
+        </div>
+
+        <!-- ADD CATEGORY FORM -->
+        <div class="add-row" onclick="G('live-form').classList.toggle('hidden')">＋ Add budget category</div>
+        <div class="nf hidden" id="live-form">
+          <div class="fr">
+            <input class="fi" type="text" id="live-name" placeholder="Category name (e.g. Groceries)">
+            <input class="fi" type="text" id="live-icon" placeholder="Icon 🛒" style="max-width:72px;">
+            <input class="fi" type="number" id="live-amt" placeholder="Monthly budget $" step="1" style="max-width:170px;">
+            <button class="btn pri" onclick="addLiveCategory()">Save</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: TRANSACTIONS                           -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="ftab-entries-body" style="display:none;">
+        <div class="nf" style="margin-top:14px;">
           <div class="nf-ttl">＋ New entry</div>
           <div class="fr">
             <input class="fi" type="text" id="fi-d" placeholder="Description" style="min-width:160px;">
@@ -2430,83 +2490,13 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <div class="add-row" onclick="G('fi-d').focus()">＋ New entry</div>
       </div>
 
-      <!-- TAB: BILLS -->
-      <div id="ftab-bills-body" style="display:none;">
-
-        <!-- ADD BILL FORM -->
-        <div class="bl-section" style="margin-top:16px;"><span>＋ Add Bill or Subscription</span></div>
-        <div class="nf">
-          <div class="fr">
-            <input class="fi" type="text" id="bl-n" placeholder="Bill name (e.g. Rent, Netflix)">
-            <input class="fi" type="number" id="bl-a" placeholder="Amount $" step="0.01" style="max-width:120px;">
-            <select class="fi" id="bl-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
-            <select class="fi" id="bl-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
-            <input class="fi" type="date" id="bl-d" style="max-width:150px;">
-            <select class="fi" id="bl-ds" style="max-width:130px;"><option value="Unpaid">Manual Pay</option><option value="Auto-pay">Auto-pay</option></select>
-            <button class="btn pri" onclick="addBill()">Save</button>
-          </div>
-          <div class="fr" style="margin-top:4px;">
-            <input class="fi" type="text" id="bl-notes" placeholder="Notes (optional)">
-          </div>
-        </div>
-
-        <!-- ALL BILLS TABLE -->
-        <div class="db-hdr">
-          <div class="db-ttl">📋 All bills</div>
-          <div class="db-acts" id="bl-cat-filters">
-            <button class="db-btn" id="blf-all" onclick="blFilterCat('all',this)" style="font-weight:700;">All</button>
-            <button class="db-btn" id="blf-Housing" onclick="blFilterCat('Housing',this)">🏠 Housing</button>
-            <button class="db-btn" id="blf-Utilities" onclick="blFilterCat('Utilities',this)">⚡ Utilities</button>
-            <button class="db-btn" id="blf-Subscriptions" onclick="blFilterCat('Subscriptions',this)">📱 Subs</button>
-            <button class="db-btn" id="blf-Insurance" onclick="blFilterCat('Insurance',this)">🛡️ Insurance</button>
-            <button class="db-btn" id="blf-Debt" onclick="blFilterCat('Debt',this)">💳 Debt</button>
-          </div>
-        </div>
-        <table class="nt"><thead><tr><th style="width:28px;"></th><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th>Notes</th><th style="width:52px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
-        <div class="add-row" onclick="G('bl-n').focus()">＋ Add bill</div>
-
-        <!-- SUBSCRIPTIONS SECTION -->
-        <div class="bl-section" style="margin-top:8px;">
-          <span>📱 Subscriptions</span>
-          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
-        </div>
-        <div id="sub-cards"></div>
-
-        <!-- LIVING EXPENSES SECTION -->
-        <div class="bl-section">
-          <span>🛒 Living Expenses</span>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:11px;color:var(--th);font-weight:400;text-transform:none;letter-spacing:0;">Groceries · Gas · Eating Out · Laundry · etc.</span>
-            <button class="btn xs" onclick="G('live-form').classList.toggle('hidden')">＋ Add category</button>
-          </div>
-        </div>
-        <div class="nf hidden" id="live-form">
-          <div class="fr">
-            <input class="fi" type="text" id="live-name" placeholder="Category name (e.g. Groceries)">
-            <input class="fi" type="text" id="live-icon" placeholder="Icon 🛒" style="max-width:72px;">
-            <input class="fi" type="number" id="live-amt" placeholder="Monthly budget $" step="1" style="max-width:170px;">
-            <button class="btn pri" onclick="addLiveCategory()">Save</button>
-          </div>
-        </div>
-        <div class="live-grid" id="live-grid"></div>
-        <div class="nf">
-          <div class="nf-ttl">＋ Log spending</div>
-          <div class="fr">
-            <select class="fi" id="live-sp-cat" style="max-width:170px;"><option value="">Select category...</option></select>
-            <input class="fi" type="number" id="live-sp-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
-            <input class="fi" type="text" id="live-sp-note" placeholder="Note (optional)">
-            <input class="fi" type="date" id="live-sp-date" style="max-width:150px;">
-            <button class="btn pri" onclick="addLiveSpend()">Log</button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- TAB: OTHER PAYMENTS -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: DEBTS                                  -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-payments-body" style="display:none;">
         <div class="summary-bar" id="op-sum" style="margin-top:14px;"></div>
         <div class="nf">
-          <div class="nf-ttl">＋ Log debt</div>
+          <div class="nf-ttl">＋ Log debt / payment</div>
           <div class="fr">
             <input class="fi" type="text" id="op-n" placeholder="Payment name / description">
             <input class="fi" type="number" id="op-a" placeholder="Amount" step="0.01" style="max-width:130px;">
@@ -2531,6 +2521,51 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <table class="nt"><thead><tr><th>Payment</th><th>Category</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Notes</th><th style="width:28px;"></th></tr></thead><tbody id="op-tb"></tbody></table>
         <div class="add-row" onclick="G('op-n').focus()">＋ Log debt</div>
       </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: SAVINGS                                -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="ftab-savings-body" style="display:none;">
+        <div id="savings-total-bar" style="margin:14px 0 16px;"></div>
+        <div id="savings-accounts-list"></div>
+        <div class="nf" style="margin-top:14px;">
+          <div class="nf-ttl">＋ Add savings account</div>
+          <div class="fr">
+            <input class="fi" type="text" id="sav-name" placeholder="Account name (e.g. Emergency Fund)" style="min-width:160px;">
+            <input class="fi" type="number" id="sav-bal" placeholder="Current balance ($)" step="0.01" style="max-width:160px;">
+            <input class="fi" type="text" id="sav-note" placeholder="Note (optional)" style="max-width:140px;">
+            <button class="btn pri" onclick="addSavingsAccount()">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: WANTS & NEEDS                          -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="ftab-wants-body" style="display:none;">
+        <div class="wn-grid" style="margin-top:14px;">
+          <div>
+            <div class="wn-col-hdr">⭐ Wants <span style="font-size:11px;font-weight:400;color:var(--ts);">— unlock as milestone rewards</span></div>
+            <div id="wn-wants-list"></div>
+            <div class="wn-add-row">
+              <input class="fi wn-add-inp" id="wn-w-name" placeholder="What do you want?" style="min-width:120px;">
+              <input class="fi wn-add-inp" id="wn-w-note" placeholder="Note (optional)" style="max-width:130px;">
+              <input class="fi wn-add-inp" id="wn-w-price" type="number" placeholder="Price ($)" step="0.01" style="max-width:100px;">
+              <button class="btn pri" onclick="addWant()">Add</button>
+            </div>
+          </div>
+          <div>
+            <div class="wn-col-hdr">✅ Needs <span style="font-size:11px;font-weight:400;color:var(--ts);">— essentials to prioritise</span></div>
+            <div id="wn-needs-list"></div>
+            <div class="wn-add-row">
+              <input class="fi wn-add-inp" id="wn-n-name" placeholder="What do you need?" style="min-width:120px;">
+              <input class="fi wn-add-inp" id="wn-n-note" placeholder="Note (optional)" style="max-width:140px;">
+              <button class="btn pri" onclick="addNeed()">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- TRADES -->
@@ -3432,14 +3467,26 @@ function switchFinTab(tab,btn){
   activeFinTab=tab;
   document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
   if(btn)btn.classList.add('on');
-  ['overview','entries','bills','payments','savings','wants'].forEach(t=>{
+  ['overview','entries','bills','living','payments','savings','wants'].forEach(t=>{
     const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
   });
-  // Always render the calendar (now pinned above all tabs)
   setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
   if(tab==='entries'){buildCatSelect('fi-c','expense');}
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
+  if(tab==='living'){renderLivingTabHero();}
+}
+function renderLivingTabHero(){
+  const el=G('live-tab-totals');if(!el)return;
+  const cats=S.liveCategories||[];
+  const totalBudget=cats.reduce((s,c)=>s+c.budget,0);
+  const totalSpent=cats.reduce((s,c)=>{
+    const mPrefix=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0');
+    return s+(c.log||[]).filter(l=>l.dt&&l.dt.startsWith(mPrefix)).reduce((ss,l)=>ss+l.a,0);
+  },0);
+  const remaining=totalBudget-totalSpent;
+  const color=remaining<0?'var(--red)':remaining<totalBudget*0.2?'var(--amber)':'var(--green)';
+  el.innerHTML=`<div class="live-tab-total-amt" style="color:${color}">${remaining<0?'-':''}$${Math.abs(Math.round(remaining)).toLocaleString()}</div><div class="live-tab-total-lbl">${remaining<0?'over budget':'remaining'}</div>`;
 }
 
 // ── OTHER PAYMENTS ──
@@ -3540,7 +3587,7 @@ function renderFinOverview(){
   const lbl=G('fd-month-label'); if(lbl)lbl.textContent=range.label;
   const calLbl=G('fd-cal-month-title'); if(calLbl)calLbl.textContent=range.label;
 
-  // Ensure calendar visibility matches period
+  // Calendar lives inside overview tab — only show when monthly period
   const calSec=G('fd-cal-section');
   if(calSec)calSec.style.display=finPeriod==='monthly'?'block':'none';
 
@@ -3943,8 +3990,9 @@ function renderFinance(){
       <div class="sum-item"><div class="sum-lb">Living spent</div><div class="sum-vl ${livSpent>livTot?'dn':''}">${fmt(livSpent)}</div></div>`;
   }
 
-  // ── Always render finance calendar (pinned above tabs) + overview content ──
+  // ── Always render overview + living hero totals ──
   renderFinOverview();
+  renderLivingTabHero();
 
   // ── TRANSACTIONS TAB ──
   let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
