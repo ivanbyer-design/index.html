@@ -907,11 +907,24 @@ textarea.fi{resize:vertical;min-height:52px;}
 @media(max-width:768px){.fd-period-bar{gap:5px;padding:12px 0 10px;}.fd-period-btn{padding:6px 14px;font-size:12px;}.fd-month-label{font-size:13px;}}
 
 /* FINANCE OWED SECTION */
-.fd-owed-section{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:16px;box-shadow:var(--sh);}
-.fd-owed-scroll{max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
+.fd-owed-section{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:16px;box-shadow:var(--sh);}
+.fd-owed-hdr{padding:12px 16px 8px;}
+.fd-owed-sticky{padding:8px 16px 9px;border-bottom:1px solid var(--bd);background:var(--bg-card);display:flex;align-items:baseline;justify-content:space-between;}
+.fd-owed-sticky-lbl{font-size:11px;font-weight:600;color:var(--ts);}
+.fd-owed-sticky-amt{font-size:18px;font-weight:800;color:var(--red);letter-spacing:-0.03em;}
+.fd-owed-scroll{max-height:300px;overflow-y:auto;padding:0 16px 8px;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
 .fd-owed-scroll::-webkit-scrollbar{width:4px;}
 .fd-owed-scroll::-webkit-scrollbar-track{background:transparent;}
 .fd-owed-scroll::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
+/* Bill category totals summary in My Bills tab */
+.bl-cat-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:14px 0 12px;}
+.bl-cat-tile{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:10px 12px;display:flex;flex-direction:column;gap:2px;transition:box-shadow .12s;}
+.bl-cat-tile:hover{box-shadow:var(--sh-md);}
+.bl-cat-tile-ic{font-size:16px;line-height:1;margin-bottom:3px;}
+.bl-cat-tile-lbl{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;}
+.bl-cat-tile-amt{font-size:16px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
+.bl-cat-tile-cnt{font-size:10px;color:var(--ts);}
+.bl-cat-tile.is-zero{opacity:0.45;}
 .fd-owed-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd);}
 .fd-owed-item:last-child{border-bottom:none;}
 .fd-owed-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
@@ -1022,7 +1035,11 @@ textarea.fi{resize:vertical;min-height:52px;}
 
 /* FINANCE DASHBOARD — CALENDAR */
 .fd-cal-wrap{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);margin-bottom:16px;}
-.fd-cal-top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;border-bottom:1px solid var(--bd);background:var(--bg-h);flex-wrap:wrap;gap:8px;}
+.fd-cal-top-bar{display:flex;flex-direction:column;gap:8px;padding:12px 16px 10px;border-bottom:1px solid var(--bd);background:var(--bg-h);}
+.fd-cal-period-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.fd-cal-period-pills{display:flex;gap:4px;}
+.fd-cal-period-pills .fd-period-btn{font-size:11.5px;padding:5px 13px;}
+.fd-cal-title-row{display:flex;align-items:center;justify-content:space-between;}
 .fd-cal-month-title{font-size:15px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
 .fd-cal-legend{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:500;color:var(--ts);}
 .fd-cal-legend span{display:flex;align-items:center;gap:4px;}
@@ -2303,62 +2320,40 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <span style="font-size:16px;font-weight:900;margin-left:auto;">＋</span>
       </button>
 
-      <!-- SUMMARY BAR (dynamic) -->
-      <div class="summary-bar" id="f-sum"></div>
-
       <!-- ═══════════════════════════════════════════ -->
       <!-- TAB: OVERVIEW                               -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-overview-body">
 
-        <!-- BUDGET SNAPSHOT QUADRANT -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;margin-bottom:2px;">
-          <span class="bl-month-pill">📅 <span id="bl-month-lbl"></span></span>
-          <span style="font-size:11px;color:var(--ts);">Bills auto-refresh monthly · tap to pay</span>
-        </div>
-        <div class="bq-grid">
-          <div class="bq-card"><div class="bq-ttl">🧾 Unpaid Bills</div><div id="bq-unpaid"></div></div>
-          <div class="bq-card"><div class="bq-ttl">🛒 Living Budget</div><div id="bq-living"></div></div>
-          <div class="bq-card"><div class="bq-ttl">📊 Monthly Snapshot</div><div id="bq-snap"></div></div>
-          <div class="bq-card"><div class="bq-ttl">⏰ Due Next 14 Days</div><div id="bq-due"></div></div>
-        </div>
+        <!-- KPI CARDS (period-aware) -->
+        <div class="fd-kpi-grid" id="fd-kpis" style="margin-top:14px;"></div>
 
-        <!-- PERIOD SELECTOR + KPI ROW -->
-        <div class="divider" style="margin:16px 0 0;"></div>
-        <div class="fd-period-bar">
-          <button class="fd-period-btn on" id="fpb-monthly" onclick="setFinPeriod('monthly',this)">Monthly</button>
-          <button class="fd-period-btn" id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
-          <button class="fd-period-btn" id="fpb-yearly" onclick="setFinPeriod('yearly',this)">Yearly</button>
-          <div class="fd-period-nav">
-            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
-            <div class="fd-month-label" id="fd-month-label"></div>
-            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
-          </div>
-        </div>
-        <div class="fd-kpi-grid" id="fd-kpis"></div>
-
-        <!-- CASH FLOW CHART -->
-        <div class="chart-box" style="margin:0 0 14px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
-            <div class="legend" style="margin:0;">
-              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
-              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
-            </div>
-          </div>
-          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
-        </div>
-
-        <!-- CALENDAR — only here in Overview -->
+        <!-- CALENDAR — period selector merged into top bar -->
         <div id="fd-cal-section">
           <div class="fd-cal-wrap">
             <div class="fd-cal-top-bar">
-              <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-              <div class="fd-cal-legend">
-                <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+              <!-- Period controls row -->
+              <div class="fd-cal-period-row">
+                <div class="fd-cal-period-pills">
+                  <button class="fd-period-btn on" id="fpb-monthly"   onclick="setFinPeriod('monthly',this)">Monthly</button>
+                  <button class="fd-period-btn"    id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
+                  <button class="fd-period-btn"    id="fpb-yearly"    onclick="setFinPeriod('yearly',this)">Yearly</button>
+                </div>
+                <div class="fd-period-nav">
+                  <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
+                  <div class="fd-month-label" id="fd-month-label"></div>
+                  <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
+                </div>
+              </div>
+              <!-- Month title + legend row -->
+              <div class="fd-cal-title-row">
+                <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+                <div class="fd-cal-legend">
+                  <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                  <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                  <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                  <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+                </div>
               </div>
             </div>
             <div class="fd-cal-header">
@@ -2368,16 +2363,33 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
 
-        <!-- MONEY OWED — compact scrollable, sorted by soonest due date -->
-        <div class="fd-owed-section" style="margin-top:14px;">
-          <div class="fd-panel-hdr" style="margin-bottom:8px;">
-            <div class="fd-panel-title">💳 Money Owed</div>
-            <div style="display:flex;gap:8px;">
-              <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
-              <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+        <!-- MONEY OWED — sticky total, scrollable list, sorted by due date -->
+        <div class="fd-owed-section">
+          <div class="fd-owed-hdr">
+            <div class="fd-panel-hdr" style="margin-bottom:0;">
+              <div class="fd-panel-title">💳 Money Owed</div>
+              <div style="display:flex;gap:8px;">
+                <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
+                <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+              </div>
             </div>
           </div>
+          <!-- Static total — always visible above the scroll -->
+          <div class="fd-owed-sticky" id="fd-owed-total-bar"></div>
+          <!-- Scrollable item list -->
           <div id="fd-owed-list" class="fd-owed-scroll"></div>
+        </div>
+
+        <!-- CASH FLOW CHART — below money owed -->
+        <div class="chart-box" style="margin:0 0 14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
+            <div class="legend" style="margin:0;">
+              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
+              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
+            </div>
+          </div>
+          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
         </div>
 
         <!-- FINANCIAL MILESTONE -->
@@ -2390,8 +2402,11 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-bills-body" style="display:none;">
 
+        <!-- CATEGORY TOTALS OVERVIEW -->
+        <div id="bl-cat-totals" class="bl-cat-summary"></div>
+
         <!-- CATEGORY FILTERS -->
-        <div class="db-hdr" style="margin-top:14px;">
+        <div class="db-hdr" style="margin-top:4px;">
           <div class="db-ttl">🧾 All Bills</div>
           <div class="db-acts" id="bl-cat-filters">
             <button class="db-btn" id="blf-all" onclick="blFilterCat('all',this)" style="font-weight:700;">All</button>
@@ -3765,6 +3780,8 @@ function renderFinOverview(){
     const total=items.reduce((s,it)=>s+(it.kind==='bill'?it.b.a:it.p.a),0);
 
     if(!items.length){
+      const totalBar=G('fd-owed-total-bar');
+      if(totalBar)totalBar.innerHTML=`<span class="fd-owed-sticky-lbl">0 items</span><span class="fd-owed-sticky-amt" style="color:var(--green);">$0 owed</span>`;
       owedEl.innerHTML=`<div class="fd-empty-row">✅ Nothing owed — you're all clear!</div>`;
     } else {
       const rows=items.map(it=>{
@@ -3804,11 +3821,10 @@ function renderFinOverview(){
       }).join('');
       const billCt=items.filter(i=>i.kind==='bill').length;
       const debtCt=items.filter(i=>i.kind==='debt').length;
-      owedEl.innerHTML=`
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
-          <span style="font-size:11px;font-weight:600;color:var(--ts);">${billCt} bill${billCt!==1?'s':''} · ${debtCt} debt${debtCt!==1?'s':''} · sorted by due date</span>
-          <span style="font-size:15px;font-weight:800;color:var(--red);letter-spacing:-0.02em;">${fmt(total)} owed</span>
-        </div>${rows}`;
+      // Sticky total bar (always visible above scroll)
+      const totalBar=G('fd-owed-total-bar');
+      if(totalBar)totalBar.innerHTML=`<span class="fd-owed-sticky-lbl">${billCt} bill${billCt!==1?'s':''} · ${debtCt} debt${debtCt!==1?'s':''} · by due date</span><span class="fd-owed-sticky-amt">${fmt(total)} owed</span>`;
+      owedEl.innerHTML=rows;
     }
   }
 }
@@ -4010,20 +4026,7 @@ function renderFinance(){
       </div>
     </div>`;
 
-  // Summary bar — bills snapshot (replaces quarterly)
-  const fsum=G('f-sum');
-  if(fsum){
-    const billsUnpaidAmt=S.bills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
-    const billsAutoAmt=S.bills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
-    const livTot=(S.liveCategories||[]).reduce((s,c)=>s+c.budget,0);
-    const livSpent=(S.liveSpend||[]).filter(sp=>sp.date&&sp.date.startsWith(currentMonth)).reduce((s,sp)=>s+sp.amt,0);
-    fsum.innerHTML=`
-      <div class="sum-item"><div class="sum-lb">Bills / mo</div><div class="sum-vl">${fmt(billsTotal)}</div></div>
-      <div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl ${billsUnpaidAmt>0?'dn':''}">${fmt(billsUnpaidAmt)}</div></div>
-      <div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(billsAutoAmt)}</div></div>
-      <div class="sum-item"><div class="sum-lb">Living budget</div><div class="sum-vl">${fmt(livTot)}</div></div>
-      <div class="sum-item"><div class="sum-lb">Living spent</div><div class="sum-vl ${livSpent>livTot?'dn':''}">${fmt(livSpent)}</div></div>`;
-  }
+  // (summary bar removed — info now lives in category tiles and sticky owed bar)
 
   // ── Always render overview + living hero totals ──
   renderFinOverview();
@@ -4240,9 +4243,6 @@ function nextBillDue(b){
 }
 
 function renderBills(){
-  // Set month label
-  const mn=G('bl-month-lbl');
-  if(mn)mn.textContent=new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
   // Summary bar
   const tot=S.bills.reduce((s,b)=>s+b.a,0);
   const unp=S.bills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
@@ -4254,6 +4254,35 @@ function renderBills(){
     <div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl dn">${fmt(unp)}</div></div>
     <div class="sum-item"><div class="sum-lb">Paid</div><div class="sum-vl up">${fmt(paid)}</div></div>
     <div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(auto)}</div></div>`;
+  // Category totals overview
+  const catTotEl=G('bl-cat-totals');
+  if(catTotEl){
+    const CAT_DEF=[
+      {k:'Housing',ic:'🏠'},{k:'Utilities',ic:'⚡'},{k:'Subscriptions',ic:'📱'},
+      {k:'Insurance',ic:'🛡️'},{k:'Debt',ic:'💳'},{k:'Phone',ic:'📞'},
+      {k:'Internet',ic:'🌐'},{k:'Transport',ic:'🚗'},{k:'Healthcare',ic:'🏥'},{k:'Other',ic:'📦'}
+    ];
+    // Collect all distinct categories in user's bills + standard ones with data
+    const usedCats=new Set(S.bills.map(b=>b.cat||'Other'));
+    const tiles=CAT_DEF.filter(c=>usedCats.has(c.k));
+    const grand=S.bills.reduce((s,b)=>s+b.a,0);
+    catTotEl.innerHTML=tiles.map(c=>{
+      const catBills=S.bills.filter(b=>(b.cat||'Other')===c.k);
+      const catAmt=catBills.reduce((s,b)=>s+b.a,0);
+      const unpaidAmt=catBills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
+      return`<div class="bl-cat-tile${catAmt===0?' is-zero':''}" onclick="blFilterCat('${c.k}',G('blf-${c.k}'))">
+        <div class="bl-cat-tile-ic">${c.ic}</div>
+        <div class="bl-cat-tile-lbl">${c.k}</div>
+        <div class="bl-cat-tile-amt">${fmt(catAmt)}</div>
+        <div class="bl-cat-tile-cnt">${catBills.length} bill${catBills.length!==1?'s':''}${unpaidAmt>0?` · <span style="color:var(--red);">${fmt(unpaidAmt)} unpaid</span>`:''}  </div>
+      </div>`;
+    }).join('')+(tiles.length?`<div class="bl-cat-tile" style="border-color:var(--neon);background:color-mix(in srgb,var(--neon-glow) 60%,var(--bg-card));">
+        <div class="bl-cat-tile-ic">🧾</div>
+        <div class="bl-cat-tile-lbl">Total / mo</div>
+        <div class="bl-cat-tile-amt" style="color:var(--neon);">${fmt(grand)}</div>
+        <div class="bl-cat-tile-cnt">${S.bills.length} bill${S.bills.length!==1?'s':''}</div>
+      </div>`:'');
+  }
   // Sub-renders
   renderBudgetQuadrant();
   renderBillCalendar();
