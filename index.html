@@ -1147,7 +1147,9 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-day-modal-close{background:var(--bg-h);border:none;color:var(--ts);font-size:16px;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .fd-day-modal-body{flex:1;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch;}
 .fd-day-section{margin-bottom:16px;}
-.fd-day-section-ttl{font-size:10.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd);}
+.fd-day-section-ttl{font-size:10.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.fd-day-section-nav{font-size:10.5px;font-weight:700;color:var(--neon);cursor:pointer;text-transform:none;letter-spacing:0;white-space:nowrap;padding:2px 6px;border-radius:6px;transition:background .12s;}
+.fd-day-section-nav:hover{background:var(--neon-glow);}
 .fd-day-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;}
 .fd-day-row:last-child{border-bottom:none;}
 .fd-day-net{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg-in);border-radius:var(--r);margin-top:8px;}
@@ -3891,6 +3893,14 @@ function openFdDayModal(dk){
   document.body.style.overflow='hidden';
 }
 
+function fdNavTo(tab, filter){
+  closeFdDayModal();
+  go('finance', G('ni-finance'));
+  setTimeout(()=>{
+    switchFinTab(tab, G('ftab-'+tab));
+    if(filter) filtF(filter);
+  }, 80);
+}
 function renderFdDayBody(dk){
   const dayInc=S.finance.filter(f=>f.dt===dk&&f.t==='income');
   const dayExp=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
@@ -3912,8 +3922,12 @@ function renderFdDayBody(dk){
   <div class="fdd-summary">
     <div class="fdd-summary-net" style="color:${net>=0?'var(--green)':net<0?'var(--red)':'var(--ts)'};">${net>=0?'+':''}${fmt(net)}</div>
     <div class="fdd-summary-sides">
-      <div class="fdd-side in"><span class="fdd-side-lbl">IN</span><span class="fdd-side-val">${fmt(totalIn)}</span></div>
-      <div class="fdd-side out"><span class="fdd-side-lbl">OUT</span><span class="fdd-side-val">${fmt(totalOut)}</span></div>
+      <div class="fdd-side in" onclick="fdNavTo('entries','income')" style="cursor:pointer;" title="View all income">
+        <span class="fdd-side-lbl">IN ↗</span><span class="fdd-side-val">${fmt(totalIn)}</span>
+      </div>
+      <div class="fdd-side out" onclick="fdNavTo('entries','expense')" style="cursor:pointer;" title="View all expenses">
+        <span class="fdd-side-lbl">OUT ↗</span><span class="fdd-side-val">${fmt(totalOut)}</span>
+      </div>
     </div>
   </div>
 
@@ -3939,7 +3953,7 @@ function renderFdDayBody(dk){
 
   // Income entries
   if(dayInc.length){
-    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">💚 Income <span style="font-weight:400;color:var(--ts);">(${dayInc.length})</span></div>`;
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl"><span>💚 Income <span style="font-weight:400;color:var(--ts);">(${dayInc.length})</span></span><span class="fd-day-section-nav" onclick="fdNavTo('entries','income')">View all →</span></div>`;
     dayInc.forEach(f=>{
       html+=`<div class="fd-day-row">
         <div style="flex:1;min-width:0;">
@@ -3957,7 +3971,7 @@ function renderFdDayBody(dk){
 
   // Expense entries
   if(dayExp.length){
-    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">🔴 Expenses <span style="font-weight:400;color:var(--ts);">(${dayExp.length})</span></div>`;
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl"><span>🔴 Expenses <span style="font-weight:400;color:var(--ts);">(${dayExp.length})</span></span><span class="fd-day-section-nav" onclick="fdNavTo('entries','expense')">View all →</span></div>`;
     dayExp.forEach(f=>{
       html+=`<div class="fd-day-row">
         <div style="flex:1;min-width:0;">
@@ -3979,12 +3993,12 @@ function renderFdDayBody(dk){
 
   // Bills and debts
   if(dayBills.length){
-    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">🧾 Bills due</div>`;
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl"><span>🧾 Bills due</span><span class="fd-day-section-nav" onclick="fdNavTo('bills')">View all →</span></div>`;
     dayBills.forEach(b=>{const bs=getBillStatus(b);html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.cat||'Other'} · ${b.f}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(b.a)}</div>${tag(bs,{Paid:'green',Unpaid:'red','Auto-pay':'blue'}[bs]||'gray')}</div></div>`;});
     html+=`</div>`;
   }
   if(dayDebts.length){
-    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl">💸 Debts due</div>`;
+    html+=`<div class="fd-day-section"><div class="fd-day-section-ttl"><span>💸 Debts due</span><span class="fd-day-section-nav" onclick="fdNavTo('payments')">View all →</span></div>`;
     dayDebts.forEach(p=>{const OPS={pending:'amber',overdue:'red',scheduled:'blue'};html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${p.n}</div><div style="font-size:11px;color:var(--ts);">${p.cat||'Other'}${p.note?' · '+p.note:''}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(p.a)}</div>${tag(p.s,OPS[p.s]||'gray')}</div></div>`;});
     html+=`</div>`;
   }
