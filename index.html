@@ -1079,7 +1079,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-day-entries{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0;overflow:hidden;}
 .fd-cal-entry{font-size:10.5px;font-weight:600;padding:3px 6px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;}
 .fd-cal-entry.income{background:var(--gbg);color:var(--green);}
-.fd-cal-entry.expense{background:var(--rbg);color:var(--red);}
+.fd-cal-entry.expense{background:var(--abg);color:var(--amber);}
 .fd-cal-entry.bill{background:var(--rbg);color:var(--red);}
 .fd-cal-entry.debt{background:var(--pbg);color:var(--purple);}
 .fd-cal-entry.more{background:var(--bg-tag);color:var(--ts);}
@@ -3660,18 +3660,18 @@ function renderFinOverview(){
   // ── KPI CARDS ──
   const kpiEl=G('fd-kpis');
   if(kpiEl)kpiEl.innerHTML=`
-    <div class="fd-kpi income">
-      <div class="fd-kpi-label">Income</div>
+    <div class="fd-kpi income" style="cursor:pointer;" title="View all income" onclick="switchFinTab('entries',G('ftab-entries'));setTimeout(()=>filtF('income'),30);">
+      <div class="fd-kpi-label">Income ↗</div>
       <div class="fd-kpi-value up">${fmt(pInc)}</div>
       <div class="fd-kpi-sub"><span class="fd-kpi-badge ${incDelta>=0?'up':'dn'}">${incDelta>=0?'↑':'↓'} ${fmt(Math.abs(incDelta))} vs last ${periodLabel}</span></div>
     </div>
-    <div class="fd-kpi expense">
-      <div class="fd-kpi-label">Expenses</div>
+    <div class="fd-kpi expense" style="cursor:pointer;" title="View all expenses" onclick="switchFinTab('entries',G('ftab-entries'));setTimeout(()=>filtF('expense'),30);">
+      <div class="fd-kpi-label">Expenses ↗</div>
       <div class="fd-kpi-value dn">${fmt(pExp)}</div>
       <div class="fd-kpi-sub">${pFin.filter(f=>f.t==='expense').length} transactions</div>
     </div>
-    <div class="fd-kpi net">
-      <div class="fd-kpi-label">Net</div>
+    <div class="fd-kpi net" style="cursor:pointer;" title="View all transactions" onclick="switchFinTab('entries',G('ftab-entries'));setTimeout(()=>filtF('all'),30);">
+      <div class="fd-kpi-label">Net ↗</div>
       <div class="fd-kpi-value ${pNet>=0?'up':'dn'}">${fmtS(pNet)}</div>
       <div class="fd-kpi-sub"><span class="fd-kpi-badge ${netDelta>=0?'up':'dn'}">${netDelta>=0?'↑':'↓'} ${fmt(Math.abs(netDelta))} vs last ${periodLabel}</span></div>
     </div>
