@@ -67,9 +67,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .ic-btn{width:30px;height:30px;border-radius:var(--r);border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ts);font-size:15px;transition:background .15s,color .15s;}
 .ic-btn:hover{background:var(--bg-a);color:var(--t);}
 .sb-sec{padding:10px 18px 4px;font-size:10px;font-weight:700;color:var(--th);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px;}
-.ni{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:2px 6px;border-radius:var(--rl);cursor:pointer;font-size:13.5px;font-weight:500;color:var(--ts);transition:background .15s,color .15s,box-shadow .15s;}
-.ni:hover{background:var(--bg-a);color:var(--t);}
-.ni.on{background:color-mix(in srgb,var(--blue) 10%,var(--bg-a));color:var(--blue);font-weight:600;box-shadow:inset 3px 0 0 var(--blue);}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 11px;margin:3px 6px;border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:500;color:var(--ts);transition:background .15s,color .15s,box-shadow .15s,border-color .15s;background:var(--bg-in);border:1px solid var(--bd);}
+.ni:hover{background:var(--bg-a);color:var(--t);border-color:var(--bd2);}
+.ni.on{background:color-mix(in srgb,var(--blue) 12%,var(--bg-card));color:var(--blue);font-weight:600;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset;}
 .ni-ic{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
 .ni-lb{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sb-div{height:1px;background:var(--bd);margin:6px 10px;}
@@ -96,7 +96,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .sb{position:fixed;top:0;left:0;height:100%;z-index:100;transform:translateX(-100%);box-shadow:4px 0 30px rgba(0,0,0,0.18);}
   .sb.open{transform:translateX(0);}
   .sb-overlay.open{display:block;}
-  .content{padding:16px 16px 0!important;padding-bottom:calc(76px + env(safe-area-inset-bottom))!important;overflow-x:hidden;}
+  .content{padding:10px 12px 0!important;padding-bottom:calc(70px + env(safe-area-inset-bottom))!important;overflow-x:hidden;}
   /* Prevent iOS zoom on input focus — font-size must be ≥ 16px */
   input,select,textarea{font-size:16px!important;}
   .page-cover{height:90px!important;}
@@ -163,11 +163,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .mob-fab{display:flex;}
   .sb-toggle-btn{display:none!important;}
 }
-.content{flex:1;overflow-y:auto;padding:28px 72px 80px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
-@media(min-width:1200px){.content{padding-left:max(72px,calc(50% - 520px));padding-right:max(72px,calc(50% - 520px));}}
+.content{flex:1;overflow-y:auto;padding:14px 48px 40px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+@media(min-width:1200px){.content{padding-left:max(48px,calc(50% - 480px));padding-right:max(48px,calc(50% - 480px));}}
 
 /* PAGE HEADER */
-.page-cover{height:150px;border-radius:var(--rl);margin-bottom:20px;position:relative;overflow:hidden;}
+.page-cover{height:100px;border-radius:var(--rl);margin-bottom:14px;position:relative;overflow:hidden;}
 .page-cover::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.3));pointer-events:none;}
 .cf{background:linear-gradient(135deg,#0d1321,#1b263b,#415a77);}
 .ct{background:linear-gradient(135deg,#0a1628,#162744,#2c5282);}
@@ -175,57 +175,57 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .cb2{background:linear-gradient(135deg,#2d1b69,#5b21b6,#7c3aed);}
 .cto{background:linear-gradient(135deg,#1e1b4b,#3730a3,#6d28d9);}
 .ch{background:linear-gradient(135deg,#022c22,#064e3b,#065f46);}
-.page-icon{font-size:46px;display:block;margin-bottom:8px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));}
-.page-title{font-size:36px;font-weight:800;color:var(--t);letter-spacing:-0.03em;line-height:1.15;margin-bottom:4px;}
-.page-sub{font-size:14px;color:var(--ts);margin-bottom:6px;}
+.page-icon{font-size:34px;display:block;margin-bottom:5px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));}
+.page-title{font-size:26px;font-weight:800;color:var(--t);letter-spacing:-0.03em;line-height:1.15;margin-bottom:3px;}
+.page-sub{font-size:13px;color:var(--ts);margin-bottom:4px;}
 .panel{display:none;}.panel.on{display:block;}
-.divider{height:1px;background:var(--bd);margin:24px 0;}
+.divider{height:1px;background:var(--bd);margin:12px 0;}
 
 /* HOME HERO */
 .home-hero{
   display:flex;flex-direction:column;
-  padding:24px 0 22px;
+  padding:10px 0 10px;
   border-bottom:1px solid var(--bd);
-  margin-bottom:24px;
+  margin-bottom:10px;
 }
 .home-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
 .home-hero-left{
   flex:1;
   display:flex;flex-direction:column;
-  padding-top:18px; /* align title with avatar head */
+  padding-top:6px;
 }
 .home-hero-greeting{
-  font-size:12px;font-weight:600;
+  font-size:11px;font-weight:600;
   color:var(--ts);text-transform:uppercase;
-  letter-spacing:0.1em;margin-bottom:6px;
+  letter-spacing:0.1em;margin-bottom:3px;
 }
 .home-hero-title{
-  font-size:28px;font-weight:800;color:var(--t);
+  font-size:22px;font-weight:800;color:var(--t);
   letter-spacing:-0.03em;line-height:1.15;
-  margin-bottom:5px;
+  margin-bottom:2px;
 }
 .home-hero-date{
-  font-size:13px;color:var(--ts);font-weight:400;
-  margin-bottom:14px;
+  font-size:12px;color:var(--ts);font-weight:400;
+  margin-bottom:8px;
 }
 /* RIGHT COLUMN — streak + progress stacked */
 .hero-right-col{
-  display:flex;flex-direction:column;gap:8px;
-  align-self:stretch;flex-shrink:0;width:140px;
+  display:flex;flex-direction:column;gap:6px;
+  align-self:stretch;flex-shrink:0;width:120px;
 }
 .hero-mini-progress{display:flex;flex-direction:column;gap:6px;flex:1;}
 .hero-prog-cell{
-  padding:10px 12px !important;
+  padding:8px 10px !important;
   min-height:unset !important;
   flex:1;
 }
 .hero-prog-cell .home-quad-hdr{
   font-size:9px !important;
-  margin-bottom:5px !important;
-  padding-bottom:4px !important;
+  margin-bottom:4px !important;
+  padding-bottom:3px !important;
 }
 .home-hero-stats{
-  display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;
 }
 .hero-stat{
   display:flex;flex-direction:column;
@@ -244,22 +244,22 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
 .home-hero-streak{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:linear-gradient(135deg,var(--t) 0%,color-mix(in srgb,var(--t) 75%,var(--blue)) 100%);
-  border-radius:var(--rl);padding:16px 20px;min-width:90px;
+  border-radius:var(--rl);padding:10px 12px;min-width:unset;
   box-shadow:var(--sh-md);flex-shrink:0;
 }
-.home-hero-streak-num{font-size:32px;font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1;}
-.home-hero-streak-lb{font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;text-align:center;}
+.home-hero-streak-num{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1;}
+.home-hero-streak-lb{font-size:9px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;text-align:center;}
 @media(max-width:768px){
-  .home-hero{padding:16px 0 16px;}
-  .home-hero-title{font-size:22px;}
-  .home-hero-left{padding-top:10px;}
-  .hero-stat{min-width:80px;padding:10px 12px;}
-  .hero-stat-vl{font-size:17px;}
-  .home-hero-streak{padding:12px 14px;min-width:72px;}
-  .home-hero-streak-num{font-size:24px;}
-  .hero-right-col{width:110px;}
+  .home-hero{padding:10px 0 10px;}
+  .home-hero-title{font-size:18px;}
+  .home-hero-left{padding-top:4px;}
+  .hero-stat{min-width:70px;padding:8px 10px;}
+  .hero-stat-vl{font-size:15px;}
+  .home-hero-streak{padding:8px 10px;}
+  .home-hero-streak-num{font-size:20px;}
+  .hero-right-col{width:96px;}
   .hero-day-widget{flex-direction:row;flex-wrap:wrap;}
-  .hero-day-btn{flex:1;min-width:120px;font-size:12px;padding:10px 12px;}
+  .hero-day-btn{flex:1;min-width:100px;font-size:10px;padding:7px 10px;}
 }
 
 /* WEEKLY SNAPSHOT */
@@ -345,8 +345,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--t);bac
   .sum-vl{font-size:15px;}
   .sum-lb{font-size:9px;}
 }
-.bh2{font-size:18px;font-weight:800;color:var(--t);margin:24px 0 10px;letter-spacing:-0.02em;}
-.bh3{font-size:15px;font-weight:700;color:var(--t);margin:16px 0 8px;letter-spacing:-0.01em;}
+.bh2{font-size:16px;font-weight:800;color:var(--t);margin:14px 0 8px;letter-spacing:-0.02em;}
+.bh3{font-size:14px;font-weight:700;color:var(--t);margin:12px 0 6px;letter-spacing:-0.01em;}
 
 /* METRIC CARDS */
 .mc{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px;box-shadow:var(--sh);}
@@ -1135,7 +1135,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 @keyframes panelFadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 
 /* Divider style */
-.divider{height:1px;background:var(--bd);margin:22px 0;}
+.divider{height:1px;background:var(--bd);margin:12px 0;}
 
 /* Progress bar pulse for active habits */
 @keyframes progressPulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
@@ -1216,16 +1216,16 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .home-quadrant{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:14px 0 0;
+  gap:10px;
+  margin:8px 0 0;
 }
 .home-quad-cell{
   background:var(--bg-card);
   border:1px solid var(--bd);
   border-radius:var(--rl);
-  padding:14px;
+  padding:10px 12px;
   box-shadow:var(--sh);
-  min-height:120px;
+  min-height:100px;
 }
 .home-quad-hdr{
   font-size:12px;
@@ -1365,8 +1365,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .attn-scroll::-webkit-scrollbar-track{background:transparent;}
 .attn-scroll::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
 /* WEEKLY SNAPSHOT CARD */
-.home-weekly-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;box-shadow:var(--sh);margin:14px 0 0;}
-.home-weekly-card .bh2{margin:0 0 10px!important;}
+.home-weekly-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px;box-shadow:var(--sh);margin:8px 0 0;}
+.home-weekly-card .bh2{margin:0 0 8px!important;}
 
 @media(max-width:768px){
   .home-quadrant{grid-template-columns:1fr;}
@@ -1399,11 +1399,11 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 /* ── 3D HUMAN AVATAR (Three.js canvas) ── */
 .avatar-float{
   flex-shrink:0;
-  width:90px;height:180px;
+  width:70px;height:130px;
   pointer-events:none;align-self:center;
 }
 #avatar-canvas{
-  width:90px;height:180px;
+  width:70px;height:130px;
   display:block;
 }
 
@@ -1594,13 +1594,13 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 
 /* HERO DAY WIZARD WIDGET — left of avatar */
 .hero-day-widget{
-  display:flex;flex-direction:column;gap:10px;
+  display:flex;flex-direction:column;gap:6px;
   align-self:center;flex-shrink:0;
 }
 .hero-day-btn{
-  font-family:var(--font);font-size:13px;font-weight:800;
-  padding:13px 18px;border-radius:14px;border:none;cursor:pointer;
-  display:flex;align-items:center;gap:8px;white-space:nowrap;
+  font-family:var(--font);font-size:11px;font-weight:700;
+  padding:8px 12px;border-radius:10px;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
   letter-spacing:0.01em;transition:all .15s;
 }
 .hero-day-btn.start{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 4px 16px rgba(245,158,11,0.4);}
@@ -1608,7 +1608,26 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .hero-day-btn.end{background:linear-gradient(135deg,#6d28d9,#5b21b6);color:#fff;box-shadow:0 4px 16px rgba(109,40,217,0.4);}
 .hero-day-btn.end:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(109,40,217,0.5);}
 .hero-day-btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+.hero-day-btn.quick-add-btn{background:linear-gradient(135deg,#f0b429,#d4a20a);color:#0b0e14;box-shadow:0 4px 16px rgba(240,180,41,0.35),0 2px 6px rgba(0,0,0,0.15);font-weight:800;letter-spacing:0.02em;text-transform:uppercase;}
+.hero-day-btn.quick-add-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(240,180,41,0.45),0 4px 8px rgba(0,0,0,0.2);}
 
+/* HOME UNIVERSAL QUICK-ADD MODAL */
+.hqa-wrap{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
+.hqa-wrap.open{display:flex;}
+.hqa-modal{width:100%;max-width:520px;background:var(--bg-card);border-radius:18px 18px 0 0;padding:0 0 env(safe-area-inset-bottom);box-shadow:0 -8px 40px rgba(0,0,0,0.28);max-height:92vh;overflow-y:auto;animation:hqaSlideUp .25s cubic-bezier(.34,1.3,.64,1);}
+@keyframes hqaSlideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.hqa-handle{width:36px;height:4px;background:var(--bd2);border-radius:2px;margin:10px auto 0;}
+.hqa-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 18px 8px;}
+.hqa-title{font-size:16px;font-weight:800;color:var(--t);letter-spacing:-0.02em;}
+.hqa-close{background:none;border:none;font-size:17px;color:var(--ts);cursor:pointer;padding:4px 8px;border-radius:var(--r);}
+.hqa-close:hover{background:var(--bg-h);color:var(--t);}
+.hqa-section-tabs{display:flex;gap:6px;padding:0 14px 10px;flex-wrap:wrap;}
+.hqa-section-tab{display:flex;align-items:center;gap:5px;font-family:var(--font);font-size:12px;font-weight:700;padding:7px 12px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-in);color:var(--ts);cursor:pointer;transition:all .14s;white-space:nowrap;}
+.hqa-section-tab:hover{background:var(--bg-h);color:var(--t);}
+.hqa-section-tab.on{background:var(--t);color:var(--ti);border-color:var(--t);}
+.hqa-body{padding:0 14px 20px;}
+.hqa-section{display:none;flex-direction:column;gap:10px;}
+.hqa-section.on{display:flex;}
 
 /* ── HIDDEN ── */
 .hidden{display:none!important;}
@@ -1873,7 +1892,8 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 /* HOME STREAK WIDGET */
 .home-hero-streak{
   background:linear-gradient(135deg,#f0b429,#d4a20a) !important;
-  box-shadow:0 4px 20px rgba(240,180,41,0.3) !important;
+  box-shadow:0 3px 12px rgba(240,180,41,0.3) !important;
+  padding:10px 12px !important;
 }
 .home-hero-streak-num,.home-hero-streak-lb{color:#0b0e14 !important;}
 
@@ -1904,8 +1924,8 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
   letter-spacing:0.10em;
   text-transform:uppercase;
   color:var(--th);
-  margin:24px 0 10px;
-  padding-bottom:8px;
+  margin:14px 0 8px;
+  padding-bottom:6px;
   border-bottom:1px solid var(--bd);
   display:flex;align-items:center;gap:8px;
 }
@@ -2061,27 +2081,18 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <div class="hero-day-widget">
               <button class="hero-day-btn start" onclick="openDayWizard('start')" aria-label="Start your day wizard">🌅 Start My Day</button>
               <button class="hero-day-btn end"   onclick="openDayWizard('end')"   aria-label="End your day wizard">🌙 End My Day</button>
+              <button class="hero-day-btn quick-add-btn" onclick="openHomeQA()" aria-label="Quick add anything">⚡ Quick Add</button>
             </div>
           </div>
           <!-- CENTER: 3D spinning avatar -->
           <div class="avatar-float">
             <canvas id="avatar-canvas"></canvas>
           </div>
-          <!-- RIGHT: streak + progress stacked -->
+          <!-- RIGHT: streak only -->
           <div class="hero-right-col">
             <div class="home-hero-streak">
               <div class="home-hero-streak-num" id="home-streak-num">—</div>
               <div class="home-hero-streak-lb">day streak</div>
-            </div>
-            <div class="hero-mini-progress">
-              <div class="home-quad-cell hero-prog-cell">
-                <div class="home-quad-hdr">⚡ Personal</div>
-                <div id="home-personal-milestone"></div>
-              </div>
-              <div class="home-quad-cell hero-prog-cell">
-                <div class="home-quad-hdr">💰 Finance</div>
-                <div id="home-finance-milestone"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -3109,6 +3120,143 @@ function openFinQuickAdd(){
 function closeFinQuickAdd(){
   G('fqa-wrap').classList.remove('open');
   document.body.style.overflow='';
+}
+
+// ── HOME UNIVERSAL QUICK-ADD MODAL ──
+let hqaIEType='expense';
+
+function openHomeQA(){
+  G('hqa-wrap').classList.add('open');
+  document.body.style.overflow='hidden';
+  // Pre-fill dates
+  ['hqa-date','hqab-due','hqad-due'].forEach(id=>{const el=G(id);if(el&&!el.value)el.value=today;});
+  // Build category dropdown
+  hqaFinBuildCats();
+  // Reset to money / transaction
+  hqaSwitchSection('money',G('hqas-money'));
+  hqaFinSwitchType('transaction',G('hqaft-transaction'));
+  hqaFinSetIE('expense');
+  setTimeout(()=>{const el=G('hqa-amount');if(el)el.focus();},80);
+}
+function closeHomeQA(){
+  G('hqa-wrap').classList.remove('open');
+  document.body.style.overflow='';
+}
+function hqaSwitchSection(sec, btn){
+  document.querySelectorAll('.hqa-section-tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  document.querySelectorAll('.hqa-section').forEach(s=>s.classList.remove('on'));
+  const el=G('hqa-section-'+sec);if(el)el.classList.add('on');
+  if(sec==='money'){setTimeout(()=>{const a=G('hqa-amount');if(a)a.focus();},50);}
+  if(sec==='task'){setTimeout(()=>{const a=G('hqa-task-t');if(a)a.focus();},50);}
+  if(sec==='journal'){setTimeout(()=>{const a=G('hqa-journal-txt');if(a)a.focus();},50);}
+  if(sec==='goal'){setTimeout(()=>{const a=G('hqa-goal-t');if(a)a.focus();},50);}
+  if(sec==='habit')hqaRenderHabits();
+}
+function hqaFinSwitchType(type, btn){
+  document.querySelectorAll('#hqa-section-money .fqa-type-tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  ['transaction','bill','debt'].forEach(t=>{
+    const el=G('hqa-fin-'+t);
+    if(el)el.style.display=t===type?'flex':'none';
+  });
+  const amtMap={transaction:'hqa-amount',bill:'hqab-amount',debt:'hqad-amount'};
+  setTimeout(()=>{const el=G(amtMap[type]);if(el)el.focus();},50);
+}
+function hqaFinSetIE(type){
+  hqaIEType=type;
+  const expBtn=G('hqa-btn-expense'),incBtn=G('hqa-btn-income');
+  if(expBtn){expBtn.style.background=type==='expense'?'var(--red)':'transparent';expBtn.style.color=type==='expense'?'#fff':'var(--ts)';}
+  if(incBtn){incBtn.style.background=type==='income'?'var(--green)':'transparent';incBtn.style.color=type==='income'?'#fff':'var(--ts)';}
+  hqaFinBuildCats();
+}
+function hqaFinBuildCats(){
+  const sel=G('hqa-cat');if(!sel)return;
+  const cats=getAllCats(hqaIEType);
+  sel.innerHTML=cats.map(c=>`<option>${c}</option>`).join('')+'<option value="__new__">＋ New category…</option>';
+}
+function hqaFinHandleCat(){
+  const sel=G('hqa-cat');if(!sel||sel.value!=='__new__')return;
+  const name=prompt('New category name:');
+  if(name&&name.trim()){const n=addCustomCategory(hqaIEType,name);hqaFinBuildCats();sel.value=n;}
+  else{sel.value=getAllCats(hqaIEType)[0];}
+}
+function hqaFinSaveTransaction(){
+  const amt=parseFloat(G('hqa-amount').value);
+  const desc=G('hqa-desc').value.trim();
+  if(!amt||!desc){G(!amt?'hqa-amount':'hqa-desc').focus();return;}
+  const cat=G('hqa-cat').value==='__new__'?getAllCats(hqaIEType)[0]:G('hqa-cat').value;
+  const biz=G('hqa-biz').value;
+  const dt=G('hqa-date').value||today;
+  S.finance.push({d:desc,a:amt,t:hqaIEType,c:cat,biz,dt,id:Date.now()});
+  addFinancialPoints(5,'Logged transaction');
+  save();renderFinance();renderHome();
+  showBackupToast('✓ '+(hqaIEType==='income'?'Income':'Expense')+' saved');
+  G('hqa-amount').value='';G('hqa-desc').value='';
+  G('hqa-amount').focus();
+}
+function hqaFinSaveBill(){
+  const amt=parseFloat(G('hqab-amount').value);
+  const name=G('hqab-name').value.trim();
+  if(!amt||!name){G(!amt?'hqab-amount':'hqab-name').focus();return;}
+  const ds=G('hqab-status').value==='Auto-pay'?'Auto-pay':'Unpaid';
+  S.bills.push({n:name,a:amt,f:G('hqab-freq').value,cat:G('hqab-cat').value,d:G('hqab-due').value,ds,payments:{},notes:'',id:Date.now()});
+  addFinancialPoints(5,'Added bill');
+  save();renderFinance();renderHome();
+  showBackupToast('✓ Bill saved');
+  G('hqab-amount').value='';G('hqab-name').value='';
+  G('hqab-amount').focus();
+}
+function hqaFinSaveDebt(){
+  const amt=parseFloat(G('hqad-amount').value);
+  const name=G('hqad-name').value.trim();
+  if(!amt||!name){G(!amt?'hqad-amount':'hqad-name').focus();return;}
+  S.otherPayments.push({n:name,a:amt,cat:G('hqad-cat').value,due:G('hqad-due').value,s:G('hqad-status').value,note:G('hqad-note').value.trim(),id:Date.now()});
+  save();renderFinance();renderHome();
+  showBackupToast('✓ Debt saved');
+  G('hqad-amount').value='';G('hqad-name').value='';
+  G('hqad-amount').focus();
+}
+function hqaSaveTask(){
+  const t=G('hqa-task-t').value.trim();if(!t)return;
+  S.todos.push({t,p:G('hqa-task-pri').value,d:G('hqa-task-due').value||'',done:false,id:Date.now()});
+  G('hqa-task-t').value='';G('hqa-task-due').value='';
+  save();renderTodos();renderHome();
+  hqaFlash('hqa-task-confirm','✓ Task added');
+}
+function hqaSaveJournal(){
+  const txt=G('hqa-journal-txt').value.trim();if(!txt)return;
+  if(!S.routineLog)S.routineLog={};
+  const key=today+'-journal';
+  S.routineLog[key]=(S.routineLog[key]?S.routineLog[key]+'\n\n':'')+txt;
+  G('hqa-journal-txt').value='';
+  save();
+  hqaFlash('hqa-journal-confirm','✓ Journal saved');
+}
+function hqaSaveGoal(){
+  const t=G('hqa-goal-t').value.trim();if(!t)return;
+  const type=G('hqa-goal-type').value,priority=G('hqa-goal-pri').value;
+  S.goals.push({t,type,priority,status:'active',todos:[],c:'Personal',dl:'',id:Date.now()});
+  G('hqa-goal-t').value='';
+  addPersonalPoints(5,'Quick add '+type.toLowerCase());save();renderGoals();
+  hqaFlash('hqa-goal-confirm','✓ '+type+' added');
+}
+function hqaRenderHabits(){
+  const el=G('hqa-habit-list');if(!el)return;
+  if(!S.habits.length){el.innerHTML='<div style="font-size:12px;color:var(--ts);">No habits yet — add them in the Habits section.</div>';return;}
+  el.innerHTML=S.habits.map(h=>{
+    const done=S.hlog&&S.hlog[today+'-'+h.id];
+    return`<div class="ci" style="padding:4px 0;">
+      <input type="checkbox" ${done?'checked':''} onchange="togHabit(${h.id});setTimeout(hqaRenderHabits,80);">
+      <span class="ci-lb ${done?'done':''}" style="font-size:13px;">${h.t}</span>
+      ${done?'<span style="font-size:11px;color:var(--green);margin-left:4px;">✓</span>':''}
+    </div>`;
+  }).join('');
+}
+function hqaFlash(id,msg){
+  const el=G(id);if(!el)return;
+  el.textContent=msg;
+  setTimeout(()=>{if(el.textContent===msg)el.textContent='';},2200);
 }
 
 function fqaSwitchType(type, btn){
@@ -8731,6 +8879,174 @@ function resetAllData(){
     <span class="bn-label">Settings</span>
   </button>
 </nav>
+
+<!-- HOME UNIVERSAL QUICK-ADD MODAL -->
+<div class="hqa-wrap" id="hqa-wrap" onclick="if(event.target===this)closeHomeQA()">
+  <div class="hqa-modal">
+    <div class="hqa-handle"></div>
+    <div class="hqa-hdr">
+      <div class="hqa-title">⚡ Quick Add</div>
+      <button class="hqa-close" onclick="closeHomeQA()">✕</button>
+    </div>
+
+    <!-- SECTION TABS -->
+    <div class="hqa-section-tabs">
+      <button class="hqa-section-tab on" id="hqas-money"   onclick="hqaSwitchSection('money',this)">  💸 Money</button>
+      <button class="hqa-section-tab"    id="hqas-task"    onclick="hqaSwitchSection('task',this)">   ✅ Task</button>
+      <button class="hqa-section-tab"    id="hqas-journal" onclick="hqaSwitchSection('journal',this)">📓 Journal</button>
+      <button class="hqa-section-tab"    id="hqas-goal"    onclick="hqaSwitchSection('goal',this)">   🎯 Goal</button>
+      <button class="hqa-section-tab"    id="hqas-habit"   onclick="hqaSwitchSection('habit',this)">  🔄 Habit</button>
+    </div>
+
+    <div class="hqa-body">
+
+      <!-- ── MONEY SECTION (identical UI to Bills & Budgets quick add) ── -->
+      <div id="hqa-section-money" class="hqa-section on">
+        <div class="fqa-type-tabs">
+          <button class="fqa-type-tab on" id="hqaft-transaction" onclick="hqaFinSwitchType('transaction',this)">
+            <span class="fqa-type-icon">💸</span><span>Transaction</span>
+          </button>
+          <button class="fqa-type-tab" id="hqaft-bill" onclick="hqaFinSwitchType('bill',this)">
+            <span class="fqa-type-icon">🧾</span><span>Bill</span>
+          </button>
+          <button class="fqa-type-tab" id="hqaft-debt" onclick="hqaFinSwitchType('debt',this)">
+            <span class="fqa-type-icon">💳</span><span>Debt</span>
+          </button>
+        </div>
+
+        <!-- Transaction -->
+        <div id="hqa-fin-transaction" class="fqa-form">
+          <div class="fqa-ie-toggle">
+            <button class="fqa-ie-btn" id="hqa-btn-expense" onclick="hqaFinSetIE('expense')" style="background:var(--red);color:#fff;">Expense</button>
+            <button class="fqa-ie-btn" id="hqa-btn-income"  onclick="hqaFinSetIE('income')">Income</button>
+          </div>
+          <div class="fqa-amount-wrap">
+            <span class="fqa-currency">$</span>
+            <input class="fqa-amount-inp" id="hqa-amount" type="number" placeholder="0.00" step="0.01" inputmode="decimal">
+          </div>
+          <input class="fqa-fi" id="hqa-desc" type="text" placeholder="Description (e.g. Groceries, Salary…)" onkeydown="if(event.key==='Enter')hqaFinSaveTransaction()">
+          <div class="fqa-row">
+            <select class="fqa-fi" id="hqa-cat" onchange="hqaFinHandleCat()" style="flex:1;"></select>
+            <select class="fqa-fi" id="hqa-biz" style="max-width:140px;">
+              <option value="personal">👤 Personal</option>
+              <option value="business">💼 Business</option>
+            </select>
+          </div>
+          <div class="fqa-row">
+            <input class="fqa-fi" id="hqa-date" type="date" style="flex:1;">
+            <button class="fqa-today-btn" onclick="G('hqa-date').value=today">Today</button>
+          </div>
+          <button class="fqa-save-btn" onclick="hqaFinSaveTransaction()">Save transaction</button>
+        </div>
+
+        <!-- Bill -->
+        <div id="hqa-fin-bill" class="fqa-form" style="display:none;">
+          <div class="fqa-amount-wrap">
+            <span class="fqa-currency">$</span>
+            <input class="fqa-amount-inp" id="hqab-amount" type="number" placeholder="0.00" step="0.01" inputmode="decimal">
+          </div>
+          <input class="fqa-fi" id="hqab-name" type="text" placeholder="Bill name (e.g. Rent, Netflix…)" onkeydown="if(event.key==='Enter')hqaFinSaveBill()">
+          <div class="fqa-row">
+            <select class="fqa-fi" id="hqab-freq" style="flex:1;">
+              <option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option>
+            </select>
+            <select class="fqa-fi" id="hqab-cat" style="flex:1;">
+              <option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Transport</option><option>Healthcare</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fqa-row">
+            <div style="flex:1;">
+              <label class="fqa-lbl">Due date</label>
+              <input class="fqa-fi" id="hqab-due" type="date" style="width:100%;">
+            </div>
+            <div style="flex:1;">
+              <label class="fqa-lbl">Status</label>
+              <select class="fqa-fi" id="hqab-status" style="width:100%;">
+                <option>Unpaid</option><option>Paid</option><option>Auto-pay</option>
+              </select>
+            </div>
+          </div>
+          <button class="fqa-save-btn" onclick="hqaFinSaveBill()">Save bill</button>
+        </div>
+
+        <!-- Debt -->
+        <div id="hqa-fin-debt" class="fqa-form" style="display:none;">
+          <div class="fqa-amount-wrap">
+            <span class="fqa-currency">$</span>
+            <input class="fqa-amount-inp" id="hqad-amount" type="number" placeholder="0.00" step="0.01" inputmode="decimal">
+          </div>
+          <input class="fqa-fi" id="hqad-name" type="text" placeholder="Debt name (e.g. Medical bill, Tax…)" onkeydown="if(event.key==='Enter')hqaFinSaveDebt()">
+          <div class="fqa-row">
+            <select class="fqa-fi" id="hqad-cat" style="flex:1;">
+              <option>Medical</option><option>Legal</option><option>Tax</option><option>Education</option><option>Home repair</option><option>Car</option><option>Family</option><option>Travel</option><option>Other</option>
+            </select>
+            <select class="fqa-fi" id="hqad-status" style="flex:1;">
+              <option value="pending">Pending</option><option value="overdue">Overdue</option><option value="scheduled">Scheduled</option>
+            </select>
+          </div>
+          <div class="fqa-row">
+            <div style="flex:1;">
+              <label class="fqa-lbl">Due date</label>
+              <input class="fqa-fi" id="hqad-due" type="date" style="width:100%;">
+            </div>
+            <div style="flex:1;">
+              <label class="fqa-lbl">Notes</label>
+              <input class="fqa-fi" id="hqad-note" type="text" placeholder="Optional" style="width:100%;">
+            </div>
+          </div>
+          <button class="fqa-save-btn" onclick="hqaFinSaveDebt()">Save debt</button>
+        </div>
+      </div>
+
+      <!-- ── TASK SECTION ── -->
+      <div id="hqa-section-task" class="hqa-section">
+        <input class="fqa-fi" id="hqa-task-t" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')hqaSaveTask()">
+        <div class="fqa-row">
+          <select class="fqa-fi" id="hqa-task-pri" style="flex:1;">
+            <option value="med">🟡 Medium</option>
+            <option value="high">🔴 High</option>
+            <option value="low">⚪ Low</option>
+          </select>
+          <input class="fqa-fi" type="date" id="hqa-task-due" style="flex:1;">
+        </div>
+        <button class="fqa-save-btn" onclick="hqaSaveTask()">Add Task</button>
+        <div class="hqa-confirm" id="hqa-task-confirm" style="font-size:13px;color:var(--green);text-align:center;min-height:18px;"></div>
+      </div>
+
+      <!-- ── JOURNAL SECTION ── -->
+      <div id="hqa-section-journal" class="hqa-section">
+        <textarea class="fqa-fi" id="hqa-journal-txt" style="min-height:120px;resize:none;font-family:var(--font);" placeholder="What's on your mind today?"></textarea>
+        <button class="fqa-save-btn" onclick="hqaSaveJournal()">Save Entry</button>
+        <div class="hqa-confirm" id="hqa-journal-confirm" style="font-size:13px;color:var(--green);text-align:center;min-height:18px;"></div>
+      </div>
+
+      <!-- ── GOAL SECTION ── -->
+      <div id="hqa-section-goal" class="hqa-section">
+        <input class="fqa-fi" id="hqa-goal-t" placeholder="Goal or project title" onkeydown="if(event.key==='Enter')hqaSaveGoal()">
+        <div class="fqa-row">
+          <select class="fqa-fi" id="hqa-goal-type" style="flex:1;">
+            <option value="Goal">🎯 Goal</option>
+            <option value="Project">📁 Project</option>
+          </select>
+          <select class="fqa-fi" id="hqa-goal-pri" style="flex:1;">
+            <option value="med">🟡 Medium</option>
+            <option value="high">🔴 High</option>
+            <option value="low">⚪ Low</option>
+          </select>
+        </div>
+        <button class="fqa-save-btn" onclick="hqaSaveGoal()">Add Goal</button>
+        <div class="hqa-confirm" id="hqa-goal-confirm" style="font-size:13px;color:var(--green);text-align:center;min-height:18px;"></div>
+      </div>
+
+      <!-- ── HABIT SECTION ── -->
+      <div id="hqa-section-habit" class="hqa-section">
+        <div style="font-size:12px;font-weight:600;color:var(--ts);margin-bottom:2px;">Check off today's habits</div>
+        <div id="hqa-habit-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- FINANCE QUICK-ADD MODAL -->
 <div class="fqa-wrap" id="fqa-wrap" onclick="if(event.target===this)closeFinQuickAdd()">
