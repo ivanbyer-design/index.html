@@ -2313,13 +2313,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <button class="fin-tab"   id="ftab-wants"       onclick="switchFinTab('wants',this)">🎯 Wants</button>
       </div>
 
-      <!-- QUICK ADD — always visible, below tabs -->
-      <button class="fin-qa-btn" onclick="openFinQuickAdd()">
-        <span style="font-size:20px;line-height:1;">⚡</span>
-        <span>Quick Add</span>
-        <span style="font-size:16px;font-weight:900;margin-left:auto;">＋</span>
-      </button>
-
       <!-- ═══════════════════════════════════════════ -->
       <!-- TAB: OVERVIEW                               -->
       <!-- ═══════════════════════════════════════════ -->
@@ -2356,10 +2349,12 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
                 </div>
               </div>
             </div>
-            <div class="fd-cal-header">
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            <div id="fd-cal-body">
+              <div class="fd-cal-header">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+              </div>
+              <div class="fd-cal-grid" id="fd-cal-grid"></div>
             </div>
-            <div class="fd-cal-grid" id="fd-cal-grid"></div>
           </div>
         </div>
 
@@ -3561,8 +3556,8 @@ function setFinPeriod(p,btn){
   document.querySelectorAll('.fd-period-btn').forEach(b=>b.classList.remove('on'));
   if(btn)btn.classList.add('on');
   // Show/hide calendar section
-  const calSec=G('fd-cal-section');
-  if(calSec)calSec.style.display=p==='monthly'?'block':'none';
+  const calBody=G('fd-cal-body');
+  if(calBody)calBody.style.display=p==='monthly'?'block':'none';
   renderFinOverview();
 }
 
@@ -3614,9 +3609,9 @@ function renderFinOverview(){
   const lbl=G('fd-month-label'); if(lbl)lbl.textContent=range.label;
   const calLbl=G('fd-cal-month-title'); if(calLbl)calLbl.textContent=range.label;
 
-  // Calendar lives inside overview tab — only show when monthly period
-  const calSec=G('fd-cal-section');
-  if(calSec)calSec.style.display=finPeriod==='monthly'?'block':'none';
+  // Only hide the grid/header rows for quarterly/yearly — keep period controls visible
+  const calBody=G('fd-cal-body');
+  if(calBody)calBody.style.display=finPeriod==='monthly'?'block':'none';
 
   // Finance data for period
   const pFin=S.finance.filter(f=>f.dt&&f.dt>=range.start&&f.dt<=range.end);
