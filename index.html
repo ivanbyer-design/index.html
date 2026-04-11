@@ -1048,10 +1048,19 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-dot-legend.expense{background:var(--red);}
 .fd-cal-dot-legend.bill{background:var(--red);}
 .fd-cal-dot-legend.debt{background:var(--purple);}
-.fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-h);border-bottom:1px solid var(--bd);}
+.fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr) 84px;background:var(--bg-h);border-bottom:1px solid var(--bd);}
 .fd-cal-header span{padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
-.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.fd-cal-header .fd-cal-hdr-week{padding:8px 6px;text-align:center;font-size:10px;font-weight:700;color:var(--neon);text-transform:uppercase;letter-spacing:0.06em;border-left:1px solid var(--bd);}
+.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr) 84px;}
 .fd-cal-day{min-height:118px;padding:8px 7px 6px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.fd-cal-week-total{min-height:118px;padding:8px 7px 6px;border-left:1px solid var(--bd);border-bottom:1px solid var(--bd);background:color-mix(in srgb,var(--neon-glow) 40%,var(--bg-card));display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:4px;}
+.fd-cal-wt-lbl{font-size:8.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;align-self:flex-start;}
+.fd-cal-wt-inc{font-size:10px;font-weight:700;color:var(--green);}
+.fd-cal-wt-exp{font-size:10px;font-weight:700;color:var(--red);}
+.fd-cal-wt-net{font-size:12px;font-weight:900;letter-spacing:-0.02em;margin-top:2px;}
+.fd-cal-wt-net.pos{color:var(--green);}
+.fd-cal-wt-net.neg{color:var(--red);}
+.fd-cal-wt-net.zero{color:var(--ts);}
 .fd-cal-day:nth-child(7n){border-right:none;}
 .fd-cal-day:hover{background:var(--bg-h);}
 .fd-cal-day:active{background:var(--bg-a);}
@@ -1510,6 +1519,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   #fd-cal-section{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   #fd-cal-section .fd-cal-wrap{min-width:420px;}
   .fd-cal-day{min-height:88px!important;padding:5px 4px 4px!important;}
+  .fd-cal-week-total{min-height:88px!important;padding:5px 5px 4px!important;}
+  .fd-cal-wt-net{font-size:10px!important;}
+  .fd-cal-wt-inc,.fd-cal-wt-exp{font-size:9px!important;}
   .fd-cal-entry{font-size:9.5px!important;}
   .fd-cal-day-net{font-size:9.5px!important;}
 }
@@ -2352,6 +2364,7 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <div id="fd-cal-body">
               <div class="fd-cal-header">
                 <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                <div class="fd-cal-hdr-week">Week</div>
               </div>
               <div class="fd-cal-grid" id="fd-cal-grid"></div>
             </div>
@@ -3710,14 +3723,35 @@ function renderFinOverview(){
     const calEl=G('fd-cal-grid');
     if(calEl){
       const firstDay=new Date(y,m,1).getDay();
-      const startOffset=(firstDay+6)%7;
+      const startOffset=(firstDay+6)%7; // Mon=0 offset
       let html='';
+      // Track position within current row (0-6) and weekly running totals
+      let colPos=startOffset; // how many cells are already in the first row
+      let wkInc=0, wkExp=0;
+
+      // Helper: emit a week-total cell and reset counters
+      function weekTotalCell(){
+        const net=wkInc-wkExp;
+        const cls=net>0?'pos':net<0?'neg':'zero';
+        const incHtml=wkInc>0?`<div class="fd-cal-wt-inc">↑ ${fmt(wkInc)}</div>`:'';
+        const expHtml=wkExp>0?`<div class="fd-cal-wt-exp">↓ ${fmt(wkExp)}</div>`:'';
+        const cell=`<div class="fd-cal-week-total">
+          <div class="fd-cal-wt-lbl">Week</div>
+          ${incHtml}${expHtml}
+          <div class="fd-cal-wt-net ${cls}">${net===0?'—':(net>0?'+':'')+fmt(Math.abs(net))}</div>
+        </div>`;
+        wkInc=0; wkExp=0;
+        return cell;
+      }
+
+      // Empty offset cells (don't count toward weekly totals)
       for(let i=0;i<startOffset;i++) html+=`<div class="fd-cal-day empty"><div class="fd-cal-day-top"><div class="fd-cal-num"></div></div></div>`;
+
       for(let d=1;d<=daysInMonth;d++){
         const dk=mPrefix+'-'+String(d).padStart(2,'0');
         const dayIncItems=S.finance.filter(f=>f.dt===dk&&f.t==='income');
         const dayExpItems=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
-        const dayBillItems=billsDueOn(dk);   // ← recurring-aware
+        const dayBillItems=billsDueOn(dk);
         const dayDebtItems=(S.otherPayments||[]).filter(p=>p.due===dk);
         const dayInc=dayIncItems.reduce((s,f)=>s+f.a,0);
         const dayExp=dayExpItems.reduce((s,f)=>s+f.a,0);
@@ -3725,14 +3759,14 @@ function renderFinOverview(){
         const isToday=dk===today;
         const hasData=dayInc||dayExp||dayBillItems.length||dayDebtItems.length;
 
-        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}$${Math.round(Math.abs(dayNet)).toLocaleString()}</div>`:'';
+        wkInc+=dayInc; wkExp+=dayExp;
 
+        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}$${Math.round(Math.abs(dayNet)).toLocaleString()}</div>`:'';
         const allEntries=[];
         dayIncItems.forEach(f=>allEntries.push({type:'income',label:'↑ '+f.d,amount:f.a}));
         dayExpItems.forEach(f=>allEntries.push({type:'expense',label:'↓ '+f.d,amount:f.a}));
         dayBillItems.forEach(b=>allEntries.push({type:'bill',label:'🧾 '+b.n,amount:b.a}));
         dayDebtItems.forEach(p=>allEntries.push({type:'debt',label:'💸 '+p.n,amount:p.a}));
-
         const shown=allEntries.slice(0,3);
         const hidden=allEntries.length-3;
         const chips=shown.map(e=>`<div class="fd-cal-entry ${e.type}" title="${e.label}">${e.label}</div>`).join('');
@@ -3742,6 +3776,18 @@ function renderFinOverview(){
           <div class="fd-cal-day-top"><div class="fd-cal-num">${d}</div>${netBadge}</div>
           <div class="fd-cal-day-entries">${chips}${more}</div>
         </div>`;
+
+        colPos++;
+        // End of week row (column 7 = Sunday) → append total cell
+        if(colPos%7===0){
+          html+=weekTotalCell();
+        }
+      }
+      // If the last row isn't complete, fill remaining empty cells then total
+      const remaining=colPos%7;
+      if(remaining!==0){
+        for(let i=remaining;i<7;i++) html+=`<div class="fd-cal-day empty"><div class="fd-cal-day-top"><div class="fd-cal-num"></div></div></div>`;
+        html+=weekTotalCell();
       }
       calEl.innerHTML=html;
     }
