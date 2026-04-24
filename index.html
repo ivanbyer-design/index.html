@@ -1879,6 +1879,21 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bdet-bill-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:8px;transition:background .12s;}
 .bdet-bill-row:hover{background:var(--bg-h);}
 .bdet-bill-info{flex:1;min-width:0;}
+.fft-period-btn{font-family:var(--font);font-size:12px;font-weight:600;padding:5px 13px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-card);color:var(--ts);cursor:pointer;transition:all .15s;}
+.fft-period-btn:hover{background:var(--bg-h);}
+.fft-period-btn.on{background:var(--t);color:var(--ti);border-color:var(--t);}
+.trans-week-hdr{background:var(--bg-h);border-radius:var(--r) var(--r) 0 0;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;margin-top:12px;border:1px solid var(--bd);border-bottom:none;}
+.trans-week-hdr:first-child{margin-top:0;}
+.trans-week-lbl{font-size:10px;font-weight:800;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
+.trans-week-totals{display:flex;gap:10px;font-size:11px;font-weight:700;}
+.trans-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--bd);border-top:none;transition:background .12s;}
+.trans-row:last-child{border-radius:0 0 var(--r) var(--r);}
+.trans-row:hover{background:var(--bg-h);}
+.trans-row-desc{flex:1;min-width:0;}
+.trans-row-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.trans-row-meta{font-size:11px;color:var(--ts);margin-top:1px;}
+.trans-row-amt{font-size:14px;font-weight:800;white-space:nowrap;min-width:72px;text-align:right;}
+.trans-row-date{font-size:11px;color:var(--ts);min-width:68px;text-align:right;}
 .bdet-bill-name{font-size:14px;font-weight:700;color:var(--t);}
 .bdet-bill-meta{font-size:11px;color:var(--ts);margin-top:2px;}
 .bdet-bill-amt{font-size:15px;font-weight:800;color:var(--t);flex-shrink:0;}
@@ -2717,15 +2732,34 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <button class="btn pri" onclick="addFin()">Save</button>
           </div>
         </div>
-        <div class="db-hdr">
-          <div class="db-ttl">📋 All entries</div>
-          <div class="db-acts">
+
+        <!-- Period filter row -->
+        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <button class="fft-period-btn on" id="fft-month"   onclick="filtFPeriod('month',this)">Month</button>
+          <button class="fft-period-btn"    id="fft-week"    onclick="filtFPeriod('week',this)">Week</button>
+          <button class="fft-period-btn"    id="fft-quarter" onclick="filtFPeriod('quarter',this)">Quarter</button>
+          <button class="fft-period-btn"    id="fft-year"    onclick="filtFPeriod('year',this)">Year</button>
+          <button class="fft-period-btn"    id="fft-all"     onclick="filtFPeriod('all',this)">All Time</button>
+          <div id="fft-nav" style="margin-left:auto;display:flex;align-items:center;gap:4px;">
+            <button onclick="navTransPeriod(-1)" style="font-family:var(--font);font-size:14px;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-card);color:var(--tp);cursor:pointer;line-height:1;">←</button>
+            <span id="fft-period-label" style="font-size:12px;font-weight:700;min-width:100px;text-align:center;color:var(--tp);"></span>
+            <button onclick="navTransPeriod(1)" style="font-family:var(--font);font-size:14px;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-card);color:var(--tp);cursor:pointer;line-height:1;">→</button>
+          </div>
+        </div>
+
+        <!-- Type filter + mini KPI totals -->
+        <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:4px;border-bottom:1px solid var(--bd);">
+          <div style="display:flex;gap:6px;">
             <button class="db-btn" id="ff-all" onclick="filtF('all')" style="font-weight:700;">All</button>
             <button class="db-btn" id="ff-income" onclick="filtF('income')">Income</button>
             <button class="db-btn" id="ff-expense" onclick="filtF('expense')">Expense</button>
           </div>
+          <div id="fft-kpi" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;"></div>
         </div>
-        <table class="nt"><thead><tr><th>Description</th><th>Category</th><th>Type</th><th>Context</th><th>Amount</th><th>Date</th><th style="width:28px;"></th></tr></thead><tbody id="f-tb"></tbody></table>
+
+        <!-- Grouped transaction list -->
+        <div id="f-grouped-list" style="margin-top:12px;"></div>
+
         <div class="add-row" onclick="G('fi-d').focus()">＋ New entry</div>
       </div>
 
@@ -3684,7 +3718,126 @@ function handleCatChange(selectId,type){
 
 // ── FINANCE ──
 let ff='all';
-function filtF(f){ff=f;['all','income','expense'].forEach(x=>{const el=G('ff-'+x);if(el)el.style.fontWeight=x===f?'700':'400';});renderFinance();}
+let ffPeriod='month';
+let ffTransYear=new Date().getFullYear();
+let ffTransMonth=new Date().getMonth();
+let ffTransWeekOffset=0;
+function filtF(f){ff=f;['all','income','expense'].forEach(x=>{const el=G('ff-'+x);if(el)el.style.fontWeight=x===f?'700':'400';});renderTransactions();}
+function filtFPeriod(p,btn){
+  ffPeriod=p;
+  document.querySelectorAll('.fft-period-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  ffTransWeekOffset=0;
+  const nav=G('fft-nav');if(nav)nav.style.visibility=p==='all'?'hidden':'visible';
+  renderTransactions();
+}
+function navTransPeriod(dir){
+  if(ffPeriod==='week'){ffTransWeekOffset+=dir;}
+  else if(ffPeriod==='month'){
+    ffTransMonth+=dir;
+    if(ffTransMonth>11){ffTransMonth=0;ffTransYear++;}
+    if(ffTransMonth<0){ffTransMonth=11;ffTransYear--;}
+  }
+  else if(ffPeriod==='quarter'){
+    ffTransMonth+=dir*3;
+    while(ffTransMonth>11){ffTransMonth-=12;ffTransYear++;}
+    while(ffTransMonth<0){ffTransMonth+=12;ffTransYear--;}
+    ffTransMonth=Math.floor(ffTransMonth/3)*3;
+  }
+  else if(ffPeriod==='year'){ffTransYear+=dir;}
+  renderTransactions();
+}
+function getTransDateRange(){
+  if(ffPeriod==='all')return{start:null,end:null,label:'All Time'};
+  if(ffPeriod==='week'){
+    const base=new Date();
+    base.setDate(base.getDate()+ffTransWeekOffset*7);
+    const day=base.getDay();
+    const mon=new Date(base);mon.setDate(base.getDate()-((day+6)%7));
+    const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    const fmtD=dt=>dt.toISOString().slice(0,10);
+    const mn=MONTH_NAMES[mon.getMonth()],sn=MONTH_NAMES[sun.getMonth()];
+    const label=mon.getMonth()===sun.getMonth()?`${mn} ${mon.getDate()}–${sun.getDate()}`:`${mn} ${mon.getDate()} – ${sn} ${sun.getDate()}`;
+    return{start:fmtD(mon),end:fmtD(sun),label};
+  }
+  if(ffPeriod==='month'){
+    const m=String(ffTransMonth+1).padStart(2,'0');
+    return{start:`${ffTransYear}-${m}-01`,end:new Date(ffTransYear,ffTransMonth+1,0).toISOString().slice(0,10),label:MONTH_NAMES[ffTransMonth]+' '+ffTransYear};
+  }
+  if(ffPeriod==='quarter'){
+    const q=Math.floor(ffTransMonth/3),qm=q*3;
+    return{start:`${ffTransYear}-${String(qm+1).padStart(2,'0')}-01`,end:new Date(ffTransYear,qm+3,0).toISOString().slice(0,10),label:`Q${q+1} ${ffTransYear}`};
+  }
+  if(ffPeriod==='year'){return{start:`${ffTransYear}-01-01`,end:`${ffTransYear}-12-31`,label:String(ffTransYear)};}
+  return{start:null,end:null,label:''};
+}
+function renderTransactions(){
+  const {start,end,label}=getTransDateRange();
+  const lbl=G('fft-period-label');if(lbl)lbl.textContent=label;
+  let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
+  if(start)items=items.filter(f=>f.dt>=start&&f.dt<=end);
+  if(ff==='income')items=items.filter(f=>f.t==='income');
+  else if(ff==='expense')items=items.filter(f=>f.t==='expense');
+  // Mini KPI strip
+  const kInc=items.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+  const kExp=items.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+  const kNet=kInc-kExp;
+  const kpiEl=G('fft-kpi');
+  if(kpiEl)kpiEl.innerHTML=`
+    <span style="font-size:12px;color:var(--green);font-weight:700;">↑ ${fmt(kInc)}</span>
+    <span style="font-size:12px;color:var(--red);font-weight:700;">↓ ${fmt(kExp)}</span>
+    <span style="font-size:14px;font-weight:800;color:${kNet>=0?'var(--green)':'var(--red)'};">${kNet>=0?'+':''}${fmt(kNet)} net</span>`;
+  const container=G('f-grouped-list');if(!container)return;
+  if(!items.length){container.innerHTML=`<div class="empty" style="padding:24px 0;">No transactions for this period</div>`;return;}
+  // Group by week (Mon–Sun)
+  const weekMap={};
+  items.forEach(f=>{
+    const d=new Date(f.dt+'T12:00:00');
+    const day=d.getDay();
+    const mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));
+    const key=mon.toISOString().slice(0,10);
+    if(!weekMap[key]){weekMap[key]={mon,sun:new Date(mon.getTime()+6*86400000),items:[]};}
+    weekMap[key].items.push(f);
+  });
+  container.innerHTML=Object.keys(weekMap).sort().reverse().map(k=>{
+    const {mon,sun,items:wi}=weekMap[k];
+    const wInc=wi.filter(f=>f.t==='income').reduce((s,f)=>s+f.a,0);
+    const wExp=wi.filter(f=>f.t==='expense').reduce((s,f)=>s+f.a,0);
+    const wNet=wInc-wExp;
+    const mn=MONTH_NAMES[mon.getMonth()],sn=MONTH_NAMES[sun.getMonth()];
+    const wLbl=mon.getMonth()===sun.getMonth()?`${mn} ${mon.getDate()}–${sun.getDate()}`:`${mn} ${mon.getDate()} – ${sn} ${sun.getDate()}`;
+    const rows=wi.map(f=>`
+      <div class="trans-row">
+        <div class="trans-row-desc">
+          <div class="trans-row-name">${f.d}</div>
+          <div class="trans-row-meta">${f.c||''}${f.biz==='business'?' · 💼 Business':''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="trans-row-date">${f.dt}</span>
+          <span class="trans-row-amt" style="color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</span>
+          <button class="edit-ic" onclick="openEM('entry',${f.id})" title="Edit">✎</button>
+          <button class="del" onclick="delFin(${f.id})">✕</button>
+        </div>
+      </div>`).join('');
+    return `<div class="trans-week-hdr"><span class="trans-week-lbl">Week of ${wLbl}</span><div class="trans-week-totals">${wInc?`<span style="color:var(--green);">+${fmt(wInc)}</span>`:''} ${wExp?`<span style="color:var(--red);">−${fmt(wExp)}</span>`:''}<span style="color:${wNet>=0?'var(--green)':'var(--red)'};">${wNet>=0?'+':''}${fmt(wNet)} net</span></div></div>${rows}`;
+  }).join('');
+}
+function openTransTab(type,period){
+  ff=type||'all';
+  const p=period||(({monthly:'month',quarterly:'quarter',yearly:'year'})[finPeriod]||'month');
+  ffPeriod=p;
+  ffTransYear=finCalYear;
+  ffTransMonth=finCalMonth;
+  ffTransWeekOffset=0;
+  switchFinTab('entries',G('ftab-entries'));
+  setTimeout(()=>{
+    document.querySelectorAll('.fft-period-btn').forEach(b=>b.classList.remove('on'));
+    const pb=G('fft-'+p);if(pb)pb.classList.add('on');
+    ['all','income','expense'].forEach(x=>{const el=G('ff-'+x);if(el)el.style.fontWeight=x===ff?'700':'400';});
+    const nav=G('fft-nav');if(nav)nav.style.visibility=p==='all'?'hidden':'visible';
+    renderTransactions();
+  },50);
+}
 function addFin(){
   const d=G('fi-d').value.trim(),a=parseFloat(G('fi-a').value);
   if(!d||!a)return;
@@ -3715,7 +3868,7 @@ function switchFinTab(tab,btn){
     const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
   });
   setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
-  if(tab==='entries'){buildCatSelect('fi-c','expense');}
+  if(tab==='entries'){buildCatSelect('fi-c','expense');setTimeout(renderTransactions,50);}
   if(tab==='overview'||tab==='bills'){buildCatSelect('blq-cat',G('blq-type')&&G('blq-type').value||'income');}
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
@@ -3968,17 +4121,17 @@ function renderFinOverview(){
   // ── KPI CARDS ──
   const kpiEl=G('fd-kpis');
   if(kpiEl)kpiEl.innerHTML=`
-    <div class="fd-kpi income" style="cursor:pointer;" title="View all income" onclick="switchFinTab('entries',G('ftab-entries'));setTimeout(()=>filtF('income'),30);">
+    <div class="fd-kpi income" style="cursor:pointer;" title="View income transactions" onclick="openTransTab('income')">
       <div class="fd-kpi-label">Income ↗</div>
       <div class="fd-kpi-value up">${fmt(pInc)}</div>
       <div class="fd-kpi-sub"><span class="fd-kpi-badge ${incDelta>=0?'up':'dn'}">${incDelta>=0?'↑':'↓'} ${fmt(Math.abs(incDelta))} vs last ${periodLabel}</span></div>
     </div>
-    <div class="fd-kpi expense" style="cursor:pointer;" title="View all expenses" onclick="switchFinTab('entries',G('ftab-entries'));setTimeout(()=>filtF('expense'),30);">
+    <div class="fd-kpi expense" style="cursor:pointer;" title="View expense transactions" onclick="openTransTab('expense')">
       <div class="fd-kpi-label">Expenses ↗</div>
       <div class="fd-kpi-value dn">${fmt(pExp)}</div>
       <div class="fd-kpi-sub">${pFin.filter(f=>f.t==='expense').length} transactions</div>
     </div>
-    <div class="fd-kpi net" style="cursor:pointer;" title="View all transactions" onclick="switchFinTab('entries',G('ftab-entries'));setTimeout(()=>filtF('all'),30);">
+    <div class="fd-kpi net" style="cursor:pointer;" title="View all transactions" onclick="openTransTab('all')">
       <div class="fd-kpi-label">Net ↗</div>
       <div class="fd-kpi-value ${pNet>=0?'up':'dn'}">${fmtS(pNet)}</div>
       <div class="fd-kpi-sub"><span class="fd-kpi-badge ${netDelta>=0?'up':'dn'}">${netDelta>=0?'↑':'↓'} ${fmt(Math.abs(netDelta))} vs last ${periodLabel}</span></div>
@@ -4402,22 +4555,7 @@ function renderFinance(){
   renderLivingTabHero();
 
   // ── TRANSACTIONS TAB ──
-  let items=[...S.finance].sort((a,b)=>b.dt.localeCompare(a.dt));
-  if(ff==='income')items=items.filter(f=>f.t==='income');
-  else if(ff==='expense')items=items.filter(f=>f.t==='expense');
-  const tb=G('f-tb');
-  if(tb){
-    if(!items.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty">No entries yet — add one above</div></td></tr>`;}
-    else tb.innerHTML=items.map(f=>`<tr>
-      <td><strong>${f.d}</strong></td>
-      <td>${tag(f.c,'gray')}</td>
-      <td>${tag(f.t==='income'?'Income':'Expense',f.t==='income'?'green':'red')}</td>
-      <td>${f.biz==='business'?tag('💼 Business','blue'):tag('👤 Personal','gray')}</td>
-      <td style="font-weight:800;color:${f.t==='income'?'var(--green)':'var(--red)'};">${f.t==='income'?'+':'-'}${fmt(f.a)}</td>
-      <td style="font-size:12px;color:var(--ts);">${f.dt}</td>
-      <td style="display:flex;gap:4px;"><button class="edit-ic" onclick="openEM('entry',${f.id})" title="Edit">✎</button><button class="del" onclick="delFin(${f.id})">✕</button></td>
-    </tr>`).join('');
-  }
+  renderTransactions();
 
   // ── BILLS TAB ──
   renderBills();
