@@ -1511,6 +1511,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   .bills-main-grid{grid-template-columns:1fr;}
   .fin-hub-grid{grid-template-columns:1fr;gap:10px;margin-top:10px;}
   .fin-hub-sidebar{flex-direction:column;gap:8px;}
+  /* 4-quadrant: 2×2 on mobile */
+  .fin-quad-grid{grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;}
+  .fin-quad-card{max-height:220px;padding:10px 10px;}
 
   /* ── BILLS SUMMARY CHIPS: tighter ── */
   .bills-sum-bar{gap:5px;margin-top:8px;}
@@ -1859,10 +1862,15 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bills-sum-chip{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:10px 14px;flex:1;min-width:80px;}
 .bills-sum-chip-lbl{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;}
 .bills-sum-chip-val{font-size:18px;font-weight:800;letter-spacing:-0.02em;margin-top:2px;}
-/* ── FINANCE HUB — merged calendar+bills layout ── */
+/* ── FINANCE HUB — 4-quadrant above full-width calendar ── */
 .fin-hub-grid{display:grid;grid-template-columns:1fr 250px;gap:14px;margin-top:14px;align-items:start;}
 .fin-hub-sidebar{display:flex;flex-direction:column;gap:12px;}
+.fin-quad-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;align-items:start;}
+.fin-quad-card{max-height:280px;overflow-y:auto;overflow-x:hidden;}
+.fin-quad-card::-webkit-scrollbar{width:4px;}
+.fin-quad-card::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
 .fin-period-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--bd);margin-top:14px;}
+@media(max-width:1100px){.fin-quad-grid{grid-template-columns:repeat(2,1fr);}}
 
 /* ── SUBSCRIPTION CARDS ── */
 .sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin:10px 0 16px;}
@@ -2418,58 +2426,54 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <!-- BILLS STATUS CHIPS -->
         <div class="bills-sum-bar" id="b-sum" style="margin-top:10px;"></div>
 
-        <!-- MAIN GRID: CALENDAR LEFT, BILLS SIDEBAR RIGHT -->
-        <div class="fin-hub-grid">
+        <!-- 4-QUADRANT SNAPSHOT GRID — above calendar -->
+        <div class="fin-quad-grid">
 
-          <!-- LEFT: Full calendar — income / expenses / bills / debts -->
-          <div id="fd-cal-section">
-            <div class="fd-cal-wrap">
-              <div class="fd-cal-top-bar">
-                <div class="fd-cal-title-row">
-                  <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-                  <div class="fd-cal-legend">
-                    <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                    <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                    <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                    <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-                  </div>
-                </div>
-              </div>
-              <div id="fd-cal-body">
-                <div class="fd-cal-header">
-                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--ts);opacity:0.6;">Wk</span>
-                </div>
-                <div class="fd-cal-grid" id="fd-cal-grid"></div>
-              </div>
-            </div>
+          <div class="bq-card fin-quad-card">
+            <div class="bq-ttl" style="margin-bottom:8px;">🔴 Unpaid This Month</div>
+            <div id="bq-unpaid"></div>
           </div>
 
-          <!-- RIGHT SIDEBAR: bills status panels -->
-          <div class="fin-hub-sidebar">
+          <div class="bq-card fin-quad-card">
+            <div class="bq-ttl" style="margin-bottom:8px;">⏰ Due Next 14 Days</div>
+            <div id="bq-due"></div>
+          </div>
 
-            <div class="bq-card">
-              <div class="bq-ttl" style="margin-bottom:8px;">🔴 Unpaid This Month</div>
-              <div id="bq-unpaid"></div>
+          <div class="bq-card fin-quad-card">
+            <div class="bq-ttl" style="margin-bottom:8px;">📊 Monthly Snapshot</div>
+            <div id="bq-snap"></div>
+          </div>
+
+          <div class="bq-card fin-quad-card">
+            <div class="bq-ttl" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span>🛒 Living Budget</span>
+              <button onclick="switchFinTab('living',G('ftab-living'))" style="font-family:var(--font);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;">Full view →</button>
             </div>
+            <div id="bq-living"></div>
+          </div>
 
-            <div class="bq-card">
-              <div class="bq-ttl" style="margin-bottom:8px;">⏰ Due Next 14 Days</div>
-              <div id="bq-due"></div>
-            </div>
+        </div>
 
-            <div class="bq-card">
-              <div class="bq-ttl" style="margin-bottom:8px;">📊 Monthly Snapshot</div>
-              <div id="bq-snap"></div>
-            </div>
-
-            <div class="bq-card">
-              <div class="bq-ttl" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                <span>🛒 Living Budget</span>
-                <button onclick="switchFinTab('living',G('ftab-living'))" style="font-family:var(--font);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;">Full view →</button>
+        <!-- FULL-WIDTH CALENDAR -->
+        <div id="fd-cal-section" style="margin-top:14px;">
+          <div class="fd-cal-wrap">
+            <div class="fd-cal-top-bar">
+              <div class="fd-cal-title-row">
+                <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+                <div class="fd-cal-legend">
+                  <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                  <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                  <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                  <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+                </div>
               </div>
-              <div id="bq-living"></div>
             </div>
-
+            <div id="fd-cal-body">
+              <div class="fd-cal-header">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--ts);opacity:0.6;">Wk</span>
+              </div>
+              <div class="fd-cal-grid" id="fd-cal-grid"></div>
+            </div>
           </div>
         </div>
 
