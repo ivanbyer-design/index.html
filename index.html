@@ -4334,6 +4334,8 @@ function renderFinOverview(){
       owedEl.innerHTML=rows;
     }
   }
+  // Bills bar always reflects the selected calendar month, never the period filter
+  renderBillsBar();
 }
 
 // Helper for quarterly prev-period calc
@@ -4749,32 +4751,40 @@ function nextBillDue(b){
   return b.d;
 }
 
-function renderBills(){
-  // Always compute displayed month first — all status lookups use this key
-  const blDispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
-  // Summary bar
+// ── BILLS SUMMARY BAR — always keyed to calendar month, independent of period filter ──
+function renderBillsBar(){
+  const m=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
+  const mLabel=MONTH_NAMES[finCalMonth]+' '+finCalYear;
   const tot=S.bills.reduce((s,b)=>s+b.a,0);
-  const unp=S.bills.filter(b=>getBillStatus(b,blDispMonth)==='Unpaid').reduce((s,b)=>s+b.a,0);
-  const auto=S.bills.filter(b=>getBillStatus(b,blDispMonth)==='Auto-pay').reduce((s,b)=>s+b.a,0);
-  const paid=S.bills.filter(b=>getBillStatus(b,blDispMonth)==='Paid').reduce((s,b)=>s+b.a,0);
-  const bsum=G('b-sum');
-  if(bsum)bsum.innerHTML=`
+  const unp=S.bills.filter(b=>getBillStatus(b,m)==='Unpaid').reduce((s,b)=>s+b.a,0);
+  const auto=S.bills.filter(b=>getBillStatus(b,m)==='Auto-pay').reduce((s,b)=>s+b.a,0);
+  const paid=S.bills.filter(b=>getBillStatus(b,m)==='Paid').reduce((s,b)=>s+b.a,0);
+  const el=G('b-sum');
+  if(!el)return;
+  el.innerHTML=`
     <div class="bills-sum-chip bills-sum-chip-click" onclick="openBillsDetailPage('all')" title="View all bills">
-      <div class="bills-sum-chip-lbl">Total Bills</div>
+      <div class="bills-sum-chip-lbl">Total Bills <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7;">· ${mLabel}</span></div>
       <div class="bills-sum-chip-val">${fmt(tot)}</div>
     </div>
     <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--red) 30%,var(--bd));" onclick="openBillsDetailPage('Unpaid')" title="View unpaid bills">
-      <div class="bills-sum-chip-lbl">Unpaid</div>
+      <div class="bills-sum-chip-lbl">Unpaid <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7;">· ${mLabel}</span></div>
       <div class="bills-sum-chip-val" style="color:var(--red);">${fmt(unp)}</div>
     </div>
     <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--green) 30%,var(--bd));" onclick="openBillsDetailPage('Paid')" title="View paid bills">
-      <div class="bills-sum-chip-lbl">Paid</div>
+      <div class="bills-sum-chip-lbl">Paid <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7;">· ${mLabel}</span></div>
       <div class="bills-sum-chip-val" style="color:var(--green);">${fmt(paid)}</div>
     </div>
     <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--blue) 30%,var(--bd));" onclick="openBillsDetailPage('Auto-pay')" title="View auto-pay bills">
-      <div class="bills-sum-chip-lbl">Auto-pay</div>
+      <div class="bills-sum-chip-lbl">Auto-pay <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7;">· ${mLabel}</span></div>
       <div class="bills-sum-chip-val" style="color:var(--blue);">${fmt(auto)}</div>
     </div>`;
+}
+
+function renderBills(){
+  // Always compute displayed month first — all status lookups use this key
+  const blDispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
+  // Summary bar — delegated to renderBillsBar() so it stays independent of period filter
+  renderBillsBar();
   // Category totals overview — use the displayed month so tiles stay in sync with nav
   const catTotEl=G('bl-cat-totals');
   if(catTotEl){
