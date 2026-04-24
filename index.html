@@ -1509,6 +1509,9 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   .week-summary{grid-template-columns:repeat(3,1fr);}
   /* Bills & Budgets: single column, no horizontal overflow */
   .bq-grid{grid-template-columns:1fr;}
+  .bills-main-grid{grid-template-columns:1fr;}
+  .bills-sum-chip{min-width:70px;}
+  .bills-sum-chip-val{font-size:15px;}
   .fin-qa-btn{font-size:13px;padding:12px 14px;}
   /* Prevent finance panel from bleeding wider than viewport */
   #p-finance{overflow-x:hidden;max-width:100%;}
@@ -1780,19 +1783,29 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bq-row-a{font-weight:700;white-space:nowrap;margin-left:8px;}
 .bq-tot{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;font-size:13px;font-weight:700;color:var(--t);margin-top:4px;border-top:2px solid var(--bd2);}
 
-/* ── BILL CALENDAR IN BILLS TAB ── */
-.bl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:80px;gap:2px;margin-top:8px;}
-.bl-cal-hdr{text-align:center;font-size:10px;font-weight:700;color:var(--th);padding:4px 0 6px;text-transform:uppercase;letter-spacing:0.04em;}
-.bl-cal-day{height:100%;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);padding:4px 5px;overflow:hidden;display:flex;flex-direction:column;}
-.bl-cal-day.today{border-color:var(--blue);background:var(--bbg);}
-.bl-cal-day.other{background:transparent;border-color:transparent;}
-.bl-cal-day-num{font-size:11px;font-weight:600;color:var(--ts);margin-bottom:2px;}
-.bl-cal-day.today .bl-cal-day-num{color:var(--blue);}
-.bl-cal-pill{display:flex;align-items:center;justify-content:space-between;gap:2px;margin-top:2px;padding:1px 3px;border-radius:3px;background:var(--rbg);color:var(--red);}
-.bl-cal-pill.paid{background:var(--gbg);color:var(--green);}
-.bl-cal-pill.auto{background:var(--bbg);color:var(--blue);}
-.bl-cal-pill-n{font-size:10px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;color:inherit;}
-.bl-cal-pill-a{font-size:10px;font-weight:700;white-space:nowrap;color:inherit;}
+/* ── BILL CALENDAR IN BILLS TAB (compact dot view) ── */
+.bl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:4px;}
+.bl-cal-day{min-height:52px;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);padding:4px 5px;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;}
+.bl-cal-day.has-bills{border-color:var(--bd2);}
+.bl-cal-day.today{border-color:var(--blue)!important;background:var(--bbg)!important;}
+.bl-cal-day.other{background:transparent;border-color:transparent;pointer-events:none;}
+.bl-cal-day-num{font-size:11px;font-weight:600;color:var(--ts);line-height:1.2;flex-shrink:0;}
+.bl-cal-day.today .bl-cal-day-num{color:var(--blue);font-weight:800;}
+.bl-cal-mini-pill{font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-top:2px;line-height:1.5;cursor:pointer;display:block;}
+.bl-cal-mini-pill.unpaid{background:var(--rbg);color:var(--red);}
+.bl-cal-mini-pill.paid{background:var(--gbg);color:var(--green);opacity:0.75;}
+.bl-cal-mini-pill.auto{background:var(--bbg);color:var(--blue);}
+.bl-cal-more{font-size:9px;color:var(--ts);font-weight:600;margin-top:2px;}
+.bl-cal-legend{display:flex;gap:10px;font-size:11px;color:var(--ts);margin-bottom:6px;flex-wrap:wrap;align-items:center;}
+.bl-cal-legend span{display:flex;align-items:center;gap:4px;}
+/* Bills page two-column layout */
+.bills-main-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+.bills-right-col{display:flex;flex-direction:column;gap:12px;}
+/* Bills summary chips */
+.bills-sum-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.bills-sum-chip{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:10px 14px;flex:1;min-width:80px;}
+.bills-sum-chip-lbl{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;}
+.bills-sum-chip-val{font-size:18px;font-weight:800;letter-spacing:-0.02em;margin-top:2px;}
 
 /* ── SUBSCRIPTION CARDS ── */
 .sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin:10px 0 16px;}
@@ -2412,12 +2425,71 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-bills-body" style="display:none;">
 
-        <!-- CATEGORY TOTALS OVERVIEW -->
-        <div id="bl-cat-totals" class="bl-cat-summary"></div>
+        <!-- BILLS SUMMARY CHIPS -->
+        <div class="bills-sum-bar" id="b-sum"></div>
 
-        <!-- CATEGORY FILTERS -->
+        <!-- TWO-COLUMN: CALENDAR + UNPAID/DUE PANELS -->
+        <div class="bills-main-grid">
+
+          <!-- LEFT: BILL DUE-DATE CALENDAR -->
+          <div class="bq-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+              <span class="bq-ttl" style="margin:0;">📅 Due Date Calendar</span>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <button class="fd-nav-btn" onclick="blCalNav(-1)">←</button>
+                <span id="bl-cal-lbl" style="font-size:12px;font-weight:700;min-width:108px;text-align:center;"></span>
+                <button class="fd-nav-btn" onclick="blCalNav(1)">→</button>
+                <button class="fd-nav-btn" onclick="blCalNav(0)" title="Current month" style="font-size:10px;padding:4px 7px;">●</button>
+              </div>
+            </div>
+            <div class="bl-cal-legend">
+              <span><span style="width:9px;height:9px;border-radius:3px;background:var(--rbg);border:1px solid var(--red);display:inline-block;"></span> Unpaid</span>
+              <span><span style="width:9px;height:9px;border-radius:3px;background:var(--gbg);border:1px solid var(--green);display:inline-block;"></span> Paid</span>
+              <span><span style="width:9px;height:9px;border-radius:3px;background:var(--bbg);border:1px solid var(--blue);display:inline-block;"></span> Auto</span>
+            </div>
+            <div id="bl-calendar"></div>
+          </div>
+
+          <!-- RIGHT: UNPAID + DUE SOON -->
+          <div class="bills-right-col">
+
+            <!-- UNPAID THIS MONTH -->
+            <div class="bq-card">
+              <div class="bq-ttl" style="margin-bottom:8px;">🔴 Unpaid This Month</div>
+              <div id="bq-unpaid"></div>
+            </div>
+
+            <!-- DUE NEXT 14 DAYS -->
+            <div class="bq-card">
+              <div class="bq-ttl" style="margin-bottom:8px;">⏰ Due Next 14 Days</div>
+              <div id="bq-due"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- QUICK INCOME / EXPENSE LOG -->
+        <div class="nf" style="margin-top:12px;">
+          <div class="nf-ttl">⚡ Quick Log — Income / Expense</div>
+          <div class="fr">
+            <input class="fi" type="text" id="blq-desc" placeholder="Description" style="min-width:140px;">
+            <input class="fi" type="number" id="blq-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <select class="fi" id="blq-type" style="max-width:110px;" onchange="buildCatSelect('blq-cat',this.value)">
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+            <select class="fi" id="blq-cat" style="max-width:140px;"></select>
+            <input class="fi" type="date" id="blq-date" style="max-width:150px;">
+            <button class="btn pri" onclick="blQuickLog()">Log</button>
+          </div>
+        </div>
+
+        <!-- CATEGORY TOTALS OVERVIEW -->
+        <div id="bl-cat-totals" class="bl-cat-summary" style="margin-top:14px;"></div>
+
+        <!-- CATEGORY FILTERS + BILLS TABLE -->
         <div class="db-hdr" style="margin-top:4px;">
-          <div class="db-ttl">🧾 All Bills</div>
+          <div class="db-ttl">🧾 All Bills &amp; Subscriptions</div>
           <div class="db-acts" id="bl-cat-filters">
             <button class="db-btn" id="blf-all" onclick="blFilterCat('all',this)" style="font-weight:700;">All</button>
             <button class="db-btn" id="blf-Housing" onclick="blFilterCat('Housing',this)">🏠 Housing</button>
@@ -2453,6 +2525,13 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
         </div>
         <div id="sub-cards"></div>
+
+        <!-- LIVING EXPENSES MINI OVERVIEW -->
+        <div class="bl-section" style="margin-top:16px;">
+          <span>🛒 Living Expenses</span>
+          <button class="db-btn" onclick="switchFinTab('living',G('ftab-living'))" style="text-transform:none;letter-spacing:0;font-size:11px;font-weight:600;">Full view →</button>
+        </div>
+        <div id="bl-living-mini"></div>
 
       </div>
 
@@ -3509,6 +3588,7 @@ function switchFinTab(tab,btn){
   });
   setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
   if(tab==='entries'){buildCatSelect('fi-c','expense');}
+  if(tab==='bills'){buildCatSelect('blq-cat',G('blq-type')&&G('blq-type').value||'income');}
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
   if(tab==='living'){renderLivingTabHero();}
@@ -4305,10 +4385,22 @@ function renderBills(){
   const paid=S.bills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
   const bsum=G('b-sum');
   if(bsum)bsum.innerHTML=`
-    <div class="sum-item"><div class="sum-lb">Monthly total</div><div class="sum-vl">${fmt(tot)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Unpaid</div><div class="sum-vl dn">${fmt(unp)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Paid</div><div class="sum-vl up">${fmt(paid)}</div></div>
-    <div class="sum-item"><div class="sum-lb">Auto-pay</div><div class="sum-vl">${fmt(auto)}</div></div>`;
+    <div class="bills-sum-chip">
+      <div class="bills-sum-chip-lbl">Monthly Total</div>
+      <div class="bills-sum-chip-val">${fmt(tot)}</div>
+    </div>
+    <div class="bills-sum-chip" style="border-color:color-mix(in srgb,var(--red) 30%,var(--bd));">
+      <div class="bills-sum-chip-lbl">Unpaid</div>
+      <div class="bills-sum-chip-val" style="color:var(--red);">${fmt(unp)}</div>
+    </div>
+    <div class="bills-sum-chip" style="border-color:color-mix(in srgb,var(--green) 30%,var(--bd));">
+      <div class="bills-sum-chip-lbl">Paid</div>
+      <div class="bills-sum-chip-val" style="color:var(--green);">${fmt(paid)}</div>
+    </div>
+    <div class="bills-sum-chip" style="border-color:color-mix(in srgb,var(--blue) 30%,var(--bd));">
+      <div class="bills-sum-chip-lbl">Auto-pay</div>
+      <div class="bills-sum-chip-val" style="color:var(--blue);">${fmt(auto)}</div>
+    </div>`;
   // Category totals overview
   const catTotEl=G('bl-cat-totals');
   if(catTotEl){
@@ -4343,6 +4435,7 @@ function renderBills(){
   renderBillCalendar();
   renderSubscriptionCards();
   renderLivingExpenses();
+  renderBillsLivingMini();
   // Bills table
   let srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:(nextBillDue(a)||'').localeCompare(nextBillDue(b)||''));
   if(blCatFilter!=='all')srt=srt.filter(b=>(b.cat||'Other')===blCatFilter);
@@ -4373,6 +4466,54 @@ function renderBills(){
   }).join('');
 }
 
+function blQuickLog(){
+  const d=G('blq-desc').value.trim();if(!d)return;
+  const a=parseFloat(G('blq-amt').value);if(!a||a<=0)return;
+  const t=G('blq-type').value;
+  const c=G('blq-cat').value||'General';
+  const dt=G('blq-date').value||today;
+  S.finance.push({d,a,t,c,biz:'personal',dt,id:Date.now()});
+  G('blq-desc').value='';G('blq-amt').value='';G('blq-date').value='';
+  save();renderFinance();renderHome();
+  showBackupToast('✓ '+(t==='income'?'Income':'Expense')+' logged · '+fmt(a));
+}
+function renderBillsLivingMini(){
+  const el=G('bl-living-mini');if(!el)return;
+  const cats=S.liveCategories||[];
+  const lm=currentMonth;
+  const spend=S.liveSpend||[];
+  if(!cats.length){
+    el.innerHTML=`<div class="empty" style="padding:10px 0;">No categories yet — <span style="color:var(--blue);cursor:pointer;text-decoration:underline;" onclick="switchFinTab('living',G('ftab-living'))">set up in Living Budget tab</span></div>`;
+    return;
+  }
+  const totalBudget=cats.reduce((s,c)=>s+c.budget,0);
+  const totalSpent=cats.reduce((s,c)=>{
+    return s+(spend.filter(sp=>String(sp.catId)===String(c.id)&&sp.date&&sp.date.startsWith(lm)).reduce((t,sp)=>t+sp.amt,0));
+  },0);
+  const pct=totalBudget?Math.min(100,Math.round(totalSpent/totalBudget*100)):0;
+  const clr=pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--green)';
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+      <span style="font-size:13px;font-weight:700;">${fmt(totalSpent)} <span style="font-size:11px;font-weight:400;color:var(--ts);">spent of ${fmt(totalBudget)} budget</span></span>
+      <span style="font-size:12px;font-weight:800;color:${clr};">${pct}%</span>
+    </div>
+    <div class="prog" style="margin-bottom:10px;"><div class="pf" style="width:${pct}%;background:${clr};"></div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:6px;">
+      ${cats.map(c=>{
+        const spent=spend.filter(sp=>String(sp.catId)===String(c.id)&&sp.date&&sp.date.startsWith(lm)).reduce((t,sp)=>t+sp.amt,0);
+        const cpct=c.budget?Math.min(100,Math.round(spent/c.budget*100)):0;
+        const cclr=cpct>=90?'var(--red)':cpct>=70?'var(--amber)':'var(--green)';
+        return`<div style="background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);padding:8px 10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <span style="font-size:12px;font-weight:600;">${c.icon||'💰'} ${c.name}</span>
+            <span style="font-size:10px;font-weight:700;color:${cclr};">${cpct}%</span>
+          </div>
+          <div style="font-size:11px;color:var(--ts);">${fmt(spent)} <span style="color:var(--th);">/ ${fmt(c.budget)}</span></div>
+          <div class="prog" style="margin-top:4px;height:4px;"><div class="pf" style="width:${cpct}%;background:${cclr};height:4px;border-radius:2px;"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
 function bqPayBill(id){cycleBill(id);renderBudgetQuadrant();}
 function bqLogSpend(catId,amt){
   if(!amt||isNaN(amt))return;
@@ -4481,29 +4622,39 @@ function renderBillCalendar(){
   base.setDate(1);
   base.setMonth(base.getMonth()+blCalOffset);
   const yr=base.getFullYear(),mo=base.getMonth();
+  const calMonthKey=yr+'-'+String(mo+1).padStart(2,'0');
+  const isCurrentCalMonth=(calMonthKey===currentMonth);
   if(lbl)lbl.textContent=base.toLocaleDateString('en-US',{month:'long',year:'numeric'});
   const firstDay=new Date(yr,mo,1).getDay();
   const daysInMonth=new Date(yr,mo+1,0).getDate();
-  const daysOfWeek=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  // Header row doesn't use grid-auto-rows, render separately so it doesn't stretch
-  let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:8px;">${daysOfWeek.map(d=>`<div style="text-align:center;font-size:11px;font-weight:700;color:var(--ts);padding:4px 0;">${d}</div>`).join('')}</div>`;
+  const daysOfWeek=['S','M','T','W','T','F','S'];
+  // Helper: get bill payment status for the displayed calendar month
+  const billStatusForMonth=(b,mk)=>{
+    if(b.ds==='Auto-pay')return'Auto-pay';
+    return(b.payments&&b.payments[mk])||'Unpaid';
+  };
+  let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px;">${daysOfWeek.map(d=>`<div style="text-align:center;font-size:10px;font-weight:700;color:var(--ts);padding:3px 0;">${d}</div>`).join('')}</div>`;
   html+=`<div class="bl-cal-grid">`;
   for(let i=0;i<firstDay;i++)html+=`<div class="bl-cal-day other"></div>`;
   for(let d=1;d<=daysInMonth;d++){
-    const dk=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const dk=calMonthKey+'-'+String(d).padStart(2,'0');
     const isToday=dk===today;
     const dueBills=billsDueOn(dk);
-    html+=`<div class="bl-cal-day${isToday?' today':''}">
+    const hasBills=dueBills.length>0;
+    const unpaid=dueBills.filter(b=>billStatusForMonth(b,calMonthKey)==='Unpaid');
+    const paid=dueBills.filter(b=>billStatusForMonth(b,calMonthKey)==='Paid');
+    const auto=dueBills.filter(b=>billStatusForMonth(b,calMonthKey)==='Auto-pay');
+    // Show up to 2 unpaid pills, then summarise the rest
+    const MAX=2;
+    const shownUnpaid=unpaid.slice(0,MAX);
+    const extraCount=dueBills.length-shownUnpaid.length-(paid.length>0?1:0)-(auto.length>0?1:0);
+    const clickable=isCurrentCalMonth;
+    html+=`<div class="bl-cal-day${isToday?' today':''}${hasBills?' has-bills':''}">
       <div class="bl-cal-day-num">${d}</div>
-      <div style="overflow-y:auto;flex:1;">${dueBills.map(b=>{
-        const st=getBillStatus(b);
-        const isPaid=st==='Paid';
-        const isAuto=st==='Auto-pay';
-        return`<div class="bl-cal-pill${isPaid?' paid':isAuto?' auto':''}" title="${b.n} — ${st}">
-          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;">${b.n}</span>
-          <span style="font-size:9px;white-space:nowrap;">${fmt(b.a)}</span>
-        </div>`;
-      }).join('')}</div>
+      ${shownUnpaid.map(b=>`<div class="bl-cal-mini-pill unpaid" title="${b.n} · ${fmt(b.a)} · Unpaid — click to mark paid"${clickable?` onclick="cycleBill(${b.id})"`:''}>${b.n.length>8?b.n.slice(0,7)+'…':b.n}</div>`).join('')}
+      ${paid.length?`<div class="bl-cal-mini-pill paid" title="${paid.map(b=>b.n).join(', ')} · Paid">✓ ${paid.length} paid</div>`:''}
+      ${auto.length?`<div class="bl-cal-mini-pill auto" title="${auto.map(b=>b.n).join(', ')} · Auto-pay">🔄 ${auto.length}</div>`:''}
+      ${extraCount>0?`<div class="bl-cal-more">+${extraCount} more</div>`:''}
     </div>`;
   }
   html+=`</div>`;
@@ -7199,8 +7350,9 @@ function renderAll(){renderFinance();renderTrades();renderGoals();renderTodos();
 renderAll();
 // Init QA money category dropdown
 setTimeout(()=>{if(typeof buildCatSelect==='function')buildCatSelect('qa-money-cat','expense');},80);
-// Init category dropdowns for the transactions form (default: expense)
+// Init category dropdowns for the transactions form and bills quick-log (default: expense)
 setTimeout(()=>{buildCatSelect('fi-c','expense');},50);
+setTimeout(()=>{buildCatSelect('blq-cat','income');},60);
 setTimeout(()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});},150);
 window.addEventListener('resize',()=>{Object.values(charts).forEach(ch=>{try{ch.resize();}catch(e){}});});
 // Auto-update when OS theme changes (only when set to System)
