@@ -3858,6 +3858,7 @@ function bdetNavMonth(dir){
   if(finCalMonth>11){finCalMonth=0;finCalYear++;}
   if(finCalMonth<0){finCalMonth=11;finCalYear--;}
   renderBillDetailPage();
+  renderBills();
 }
 function renderBillDetailPage(){
   const dispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
@@ -4748,11 +4749,13 @@ function nextBillDue(b){
 }
 
 function renderBills(){
+  // Always compute displayed month first — all status lookups use this key
+  const blDispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
   // Summary bar
   const tot=S.bills.reduce((s,b)=>s+b.a,0);
-  const unp=S.bills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
-  const auto=S.bills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
-  const paid=S.bills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
+  const unp=S.bills.filter(b=>getBillStatus(b,blDispMonth)==='Unpaid').reduce((s,b)=>s+b.a,0);
+  const auto=S.bills.filter(b=>getBillStatus(b,blDispMonth)==='Auto-pay').reduce((s,b)=>s+b.a,0);
+  const paid=S.bills.filter(b=>getBillStatus(b,blDispMonth)==='Paid').reduce((s,b)=>s+b.a,0);
   const bsum=G('b-sum');
   if(bsum)bsum.innerHTML=`
     <div class="bills-sum-chip bills-sum-chip-click" onclick="openBillsDetailPage('all')" title="View all bills">
@@ -4771,7 +4774,7 @@ function renderBills(){
       <div class="bills-sum-chip-lbl">Auto-pay</div>
       <div class="bills-sum-chip-val" style="color:var(--blue);">${fmt(auto)}</div>
     </div>`;
-  // Category totals overview
+  // Category totals overview — use the displayed month so tiles stay in sync with nav
   const catTotEl=G('bl-cat-totals');
   if(catTotEl){
     const CAT_DEF=[
@@ -4786,7 +4789,7 @@ function renderBills(){
     catTotEl.innerHTML=tiles.map(c=>{
       const catBills=S.bills.filter(b=>(b.cat||'Other')===c.k);
       const catAmt=catBills.reduce((s,b)=>s+b.a,0);
-      const unpaidAmt=catBills.filter(b=>getBillStatus(b)==='Unpaid').reduce((s,b)=>s+b.a,0);
+      const unpaidAmt=catBills.filter(b=>getBillStatus(b,blDispMonth)==='Unpaid').reduce((s,b)=>s+b.a,0);
       return`<div class="bl-cat-tile${catAmt===0?' is-zero':''}" onclick="blFilterCat('${c.k}',G('blf-${c.k}'))">
         <div class="bl-cat-tile-ic">${c.ic}</div>
         <div class="bl-cat-tile-lbl">${c.k}</div>
@@ -4806,8 +4809,7 @@ function renderBills(){
   renderSubscriptionCards();
   renderLivingExpenses();
   renderBillsLivingMini();
-  // Bills table — use the Bills tab's displayed month so status matches the top section
-  const blDispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
+  // Bills table — blDispMonth already computed at top of renderBills()
   let srt=[...S.bills].sort((a,b)=>billSort==='amt'?b.a-a.a:(nextBillDue(a)||'').localeCompare(nextBillDue(b)||''));
   if(blCatFilter!=='all')srt=srt.filter(b=>(b.cat||'Other')===blCatFilter);
   const tb=G('bl-tb');
