@@ -1066,13 +1066,13 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-day:active{background:var(--bg-a);}
 .fd-cal-day.empty{background:transparent;cursor:default;pointer-events:none;}
 .fd-cal-day.empty:hover{background:transparent;}
-.fd-cal-day.is-today{background:color-mix(in srgb,var(--bbg) 35%,var(--bg-card));}
-.fd-cal-day.is-today:hover{background:color-mix(in srgb,var(--bbg) 50%,var(--bg-card));}
+.fd-cal-day.is-today{background:color-mix(in srgb,var(--abg) 55%,var(--bg-card));}
+.fd-cal-day.is-today:hover{background:color-mix(in srgb,var(--abg) 75%,var(--bg-card));}
 .fd-cal-day.has-data{background:color-mix(in srgb,var(--bg-in) 60%,var(--bg-card));}
 .fd-cal-day-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
 .fd-cal-num{font-size:12px;font-weight:700;color:var(--t);line-height:1;flex-shrink:0;}
 .fd-cal-day.empty .fd-cal-num{color:var(--th);}
-.fd-cal-day.is-today .fd-cal-num{background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.fd-cal-day.is-today .fd-cal-num{background:var(--amber);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;}
 .fd-cal-day-net{font-size:10px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;flex-shrink:0;text-align:right;}
 .fd-cal-day-net-lbl{font-size:7.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;opacity:0.75;line-height:1;}
 .fd-cal-day-net.pos{color:var(--green);}
@@ -1591,6 +1591,36 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   .db-ttl{font-size:13px;}
   .bl-section{font-size:12px;padding:10px 0 5px;}
 
+  /* ── AUTO-PAY SECTION HEADER: wrap helper text below on mobile ── */
+  #bdet-sec-auto [style*="margin-left:auto"]{display:none;}
+  #bdet-sec-auto>div:first-child::after{content:'☑ check to log as expense';display:block;font-size:10px;color:var(--ts);margin-top:4px;width:100%;}
+
+  /* ── BDET SUMMARY: 2×2 grid on mobile ── */
+  #bdet-summary>div{grid-template-columns:repeat(2,1fr)!important;}
+
+  /* ── BILLS TAB 3-section rows: tighter ── */
+  .bdet-bill-row{padding:8px 10px;gap:8px;}
+  .bdet-bill-name{font-size:13px;}
+  .bdet-bill-meta{font-size:10px;}
+  .bdet-bill-amt{font-size:13px;}
+  .bdet-act-btn{font-size:11px;padding:5px 10px;}
+
+  /* ── TRANSACTION LIST: tighter rows ── */
+  .trans-week-hdr{padding:6px 10px;}
+  .trans-week-lbl{font-size:9px;}
+  .trans-week-totals{font-size:10px;gap:6px;}
+  .trans-row{padding:8px 10px;gap:8px;}
+  .trans-row-name{font-size:13px;}
+  .trans-row-meta{font-size:10px;}
+  .trans-row-amt{font-size:13px;}
+  .trans-row-date{font-size:10px;}
+
+  /* ── PERIOD FILTER NAV: wrap cleanly ── */
+  #fft-nav{margin-left:0!important;width:100%;justify-content:center;}
+
+  /* ── KPI STRIP: right-align cleanly ── */
+  #fft-kpi{width:100%;align-items:flex-end;}
+
   /* Misc */
   .fin-qa-btn{font-size:13px;padding:12px 14px;}
 }
@@ -1899,6 +1929,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bdet-bill-amt{font-size:15px;font-weight:800;color:var(--t);flex-shrink:0;}
 .bdet-status-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;}
 .bdet-act-btn{font-family:var(--font);font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;border:none;cursor:pointer;flex-shrink:0;transition:opacity .12s;}
+.bdet-auto-hint{margin-left:auto;font-size:10px;color:var(--ts);white-space:nowrap;}
 .bdet-act-btn:hover{opacity:0.8;}
 .bdet-act-btn.pay{background:var(--gbg);color:var(--green);}
 .bdet-act-btn.undo{background:var(--bg-in);color:var(--ts);border:1px solid var(--bd);}
@@ -2518,22 +2549,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
 
-        <!-- QUICK LOG: INCOME / EXPENSE -->
-        <div class="nf" style="margin-top:14px;">
-          <div class="nf-ttl">⚡ Quick Log — Income / Expense</div>
-          <div class="fr">
-            <input class="fi" type="text" id="blq-desc" placeholder="Description" style="min-width:140px;">
-            <input class="fi" type="number" id="blq-amt" placeholder="Amount $" step="0.01" style="max-width:120px;">
-            <select class="fi" id="blq-type" style="max-width:110px;" onchange="buildCatSelect('blq-cat',this.value)">
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-            <select class="fi" id="blq-cat" style="max-width:140px;"></select>
-            <input class="fi" type="date" id="blq-date" style="max-width:150px;">
-            <button class="btn pri" onclick="blQuickLog()">Log</button>
-          </div>
-        </div>
-
         <!-- CASH FLOW CHART -->
         <div class="chart-box" style="margin:14px 0;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
@@ -2686,19 +2701,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <!-- TAB: TRANSACTIONS                           -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-entries-body" style="display:none;">
-        <div class="nf" style="margin-top:14px;">
-          <div class="nf-ttl">＋ New entry</div>
-          <div class="fr">
-            <input class="fi" type="text" id="fi-d" placeholder="Description" style="min-width:160px;">
-            <input class="fi" type="number" id="fi-a" placeholder="Amount" step="0.01" style="max-width:120px;">
-            <select class="fi" id="fi-t" style="max-width:110px;" onchange="buildCatSelect('fi-c',this.value)"><option value="income">Income</option><option value="expense">Expense</option></select>
-            <select class="fi" id="fi-c" style="max-width:140px;" onchange="handleCatChange('fi-c',G('fi-t').value)"></select>
-            <select class="fi" id="fi-biz" style="max-width:120px;"><option value="personal">👤 Personal</option><option value="business">💼 Business</option></select>
-            <input class="fi" type="date" id="fi-dt" style="max-width:150px;">
-            <button class="btn pri" onclick="addFin()">Save</button>
-          </div>
-        </div>
-
         <!-- Period filter row -->
         <div style="margin-top:16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <button class="fft-period-btn on" id="fft-month"   onclick="filtFPeriod('month',this)">Month</button>
@@ -2726,7 +2728,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <!-- Grouped transaction list -->
         <div id="f-grouped-list" style="margin-top:12px;"></div>
 
-        <div class="add-row" onclick="G('fi-d').focus()">＋ New entry</div>
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
@@ -3750,9 +3751,20 @@ function renderTransactions(){
   const kNet=kInc-kExp;
   const kpiEl=G('fft-kpi');
   if(kpiEl)kpiEl.innerHTML=`
-    <span style="font-size:12px;color:var(--green);font-weight:700;">↑ ${fmt(kInc)}</span>
-    <span style="font-size:12px;color:var(--red);font-weight:700;">↓ ${fmt(kExp)}</span>
-    <span style="font-size:14px;font-weight:800;color:${kNet>=0?'var(--green)':'var(--red)'};">${kNet>=0?'+':''}${fmt(kNet)} net</span>`;
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.05em;width:54px;text-align:right;">Income</span>
+        <span style="font-size:13px;font-weight:700;color:var(--green);min-width:80px;text-align:right;">+${fmt(kInc)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.05em;width:54px;text-align:right;">Expenses</span>
+        <span style="font-size:13px;font-weight:700;color:var(--red);min-width:80px;text-align:right;">-${fmt(kExp)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-top:2px;border-top:1px solid var(--bd);">
+        <span style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.05em;width:54px;text-align:right;">Net</span>
+        <span style="font-size:15px;font-weight:800;color:${kNet>=0?'var(--green)':'var(--red)'};min-width:80px;text-align:right;">${kNet>=0?'+':''}${fmt(kNet)}</span>
+      </div>
+    </div>`;
   const container=G('f-grouped-list');if(!container)return;
   if(!items.length){container.innerHTML=`<div class="empty" style="padding:24px 0;">No transactions for this period</div>`;return;}
   // Group by week (Mon–Sun)
@@ -3953,11 +3965,11 @@ function renderBillDetailPage(){
     const amt=bills.reduce((s,b)=>s+b.a,0);
     const empty=`<div style="padding:12px 14px;font-size:12px;color:var(--ts);opacity:0.6;">No ${label.toLowerCase()} bills this month</div>`;
     return`<div id="bdet-sec-${id}" style="margin-top:18px;">
-      <div style="display:flex;align-items:center;gap:8px;padding:0 2px 8px;border-bottom:2px solid ${color};">
+      <div style="display:flex;align-items:center;gap:8px;padding:0 2px 8px;border-bottom:2px solid ${color};flex-wrap:wrap;">
         <span style="font-size:14px;">${icon}</span>
         <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:${color};">${label}</span>
         <span style="font-size:11px;color:var(--ts);">${bills.length} bill${bills.length!==1?'s':''} · ${fmt(amt)}</span>
-        ${sectionType==='auto'?`<span style="margin-left:auto;font-size:10px;color:var(--ts);">Check box to log as expense</span>`:''}
+        ${sectionType==='auto'?`<span class="bdet-auto-hint">☑ check to log as expense</span>`:''}
       </div>
       <div style="margin-top:6px;">${bills.length?bills.map(b=>billRow(b,sectionType)).join(''):empty}</div>
     </div>`;
@@ -4847,7 +4859,7 @@ function renderBills(){
       <td style="font-size:12px;color:${isOverdue?'var(--red)':'var(--ts)'};">${nxt||'—'}${isOverdue?' ⚠️':''}</td>
       <td><span class="tag ${stClass}" style="cursor:${isAuto?'default':'pointer'};" onclick="${isAuto?'':'cycleBill('+b.id+',\''+blDispMonth+'\')'}" title="${isAuto?'Auto-pay':'Click to toggle'}">${displaySt}</span></td>
       <td style="font-size:12px;color:var(--ts);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.notes||'—'}</td>
-      <td class="row-acts"><button class="edit-ic" onclick="openEM('bill',${b.id})" title="Edit">✎</button><button class="del" onclick="delBill(${b.id})">✕</button></td>
+      <td class="row-acts"><button class="del" onclick="delBill(${b.id})">✕</button></td>
     </tr>`;
   }).join('');
 }
