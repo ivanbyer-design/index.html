@@ -1048,11 +1048,10 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-dot-legend.expense{background:var(--red);}
 .fd-cal-dot-legend.bill{background:var(--red);}
 .fd-cal-dot-legend.debt{background:var(--purple);}
-.fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr) 84px;background:var(--bg-h);border-bottom:1px solid var(--bd);}
-.fd-cal-header span{padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
-.fd-cal-header .fd-cal-hdr-week{padding:8px 6px;text-align:center;font-size:10px;font-weight:700;color:var(--neon);text-transform:uppercase;letter-spacing:0.06em;border-left:1px solid var(--bd);}
-.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr) 84px;}
-.fd-cal-day{min-height:118px;padding:8px 7px 6px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-h);border-bottom:1px solid var(--bd);}
+.fd-cal-header span{padding:9px 4px;text-align:center;font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
+.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.fd-cal-day{min-height:136px;padding:9px 8px 7px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
 .fd-cal-week-total{min-height:118px;padding:8px 7px 6px;border-left:1px solid var(--bd);border-bottom:1px solid var(--bd);background:color-mix(in srgb,var(--neon-glow) 40%,var(--bg-card));display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:4px;}
 .fd-cal-wt-lbl{font-size:8.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;align-self:flex-start;}
 .fd-cal-wt-inc{font-size:10px;font-weight:700;color:var(--green);}
@@ -1061,7 +1060,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-wt-net.pos{color:var(--green);}
 .fd-cal-wt-net.neg{color:var(--red);}
 .fd-cal-wt-net.zero{color:var(--ts);}
-.fd-cal-day:nth-child(7n){border-right:none;}
+.fd-cal-day:last-child{border-right:none;}
 .fd-cal-day:hover{background:var(--bg-h);}
 .fd-cal-day:active{background:var(--bg-a);}
 .fd-cal-day.empty{background:transparent;cursor:default;pointer-events:none;}
@@ -1081,6 +1080,8 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-entry.income{background:var(--gbg);color:var(--green);}
 .fd-cal-entry.expense{background:var(--abg);color:var(--amber);}
 .fd-cal-entry.bill{background:var(--rbg);color:var(--red);}
+.fd-cal-entry.bill.paid{background:var(--gbg);color:var(--green);opacity:0.75;}
+.fd-cal-entry.bill.auto{background:var(--bbg);color:var(--blue);}
 .fd-cal-entry.debt{background:var(--pbg);color:var(--purple);}
 .fd-cal-entry.more{background:var(--bg-tag);color:var(--ts);}
 .fd-cal-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:auto;padding-top:2px;}
@@ -1525,12 +1526,10 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   /* Finance calendar: scroll horizontally instead of squishing 7 cols */
   #fd-cal-section{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   #fd-cal-section .fd-cal-wrap{min-width:420px;}
-  .fd-cal-day{min-height:88px!important;padding:5px 4px 4px!important;}
-  .fd-cal-week-total{min-height:88px!important;padding:5px 5px 4px!important;}
-  .fd-cal-wt-net{font-size:10px!important;}
-  .fd-cal-wt-inc,.fd-cal-wt-exp{font-size:9px!important;}
-  .fd-cal-entry{font-size:9.5px!important;}
-  .fd-cal-day-net{font-size:9.5px!important;}
+  .fd-cal-day{min-height:76px!important;padding:5px 4px 4px!important;}
+  .fd-cal-entry{font-size:9.5px!important;padding:2px 4px!important;}
+  .fd-cal-day-net{font-size:9px!important;}
+  .fd-cal-num{font-size:11px!important;}
 }
 
 /* ═══════════════════════════════════════════════════
@@ -2388,7 +2387,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
               <div id="fd-cal-body">
                 <div class="fd-cal-header">
                   <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                  <div class="fd-cal-hdr-week">Week</div>
                 </div>
                 <div class="fd-cal-grid" id="fd-cal-grid"></div>
               </div>
@@ -3778,70 +3776,59 @@ function renderFinOverview(){
       const firstDay=new Date(y,m,1).getDay();
       const startOffset=(firstDay+6)%7; // Mon=0 offset
       let html='';
-      // Track position within current row (0-6) and weekly running totals
-      let colPos=startOffset; // how many cells are already in the first row
-      let wkInc=0, wkExp=0;
 
-      // Helper: emit a week-total cell and reset counters
-      function weekTotalCell(){
-        const net=wkInc-wkExp;
-        const cls=net>0?'pos':net<0?'neg':'zero';
-        const incHtml=wkInc>0?`<div class="fd-cal-wt-inc">↑ ${fmt(wkInc)}</div>`:'';
-        const expHtml=wkExp>0?`<div class="fd-cal-wt-exp">↓ ${fmt(wkExp)}</div>`:'';
-        const cell=`<div class="fd-cal-week-total">
-          <div class="fd-cal-wt-lbl">Week</div>
-          ${incHtml}${expHtml}
-          <div class="fd-cal-wt-net ${cls}">${net===0?'—':(net>0?'+':'')+fmt(Math.abs(net))}</div>
-        </div>`;
-        wkInc=0; wkExp=0;
-        return cell;
-      }
-
-      // Empty offset cells (don't count toward weekly totals)
-      for(let i=0;i<startOffset;i++) html+=`<div class="fd-cal-day empty"><div class="fd-cal-day-top"><div class="fd-cal-num"></div></div></div>`;
+      // Empty offset cells
+      for(let i=0;i<startOffset;i++) html+=`<div class="fd-cal-day empty"></div>`;
 
       for(let d=1;d<=daysInMonth;d++){
         const dk=mPrefix+'-'+String(d).padStart(2,'0');
         const dayIncItems=S.finance.filter(f=>f.dt===dk&&f.t==='income');
         const dayExpItems=S.finance.filter(f=>f.dt===dk&&f.t==='expense');
         const dayBillItems=billsDueOn(dk);
-        const dayDebtItems=(S.otherPayments||[]).filter(p=>p.due===dk);
         const dayInc=dayIncItems.reduce((s,f)=>s+f.a,0);
         const dayExp=dayExpItems.reduce((s,f)=>s+f.a,0);
         const dayNet=dayInc-dayExp;
         const isToday=dk===today;
-        const hasData=dayInc||dayExp||dayBillItems.length||dayDebtItems.length;
+        const hasData=dayInc||dayExp||dayBillItems.length;
 
-        wkInc+=dayInc; wkExp+=dayExp;
+        // Net badge — only show when there's actual income/expense logged
+        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div>`:'';
 
-        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}$${Math.round(Math.abs(dayNet)).toLocaleString()}</div>`:'';
+        // Build entries: income (amount), expense (amount), bills (name)
         const allEntries=[];
-        dayIncItems.forEach(f=>allEntries.push({type:'income',label:'↑ '+f.d,amount:f.a}));
-        dayExpItems.forEach(f=>allEntries.push({type:'expense',label:'↓ '+f.d,amount:f.a}));
-        dayBillItems.forEach(b=>allEntries.push({type:'bill',label:'🧾 '+b.n,amount:b.a}));
-        dayDebtItems.forEach(p=>allEntries.push({type:'debt',label:'💸 '+p.n,amount:p.a}));
-        const shown=allEntries.slice(0,3);
-        const hidden=allEntries.length-3;
-        const chips=shown.map(e=>`<div class="fd-cal-entry ${e.type}" title="${e.label}">${e.label}</div>`).join('');
+        // Group income into one chip if multiple
+        if(dayInc>0){
+          const tip=dayIncItems.map(f=>f.d+' · '+fmt(f.a)).join(', ');
+          allEntries.push({type:'income',label:'↑ '+fmt(dayInc),tip});
+        }
+        // Group expenses into one chip if multiple
+        if(dayExp>0){
+          const tip=dayExpItems.map(f=>f.d+' · '+fmt(f.a)).join(', ');
+          allEntries.push({type:'expense',label:'↓ '+fmt(dayExp),tip});
+        }
+        // Each bill separately
+        dayBillItems.forEach(b=>{
+          const st=getBillStatus(b);
+          const isPaid=st==='Paid', isAuto=st==='Auto-pay';
+          const stLabel=isPaid?' ✓':isAuto?' 🔄':'';
+          const typeClass='bill'+(isPaid?' paid':isAuto?' auto':'');
+          allEntries.push({type:typeClass,label:b.n+stLabel,tip:b.n+' · '+fmt(b.a)+' · '+st});
+        });
+
+        const shown=allEntries.slice(0,4);
+        const hidden=allEntries.length-4;
+        const chips=shown.map(e=>`<div class="fd-cal-entry ${e.type}" title="${e.tip||e.label}">${e.label}</div>`).join('');
         const more=hidden>0?`<div class="fd-cal-entry more">+${hidden} more</div>`:'';
 
         html+=`<div class="fd-cal-day${isToday?' is-today':''}${hasData?' has-data':''}" onclick="openFdDayModal('${dk}')">
           <div class="fd-cal-day-top"><div class="fd-cal-num">${d}</div>${netBadge}</div>
           <div class="fd-cal-day-entries">${chips}${more}</div>
         </div>`;
-
-        colPos++;
-        // End of week row (column 7 = Sunday) → append total cell
-        if(colPos%7===0){
-          html+=weekTotalCell();
-        }
       }
-      // If the last row isn't complete, fill remaining empty cells then total
-      const remaining=colPos%7;
-      if(remaining!==0){
-        for(let i=remaining;i<7;i++) html+=`<div class="fd-cal-day empty"><div class="fd-cal-day-top"><div class="fd-cal-num"></div></div></div>`;
-        html+=weekTotalCell();
-      }
+      // Fill trailing empty cells to complete the last row
+      const totalCells=startOffset+daysInMonth;
+      const trail=totalCells%7;
+      if(trail!==0){for(let i=trail;i<7;i++) html+=`<div class="fd-cal-day empty"></div>`;}
       calEl.innerHTML=html;
     }
   }
