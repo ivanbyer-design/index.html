@@ -3335,6 +3335,7 @@ function hqaFinSaveTransaction(){
   const biz=G('hqa-biz').value;
   const dt=G('hqa-date').value||today;
   S.finance.push({d:desc,a:amt,t:hqaIEType,c:cat,biz,dt,id:Date.now()});
+  if(hqaIEType==='expense')autoLinkToLivingBudget(cat,amt,dt);
   addFinancialPoints(5,'Logged transaction');
   save();renderFinance();renderHome();
   showBackupToast('✓ '+(hqaIEType==='income'?'Income':'Expense')+' saved');
@@ -3457,6 +3458,7 @@ function fqaSaveTransaction(){
   const biz=G('fqa-biz').value;
   const dt=G('fqa-date').value||today;
   S.finance.push({d:desc,a:amt,t:fqaIEType,c:cat,biz,dt,id:Date.now()});
+  if(fqaIEType==='expense')autoLinkToLivingBudget(cat,amt,dt);
   addFinancialPoints(5,'Logged transaction');
   save();renderFinance();renderHome();
   showBackupToast('✓ '+(fqaIEType==='income'?'Income':'Expense')+' saved');
@@ -3503,7 +3505,7 @@ const mkChart=(id,cfg)=>{if(charts[id])charts[id].destroy();const el=G(id);if(el
 
 // ── CATEGORY HELPERS ──
 const BASE_INCOME_CATS=['Salary','Freelance','Investment','Side income','Gift','Other'];
-const BASE_EXPENSE_CATS=['Food','Transport','Housing','Utilities','Entertainment','Healthcare','Shopping','Other'];
+const BASE_EXPENSE_CATS=['Groceries','Gas','Eating Out','Laundry','Food','Transport','Housing','Utilities','Entertainment','Healthcare','Shopping','Other'];
 function getAllCats(type){
   const base=type==='income'?BASE_INCOME_CATS:BASE_EXPENSE_CATS;
   const custom=(S.customCategories||[]).filter(c=>c.type===type||c.type==='both').map(c=>c.name);
@@ -3547,7 +3549,9 @@ function addFin(){
   const type=G('fi-t').value;
   const cat=G('fi-c')&&G('fi-c').value!=='__new__'?G('fi-c').value:(getAllCats(type)[0]);
   const biz=G('fi-biz')?G('fi-biz').value:'personal';
-  S.finance.push({d,a,t:type,c:cat,biz,dt:G('fi-dt').value,id:Date.now()});
+  const dt=G('fi-dt').value||today;
+  S.finance.push({d,a,t:type,c:cat,biz,dt,id:Date.now()});
+  if(type==='expense')autoLinkToLivingBudget(cat,a,dt);
   G('fi-d').value='';G('fi-a').value='';save();renderFinance();renderHome();
 }
 function quickFin(){
@@ -4111,6 +4115,7 @@ function fddAddEntry(dk){
   const cat=G('fdd-cat').value==='__new__'?getAllCats(fddType)[0]:G('fdd-cat').value;
   const biz=G('fdd-biz').value;
   S.finance.push({d:desc,a:amt,t:fddType,c:cat,biz,dt:dk,id:Date.now()});
+  if(fddType==='expense')autoLinkToLivingBudget(cat,amt,dk);
   G('fdd-desc').value='';G('fdd-amt').value='';
   save();renderFinance();renderHome();renderFdDayBody(dk);
   showBackupToast('✓ Entry added');
@@ -4461,6 +4466,24 @@ function renderBills(){
   }).join('');
 }
 
+// Auto-link an expense to the matching living budget category (by name)
+function autoLinkToLivingBudget(cat,amt,dt){
+  if(!cat||!amt||isNaN(amt))return;
+  const match=(S.liveCategories||[]).find(c=>c.name.toLowerCase()===cat.toLowerCase());
+  if(!match)return;
+  if(!S.liveSpend)S.liveSpend=[];
+  S.liveSpend.push({id:Date.now(),catId:match.id,amt:parseFloat(amt),note:'auto',date:dt||today});
+}
+// Update a living category's budget limit inline
+function updateLiveCatBudget(id,val){
+  const c=(S.liveCategories||[]).find(c=>c.id===Number(id));
+  if(!c)return;
+  const n=parseFloat(val);
+  if(isNaN(n)||n<0)return;
+  c.budget=n;
+  save();renderBudgetQuadrant();renderBillsLivingMini();
+}
+
 function blQuickLog(){
   const d=G('blq-desc').value.trim();if(!d)return;
   const a=parseFloat(G('blq-amt').value);if(!a||a<=0)return;
@@ -4468,6 +4491,7 @@ function blQuickLog(){
   const c=G('blq-cat').value||'General';
   const dt=G('blq-date').value||today;
   S.finance.push({d,a,t,c,biz:'personal',dt,id:Date.now()});
+  if(t==='expense')autoLinkToLivingBudget(c,a,dt);
   G('blq-desc').value='';G('blq-amt').value='';G('blq-date').value='';
   save();renderFinance();renderHome();
   showBackupToast('✓ '+(t==='income'?'Income':'Expense')+' logged · '+fmt(a));
@@ -4535,7 +4559,7 @@ function renderBudgetQuadrant(){
         </div>`).join('');
   }
 
-  // ── Panel 2: Living expenses — per-category quick-log ──
+  // ── Panel 2: Living Budget — show per-category with editable budget limit ──
   const lm=currentMonth;
   const livSpendThisMonth=(S.liveSpend||[]).filter(s=>s.date&&s.date.startsWith(lm));
   const totalLivBudget=(S.liveCategories||[]).reduce((s,c)=>s+c.budget,0);
@@ -4548,41 +4572,61 @@ function renderBudgetQuadrant(){
       <span style="font-size:18px;font-weight:700;">${fmt(totalLivSpent)}</span>
       <span style="font-size:11px;color:var(--ts);">of ${fmt(totalLivBudget)}</span>
     </div>
-    <div class="prog" style="margin-bottom:8px;"><div class="pf" style="width:${livPct}%;background:${livColor};"></div></div>
-    ${cats.slice(0,4).map(c=>{
+    <div class="prog" style="margin-bottom:10px;"><div class="pf" style="width:${livPct}%;background:${livColor};"></div></div>
+    ${cats.map(c=>{
       const spent=livSpendThisMonth.filter(s=>String(s.catId)===String(c.id)).reduce((s,sp)=>s+sp.amt,0);
       const pct=c.budget?Math.min(100,Math.round(spent/c.budget*100)):0;
       const clr=pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--green)';
-      return`<div style="display:flex;align-items:center;gap:5px;padding:3px 0;font-size:11px;min-width:0;">
-        <span style="width:16px;flex-shrink:0;text-align:center;">${c.icon||'💰'}</span>
-        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.name}</span>
-        <span style="color:${clr};font-weight:700;flex-shrink:0;font-size:10px;">${fmt(spent)}<span style="color:var(--th);font-weight:400;">/${fmt(c.budget)}</span></span>
-        <input type="number" placeholder="$" min="0" step="0.01"
-          style="width:48px;min-width:0;flex-shrink:0;font-family:var(--font);font-size:11px;border:1px solid var(--bd);border-radius:4px;padding:2px 4px;background:var(--bg-in);color:var(--t);"
-          onkeydown="if(event.key==='Enter'){bqLogSpend(${c.id},this.value);this.value='';}"
-          title="Type amount + Enter to log spending for ${c.name}">
+      const remaining=Math.max(0,c.budget-spent);
+      return`<div style="padding:6px 0;border-bottom:1px solid var(--bd);">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
+          <span style="width:16px;flex-shrink:0;text-align:center;font-size:13px;">${c.icon||'💰'}</span>
+          <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:600;">${c.name}</span>
+          <span style="font-size:10px;color:${clr};font-weight:700;">${fmt(spent)}</span>
+        </div>
+        <div class="prog" style="height:4px;margin-bottom:5px;"><div class="pf" style="width:${pct}%;background:${clr};height:4px;border-radius:2px;"></div></div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:10px;color:var(--ts);flex:1;">${fmt(remaining)} left</span>
+          <span style="font-size:10px;color:var(--ts);">Limit $</span>
+          <input type="number" value="${c.budget}" min="0" step="1"
+            style="width:60px;font-family:var(--font);font-size:11px;border:1px solid var(--bd);border-radius:4px;padding:2px 5px;background:var(--bg-in);color:var(--t);text-align:right;"
+            onblur="updateLiveCatBudget(${c.id},this.value)"
+            onkeydown="if(event.key==='Enter')this.blur();"
+            title="Edit budget limit for ${c.name}">
+        </div>
       </div>`;
-    }).join('')}
-    ${cats.length>4?`<div style="font-size:11px;color:var(--ts);margin-top:4px;">+${cats.length-4} more → Bills tab</div>`:''}`;
+    }).join('')}`;
 
-  // ── Panel 3: Monthly snapshot — link to tabs ──
+  // ── Panel 3: Monthly snapshot — bills + living category standings (read-only) ──
   const allBills=S.bills;
   const totMo=allBills.reduce((s,b)=>s+b.a,0);
   const paidAmt=allBills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
   const autoAmt=allBills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
-  if(snap)snap.innerHTML=`<div style="font-size:12px;line-height:2;">
-    <div style="display:flex;justify-content:space-between;cursor:pointer;" onclick="switchFinTab('bills',G('ftab-bills'))" title="View all bills">
-      <span>Total bills/mo</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
-    <div style="display:flex;justify-content:space-between;cursor:pointer;" onclick="switchFinTab('bills',G('ftab-bills'))" title="View all bills">
-      <span style="color:var(--green);">✓ Paid this month</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
-    <div style="display:flex;justify-content:space-between;">
-      <span style="color:var(--blue);">🔄 Auto-pay</span><span style="color:var(--blue);font-weight:700;">${fmt(autoAmt)}</span></div>
-    <div style="display:flex;justify-content:space-between;">
-      <span style="color:var(--ts);">Living budget</span><span style="font-weight:700;">${fmt(totalLivBudget)}</span></div>
-    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--bd);padding-top:4px;margin-top:2px;">
-      <span style="font-weight:700;">Est. monthly total</span><span style="font-weight:700;">${fmt(totMo+totalLivBudget)}</span></div>
-  </div>
-  <button onclick="switchFinTab('entries',G('ftab-entries'))" style="margin-top:8px;font-family:var(--font);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;width:100%;">📋 View transactions →</button>`;
+  if(snap)snap.innerHTML=`
+    <div style="font-size:12px;line-height:2;">
+      <div style="display:flex;justify-content:space-between;">
+        <span>Total bills/mo</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
+      <div style="display:flex;justify-content:space-between;">
+        <span style="color:var(--green);">✓ Paid this month</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
+      <div style="display:flex;justify-content:space-between;">
+        <span style="color:var(--blue);">🔄 Auto-pay</span><span style="color:var(--blue);font-weight:700;">${fmt(autoAmt)}</span></div>
+    </div>
+    ${cats.length?`<div style="border-top:1px solid var(--bd);margin-top:6px;padding-top:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Living Budget</div>
+      ${cats.map(c=>{
+        const spent=livSpendThisMonth.filter(s=>String(s.catId)===String(c.id)).reduce((s,sp)=>s+sp.amt,0);
+        const pct=c.budget?Math.min(100,Math.round(spent/c.budget*100)):0;
+        const clr=pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--green)';
+        return`<div style="margin-bottom:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:2px;">
+            <span>${c.icon||'💰'} ${c.name}</span>
+            <span style="font-weight:700;color:${clr};">${fmt(spent)}<span style="color:var(--th);font-weight:400;">/${fmt(c.budget)}</span></span>
+          </div>
+          <div class="prog" style="height:4px;"><div class="pf" style="width:${pct}%;background:${clr};height:4px;border-radius:2px;"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+    <button onclick="switchFinTab('entries',G('ftab-entries'))" style="margin-top:8px;font-family:var(--font);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;width:100%;">📋 View transactions →</button>`;
 
   // ── Panel 4: Due next 14 days — checkboxes to mark paid inline ──
   const upcoming=[];
@@ -7129,6 +7173,7 @@ function qaSave(){
     const c=G('qa-money-cat').value||'Other';
     const dt=G('qa-money-date').value||today;
     S.finance.push({d,a,t:qaIEType,c,dt,biz:'personal',id:Date.now()});
+    if(qaIEType==='expense')autoLinkToLivingBudget(c,a,dt);
     G('qa-money-amt').value='';G('qa-money-desc').value='';G('qa-money-date').value=today;
     addFinancialPoints(3,'Quick add transaction');save();renderFinance();renderHome();
     qaFlash('✓ '+(qaIEType==='income'?'Income':'Expense')+' added');
