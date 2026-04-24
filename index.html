@@ -1073,7 +1073,8 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-num{font-size:12px;font-weight:700;color:var(--t);line-height:1;flex-shrink:0;}
 .fd-cal-day.empty .fd-cal-num{color:var(--th);}
 .fd-cal-day.is-today .fd-cal-num{background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;}
-.fd-cal-day-net{font-size:10px;font-weight:800;letter-spacing:-0.01em;line-height:1;flex-shrink:0;}
+.fd-cal-day-net{font-size:10px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;flex-shrink:0;text-align:right;}
+.fd-cal-day-net-lbl{font-size:7.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;opacity:0.75;line-height:1;}
 .fd-cal-day-net.pos{color:var(--green);}
 .fd-cal-day-net.neg{color:var(--red);}
 .fd-cal-day-entries{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0;overflow:hidden;}
@@ -1545,6 +1546,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   .fd-cal-day{min-height:66px;padding:4px 3px 3px;}
   .fd-cal-num{font-size:10.5px;}
   .fd-cal-day-net{font-size:8.5px;}
+  .fd-cal-day-net-lbl{font-size:6px;}
   .fd-cal-entry{font-size:9px;padding:1.5px 3px;}
   .fd-cal-day-top{margin-bottom:2px;}
   .fd-cal-day-entries{gap:1px;}
@@ -3673,11 +3675,12 @@ function cycleOP(id){
   const p=S.otherPayments.find(p=>p.id===id);
   if(p){const states=['pending','paid','overdue','scheduled'];p.s=states[(states.indexOf(p.s)+1)%states.length];save();renderFinance();}
 }
-function markBillPaid(id){
+function markBillPaid(id,month){
   const b=S.bills.find(b=>b.id===id);
   if(b){
+    const m=month||currentMonth;
     if(!b.payments)b.payments={};
-    b.payments[currentMonth]='Paid';
+    b.payments[m]='Paid';
     S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:today,id:Date.now()});
     addFinancialPoints(20,'Paid a bill');
     save();renderFinance();renderHome();
@@ -3896,19 +3899,11 @@ function renderFinOverview(){
         weekInc+=dayInc;
         weekExp+=dayExp;
 
-        // Net badge — only show when there's actual income/expense logged
-        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div>`:'';
+        // Daily Total badge — top-right, only when income or expense exists
+        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}"><div class="fd-cal-day-net-lbl">Daily Total</div><div>${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div></div>`:'';
 
-        // Build entries: income chip, expense chip, then bills individually
+        // Build entries: bills only (no income/expense chips)
         const allEntries=[];
-        if(dayInc>0){
-          const tip=dayIncItems.map(f=>f.d+' · '+fmt(f.a)).join(', ');
-          allEntries.push({type:'income',label:'↑ '+fmt(dayInc),tip});
-        }
-        if(dayExp>0){
-          const tip=dayExpItems.map(f=>f.d+' · '+fmt(f.a)).join(', ');
-          allEntries.push({type:'expense',label:'↓ '+fmt(dayExp),tip});
-        }
         dayBillItems.forEach(b=>{
           const st=getBillStatus(b);
           const isPaid=st==='Paid', isAuto=st==='Auto-pay';
@@ -4374,13 +4369,14 @@ function addBill(){
   G('bl-n').value='';G('bl-a').value='';if(G('bl-notes'))G('bl-notes').value='';save();renderFinance();renderHome();
 }
 function delBill(id){S.bills=S.bills.filter(b=>b.id!==id);save();renderFinance();renderHome();}
-function cycleBill(id){
+function cycleBill(id,month){
   const b=S.bills.find(b=>b.id===id);if(!b)return;
   if(b.ds==='Auto-pay')return;
-  const cur=getBillStatus(b);
+  const m=month||currentMonth;
+  const cur=getBillStatus(b,m);
   const next=cur==='Unpaid'?'Paid':'Unpaid';
   if(!b.payments)b.payments={};
-  b.payments[currentMonth]=next;
+  b.payments[m]=next;
   if(next==='Paid'){
     S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:today,id:Date.now()});
     addFinancialPoints(20,'Paid a bill');
@@ -4604,7 +4600,7 @@ function renderBillsLivingMini(){
       }).join('')}
     </div>`;
 }
-function bqPayBill(id){cycleBill(id);renderBudgetQuadrant();}
+function bqPayBill(id,month){cycleBill(id,month);renderBudgetQuadrant();}
 function bqLogSpend(catId,amt){
   if(!amt||isNaN(amt))return;
   if(!S.liveSpend)S.liveSpend=[];
@@ -4633,7 +4629,7 @@ function renderBudgetQuadrant(){
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 0;border-bottom:1px solid var(--bd);">
           <span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.n}</span>
           <span style="font-size:12px;font-weight:700;color:var(--red);flex-shrink:0;">${fmt(b.a)}</span>
-          <button onclick="bqPayBill(${b.id})" style="font-family:var(--font);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:none;background:var(--gbg);color:var(--green);cursor:pointer;flex-shrink:0;">✓ Pay</button>
+          <button onclick="bqPayBill(${b.id},'${dispMonth}')" style="font-family:var(--font);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:none;background:var(--gbg);color:var(--green);cursor:pointer;flex-shrink:0;">✓ Pay</button>
         </div>`).join('');
   }
 
@@ -4734,7 +4730,7 @@ function renderBudgetQuadrant(){
         const chipBg=isCurrentMonth?(daysAway===0?'var(--rbg)':daysAway<=3?'var(--abg)':'var(--bg-in)'):(isPaid?'var(--gbg)':'var(--bg-in)');
         const chipClr=isCurrentMonth?(daysAway===0?'var(--red)':daysAway<=3?'var(--amber)':'var(--ts)'):(isPaid?'var(--green)':'var(--ts)');
         return`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--bd);font-size:12px;">
-          ${isAuto?`<span title="Auto-pay" style="font-size:14px;">🔄</span>`:`<input type="checkbox" ${isPaid?'checked':''} onchange="cycleBill(${b.id});renderBudgetQuadrant();" title="${isPaid?'Mark unpaid':'Mark paid'}">`}
+          ${isAuto?`<span title="Auto-pay" style="font-size:14px;">🔄</span>`:`<input type="checkbox" ${isPaid?'checked':''} onchange="cycleBill(${b.id},'${dispMonth}');renderBudgetQuadrant();" title="${isPaid?'Mark unpaid':'Mark paid'}">`}
           <span style="flex:1;${isPaid?'text-decoration:line-through;color:var(--ts);':''}">${b.n}</span>
           <span style="font-weight:700;color:${isPaid?'var(--green)':'var(--t)'};">${fmt(b.a)}</span>
           <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;background:${chipBg};color:${chipClr};">${dueLbl}</span>
