@@ -1873,6 +1873,20 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bills-sum-chip-click{cursor:pointer;transition:transform .12s,box-shadow .12s;}
 .bills-sum-chip-click:hover{transform:translateY(-2px);box-shadow:var(--sh-md);}
 .bills-sum-chip-click:active{transform:scale(0.97);}
+.bdet-filter-btn{font-family:var(--font);font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-card);color:var(--ts);cursor:pointer;transition:all .15s;}
+.bdet-filter-btn:hover{background:var(--bg-h);color:var(--t);}
+.bdet-filter-btn.on{background:var(--t);color:var(--ti);border-color:var(--t);}
+.bdet-bill-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:8px;transition:background .12s;}
+.bdet-bill-row:hover{background:var(--bg-h);}
+.bdet-bill-info{flex:1;min-width:0;}
+.bdet-bill-name{font-size:14px;font-weight:700;color:var(--t);}
+.bdet-bill-meta{font-size:11px;color:var(--ts);margin-top:2px;}
+.bdet-bill-amt{font-size:15px;font-weight:800;color:var(--t);flex-shrink:0;}
+.bdet-status-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;}
+.bdet-act-btn{font-family:var(--font);font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;border:none;cursor:pointer;flex-shrink:0;transition:opacity .12s;}
+.bdet-act-btn:hover{opacity:0.8;}
+.bdet-act-btn.pay{background:var(--gbg);color:var(--green);}
+.bdet-act-btn.undo{background:var(--bg-in);color:var(--ts);border:1px solid var(--bd);}
 /* ── FINANCE HUB — 4-quadrant above full-width calendar ── */
 .fin-hub-grid{display:grid;grid-template-columns:1fr 250px;gap:14px;margin-top:14px;align-items:start;}
 .fin-hub-sidebar{display:flex;flex-direction:column;gap:12px;}
@@ -2586,6 +2600,63 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 
       <!-- Bills tab merged into Finance hub above -->
       <div id="ftab-bills-body" style="display:none;"></div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TAB: BILLS DETAIL PAGE                       -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="ftab-billdetail-body" style="display:none;">
+
+        <!-- Back nav -->
+        <div style="display:flex;align-items:center;gap:8px;padding:12px 0 8px;">
+          <button onclick="switchFinTab('overview',G('ftab-overview'))" style="font-family:var(--font);font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-card);color:var(--ts);cursor:pointer;display:flex;align-items:center;gap:5px;">← Back</button>
+          <span style="font-size:12px;color:var(--ts);">Personal Finance</span>
+          <span style="font-size:12px;color:var(--ts);">›</span>
+          <span style="font-size:12px;font-weight:700;color:var(--t);" id="bdet-breadcrumb">Bills</span>
+        </div>
+
+        <!-- Page header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;">
+          <div>
+            <div style="font-size:22px;font-weight:800;color:var(--t);letter-spacing:-0.02em;" id="bdet-title">Bills</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:3px;" id="bdet-sub"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="fd-nav-btn" onclick="bdetNavMonth(-1)">←</button>
+            <div style="font-size:14px;font-weight:700;color:var(--t);min-width:110px;text-align:center;" id="bdet-month-label"></div>
+            <button class="fd-nav-btn" onclick="bdetNavMonth(1)">→</button>
+          </div>
+        </div>
+
+        <!-- Filter pills -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+          <button class="bdet-filter-btn on" id="bdf-all"      onclick="setBillDetailFilter('all',this)">All</button>
+          <button class="bdet-filter-btn"    id="bdf-Unpaid"   onclick="setBillDetailFilter('Unpaid',this)">🔴 Unpaid</button>
+          <button class="bdet-filter-btn"    id="bdf-Paid"     onclick="setBillDetailFilter('Paid',this)">✓ Paid</button>
+          <button class="bdet-filter-btn"    id="bdf-Auto-pay" onclick="setBillDetailFilter('Auto-pay',this)">🔄 Auto-pay</button>
+        </div>
+
+        <!-- Summary totals row -->
+        <div id="bdet-summary" style="margin-bottom:14px;"></div>
+
+        <!-- Bill rows -->
+        <div id="bdet-list"></div>
+
+        <!-- Add bill form -->
+        <div class="add-row" style="margin-top:16px;" onclick="G('bdet-add-form').classList.toggle('hidden');this.style.display='none';">＋ Add bill or subscription</div>
+        <div class="nf hidden" id="bdet-add-form">
+          <div class="nf-ttl">＋ New Bill / Subscription</div>
+          <div class="fr">
+            <input class="fi" type="text" id="bdet-n" placeholder="Bill name">
+            <input class="fi" type="number" id="bdet-a" placeholder="Amount $" step="0.01" style="max-width:120px;">
+            <select class="fi" id="bdet-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
+            <select class="fi" id="bdet-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
+            <input class="fi" type="date" id="bdet-d" style="max-width:150px;">
+            <select class="fi" id="bdet-ds" style="max-width:130px;"><option value="Unpaid">Manual Pay</option><option value="Auto-pay">Auto-pay</option></select>
+            <button class="btn pri" onclick="bdetAddBill()">Save</button>
+          </div>
+        </div>
+
+      </div>
 
       <!-- ═══════════════════════════════════════════ -->
       <!-- TAB: LIVING BUDGET                          -->
@@ -3640,7 +3711,7 @@ function switchFinTab(tab,btn){
   activeFinTab=tab;
   document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
   if(btn)btn.classList.add('on');
-  ['overview','entries','bills','living','payments','savings','wants'].forEach(t=>{
+  ['overview','entries','bills','living','payments','savings','wants','billdetail'].forEach(t=>{
     const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
   });
   setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
@@ -3649,6 +3720,110 @@ function switchFinTab(tab,btn){
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
   if(tab==='living'){renderLivingTabHero();}
+  if(tab==='billdetail'){setTimeout(renderBillDetailPage,30);}
+}
+
+// ── BILLS DETAIL PAGE ──
+let billDetailFilter='all';
+function openBillsDetailPage(filter){
+  billDetailFilter=filter||'all';
+  switchFinTab('billdetail',null);
+}
+function setBillDetailFilter(filter,btn){
+  billDetailFilter=filter;
+  document.querySelectorAll('.bdet-filter-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderBillDetailPage();
+}
+function bdetNavMonth(dir){
+  finCalMonth+=dir;
+  if(finCalMonth>11){finCalMonth=0;finCalYear++;}
+  if(finCalMonth<0){finCalMonth=11;finCalYear--;}
+  renderBillDetailPage();
+}
+function bdetAddBill(){
+  const n=G('bdet-n').value.trim();if(!n)return;
+  S.bills.push({n,a:parseFloat(G('bdet-a').value)||0,f:G('bdet-f').value,cat:G('bdet-cat').value,d:G('bdet-d').value,ds:G('bdet-ds').value,payments:{},notes:'',id:Date.now()});
+  G('bdet-n').value='';G('bdet-a').value='';
+  save();renderBillDetailPage();renderBudgetQuadrant();renderBills();
+  showBackupToast('✓ Bill added');
+}
+function renderBillDetailPage(){
+  const dispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
+  const monthLabel=MONTH_NAMES[finCalMonth]+' '+finCalYear;
+  const filter=billDetailFilter;
+
+  // Sync filter pill active state
+  document.querySelectorAll('.bdet-filter-btn').forEach(b=>b.classList.remove('on'));
+  const activeBtn=G('bdf-'+(filter==='all'?'all':filter));
+  if(activeBtn)activeBtn.classList.add('on');
+
+  // Month label
+  const ml=G('bdet-month-label');if(ml)ml.textContent=monthLabel;
+
+  // Title + breadcrumb
+  const titles={all:'All Bills',Unpaid:'Unpaid Bills',Paid:'Paid Bills','Auto-pay':'Auto-pay Bills'};
+  const ttl=G('bdet-title'),bc=G('bdet-breadcrumb');
+  if(ttl)ttl.textContent=titles[filter]||'Bills';
+  if(bc)bc.textContent=titles[filter]||'Bills';
+
+  // Filter bills
+  let bills=S.bills;
+  if(filter!=='all')bills=bills.filter(b=>getBillStatus(b,dispMonth)===filter);
+  bills=[...bills].sort((a,b)=>(getNextDueDate(a)||a.d||'').localeCompare(getNextDueDate(b)||b.d||''));
+
+  // Sub label
+  const sub=G('bdet-sub');
+  const totalAmt=bills.reduce((s,b)=>s+b.a,0);
+  if(sub)sub.textContent=monthLabel+' · '+bills.length+' bill'+(bills.length!==1?'s':'')+' · '+fmt(totalAmt);
+
+  // Summary chips
+  const summary=G('bdet-summary');
+  if(summary){
+    const allBills=S.bills;
+    const unpaidAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Unpaid').reduce((s,b)=>s+b.a,0);
+    const paidAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Paid').reduce((s,b)=>s+b.a,0);
+    const autoAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Auto-pay').reduce((s,b)=>s+b.a,0);
+    const remaining=unpaidAmt;
+    const pct=allBills.reduce((s,b)=>s+b.a,0)?Math.round((paidAmt+autoAmt)/allBills.reduce((s,b)=>s+b.a,0)*100):0;
+    summary.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px;">
+      <div style="background:var(--rbg);border-radius:var(--r);padding:10px 12px;"><div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;">Unpaid</div><div style="font-size:18px;font-weight:800;color:var(--red);margin-top:2px;">${fmt(unpaidAmt)}</div></div>
+      <div style="background:var(--gbg);border-radius:var(--r);padding:10px 12px;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.05em;">Paid</div><div style="font-size:18px;font-weight:800;color:var(--green);margin-top:2px;">${fmt(paidAmt)}</div></div>
+      <div style="background:var(--bbg);border-radius:var(--r);padding:10px 12px;"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.05em;">Auto-pay</div><div style="font-size:18px;font-weight:800;color:var(--blue);margin-top:2px;">${fmt(autoAmt)}</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <div class="prog" style="flex:1;"><div class="pf" style="width:${pct}%;background:var(--green);"></div></div>
+      <span style="font-size:11px;font-weight:700;color:var(--ts);">${pct}% covered</span>
+    </div>`;
+  }
+
+  // Bill rows
+  const list=G('bdet-list');
+  if(!list)return;
+  if(!bills.length){
+    list.innerHTML=`<div style="text-align:center;padding:32px 0;color:var(--th);font-size:13px;">No ${filter==='all'?'bills':filter.toLowerCase()+' bills'} for ${monthLabel}</div>`;
+    return;
+  }
+  list.innerHTML=bills.map(b=>{
+    const st=getBillStatus(b,dispMonth);
+    const isPaid=st==='Paid',isAuto=st==='Auto-pay',isUnpaid=st==='Unpaid';
+    const stColor=isPaid?'var(--green)':isAuto?'var(--blue)':'var(--red)';
+    const stLabel=isPaid?'✓ Paid':isAuto?'🔄 Auto-pay':'Unpaid';
+    const nextDue=getNextDueDate(b)||b.d||'—';
+    const paidEntry=isPaid?S.finance.filter(f=>f.d===b.n&&f.t==='expense').slice(-1)[0]:null;
+    return`<div class="bdet-bill-row">
+      ${isUnpaid?`<input type="checkbox" style="width:18px;height:18px;flex-shrink:0;cursor:pointer;" onchange="cycleBill(${b.id},'${dispMonth}');setTimeout(renderBillDetailPage,30);setTimeout(renderBudgetQuadrant,30);">`:''}
+      ${isPaid?`<input type="checkbox" checked style="width:18px;height:18px;flex-shrink:0;cursor:pointer;" onchange="cycleBill(${b.id},'${dispMonth}');setTimeout(renderBillDetailPage,30);setTimeout(renderBudgetQuadrant,30);">`:''}
+      ${isAuto?`<span style="font-size:18px;flex-shrink:0;">🔄</span>`:''}
+      <div class="bdet-bill-info">
+        <div class="bdet-bill-name" style="${isPaid?'text-decoration:line-through;opacity:0.6;':''}">${b.n}</div>
+        <div class="bdet-bill-meta">${b.cat||'Other'} · ${b.f} · Due ${nextDue}${paidEntry?' · Paid '+paidEntry.dt:''}</div>
+      </div>
+      <span class="bdet-status-pill" style="background:color-mix(in srgb,${stColor} 15%,var(--bg-card));color:${stColor};">${stLabel}</span>
+      <div class="bdet-bill-amt">${fmt(b.a)}</div>
+      ${isUnpaid?`<button class="bdet-act-btn pay" onclick="openBillPayModal(${b.id},'${dispMonth}')">✓ Pay</button>`:''}
+    </div>`;
+  }).join('');
 }
 function renderLivingTabHero(){
   const el=G('live-tab-totals');if(!el)return;
@@ -4443,19 +4618,19 @@ function renderBills(){
   const paid=S.bills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
   const bsum=G('b-sum');
   if(bsum)bsum.innerHTML=`
-    <div class="bills-sum-chip bills-sum-chip-click" onclick="openBillsChipModal('all')" title="View all bills">
+    <div class="bills-sum-chip bills-sum-chip-click" onclick="openBillsDetailPage('all')" title="View all bills">
       <div class="bills-sum-chip-lbl">Total Bills</div>
       <div class="bills-sum-chip-val">${fmt(tot)}</div>
     </div>
-    <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--red) 30%,var(--bd));" onclick="openBillsChipModal('Unpaid')" title="View unpaid bills">
+    <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--red) 30%,var(--bd));" onclick="openBillsDetailPage('Unpaid')" title="View unpaid bills">
       <div class="bills-sum-chip-lbl">Unpaid</div>
       <div class="bills-sum-chip-val" style="color:var(--red);">${fmt(unp)}</div>
     </div>
-    <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--green) 30%,var(--bd));" onclick="openBillsChipModal('Paid')" title="View paid bills">
+    <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--green) 30%,var(--bd));" onclick="openBillsDetailPage('Paid')" title="View paid bills">
       <div class="bills-sum-chip-lbl">Paid</div>
       <div class="bills-sum-chip-val" style="color:var(--green);">${fmt(paid)}</div>
     </div>
-    <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--blue) 30%,var(--bd));" onclick="openBillsChipModal('Auto-pay')" title="View auto-pay bills">
+    <div class="bills-sum-chip bills-sum-chip-click" style="border-color:color-mix(in srgb,var(--blue) 30%,var(--bd));" onclick="openBillsDetailPage('Auto-pay')" title="View auto-pay bills">
       <div class="bills-sum-chip-lbl">Auto-pay</div>
       <div class="bills-sum-chip-val" style="color:var(--blue);">${fmt(auto)}</div>
     </div>`;
