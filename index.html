@@ -1048,15 +1048,16 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-dot-legend.expense{background:var(--red);}
 .fd-cal-dot-legend.bill{background:var(--red);}
 .fd-cal-dot-legend.debt{background:var(--purple);}
-.fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-h);border-bottom:1px solid var(--bd);}
+.fd-cal-header{display:grid;grid-template-columns:repeat(7,1fr) 58px;background:var(--bg-h);border-bottom:1px solid var(--bd);}
 .fd-cal-header span{padding:9px 4px;text-align:center;font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;}
-.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.fd-cal-grid{display:grid;grid-template-columns:repeat(7,1fr) 58px;}
 .fd-cal-day{min-height:136px;padding:9px 8px 7px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
-.fd-cal-week-total{min-height:118px;padding:8px 7px 6px;border-left:1px solid var(--bd);border-bottom:1px solid var(--bd);background:color-mix(in srgb,var(--neon-glow) 40%,var(--bg-card));display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:4px;}
-.fd-cal-wt-lbl{font-size:8.5px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;align-self:flex-start;}
-.fd-cal-wt-inc{font-size:10px;font-weight:700;color:var(--green);}
-.fd-cal-wt-exp{font-size:10px;font-weight:700;color:var(--red);}
-.fd-cal-wt-net{font-size:12px;font-weight:900;letter-spacing:-0.02em;margin-top:2px;}
+.fd-cal-week-total{min-height:136px;padding:8px 6px 6px;border-left:2px solid var(--bd);border-bottom:1px solid var(--bd);background:color-mix(in srgb,var(--bg-h) 80%,var(--bg-card));display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;}
+.fd-cal-wt-lbl{font-size:8px;font-weight:800;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;}
+.fd-cal-wt-inc{font-size:9.5px;font-weight:700;color:var(--green);text-align:center;}
+.fd-cal-wt-exp{font-size:9.5px;font-weight:700;color:var(--red);text-align:center;}
+.fd-cal-wt-divider{width:32px;height:1px;background:var(--bd);margin:2px 0;}
+.fd-cal-wt-net{font-size:11px;font-weight:900;letter-spacing:-0.02em;text-align:center;}
 .fd-cal-wt-net.pos{color:var(--green);}
 .fd-cal-wt-net.neg{color:var(--red);}
 .fd-cal-wt-net.zero{color:var(--ts);}
@@ -1091,7 +1092,12 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-dot.bill{background:var(--amber);}
 .fd-cal-dot.debt{background:var(--purple);}
 @media(max-width:768px){
+  .fd-cal-header{grid-template-columns:repeat(7,1fr) 40px;}
+  .fd-cal-grid{grid-template-columns:repeat(7,1fr) 40px;}
   .fd-cal-day{min-height:72px;padding:5px 4px 4px;}
+  .fd-cal-week-total{min-height:72px;padding:4px 3px;}
+  .fd-cal-wt-inc,.fd-cal-wt-exp{font-size:8px;}
+  .fd-cal-wt-net{font-size:9px;}
   .fd-cal-entry{font-size:9px;padding:1.5px 4px;}
   .fd-cal-num{font-size:11px;}
   .fd-cal-day-net{font-size:9.5px;}
@@ -1808,7 +1814,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bills-sum-chip-lbl{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;}
 .bills-sum-chip-val{font-size:18px;font-weight:800;letter-spacing:-0.02em;margin-top:2px;}
 /* ── FINANCE HUB — merged calendar+bills layout ── */
-.fin-hub-grid{display:grid;grid-template-columns:1fr 290px;gap:14px;margin-top:14px;align-items:start;}
+.fin-hub-grid{display:grid;grid-template-columns:1fr 250px;gap:14px;margin-top:14px;align-items:start;}
 .fin-hub-sidebar{display:flex;flex-direction:column;gap:12px;}
 .fin-period-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--bd);margin-top:14px;}
 
@@ -2337,7 +2343,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <!-- PILL TABS — above everything -->
       <div class="fin-tabs" id="fin-tabs">
         <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">💰 Finance</button>
-        <button class="fin-tab"   id="ftab-living"      onclick="switchFinTab('living',this)">🛒 Living Budget</button>
         <button class="fin-tab"   id="ftab-entries"     onclick="switchFinTab('entries',this)">📋 Transactions</button>
         <button class="fin-tab"   id="ftab-payments"    onclick="switchFinTab('payments',this)">💸 Debts</button>
         <button class="fin-tab"   id="ftab-savings"     onclick="switchFinTab('savings',this)">🏦 Savings</button>
@@ -2386,7 +2391,7 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
               </div>
               <div id="fd-cal-body">
                 <div class="fd-cal-header">
-                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--ts);opacity:0.6;">Wk</span>
                 </div>
                 <div class="fd-cal-grid" id="fd-cal-grid"></div>
               </div>
@@ -2409,6 +2414,14 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <div class="bq-card">
               <div class="bq-ttl" style="margin-bottom:8px;">📊 Monthly Snapshot</div>
               <div id="bq-snap"></div>
+            </div>
+
+            <div class="bq-card">
+              <div class="bq-ttl" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span>🛒 Living Budget</span>
+                <button onclick="switchFinTab('living',G('ftab-living'))" style="font-family:var(--font);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;">Full view →</button>
+              </div>
+              <div id="bq-living"></div>
             </div>
 
           </div>
@@ -3776,8 +3789,23 @@ function renderFinOverview(){
       const firstDay=new Date(y,m,1).getDay();
       const startOffset=(firstDay+6)%7; // Mon=0 offset
       let html='';
+      let weekInc=0,weekExp=0;
+      let dayColInRow=startOffset; // tracks position within Mon-Sun (0=Mon, 6=Sun)
 
-      // Empty offset cells
+      // Helper: build week-total cell
+      const weekTotalCell=(wi,we)=>{
+        const wn=wi-we;
+        const cls=wn>0?'pos':wn<0?'neg':'zero';
+        return`<div class="fd-cal-week-total">
+          <div class="fd-cal-wt-lbl">WK</div>
+          ${wi>0?`<div class="fd-cal-wt-inc">↑ ${fmt(wi)}</div>`:''}
+          ${we>0?`<div class="fd-cal-wt-exp">↓ ${fmt(we)}</div>`:''}
+          ${(wi||we)?`<div class="fd-cal-wt-divider"></div>`:''}
+          <div class="fd-cal-wt-net ${cls}">${wn===0&&!wi&&!we?'—':(wn>=0?'+':'')+fmt(Math.abs(wn))}</div>
+        </div>`;
+      };
+
+      // Empty offset cells (no week total can fire here since startOffset < 7)
       for(let i=0;i<startOffset;i++) html+=`<div class="fd-cal-day empty"></div>`;
 
       for(let d=1;d<=daysInMonth;d++){
@@ -3791,22 +3819,22 @@ function renderFinOverview(){
         const isToday=dk===today;
         const hasData=dayInc||dayExp||dayBillItems.length;
 
+        weekInc+=dayInc;
+        weekExp+=dayExp;
+
         // Net badge — only show when there's actual income/expense logged
         const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}">${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div>`:'';
 
-        // Build entries: income (amount), expense (amount), bills (name)
+        // Build entries: income chip, expense chip, then bills individually
         const allEntries=[];
-        // Group income into one chip if multiple
         if(dayInc>0){
           const tip=dayIncItems.map(f=>f.d+' · '+fmt(f.a)).join(', ');
           allEntries.push({type:'income',label:'↑ '+fmt(dayInc),tip});
         }
-        // Group expenses into one chip if multiple
         if(dayExp>0){
           const tip=dayExpItems.map(f=>f.d+' · '+fmt(f.a)).join(', ');
           allEntries.push({type:'expense',label:'↓ '+fmt(dayExp),tip});
         }
-        // Each bill separately
         dayBillItems.forEach(b=>{
           const st=getBillStatus(b);
           const isPaid=st==='Paid', isAuto=st==='Auto-pay';
@@ -3824,11 +3852,20 @@ function renderFinOverview(){
           <div class="fd-cal-day-top"><div class="fd-cal-num">${d}</div>${netBadge}</div>
           <div class="fd-cal-day-entries">${chips}${more}</div>
         </div>`;
+
+        dayColInRow++;
+        if(dayColInRow===7){ // just placed Sunday → inject week total
+          html+=weekTotalCell(weekInc,weekExp);
+          dayColInRow=0; weekInc=0; weekExp=0;
+        }
       }
-      // Fill trailing empty cells to complete the last row
-      const totalCells=startOffset+daysInMonth;
-      const trail=totalCells%7;
-      if(trail!==0){for(let i=trail;i<7;i++) html+=`<div class="fd-cal-day empty"></div>`;}
+
+      // Incomplete last row — fill trailing empties then week total
+      if(dayColInRow>0){
+        for(let i=dayColInRow;i<7;i++) html+=`<div class="fd-cal-day empty"></div>`;
+        html+=weekTotalCell(weekInc,weekExp);
+      }
+
       calEl.innerHTML=html;
     }
   }
@@ -4344,7 +4381,7 @@ function renderBills(){
   const bsum=G('b-sum');
   if(bsum)bsum.innerHTML=`
     <div class="bills-sum-chip">
-      <div class="bills-sum-chip-lbl">Monthly Total</div>
+      <div class="bills-sum-chip-lbl">Total Bills</div>
       <div class="bills-sum-chip-val">${fmt(tot)}</div>
     </div>
     <div class="bills-sum-chip" style="border-color:color-mix(in srgb,var(--red) 30%,var(--bd));">
@@ -9664,7 +9701,6 @@ function resetAllData(){
     <div class="focus-sessions" id="focus-sessions">🍅 <span id="focus-count">0</span> sessions completed today</div>
   </div>
 </div>
-<button class="focus-fab" id="focus-fab" onclick="openFocus()" aria-label="Open focus timer" title="Focus Block (Pomodoro)">🎯</button>
 
 <!-- COMMAND PALETTE -->
 <div class="cmd-overlay" id="cmd-overlay" role="dialog" aria-modal="true" aria-label="Command palette" onclick="if(event.target===this)closeCmdPalette()">
