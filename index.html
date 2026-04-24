@@ -3952,7 +3952,7 @@ function renderBillDetailPage(){
     const isUnpaid=sectionType==='unpaid';
     const isAuto=sectionType==='auto';
     const isLogged=isAuto&&st==='Logged';
-    const nextDue=getNextDueDate(b)||b.d||'—';
+    const nextDue=b.d||'—';
     const paidEntry=(isPaid||isLogged)?S.finance.filter(f=>f.d===b.n&&f.t==='expense').slice(-1)[0]:null;
     const paidStr=paidEntry?` · Logged ${paidEntry.dt}`:'';
     let checkbox='',action='';
@@ -5044,7 +5044,7 @@ function renderBillsChipModal(){
       const isPaid=st==='Paid',isAuto=st==='Auto-pay',isUnpaid=st==='Unpaid';
       const stColor=isPaid?'var(--green)':isAuto?'var(--blue)':'var(--red)';
       const stLabel=isPaid?'✓ Paid':isAuto?'🔄 Auto-pay':'⚠ Unpaid';
-      const nextDue=getNextDueDate(b)||b.d||'—';
+      const nextDue=b.d||'—';
       return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);">
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
