@@ -1091,19 +1091,7 @@ textarea.fi{resize:vertical;min-height:52px;}
 .fd-cal-dot.expense{background:var(--red);}
 .fd-cal-dot.bill{background:var(--amber);}
 .fd-cal-dot.debt{background:var(--purple);}
-@media(max-width:768px){
-  .fd-cal-header{grid-template-columns:repeat(7,1fr) 40px;}
-  .fd-cal-grid{grid-template-columns:repeat(7,1fr) 40px;}
-  .fd-cal-day{min-height:72px;padding:5px 4px 4px;}
-  .fd-cal-week-total{min-height:72px;padding:4px 3px;}
-  .fd-cal-wt-inc,.fd-cal-wt-exp{font-size:8px;}
-  .fd-cal-wt-net{font-size:9px;}
-  .fd-cal-entry{font-size:9px;padding:1.5px 4px;}
-  .fd-cal-num{font-size:11px;}
-  .fd-cal-day-net{font-size:9.5px;}
-  .fd-cal-month-title{font-size:14px;}
-  .fd-cal-legend{gap:8px;font-size:10px;}
-}
+/* Calendar mobile overrides are handled in the consolidated @media block above */
 
 /* FINANCE DAY MODAL */
 /* MODERN FINANCE PAGE HEADER */
@@ -1514,28 +1502,86 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   .week-day{width:calc((100vw - 64px) / 3);}
   /* Weekly summary KPI cards: 3 per row on mobile */
   .week-summary{grid-template-columns:repeat(3,1fr);}
-  /* Bills & Budgets: single column, no horizontal overflow */
+
+  /* ── FINANCE PAGE — global mobile reset ── */
+  #p-finance{overflow-x:hidden;max-width:100%;}
+
+  /* ── FINANCE HUB GRID: single column, calendar on top ── */
   .bq-grid{grid-template-columns:1fr;}
   .bills-main-grid{grid-template-columns:1fr;}
-  .fin-hub-grid{grid-template-columns:1fr;}
-  .fin-hub-sidebar{flex-direction:column;}
-  .bills-sum-chip{min-width:70px;}
-  .bills-sum-chip-val{font-size:15px;}
-  .fin-qa-btn{font-size:13px;padding:12px 14px;}
-  /* Prevent finance panel from bleeding wider than viewport */
-  #p-finance{overflow-x:hidden;max-width:100%;}
-  .bq-card{box-sizing:border-box;max-width:100%;overflow:hidden;padding:12px 12px;}
-  .bq-grid{box-sizing:border-box;width:100%;}
+  .fin-hub-grid{grid-template-columns:1fr;gap:10px;margin-top:10px;}
+  .fin-hub-sidebar{flex-direction:column;gap:8px;}
+
+  /* ── BILLS SUMMARY CHIPS: tighter ── */
+  .bills-sum-bar{gap:5px;margin-top:8px;}
+  .bills-sum-chip{min-width:60px;padding:7px 10px;}
+  .bills-sum-chip-lbl{font-size:9px;}
+  .bills-sum-chip-val{font-size:14px;margin-top:1px;}
+
+  /* ── KPI CARDS: compact 2-col ── */
+  .fd-kpi-grid{grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px;}
+  .fd-kpi{padding:10px 10px;}
+  .fd-kpi-value{font-size:17px;}
+  .fd-kpi-label{font-size:10px;}
+
+  /* ── PERIOD BAR: compact ── */
+  .fin-period-bar{padding:8px 0 8px;gap:6px;}
+  .fd-period-btn{padding:5px 11px;font-size:11.5px;}
+  .fd-month-label{font-size:12px;}
+
+  /* ── CALENDAR: hide week-total column, clean 7-col grid ── */
+  .fd-cal-header{grid-template-columns:repeat(7,1fr)!important;}
+  .fd-cal-grid{grid-template-columns:repeat(7,1fr)!important;}
+  .fd-cal-week-total{display:none!important;}
+  .fd-cal-day{min-height:66px;padding:4px 3px 3px;}
+  .fd-cal-num{font-size:10.5px;}
+  .fd-cal-day-net{font-size:8.5px;}
+  .fd-cal-entry{font-size:9px;padding:1.5px 3px;}
+  .fd-cal-day-top{margin-bottom:2px;}
+  .fd-cal-day-entries{gap:1px;}
+  .fd-cal-legend{gap:6px;font-size:9.5px;}
+  .fd-cal-month-title{font-size:13px;}
+
+  /* ── BQ CARDS: compact ── */
+  .bq-card{box-sizing:border-box;max-width:100%;overflow:hidden;padding:10px 11px;}
+  .bq-ttl{font-size:11px;}
   .bq-row{font-size:12px;}
   .bq-row-n span{max-width:120px;}
   .bq-tot{font-size:12px;}
-  /* Finance calendar: scroll horizontally instead of squishing 7 cols */
-  #fd-cal-section{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  #fd-cal-section .fd-cal-wrap{min-width:420px;}
-  .fd-cal-day{min-height:76px!important;padding:5px 4px 4px!important;}
-  .fd-cal-entry{font-size:9.5px!important;padding:2px 4px!important;}
-  .fd-cal-day-net{font-size:9px!important;}
-  .fd-cal-num{font-size:11px!important;}
+
+  /* ── QUICK LOG FORM: stack inputs on mobile ── */
+  .nf .fr{flex-direction:column;gap:6px;}
+  .nf .fr .fi{max-width:100%!important;width:100%;box-sizing:border-box;}
+  .nf .fr .btn{align-self:flex-end;}
+
+  /* ── CHART: shorter on mobile ── */
+  .chart-box .cw{height:120px!important;}
+
+  /* ── BILLS TABLE: hide less-critical columns ── */
+  .nt thead th:nth-child(3),
+  .nt tbody td:nth-child(3),
+  .nt thead th:nth-child(5),
+  .nt tbody td:nth-child(5),
+  .nt thead th:nth-child(8),
+  .nt tbody td:nth-child(8){display:none;}
+
+  /* ── TAB BAR: more compact ── */
+  .fin-tab{padding:6px 10px;font-size:11.5px;}
+  .fin-tabs{margin:6px 0 6px;}
+
+  /* ── PAGE HEADER: compact ── */
+  .fin-page-header{padding:8px 0 6px;}
+  .fin-page-title{font-size:18px;}
+  .fin-page-icon{width:32px;height:32px;font-size:16px;border-radius:9px;}
+  .fin-page-sub{font-size:10.5px;}
+
+  /* ── SECTION HEADERS: tighter ── */
+  .db-hdr{padding:8px 0 4px;}
+  .db-ttl{font-size:13px;}
+  .bl-section{font-size:12px;padding:10px 0 5px;}
+
+  /* Misc */
+  .fin-qa-btn{font-size:13px;padding:12px 14px;}
 }
 
 /* ═══════════════════════════════════════════════════
