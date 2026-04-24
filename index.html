@@ -2575,9 +2575,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
 
-        <!-- ── CATEGORY TILES (top overview) ── -->
-        <div id="bl-cat-totals" class="bl-cat-summary"></div>
-
         <!-- ── SUMMARY: Unpaid / Paid / Auto-pay cards + progress ── -->
         <div id="bdet-summary" style="margin-top:16px;margin-bottom:4px;"></div>
 
@@ -2586,6 +2583,9 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 
         <!-- ── DIVIDER ── -->
         <div style="margin-top:32px;padding-top:20px;border-top:2px solid var(--bd);">
+
+          <!-- ── CATEGORY TILES above All Bills ── -->
+          <div id="bl-cat-totals" class="bl-cat-summary" style="margin-bottom:20px;"></div>
 
           <!-- All Bills header + category filters -->
           <div class="db-hdr" style="margin-bottom:10px;">
@@ -3887,7 +3887,12 @@ function renderBillDetailPage(){
   // Summary cards + progress
   const summary=G('bdet-summary');
   if(summary)summary.innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;">
+      <div style="background:var(--bg-card);border:2px solid var(--neon);border-radius:var(--r);padding:10px 12px;">
+        <div style="font-size:10px;font-weight:700;color:var(--neon);text-transform:uppercase;letter-spacing:0.05em;">Total Bills</div>
+        <div style="font-size:18px;font-weight:800;color:var(--neon);margin-top:2px;">${fmt(totalAll)}</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:2px;">${S.bills.length} bill${S.bills.length!==1?'s':''}/mo</div>
+      </div>
       <div style="background:var(--rbg);border-radius:var(--r);padding:10px 12px;">
         <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;">Unpaid</div>
         <div style="font-size:18px;font-weight:800;color:var(--red);margin-top:2px;">${fmt(unpaidAmt)}</div>
@@ -5089,8 +5094,8 @@ function renderBudgetQuadrant(){
   const autoAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Auto-pay').reduce((s,b)=>s+b.a,0);
   if(snap)snap.innerHTML=`
     <div style="font-size:12px;line-height:2;">
-      <div style="display:flex;justify-content:space-between;">
-        <span>Total bills/mo</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
+      <div style="display:flex;justify-content:space-between;cursor:pointer;padding:2px 4px;margin:-2px -4px;border-radius:6px;transition:background .15s;" onmouseenter="this.style.background='var(--bg-h)'" onmouseleave="this.style.background=''" onclick="switchFinTab('bills',G('ftab-bills'));setTimeout(()=>{const t=G('bl-tb');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});},250);">
+        <span style="text-decoration:underline;text-underline-offset:2px;color:var(--neon);">Total bills/mo →</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
       <div style="display:flex;justify-content:space-between;">
         <span style="color:var(--green);">✓ Paid</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
       <div style="display:flex;justify-content:space-between;">
