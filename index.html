@@ -4219,14 +4219,21 @@ function renderFinOverview(){
         weekInc+=dayInc;
         weekExp+=dayExp;
 
-        // Daily Total badge — top-right, only when income or expense exists
-        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}"><div class="fd-cal-day-net-lbl">Daily Total</div><div>${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div></div>`:'';
+        // Daily Total badge — top-right; shows logged net + pending unpaid bills
+        const netBadge=(dayInc||dayExp||unpaidBillAmt)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}" style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <div class="fd-cal-day-net-lbl">Daily Total</div>
+          ${(dayInc||dayExp)?`<div>${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div>`:''}
+          ${unpaidBillAmt?`<div style="font-size:9px;color:var(--amber);font-weight:700;">📋 ${fmt(unpaidBillAmt)} due</div>`:''}
+        </div>`:'';
+
+        // Unpaid bill amounts due today — add to expected spend for the daily badge
+        const unpaidBillAmt=dayBillItems.filter(b=>getBillStatus(b,mPrefix)==='Unpaid').reduce((s,b)=>s+b.a,0);
 
         // Build entries: bills only (no income/expense chips)
         const allEntries=[];
         dayBillItems.forEach(b=>{
-          const st=getBillStatus(b);
-          const isPaid=st==='Paid', isAuto=st==='Auto-pay';
+          const st=getBillStatus(b,mPrefix);
+          const isPaid=st==='Paid'||st==='Logged', isAuto=st==='Auto-pay';
           const stLabel=isPaid?' ✓':isAuto?' 🔄':'';
           const typeClass='bill'+(isPaid?' paid':isAuto?' auto':'');
           allEntries.push({type:typeClass,label:b.n+stLabel,tip:b.n+' · '+fmt(b.a)+' · '+st});
@@ -4458,7 +4465,8 @@ function renderFdDayBody(dk){
   // Bills and debts
   if(dayBills.length){
     html+=`<div class="fd-day-section"><div class="fd-day-section-ttl"><span>🧾 Bills due</span><span class="fd-day-section-nav" onclick="fdNavTo('bills')">View all →</span></div>`;
-    dayBills.forEach(b=>{const bs=getBillStatus(b);html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.cat||'Other'} · ${b.f}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(b.a)}</div>${tag(bs,{Paid:'green',Unpaid:'red','Auto-pay':'blue'}[bs]||'gray')}</div></div>`;});
+    const dayModalMonth=dk.slice(0,7);
+    dayBills.forEach(b=>{const bs=getBillStatus(b,dayModalMonth);html+=`<div class="fd-day-row"><div style="flex:1;"><div style="font-weight:700;font-size:13px;">${b.n}</div><div style="font-size:11px;color:var(--ts);">${b.cat||'Other'} · ${b.f}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="font-weight:800;color:var(--red);">${fmt(b.a)}</div>${tag(bs,{Paid:'green',Logged:'green',Unpaid:'red','Auto-pay':'blue'}[bs]||'gray')}</div></div>`;});
     html+=`</div>`;
   }
   if(dayDebts.length){
@@ -4963,7 +4971,7 @@ function confirmBillPay(){
   const m=_bpMonth||currentMonth;
   if(!b.payments)b.payments={};
   b.payments[m]=_bpIsAuto?'Logged':'Paid';
-  S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:dateVal,id:Date.now()});
+  S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:dateVal,billMonth:m,id:Date.now()});
   autoLinkToLivingBudget(b.cat,b.a,dateVal);
   addFinancialPoints(20,'Paid a bill');
   save();renderBills();renderFinance();renderHome();
