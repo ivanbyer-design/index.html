@@ -1876,6 +1876,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .fin-quad-card::-webkit-scrollbar{width:4px;}
 .fin-quad-card::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
 /* Fused quadrant panels inside the calendar card */
+.fd-cal-inner-bar{padding:14px 16px 12px;border-bottom:1px solid var(--bd);background:var(--bg-card);}
+.fd-cal-inner-bar .fin-period-bar{padding-bottom:0;border-bottom:none;margin-top:0;}
 .fin-quad-fused{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:0;border-top:2px solid var(--bd);}
 .fin-quad-panel{padding:14px 16px;overflow-y:auto;max-height:300px;}
 .fin-quad-panel::-webkit-scrollbar{width:3px;}
@@ -2421,26 +2423,26 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-overview-body">
 
-        <!-- PERIOD BAR + KPI GRID -->
-        <div class="fin-period-bar">
-          <div class="fd-cal-period-pills">
-            <button class="fd-period-btn on" id="fpb-monthly"   onclick="setFinPeriod('monthly',this)">Monthly</button>
-            <button class="fd-period-btn"    id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
-            <button class="fd-period-btn"    id="fpb-yearly"    onclick="setFinPeriod('yearly',this)">Yearly</button>
-          </div>
-          <div class="fd-period-nav">
-            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
-            <div class="fd-month-label" id="fd-month-label"></div>
-            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
-          </div>
-        </div>
-        <div class="fd-kpi-grid" id="fd-kpis"></div>
-
-        <!-- BILLS STATUS CHIPS -->
-        <div class="bills-sum-bar" id="b-sum" style="margin-top:10px;"></div>
-
-        <!-- UNIFIED CALENDAR + QUADRANT SECTION -->
+        <!-- UNIFIED CARD: period → KPIs → chips → calendar → quadrants -->
         <div id="fd-cal-section" class="fd-cal-wrap" style="margin-top:10px;margin-bottom:0;">
+
+          <!-- Period bar + KPI + chips — top of card -->
+          <div class="fd-cal-inner-bar">
+            <div class="fin-period-bar" style="margin-top:0;border-bottom:none;padding-bottom:0;">
+              <div class="fd-cal-period-pills">
+                <button class="fd-period-btn on" id="fpb-monthly"   onclick="setFinPeriod('monthly',this)">Monthly</button>
+                <button class="fd-period-btn"    id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
+                <button class="fd-period-btn"    id="fpb-yearly"    onclick="setFinPeriod('yearly',this)">Yearly</button>
+              </div>
+              <div class="fd-period-nav">
+                <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
+                <div class="fd-month-label" id="fd-month-label"></div>
+                <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
+              </div>
+            </div>
+            <div class="fd-kpi-grid" id="fd-kpis" style="margin-bottom:0;"></div>
+            <div class="bills-sum-bar" id="b-sum" style="margin-top:10px;margin-bottom:0;"></div>
+          </div>
 
           <!-- Calendar header bar -->
           <div class="fd-cal-top-bar">
@@ -2466,12 +2468,12 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           <div class="fin-quad-grid fin-quad-fused">
 
             <div class="fin-quad-panel">
-              <div class="fin-quad-panel-ttl">🔴 Unpaid This Month</div>
+              <div class="fin-quad-panel-ttl" id="bq-unpaid-ttl">🔴 Unpaid This Month</div>
               <div id="bq-unpaid"></div>
             </div>
 
             <div class="fin-quad-panel fin-quad-panel-div">
-              <div class="fin-quad-panel-ttl">⏰ Due Next 14 Days</div>
+              <div class="fin-quad-panel-ttl" id="bq-due-ttl">⏰ Due Next 14 Days</div>
               <div id="bq-due"></div>
             </div>
 
@@ -3700,10 +3702,13 @@ function setFinPeriod(p,btn){
   finPeriodOffset=0;
   document.querySelectorAll('.fd-period-btn').forEach(b=>b.classList.remove('on'));
   if(btn)btn.classList.add('on');
-  // Show/hide calendar section
+  // Show/hide calendar + quadrant section
   const calBody=G('fd-cal-body');
   if(calBody)calBody.style.display=p==='monthly'?'block':'none';
+  const quadEl=document.querySelector('.fin-quad-fused');
+  if(quadEl)quadEl.style.display=p==='monthly'?'grid':'none';
   renderFinOverview();
+  if(p==='monthly')setTimeout(renderBudgetQuadrant,30);
 }
 
 function finNavPeriod(dir){
@@ -3714,6 +3719,7 @@ function finNavPeriod(dir){
     if(finCalMonth<0){finCalMonth=11;finCalYear--;}
   }
   renderFinOverview();
+  setTimeout(renderBudgetQuadrant,30);
 }
 
 // Legacy alias kept for any stale references
@@ -4355,9 +4361,10 @@ function renderGoals(){
 // ── BILLS ──
 let billSort='due';
 function sortBills(s){billSort=s;renderBills();}
-function getBillStatus(b){
+function getBillStatus(b,month){
   if(b.ds==='Auto-pay')return'Auto-pay';
-  return(b.payments&&b.payments[currentMonth])||'Unpaid';
+  const m=month||currentMonth;
+  return(b.payments&&b.payments[m])||'Unpaid';
 }
 function addBill(){
   const n=G('bl-n').value.trim();if(!n)return;
@@ -4608,8 +4615,15 @@ function renderBudgetQuadrant(){
   const unp=G('bq-unpaid'),bqliv=G('bq-living'),snap=G('bq-snap'),due=G('bq-due');
   if(!unp)return;
 
-  // ── Panel 1: Unpaid bills — click each to mark paid ──
-  const unpaidBills=S.bills.filter(b=>getBillStatus(b)==='Unpaid');
+  // Use the calendar's currently displayed month
+  const dispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
+  const isCurrentMonth=(dispMonth===currentMonth);
+  const monthLabel=MONTH_NAMES[finCalMonth]+' '+finCalYear;
+
+  // ── Panel 1: Unpaid bills for displayed month ──
+  const unpTtl=G('bq-unpaid-ttl');
+  if(unpTtl)unpTtl.textContent='🔴 Unpaid — '+monthLabel;
+  const unpaidBills=S.bills.filter(b=>getBillStatus(b,dispMonth)==='Unpaid');
   const unpaidAmt=unpaidBills.reduce((s,b)=>s+b.a,0);
   if(!unpaidBills.length){
     unp.innerHTML=`<div style="color:var(--green);font-size:13px;font-weight:600;margin-top:6px;">✓ All bills paid!</div>`;
@@ -4623,8 +4637,8 @@ function renderBudgetQuadrant(){
         </div>`).join('');
   }
 
-  // ── Panel 2: Living Budget — show per-category with editable budget limit ──
-  const lm=currentMonth;
+  // ── Panel 2: Living Budget — per-category for displayed month ──
+  const lm=dispMonth;
   const livSpendThisMonth=(S.liveSpend||[]).filter(s=>s.date&&s.date.startsWith(lm));
   const totalLivBudget=(S.liveCategories||[]).reduce((s,c)=>s+c.budget,0);
   const totalLivSpent=livSpendThisMonth.reduce((s,sp)=>s+sp.amt,0);
@@ -4651,27 +4665,27 @@ function renderBudgetQuadrant(){
         <div class="prog" style="height:4px;margin-bottom:5px;"><div class="pf" style="width:${pct}%;background:${clr};height:4px;border-radius:2px;"></div></div>
         <div style="display:flex;align-items:center;gap:4px;">
           <span style="font-size:10px;color:var(--ts);flex:1;">${fmt(remaining)} left</span>
-          <span style="font-size:10px;color:var(--ts);">Limit $</span>
+          ${isCurrentMonth?`<span style="font-size:10px;color:var(--ts);">Limit $</span>
           <input type="number" value="${c.budget}" min="0" step="1"
             style="width:60px;font-family:var(--font);font-size:11px;border:1px solid var(--bd);border-radius:4px;padding:2px 5px;background:var(--bg-in);color:var(--t);text-align:right;"
             onblur="updateLiveCatBudget(${c.id},this.value)"
             onkeydown="if(event.key==='Enter')this.blur();"
-            title="Edit budget limit for ${c.name}">
+            title="Edit budget limit for ${c.name}">`:'<span style="font-size:10px;color:var(--th);">of '+fmt(c.budget)+'</span>'}
         </div>
       </div>`;
     }).join('')}`;
 
-  // ── Panel 3: Monthly snapshot — bills + living category standings (read-only) ──
+  // ── Panel 3: Snapshot for displayed month ──
   const allBills=S.bills;
   const totMo=allBills.reduce((s,b)=>s+b.a,0);
-  const paidAmt=allBills.filter(b=>getBillStatus(b)==='Paid').reduce((s,b)=>s+b.a,0);
-  const autoAmt=allBills.filter(b=>getBillStatus(b)==='Auto-pay').reduce((s,b)=>s+b.a,0);
+  const paidAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Paid').reduce((s,b)=>s+b.a,0);
+  const autoAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Auto-pay').reduce((s,b)=>s+b.a,0);
   if(snap)snap.innerHTML=`
     <div style="font-size:12px;line-height:2;">
       <div style="display:flex;justify-content:space-between;">
         <span>Total bills/mo</span><span style="font-weight:700;">${fmt(totMo)}</span></div>
       <div style="display:flex;justify-content:space-between;">
-        <span style="color:var(--green);">✓ Paid this month</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
+        <span style="color:var(--green);">✓ Paid</span><span style="color:var(--green);font-weight:700;">${fmt(paidAmt)}</span></div>
       <div style="display:flex;justify-content:space-between;">
         <span style="color:var(--blue);">🔄 Auto-pay</span><span style="color:var(--blue);font-weight:700;">${fmt(autoAmt)}</span></div>
     </div>
@@ -4692,30 +4706,41 @@ function renderBudgetQuadrant(){
     </div>`:''}
     <button onclick="switchFinTab('entries',G('ftab-entries'))" style="margin-top:8px;font-family:var(--font);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;width:100%;">📋 View transactions →</button>`;
 
-  // ── Panel 4: Due next 14 days — checkboxes to mark paid inline ──
+  // ── Panel 4: Bills due — next 14 days if current month, full month if navigated ──
+  const dueTtl=G('bq-due-ttl');
   const upcoming=[];
-  for(let i=0;i<=14;i++){
-    const d=new Date(today+'T12:00:00');d.setDate(d.getDate()+i);
-    const dk=localDate(d);
-    billsDueOn(dk).forEach(b=>{
-      if(!upcoming.find(u=>u.id===b.id))upcoming.push({...b,_nxt:dk});
-    });
+  if(isCurrentMonth){
+    if(dueTtl)dueTtl.textContent='⏰ Due Next 14 Days';
+    for(let i=0;i<=14;i++){
+      const d=new Date(today+'T12:00:00');d.setDate(d.getDate()+i);
+      const dk=localDate(d);
+      billsDueOn(dk).forEach(b=>{if(!upcoming.find(u=>u.id===b.id))upcoming.push({...b,_nxt:dk});});
+    }
+  } else {
+    if(dueTtl)dueTtl.textContent='⏰ Bills Due — '+monthLabel;
+    const daysInMo=new Date(finCalYear,finCalMonth+1,0).getDate();
+    for(let d=1;d<=daysInMo;d++){
+      const dk=dispMonth+'-'+String(d).padStart(2,'0');
+      billsDueOn(dk).forEach(b=>{if(!upcoming.find(u=>u.id===b.id))upcoming.push({...b,_nxt:dk});});
+    }
   }
   upcoming.sort((a,b)=>(a._nxt||'').localeCompare(b._nxt||''));
   due.innerHTML=upcoming.length
     ?upcoming.map(b=>{
-        const st=getBillStatus(b);
+        const st=getBillStatus(b,dispMonth);
         const isPaid=st==='Paid',isAuto=st==='Auto-pay';
         const daysAway=Math.round((new Date(b._nxt+'T12:00:00')-new Date(today+'T12:00:00'))/(1000*60*60*24));
-        const dueLbl=daysAway===0?'Today':daysAway===1?'Tomorrow':`${daysAway}d`;
+        const dueLbl=isCurrentMonth?(daysAway===0?'Today':daysAway===1?'Tomorrow':`${daysAway}d`):b._nxt.slice(8);
+        const chipBg=isCurrentMonth?(daysAway===0?'var(--rbg)':daysAway<=3?'var(--abg)':'var(--bg-in)'):(isPaid?'var(--gbg)':'var(--bg-in)');
+        const chipClr=isCurrentMonth?(daysAway===0?'var(--red)':daysAway<=3?'var(--amber)':'var(--ts)'):(isPaid?'var(--green)':'var(--ts)');
         return`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--bd);font-size:12px;">
           ${isAuto?`<span title="Auto-pay" style="font-size:14px;">🔄</span>`:`<input type="checkbox" ${isPaid?'checked':''} onchange="cycleBill(${b.id});renderBudgetQuadrant();" title="${isPaid?'Mark unpaid':'Mark paid'}">`}
           <span style="flex:1;${isPaid?'text-decoration:line-through;color:var(--ts);':''}">${b.n}</span>
           <span style="font-weight:700;color:${isPaid?'var(--green)':'var(--t)'};">${fmt(b.a)}</span>
-          <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;background:${daysAway===0?'var(--rbg)':daysAway<=3?'var(--abg)':'var(--bg-in)'};color:${daysAway===0?'var(--red)':daysAway<=3?'var(--amber)':'var(--ts)'};">${dueLbl}</span>
+          <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;background:${chipBg};color:${chipClr};">${dueLbl}</span>
         </div>`;
-      }).join('')+(upcoming.length===0?`<div style="font-size:12px;color:var(--ts);padding-top:6px;">No bills due in next 14 days</div>`:'')
-    :`<div style="font-size:12px;color:var(--ts);padding-top:6px;">No bills due in next 14 days</div>`;
+      }).join('')
+    :`<div style="font-size:12px;color:var(--ts);padding-top:6px;">No bills due${isCurrentMonth?' in next 14 days':' this month'}</div>`;
 }
 
 function renderBillCalendar(){
