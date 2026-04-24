@@ -1514,6 +1514,12 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   /* 4-quadrant: 2×2 on mobile */
   .fin-quad-grid{grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;}
   .fin-quad-card{max-height:220px;padding:10px 10px;}
+  /* Fused panels: 2×2 on mobile */
+  .fin-quad-fused{grid-template-columns:repeat(2,1fr);}
+  .fin-quad-panel{padding:10px 12px;max-height:240px;}
+  .fin-quad-panel:nth-child(3){border-top:1px solid var(--bd);border-left:none;}
+  .fin-quad-panel:nth-child(4){border-top:1px solid var(--bd);}
+  .fin-quad-panel-ttl{font-size:10px;margin-bottom:7px;}
 
   /* ── BILLS SUMMARY CHIPS: tighter ── */
   .bills-sum-bar{gap:5px;margin-top:8px;}
@@ -1869,8 +1875,15 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .fin-quad-card{max-height:280px;overflow-y:auto;overflow-x:hidden;}
 .fin-quad-card::-webkit-scrollbar{width:4px;}
 .fin-quad-card::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
+/* Fused quadrant panels inside the calendar card */
+.fin-quad-fused{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:0;border-top:2px solid var(--bd);}
+.fin-quad-panel{padding:14px 16px;overflow-y:auto;max-height:300px;}
+.fin-quad-panel::-webkit-scrollbar{width:3px;}
+.fin-quad-panel::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
+.fin-quad-panel-div{border-left:1px solid var(--bd);}
+.fin-quad-panel-ttl{font-size:11px;font-weight:800;color:var(--ts);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;}
 .fin-period-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--bd);margin-top:14px;}
-@media(max-width:1100px){.fin-quad-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:1100px){.fin-quad-grid{grid-template-columns:repeat(2,1fr);}.fin-quad-fused{grid-template-columns:repeat(2,1fr);}.fin-quad-panel:nth-child(3){border-top:1px solid var(--bd);border-left:none;}.fin-quad-panel:nth-child(4){border-top:1px solid var(--bd);}}
 
 /* ── SUBSCRIPTION CARDS ── */
 .sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin:10px 0 16px;}
@@ -2426,55 +2439,56 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <!-- BILLS STATUS CHIPS -->
         <div class="bills-sum-bar" id="b-sum" style="margin-top:10px;"></div>
 
-        <!-- FULL-WIDTH CALENDAR -->
-        <div id="fd-cal-section" style="margin-top:10px;">
-          <div class="fd-cal-wrap">
-            <div class="fd-cal-top-bar">
-              <div class="fd-cal-title-row">
-                <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-                <div class="fd-cal-legend">
-                  <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                  <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                  <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                  <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-                </div>
+        <!-- UNIFIED CALENDAR + QUADRANT SECTION -->
+        <div id="fd-cal-section" class="fd-cal-wrap" style="margin-top:10px;margin-bottom:0;">
+
+          <!-- Calendar header bar -->
+          <div class="fd-cal-top-bar">
+            <div class="fd-cal-title-row">
+              <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+              <div class="fd-cal-legend">
+                <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
               </div>
             </div>
-            <div id="fd-cal-body">
-              <div class="fd-cal-header">
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--ts);opacity:0.6;">Wk</span>
+          </div>
+
+          <!-- Calendar dates -->
+          <div id="fd-cal-body">
+            <div class="fd-cal-header">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--ts);opacity:0.6;">Wk</span>
+            </div>
+            <div class="fd-cal-grid" id="fd-cal-grid"></div>
+          </div>
+
+          <!-- 4-quadrant panels — fused below the calendar -->
+          <div class="fin-quad-grid fin-quad-fused">
+
+            <div class="fin-quad-panel">
+              <div class="fin-quad-panel-ttl">🔴 Unpaid This Month</div>
+              <div id="bq-unpaid"></div>
+            </div>
+
+            <div class="fin-quad-panel fin-quad-panel-div">
+              <div class="fin-quad-panel-ttl">⏰ Due Next 14 Days</div>
+              <div id="bq-due"></div>
+            </div>
+
+            <div class="fin-quad-panel fin-quad-panel-div">
+              <div class="fin-quad-panel-ttl">📊 Monthly Snapshot</div>
+              <div id="bq-snap"></div>
+            </div>
+
+            <div class="fin-quad-panel fin-quad-panel-div">
+              <div class="fin-quad-panel-ttl" style="display:flex;align-items:center;justify-content:space-between;">
+                <span>🛒 Living Budget</span>
+                <button onclick="switchFinTab('living',G('ftab-living'))" style="font-family:var(--font);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;">Full view →</button>
               </div>
-              <div class="fd-cal-grid" id="fd-cal-grid"></div>
+              <div id="bq-living"></div>
             </div>
+
           </div>
-        </div>
-
-        <!-- 4-QUADRANT SNAPSHOT GRID — below calendar -->
-        <div class="fin-quad-grid">
-
-          <div class="bq-card fin-quad-card">
-            <div class="bq-ttl" style="margin-bottom:8px;">🔴 Unpaid This Month</div>
-            <div id="bq-unpaid"></div>
-          </div>
-
-          <div class="bq-card fin-quad-card">
-            <div class="bq-ttl" style="margin-bottom:8px;">⏰ Due Next 14 Days</div>
-            <div id="bq-due"></div>
-          </div>
-
-          <div class="bq-card fin-quad-card">
-            <div class="bq-ttl" style="margin-bottom:8px;">📊 Monthly Snapshot</div>
-            <div id="bq-snap"></div>
-          </div>
-
-          <div class="bq-card fin-quad-card">
-            <div class="bq-ttl" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-              <span>🛒 Living Budget</span>
-              <button onclick="switchFinTab('living',G('ftab-living'))" style="font-family:var(--font);font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;">Full view →</button>
-            </div>
-            <div id="bq-living"></div>
-          </div>
-
         </div>
 
         <!-- QUICK LOG: INCOME / EXPENSE -->
