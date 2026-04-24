@@ -2642,18 +2642,10 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
 
-        <!-- Filter pills -->
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
-          <button class="bdet-filter-btn on" id="bdf-all"      onclick="setBillDetailFilter('all',this)">All</button>
-          <button class="bdet-filter-btn"    id="bdf-Unpaid"   onclick="setBillDetailFilter('Unpaid',this)">🔴 Unpaid</button>
-          <button class="bdet-filter-btn"    id="bdf-Paid"     onclick="setBillDetailFilter('Paid',this)">✓ Paid</button>
-          <button class="bdet-filter-btn"    id="bdf-Auto-pay" onclick="setBillDetailFilter('Auto-pay',this)">🔄 Auto-pay</button>
-        </div>
-
         <!-- Summary totals row -->
-        <div id="bdet-summary" style="margin-bottom:14px;"></div>
+        <div id="bdet-summary" style="margin-bottom:4px;"></div>
 
-        <!-- Bill rows -->
+        <!-- Sectioned bill list (Unpaid / Paid / Auto-pay) -->
         <div id="bdet-list"></div>
 
         <!-- Add bill form -->
@@ -3904,79 +3896,113 @@ function bdetAddBill(){
 function renderBillDetailPage(){
   const dispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
   const monthLabel=MONTH_NAMES[finCalMonth]+' '+finCalYear;
-  const filter=billDetailFilter;
 
-  // Sync filter pill active state
-  document.querySelectorAll('.bdet-filter-btn').forEach(b=>b.classList.remove('on'));
-  const activeBtn=G('bdf-'+(filter==='all'?'all':filter));
-  if(activeBtn)activeBtn.classList.add('on');
-
-  // Month label
+  // Month label + header
   const ml=G('bdet-month-label');if(ml)ml.textContent=monthLabel;
+  const ttl=G('bdet-title');if(ttl)ttl.textContent=monthLabel+' Bills';
+  const bc=G('bdet-breadcrumb');if(bc)bc.textContent='Bills';
 
-  // Title + breadcrumb
-  const titles={all:'All Bills',Unpaid:'Unpaid Bills',Paid:'Paid Bills','Auto-pay':'Auto-pay Bills'};
-  const ttl=G('bdet-title'),bc=G('bdet-breadcrumb');
-  if(ttl)ttl.textContent=titles[filter]||'Bills';
-  if(bc)bc.textContent=titles[filter]||'Bills';
+  // Split bills by status
+  const sortByDue=(a,b)=>(a.d||'').localeCompare(b.d||'');
+  const unpaidBills=[...S.bills.filter(b=>getBillStatus(b,dispMonth)==='Unpaid')].sort(sortByDue);
+  const paidBills=[...S.bills.filter(b=>getBillStatus(b,dispMonth)==='Paid')].sort(sortByDue);
+  const autoBills=[...S.bills.filter(b=>b.ds==='Auto-pay')].sort(sortByDue);
 
-  // Filter bills
-  let bills=S.bills;
-  if(filter!=='all')bills=bills.filter(b=>getBillStatus(b,dispMonth)===filter);
-  bills=[...bills].sort((a,b)=>(getNextDueDate(a)||a.d||'').localeCompare(getNextDueDate(b)||b.d||''));
+  const unpaidAmt=unpaidBills.reduce((s,b)=>s+b.a,0);
+  const paidAmt=paidBills.reduce((s,b)=>s+b.a,0);
+  const autoAmt=autoBills.reduce((s,b)=>s+b.a,0);
+  const autoLoggedAmt=autoBills.filter(b=>getBillStatus(b,dispMonth)==='Logged').reduce((s,b)=>s+b.a,0);
+  const totalAll=S.bills.reduce((s,b)=>s+b.a,0);
+  const pct=totalAll?Math.round((paidAmt+autoLoggedAmt)/totalAll*100):0;
 
-  // Sub label
   const sub=G('bdet-sub');
-  const totalAmt=bills.reduce((s,b)=>s+b.a,0);
-  if(sub)sub.textContent=monthLabel+' · '+bills.length+' bill'+(bills.length!==1?'s':'')+' · '+fmt(totalAmt);
+  if(sub)sub.textContent=`${S.bills.length} bills · ${fmt(totalAll)} total`;
 
-  // Summary chips
+  // Summary cards + progress
   const summary=G('bdet-summary');
-  if(summary){
-    const allBills=S.bills;
-    const unpaidAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Unpaid').reduce((s,b)=>s+b.a,0);
-    const paidAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Paid').reduce((s,b)=>s+b.a,0);
-    const autoAmt=allBills.filter(b=>getBillStatus(b,dispMonth)==='Auto-pay').reduce((s,b)=>s+b.a,0);
-    const remaining=unpaidAmt;
-    const pct=allBills.reduce((s,b)=>s+b.a,0)?Math.round((paidAmt+autoAmt)/allBills.reduce((s,b)=>s+b.a,0)*100):0;
-    summary.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px;">
-      <div style="background:var(--rbg);border-radius:var(--r);padding:10px 12px;"><div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;">Unpaid</div><div style="font-size:18px;font-weight:800;color:var(--red);margin-top:2px;">${fmt(unpaidAmt)}</div></div>
-      <div style="background:var(--gbg);border-radius:var(--r);padding:10px 12px;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.05em;">Paid</div><div style="font-size:18px;font-weight:800;color:var(--green);margin-top:2px;">${fmt(paidAmt)}</div></div>
-      <div style="background:var(--bbg);border-radius:var(--r);padding:10px 12px;"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.05em;">Auto-pay</div><div style="font-size:18px;font-weight:800;color:var(--blue);margin-top:2px;">${fmt(autoAmt)}</div></div>
+  if(summary)summary.innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+      <div style="background:var(--rbg);border-radius:var(--r);padding:10px 12px;">
+        <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;">Unpaid</div>
+        <div style="font-size:18px;font-weight:800;color:var(--red);margin-top:2px;">${fmt(unpaidAmt)}</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:2px;">${unpaidBills.length} bill${unpaidBills.length!==1?'s':''}</div>
+      </div>
+      <div style="background:var(--gbg);border-radius:var(--r);padding:10px 12px;">
+        <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.05em;">Paid</div>
+        <div style="font-size:18px;font-weight:800;color:var(--green);margin-top:2px;">${fmt(paidAmt)}</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:2px;">${paidBills.length} bill${paidBills.length!==1?'s':''}</div>
+      </div>
+      <div style="background:var(--bbg);border-radius:var(--r);padding:10px 12px;">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.05em;">Auto-pay</div>
+        <div style="font-size:18px;font-weight:800;color:var(--blue);margin-top:2px;">${fmt(autoAmt)}</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:2px;">${autoBills.length} bill${autoBills.length!==1?'s':''}</div>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
       <div class="prog" style="flex:1;"><div class="pf" style="width:${pct}%;background:var(--green);"></div></div>
       <span style="font-size:11px;font-weight:700;color:var(--ts);">${pct}% covered</span>
     </div>`;
-  }
 
-  // Bill rows
-  const list=G('bdet-list');
-  if(!list)return;
-  if(!bills.length){
-    list.innerHTML=`<div style="text-align:center;padding:32px 0;color:var(--th);font-size:13px;">No ${filter==='all'?'bills':filter.toLowerCase()+' bills'} for ${monthLabel}</div>`;
-    return;
-  }
-  list.innerHTML=bills.map(b=>{
+  const list=G('bdet-list');if(!list)return;
+
+  // Helper: render one bill row
+  const billRow=(b,sectionType)=>{
     const st=getBillStatus(b,dispMonth);
-    const isPaid=st==='Paid',isAuto=st==='Auto-pay',isUnpaid=st==='Unpaid';
-    const stColor=isPaid?'var(--green)':isAuto?'var(--blue)':'var(--red)';
-    const stLabel=isPaid?'✓ Paid':isAuto?'🔄 Auto-pay':'Unpaid';
+    const isPaid=sectionType==='paid';
+    const isUnpaid=sectionType==='unpaid';
+    const isAuto=sectionType==='auto';
+    const isLogged=isAuto&&st==='Logged';
     const nextDue=getNextDueDate(b)||b.d||'—';
-    const paidEntry=isPaid?S.finance.filter(f=>f.d===b.n&&f.t==='expense').slice(-1)[0]:null;
+    const paidEntry=(isPaid||isLogged)?S.finance.filter(f=>f.d===b.n&&f.t==='expense').slice(-1)[0]:null;
+    const paidStr=paidEntry?` · Logged ${paidEntry.dt}`:'';
+    let checkbox='',action='';
+    if(isUnpaid){
+      checkbox=`<input type="checkbox" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--green);cursor:pointer;" onchange="openBillPayModal(${b.id},'${dispMonth}');this.checked=false;">`;
+      action=`<button class="bdet-act-btn pay" onclick="openBillPayModal(${b.id},'${dispMonth}')">✓ Pay</button>`;
+    } else if(isPaid){
+      checkbox=`<input type="checkbox" checked style="width:18px;height:18px;flex-shrink:0;accent-color:var(--green);cursor:pointer;" onchange="cycleBill(${b.id},'${dispMonth}');setTimeout(renderBillDetailPage,30);setTimeout(renderBudgetQuadrant,30);">`;
+    } else if(isAuto){
+      checkbox=`<input type="checkbox" ${isLogged?'checked':''} style="width:18px;height:18px;flex-shrink:0;accent-color:var(--blue);cursor:pointer;" onchange="markAutoPayLogged(${b.id},'${dispMonth}')">`;
+      if(!isLogged)action=`<button class="bdet-act-btn" style="background:var(--bbg);color:var(--blue);border:1px solid var(--blue)30;" onclick="markAutoPayLogged(${b.id},'${dispMonth}')">Log Expense</button>`;
+    }
     return`<div class="bdet-bill-row">
-      ${isUnpaid?`<input type="checkbox" style="width:18px;height:18px;flex-shrink:0;cursor:pointer;" onchange="cycleBill(${b.id},'${dispMonth}');setTimeout(renderBillDetailPage,30);setTimeout(renderBudgetQuadrant,30);">`:''}
-      ${isPaid?`<input type="checkbox" checked style="width:18px;height:18px;flex-shrink:0;cursor:pointer;" onchange="cycleBill(${b.id},'${dispMonth}');setTimeout(renderBillDetailPage,30);setTimeout(renderBudgetQuadrant,30);">`:''}
-      ${isAuto?`<span style="font-size:18px;flex-shrink:0;">🔄</span>`:''}
+      ${checkbox}
       <div class="bdet-bill-info">
-        <div class="bdet-bill-name" style="${isPaid?'text-decoration:line-through;opacity:0.6;':''}">${b.n}</div>
-        <div class="bdet-bill-meta">${b.cat||'Other'} · ${b.f} · Due ${nextDue}${paidEntry?' · Paid '+paidEntry.dt:''}</div>
+        <div class="bdet-bill-name" style="${isPaid||isLogged?'opacity:0.6;':''}">${b.n}</div>
+        <div class="bdet-bill-meta">${b.cat||'Other'} · ${b.f||'Monthly'} · Due ${nextDue}${paidStr}</div>
       </div>
-      <span class="bdet-status-pill" style="background:color-mix(in srgb,${stColor} 15%,var(--bg-card));color:${stColor};">${stLabel}</span>
       <div class="bdet-bill-amt">${fmt(b.a)}</div>
-      ${isUnpaid?`<button class="bdet-act-btn pay" onclick="openBillPayModal(${b.id},'${dispMonth}')">✓ Pay</button>`:''}
+      ${action}
     </div>`;
-  }).join('');
+  };
+
+  // Helper: render a labeled section
+  const section=(id,icon,label,color,bills,sectionType)=>{
+    const amt=bills.reduce((s,b)=>s+b.a,0);
+    const empty=`<div style="padding:12px 14px;font-size:12px;color:var(--ts);opacity:0.6;">No ${label.toLowerCase()} bills this month</div>`;
+    return`<div id="bdet-sec-${id}" style="margin-top:18px;">
+      <div style="display:flex;align-items:center;gap:8px;padding:0 2px 8px;border-bottom:2px solid ${color};">
+        <span style="font-size:14px;">${icon}</span>
+        <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:${color};">${label}</span>
+        <span style="font-size:11px;color:var(--ts);">${bills.length} bill${bills.length!==1?'s':''} · ${fmt(amt)}</span>
+        ${sectionType==='auto'?`<span style="margin-left:auto;font-size:10px;color:var(--ts);">Check box to log as expense</span>`:''}
+      </div>
+      <div style="margin-top:6px;">${bills.length?bills.map(b=>billRow(b,sectionType)).join(''):empty}</div>
+    </div>`;
+  };
+
+  list.innerHTML=
+    section('unpaid','🔴','Unpaid','var(--red)',unpaidBills,'unpaid')+
+    section('paid','✓','Paid','var(--green)',paidBills,'paid')+
+    section('auto','🔄','Auto-pay','var(--blue)',autoBills,'auto');
+
+  // Scroll to section if opened with a filter
+  if(billDetailFilter&&billDetailFilter!=='all'){
+    const map={'Unpaid':'unpaid','Paid':'paid','Auto-pay':'auto'};
+    const secId='bdet-sec-'+(map[billDetailFilter]||'unpaid');
+    const el=G(secId);
+    if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),80);
+  }
 }
 function renderLivingTabHero(){
   const el=G('live-tab-totals');if(!el)return;
@@ -4664,8 +4690,10 @@ function renderGoals(){
 let billSort='due';
 function sortBills(s){billSort=s;renderBills();}
 function getBillStatus(b,month){
-  if(b.ds==='Auto-pay')return'Auto-pay';
   const m=month||currentMonth;
+  if(b.ds==='Auto-pay'){
+    return(b.payments&&b.payments[m]==='Logged')?'Logged':'Auto-pay';
+  }
   return(b.payments&&b.payments[m])||'Unpaid';
 }
 function addBill(){
@@ -4907,35 +4935,49 @@ function renderBillsLivingMini(){
 function bqPayBill(id,month){openBillPayModal(id,month);}
 
 // ── BILL PAY DATE MODAL ──
-let _bpId=null,_bpMonth=null;
+let _bpId=null,_bpMonth=null,_bpIsAuto=false;
 function openBillPayModal(id,month){
   const b=S.bills.find(b=>b.id===id);if(!b)return;
-  if(b.ds==='Auto-pay')return;
+  if(b.ds==='Auto-pay')return; // use markAutoPayLogged for auto-pay
   const m=month||currentMonth;
   const st=getBillStatus(b,m);
-  // If already paid, toggle unpaid immediately (no date needed)
-  if(st==='Paid'){cycleBill(id,m);renderBudgetQuadrant();return;}
-  _bpId=id;_bpMonth=m;
-  // Pre-fill date: use bill due day in the displayed month, fallback to today
+  if(st==='Paid'){cycleBill(id,m);renderBudgetQuadrant();renderBillDetailPage();return;}
+  _bpId=id;_bpMonth=m;_bpIsAuto=false;
   let defaultDate=today;
-  if(b.d){
-    // b.d is a full date like "2025-04-15" — extract the day and apply to displayed month
-    const dueDay=b.d.slice(8,10);
-    const candidate=m+'-'+dueDay;
-    // validate it's a real date
-    if(!isNaN(new Date(candidate).getTime()))defaultDate=candidate;
-  }
-  const titleEl=G('bill-pay-modal-title');
-  const subEl=G('bill-pay-modal-sub');
+  if(b.d){const dueDay=b.d.slice(8,10);const candidate=m+'-'+dueDay;if(!isNaN(new Date(candidate).getTime()))defaultDate=candidate;}
+  const titleEl=G('bill-pay-modal-title'),subEl=G('bill-pay-modal-sub'),dateEl=G('bill-pay-date');
   if(titleEl)titleEl.textContent='Pay — '+b.n;
   if(subEl)subEl.textContent=fmt(b.a)+' · What date did you pay this bill?';
-  const dateEl=G('bill-pay-date');
   if(dateEl)dateEl.value=defaultDate;
   G('bill-pay-overlay').classList.remove('hidden');
 }
+function openBillPayModalForAuto(id,month){
+  const b=S.bills.find(b=>b.id===id);if(!b)return;
+  const m=month||currentMonth;
+  _bpId=id;_bpMonth=m;_bpIsAuto=true;
+  let defaultDate=today;
+  if(b.d){const dueDay=b.d.slice(8,10);const candidate=m+'-'+dueDay;if(!isNaN(new Date(candidate).getTime()))defaultDate=candidate;}
+  const titleEl=G('bill-pay-modal-title'),subEl=G('bill-pay-modal-sub'),dateEl=G('bill-pay-date');
+  if(titleEl)titleEl.textContent='Log Auto-pay — '+b.n;
+  if(subEl)subEl.textContent=fmt(b.a)+' · What date did this auto-payment clear?';
+  if(dateEl)dateEl.value=defaultDate;
+  G('bill-pay-overlay').classList.remove('hidden');
+}
+function markAutoPayLogged(id,month){
+  const b=S.bills.find(b=>b.id===id);if(!b||b.ds!=='Auto-pay')return;
+  const m=month||currentMonth;
+  const st=getBillStatus(b,m);
+  if(st==='Logged'){
+    if(!b.payments)b.payments={};
+    delete b.payments[m];
+    save();renderBillDetailPage();renderBudgetQuadrant();renderFinance();
+    return;
+  }
+  openBillPayModalForAuto(id,m);
+}
 function closeBillPayModal(){
   G('bill-pay-overlay').classList.add('hidden');
-  _bpId=null;_bpMonth=null;
+  _bpId=null;_bpMonth=null;_bpIsAuto=false;
 }
 function confirmBillPay(){
   if(!_bpId)return;
@@ -4944,14 +4986,15 @@ function confirmBillPay(){
   if(!b){closeBillPayModal();return;}
   const m=_bpMonth||currentMonth;
   if(!b.payments)b.payments={};
-  b.payments[m]='Paid';
+  b.payments[m]=_bpIsAuto?'Logged':'Paid';
   S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:dateVal,id:Date.now()});
   autoLinkToLivingBudget(b.cat,b.a,dateVal);
   addFinancialPoints(20,'Paid a bill');
   save();renderBills();renderFinance();renderHome();
-  showBackupToast('✓ '+b.n+' paid · '+fmt(b.a)+' logged on '+dateVal);
+  showBackupToast('✓ '+b.n+' '+(b.ds==='Auto-pay'?'logged':'paid')+' · '+fmt(b.a)+' on '+dateVal);
   closeBillPayModal();
   renderBudgetQuadrant();
+  renderBillDetailPage();
   if(!G('bills-chip-overlay').classList.contains('hidden'))renderBillsChipModal();
 }
 // ── BILLS CHIP DETAIL MODAL ──
