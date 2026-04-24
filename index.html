@@ -4219,15 +4219,8 @@ function renderFinOverview(){
         weekInc+=dayInc;
         weekExp+=dayExp;
 
-        // Unpaid bill amounts due today — shown in the daily badge
-        const unpaidBillAmt=dayBillItems.filter(b=>getBillStatus(b,mPrefix)==='Unpaid').reduce((s,b)=>s+b.a,0);
-
-        // Daily Total badge — top-right; shows logged net + pending unpaid bills
-        const netBadge=(dayInc||dayExp||unpaidBillAmt)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}" style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
-          <div class="fd-cal-day-net-lbl">Daily Total</div>
-          ${(dayInc||dayExp)?`<div>${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div>`:''}
-          ${unpaidBillAmt?`<div style="font-size:9px;color:var(--amber);font-weight:700;">📋 ${fmt(unpaidBillAmt)} due</div>`:''}
-        </div>`:'';
+        // Daily Total badge — top-right, only when income or expense exists
+        const netBadge=(dayInc||dayExp)?`<div class="fd-cal-day-net ${dayNet>=0?'pos':'neg'}"><div class="fd-cal-day-net-lbl">Daily Total</div><div>${dayNet>=0?'+':''}${fmt(Math.abs(dayNet))}</div></div>`:'';
 
         // Build entries: bills only (no income/expense chips)
         const allEntries=[];
