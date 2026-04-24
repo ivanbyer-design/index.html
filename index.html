@@ -2426,7 +2426,30 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <!-- BILLS STATUS CHIPS -->
         <div class="bills-sum-bar" id="b-sum" style="margin-top:10px;"></div>
 
-        <!-- 4-QUADRANT SNAPSHOT GRID — above calendar -->
+        <!-- FULL-WIDTH CALENDAR -->
+        <div id="fd-cal-section" style="margin-top:10px;">
+          <div class="fd-cal-wrap">
+            <div class="fd-cal-top-bar">
+              <div class="fd-cal-title-row">
+                <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+                <div class="fd-cal-legend">
+                  <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                  <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                  <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                  <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+                </div>
+              </div>
+            </div>
+            <div id="fd-cal-body">
+              <div class="fd-cal-header">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--ts);opacity:0.6;">Wk</span>
+              </div>
+              <div class="fd-cal-grid" id="fd-cal-grid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-QUADRANT SNAPSHOT GRID — below calendar -->
         <div class="fin-quad-grid">
 
           <div class="bq-card fin-quad-card">
@@ -2452,29 +2475,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <div id="bq-living"></div>
           </div>
 
-        </div>
-
-        <!-- FULL-WIDTH CALENDAR -->
-        <div id="fd-cal-section" style="margin-top:14px;">
-          <div class="fd-cal-wrap">
-            <div class="fd-cal-top-bar">
-              <div class="fd-cal-title-row">
-                <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-                <div class="fd-cal-legend">
-                  <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                  <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                  <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                  <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-                </div>
-              </div>
-            </div>
-            <div id="fd-cal-body">
-              <div class="fd-cal-header">
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--ts);opacity:0.6;">Wk</span>
-              </div>
-              <div class="fd-cal-grid" id="fd-cal-grid"></div>
-            </div>
-          </div>
         </div>
 
         <!-- QUICK LOG: INCOME / EXPENSE -->
