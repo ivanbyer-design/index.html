@@ -1912,7 +1912,7 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 /* Fused quadrant panels inside the calendar card */
 .fd-cal-inner-bar{padding:14px 16px 16px;border-bottom:1px solid var(--bd);background:var(--bg-card);}
 .fd-cal-inner-bar .fin-period-bar{padding-bottom:14px;border-bottom:1px solid var(--bd);margin-top:0;margin-bottom:14px;}
-.fin-quad-fused{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:0;border-top:2px solid var(--bd);}
+.fin-quad-fused{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:0;border-top:2px solid var(--bd);}
 .fin-quad-panel{padding:14px 16px;overflow-y:auto;max-height:300px;}
 .fin-quad-panel::-webkit-scrollbar{width:3px;}
 .fin-quad-panel::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px;}
@@ -2447,6 +2447,7 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <div class="fin-tabs" id="fin-tabs">
         <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">💰 Finance</button>
         <button class="fin-tab"   id="ftab-entries"     onclick="switchFinTab('entries',this)">📋 Transactions</button>
+        <button class="fin-tab"   id="ftab-bills"       onclick="switchFinTab('bills',this)">🧾 Bills</button>
         <button class="fin-tab"   id="ftab-payments"    onclick="switchFinTab('payments',this)">💸 Debts</button>
         <button class="fin-tab"   id="ftab-savings"     onclick="switchFinTab('savings',this)">🏦 Savings</button>
         <button class="fin-tab"   id="ftab-wants"       onclick="switchFinTab('wants',this)">🎯 Wants</button>
@@ -2498,20 +2499,10 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
             <div class="fd-cal-grid" id="fd-cal-grid"></div>
           </div>
 
-          <!-- 4-quadrant panels — fused below the calendar -->
+          <!-- 2-panel snapshot — Monthly Snapshot + Living Budget -->
           <div class="fin-quad-grid fin-quad-fused">
 
             <div class="fin-quad-panel">
-              <div class="fin-quad-panel-ttl" id="bq-unpaid-ttl">🔴 Unpaid This Month</div>
-              <div id="bq-unpaid"></div>
-            </div>
-
-            <div class="fin-quad-panel fin-quad-panel-div">
-              <div class="fin-quad-panel-ttl" id="bq-due-ttl">⏰ Due Next 14 Days</div>
-              <div id="bq-due"></div>
-            </div>
-
-            <div class="fin-quad-panel fin-quad-panel-div">
               <div class="fin-quad-panel-ttl">📊 Monthly Snapshot</div>
               <div id="bq-snap"></div>
             </div>
@@ -2617,20 +2608,12 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <div id="ftab-bills-body" style="display:none;"></div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!-- TAB: BILLS DETAIL PAGE                       -->
+      <!-- TAB: BILLS                                   -->
       <!-- ═══════════════════════════════════════════ -->
-      <div id="ftab-billdetail-body" style="display:none;">
+      <div id="ftab-bills-body" style="display:none;">
 
-        <!-- Back nav -->
-        <div style="display:flex;align-items:center;gap:8px;padding:12px 0 8px;">
-          <button onclick="switchFinTab('overview',G('ftab-overview'))" style="font-family:var(--font);font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid var(--bd);background:var(--bg-card);color:var(--ts);cursor:pointer;display:flex;align-items:center;gap:5px;">← Back</button>
-          <span style="font-size:12px;color:var(--ts);">Personal Finance</span>
-          <span style="font-size:12px;color:var(--ts);">›</span>
-          <span style="font-size:12px;font-weight:700;color:var(--t);" id="bdet-breadcrumb">Bills</span>
-        </div>
-
-        <!-- Page header -->
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;">
+        <!-- Page header + month nav -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;">
           <div>
             <div style="font-size:22px;font-weight:800;color:var(--t);letter-spacing:-0.02em;" id="bdet-title">Bills</div>
             <div style="font-size:12px;color:var(--ts);margin-top:3px;" id="bdet-sub"></div>
@@ -3852,27 +3835,26 @@ function delFin(id){S.finance=S.finance.filter(f=>f.id!==id);save();renderFinanc
 // ── FINANCE TABS ──
 let activeFinTab='overview';
 function switchFinTab(tab,btn){
-  if(tab==='bills'){tab='overview';btn=G('ftab-overview');}
   activeFinTab=tab;
   document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
   if(btn)btn.classList.add('on');
-  ['overview','entries','bills','living','payments','savings','wants','billdetail'].forEach(t=>{
+  ['overview','entries','bills','living','payments','savings','wants'].forEach(t=>{
     const el=G('ftab-'+t+'-body');if(el)el.style.display=t===tab?'block':'none';
   });
   setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
   if(tab==='entries'){buildCatSelect('fi-c','expense');setTimeout(renderTransactions,50);}
-  if(tab==='overview'||tab==='bills'){buildCatSelect('blq-cat',G('blq-type')&&G('blq-type').value||'income');}
+  if(tab==='overview'){buildCatSelect('blq-cat',G('blq-type')&&G('blq-type').value||'income');}
+  if(tab==='bills'){setTimeout(renderBillDetailPage,30);}
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
   if(tab==='living'){renderLivingTabHero();}
-  if(tab==='billdetail'){setTimeout(renderBillDetailPage,30);}
 }
 
 // ── BILLS DETAIL PAGE ──
 let billDetailFilter='all';
 function openBillsDetailPage(filter){
   billDetailFilter=filter||'all';
-  switchFinTab('billdetail',null);
+  switchFinTab('bills',G('ftab-bills'));
 }
 function setBillDetailFilter(filter,btn){
   billDetailFilter=filter;
@@ -5067,32 +5049,15 @@ function bqLogSpend(catId,amt){
   save();renderBudgetQuadrant();renderLivingExpenses();
 }
 function renderBudgetQuadrant(){
-  const unp=G('bq-unpaid'),bqliv=G('bq-living'),snap=G('bq-snap'),due=G('bq-due');
-  if(!unp)return;
+  const bqliv=G('bq-living'),snap=G('bq-snap');
+  if(!snap&&!bqliv)return;
 
   // Use the calendar's currently displayed month
   const dispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
   const isCurrentMonth=(dispMonth===currentMonth);
   const monthLabel=MONTH_NAMES[finCalMonth]+' '+finCalYear;
 
-  // ── Panel 1: Unpaid bills for displayed month ──
-  const unpTtl=G('bq-unpaid-ttl');
-  if(unpTtl)unpTtl.textContent='🔴 Unpaid — '+monthLabel;
-  const unpaidBills=S.bills.filter(b=>getBillStatus(b,dispMonth)==='Unpaid');
-  const unpaidAmt=unpaidBills.reduce((s,b)=>s+b.a,0);
-  if(!unpaidBills.length){
-    unp.innerHTML=`<div style="color:var(--green);font-size:13px;font-weight:600;margin-top:6px;">✓ All bills paid!</div>`;
-  } else {
-    unp.innerHTML=`<div style="font-size:20px;font-weight:700;color:var(--red);margin-bottom:6px;">${fmt(unpaidAmt)} <span style="font-size:12px;font-weight:400;color:var(--ts);">${unpaidBills.length} remaining</span></div>`
-      +unpaidBills.map(b=>`
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 0;border-bottom:1px solid var(--bd);">
-          <span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.n}</span>
-          <span style="font-size:12px;font-weight:700;color:var(--red);flex-shrink:0;">${fmt(b.a)}</span>
-          <button onclick="bqPayBill(${b.id},'${dispMonth}')" style="font-family:var(--font);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:none;background:var(--gbg);color:var(--green);cursor:pointer;flex-shrink:0;">✓ Pay</button>
-        </div>`).join('');
-  }
-
-  // ── Panel 2: Living Budget — per-category for displayed month ──
+  // ── Panel 1: Living Budget — per-category for displayed month ──
   const lm=dispMonth;
   const livSpendThisMonth=(S.liveSpend||[]).filter(s=>s.date&&s.date.startsWith(lm));
   const totalLivBudget=(S.liveCategories||[]).reduce((s,c)=>s+c.budget,0);
@@ -5161,41 +5126,6 @@ function renderBudgetQuadrant(){
     </div>`:''}
     <button onclick="switchFinTab('entries',G('ftab-entries'))" style="margin-top:8px;font-family:var(--font);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--ts);cursor:pointer;width:100%;">📋 View transactions →</button>`;
 
-  // ── Panel 4: Bills due — next 14 days if current month, full month if navigated ──
-  const dueTtl=G('bq-due-ttl');
-  const upcoming=[];
-  if(isCurrentMonth){
-    if(dueTtl)dueTtl.textContent='⏰ Due Next 14 Days';
-    for(let i=0;i<=14;i++){
-      const d=new Date(today+'T12:00:00');d.setDate(d.getDate()+i);
-      const dk=localDate(d);
-      billsDueOn(dk).forEach(b=>{if(!upcoming.find(u=>u.id===b.id))upcoming.push({...b,_nxt:dk});});
-    }
-  } else {
-    if(dueTtl)dueTtl.textContent='⏰ Bills Due — '+monthLabel;
-    const daysInMo=new Date(finCalYear,finCalMonth+1,0).getDate();
-    for(let d=1;d<=daysInMo;d++){
-      const dk=dispMonth+'-'+String(d).padStart(2,'0');
-      billsDueOn(dk).forEach(b=>{if(!upcoming.find(u=>u.id===b.id))upcoming.push({...b,_nxt:dk});});
-    }
-  }
-  upcoming.sort((a,b)=>(a._nxt||'').localeCompare(b._nxt||''));
-  due.innerHTML=upcoming.length
-    ?upcoming.map(b=>{
-        const st=getBillStatus(b,dispMonth);
-        const isPaid=st==='Paid',isAuto=st==='Auto-pay';
-        const daysAway=Math.round((new Date(b._nxt+'T12:00:00')-new Date(today+'T12:00:00'))/(1000*60*60*24));
-        const dueLbl=isCurrentMonth?(daysAway===0?'Today':daysAway===1?'Tomorrow':`${daysAway}d`):b._nxt.slice(8);
-        const chipBg=isCurrentMonth?(daysAway===0?'var(--rbg)':daysAway<=3?'var(--abg)':'var(--bg-in)'):(isPaid?'var(--gbg)':'var(--bg-in)');
-        const chipClr=isCurrentMonth?(daysAway===0?'var(--red)':daysAway<=3?'var(--amber)':'var(--ts)'):(isPaid?'var(--green)':'var(--ts)');
-        return`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--bd);font-size:12px;">
-          ${isAuto?`<span title="Auto-pay" style="font-size:14px;">🔄</span>`:`<input type="checkbox" ${isPaid?'checked':''} onchange="cycleBill(${b.id},'${dispMonth}');renderBudgetQuadrant();" title="${isPaid?'Mark unpaid':'Mark paid'}">`}
-          <span style="flex:1;${isPaid?'text-decoration:line-through;color:var(--ts);':''}">${b.n}</span>
-          <span style="font-weight:700;color:${isPaid?'var(--green)':'var(--t)'};">${fmt(b.a)}</span>
-          <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;background:${chipBg};color:${chipClr};">${dueLbl}</span>
-        </div>`;
-      }).join('')
-    :`<div style="font-size:12px;color:var(--ts);padding-top:6px;">No bills due${isCurrentMonth?' in next 14 days':' this month'}</div>`;
 }
 
 function renderBillCalendar(){
