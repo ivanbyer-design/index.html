@@ -2546,53 +2546,6 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
         </div>
 
-        <!-- ALL BILLS: category tiles + filter + table -->
-        <div id="bl-cat-totals" class="bl-cat-summary"></div>
-        <div class="db-hdr" style="margin-top:4px;">
-          <div class="db-ttl">🧾 All Bills &amp; Subscriptions</div>
-          <div class="db-acts" id="bl-cat-filters">
-            <button class="db-btn" id="blf-all" onclick="blFilterCat('all',this)" style="font-weight:700;">All</button>
-            <button class="db-btn" id="blf-Housing" onclick="blFilterCat('Housing',this)">🏠 Housing</button>
-            <button class="db-btn" id="blf-Utilities" onclick="blFilterCat('Utilities',this)">⚡ Utilities</button>
-            <button class="db-btn" id="blf-Subscriptions" onclick="blFilterCat('Subscriptions',this)">📱 Subs</button>
-            <button class="db-btn" id="blf-Insurance" onclick="blFilterCat('Insurance',this)">🛡️ Insurance</button>
-            <button class="db-btn" id="blf-Debt" onclick="blFilterCat('Debt',this)">💳 Debt</button>
-          </div>
-        </div>
-        <table class="nt"><thead><tr><th style="width:28px;"></th><th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th>Notes</th><th style="width:52px;"></th></tr></thead><tbody id="bl-tb"></tbody></table>
-
-        <!-- ADD BILL FORM (collapsible) -->
-        <div class="add-row" onclick="this.nextElementSibling.classList.toggle('hidden');this.style.display='none';">＋ Add bill or subscription</div>
-        <div class="nf hidden" id="bl-add-form">
-          <div class="nf-ttl">＋ New Bill / Subscription</div>
-          <div class="fr">
-            <input class="fi" type="text" id="bl-n" placeholder="Bill name (e.g. Rent, Netflix)">
-            <input class="fi" type="number" id="bl-a" placeholder="Amount $" step="0.01" style="max-width:120px;">
-            <select class="fi" id="bl-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
-            <select class="fi" id="bl-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
-            <input class="fi" type="date" id="bl-d" style="max-width:150px;">
-            <select class="fi" id="bl-ds" style="max-width:130px;"><option value="Unpaid">Manual Pay</option><option value="Auto-pay">Auto-pay</option></select>
-            <button class="btn pri" onclick="addBill()">Save</button>
-          </div>
-          <div class="fr" style="margin-top:4px;">
-            <input class="fi" type="text" id="bl-notes" placeholder="Notes (optional)">
-          </div>
-        </div>
-
-        <!-- SUBSCRIPTIONS -->
-        <div class="bl-section" style="margin-top:16px;">
-          <span>📱 Subscriptions</span>
-          <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
-        </div>
-        <div id="sub-cards"></div>
-
-        <!-- LIVING EXPENSES MINI OVERVIEW -->
-        <div class="bl-section" style="margin-top:16px;">
-          <span>🛒 Living Expenses</span>
-          <button class="db-btn" onclick="switchFinTab('living',G('ftab-living'))" style="text-transform:none;letter-spacing:0;font-size:11px;font-weight:600;">Full view →</button>
-        </div>
-        <div id="bl-living-mini"></div>
-
         <!-- FINANCIAL MILESTONE -->
         <div id="finance-milestone"></div>
 
@@ -2609,8 +2562,8 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-bills-body" style="display:none;">
 
-        <!-- Page header + month nav -->
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;">
+        <!-- ── HEADER: title + month nav ── -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:16px;">
           <div>
             <div style="font-size:22px;font-weight:800;color:var(--t);letter-spacing:-0.02em;" id="bdet-title">Bills</div>
             <div style="font-size:12px;color:var(--ts);margin-top:3px;" id="bdet-sub"></div>
@@ -2622,26 +2575,67 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
 
-        <!-- Summary totals row -->
-        <div id="bdet-summary" style="margin-bottom:4px;"></div>
+        <!-- ── CATEGORY TILES (top overview) ── -->
+        <div id="bl-cat-totals" class="bl-cat-summary"></div>
 
-        <!-- Sectioned bill list (Unpaid / Paid / Auto-pay) -->
+        <!-- ── SUMMARY: Unpaid / Paid / Auto-pay cards + progress ── -->
+        <div id="bdet-summary" style="margin-top:16px;margin-bottom:4px;"></div>
+
+        <!-- ── THREE SECTIONS: Unpaid / Paid / Auto-pay ── -->
         <div id="bdet-list"></div>
 
-        <!-- Add bill form -->
-        <div class="add-row" style="margin-top:16px;" onclick="G('bdet-add-form').classList.toggle('hidden');this.style.display='none';">＋ Add bill or subscription</div>
-        <div class="nf hidden" id="bdet-add-form">
-          <div class="nf-ttl">＋ New Bill / Subscription</div>
-          <div class="fr">
-            <input class="fi" type="text" id="bdet-n" placeholder="Bill name">
-            <input class="fi" type="number" id="bdet-a" placeholder="Amount $" step="0.01" style="max-width:120px;">
-            <select class="fi" id="bdet-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
-            <select class="fi" id="bdet-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
-            <input class="fi" type="date" id="bdet-d" style="max-width:150px;">
-            <select class="fi" id="bdet-ds" style="max-width:130px;"><option value="Unpaid">Manual Pay</option><option value="Auto-pay">Auto-pay</option></select>
-            <button class="btn pri" onclick="bdetAddBill()">Save</button>
+        <!-- ── DIVIDER ── -->
+        <div style="margin-top:32px;padding-top:20px;border-top:2px solid var(--bd);">
+
+          <!-- All Bills header + category filters -->
+          <div class="db-hdr" style="margin-bottom:10px;">
+            <div class="db-ttl">🧾 All Bills &amp; Subscriptions</div>
+            <div class="db-acts" id="bl-cat-filters">
+              <button class="db-btn" id="blf-all" onclick="blFilterCat('all',this)" style="font-weight:700;">All</button>
+              <button class="db-btn" id="blf-Housing" onclick="blFilterCat('Housing',this)">🏠 Housing</button>
+              <button class="db-btn" id="blf-Utilities" onclick="blFilterCat('Utilities',this)">⚡ Utilities</button>
+              <button class="db-btn" id="blf-Subscriptions" onclick="blFilterCat('Subscriptions',this)">📱 Subs</button>
+              <button class="db-btn" id="blf-Insurance" onclick="blFilterCat('Insurance',this)">🛡️ Insurance</button>
+              <button class="db-btn" id="blf-Debt" onclick="blFilterCat('Debt',this)">💳 Debt</button>
+            </div>
           </div>
-        </div>
+
+          <!-- Full bills table -->
+          <table class="nt">
+            <thead><tr>
+              <th style="width:28px;"></th>
+              <th>Bill</th><th>Category</th><th>Amount</th><th>Frequency</th><th>Due</th><th>Status</th><th>Notes</th>
+              <th style="width:52px;"></th>
+            </tr></thead>
+            <tbody id="bl-tb"></tbody>
+          </table>
+
+          <!-- Subscriptions -->
+          <div class="bl-section" style="margin-top:20px;">
+            <span>📱 Subscriptions</span>
+            <span id="sub-lbl" style="font-size:12px;color:var(--ts);font-weight:400;text-transform:none;letter-spacing:0;"></span>
+          </div>
+          <div id="sub-cards"></div>
+
+          <!-- Add bill form -->
+          <div class="add-row" style="margin-top:16px;" onclick="this.nextElementSibling.classList.toggle('hidden');this.style.display='none';">＋ Add bill or subscription</div>
+          <div class="nf hidden" id="bl-add-form">
+            <div class="nf-ttl">＋ New Bill / Subscription</div>
+            <div class="fr">
+              <input class="fi" type="text" id="bl-n" placeholder="Bill name (e.g. Rent, Netflix)">
+              <input class="fi" type="number" id="bl-a" placeholder="Amount $" step="0.01" style="max-width:120px;">
+              <select class="fi" id="bl-cat" style="max-width:130px;"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Subscriptions</option><option>Debt</option><option>Phone</option><option>Internet</option><option>Transport</option><option>Healthcare</option><option>Other</option></select>
+              <select class="fi" id="bl-f" style="max-width:120px;"><option>Monthly</option><option>Bi-weekly</option><option>Weekly</option><option>Annual</option><option>One-time</option></select>
+              <input class="fi" type="date" id="bl-d" style="max-width:150px;">
+              <select class="fi" id="bl-ds" style="max-width:130px;"><option value="Unpaid">Manual Pay</option><option value="Auto-pay">Auto-pay</option></select>
+              <button class="btn pri" onclick="addBill()">Save</button>
+            </div>
+            <div class="fr" style="margin-top:4px;">
+              <input class="fi" type="text" id="bl-notes" placeholder="Notes (optional)">
+            </div>
+          </div>
+
+        </div><!-- end all-bills section -->
 
       </div>
 
@@ -3841,7 +3835,7 @@ function switchFinTab(tab,btn){
   setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
   if(tab==='entries'){buildCatSelect('fi-c','expense');setTimeout(renderTransactions,50);}
   if(tab==='overview'){buildCatSelect('blq-cat',G('blq-type')&&G('blq-type').value||'income');}
-  if(tab==='bills'){setTimeout(renderBillDetailPage,30);}
+  if(tab==='bills'){setTimeout(()=>{renderBillDetailPage();renderBills();},30);}
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
   if(tab==='living'){renderLivingTabHero();}
@@ -3864,13 +3858,6 @@ function bdetNavMonth(dir){
   if(finCalMonth>11){finCalMonth=0;finCalYear++;}
   if(finCalMonth<0){finCalMonth=11;finCalYear--;}
   renderBillDetailPage();
-}
-function bdetAddBill(){
-  const n=G('bdet-n').value.trim();if(!n)return;
-  S.bills.push({n,a:parseFloat(G('bdet-a').value)||0,f:G('bdet-f').value,cat:G('bdet-cat').value,d:G('bdet-d').value,ds:G('bdet-ds').value,payments:{},notes:'',id:Date.now()});
-  G('bdet-n').value='';G('bdet-a').value='';
-  save();renderBillDetailPage();renderBudgetQuadrant();renderBills();
-  showBackupToast('✓ Bill added');
 }
 function renderBillDetailPage(){
   const dispMonth=finCalYear+'-'+String(finCalMonth+1).padStart(2,'0');
