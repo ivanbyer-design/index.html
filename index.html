@@ -3676,16 +3676,7 @@ function cycleOP(id){
   if(p){const states=['pending','paid','overdue','scheduled'];p.s=states[(states.indexOf(p.s)+1)%states.length];save();renderFinance();}
 }
 function markBillPaid(id,month){
-  const b=S.bills.find(b=>b.id===id);
-  if(b){
-    const m=month||currentMonth;
-    if(!b.payments)b.payments={};
-    b.payments[m]='Paid';
-    S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:today,id:Date.now()});
-    addFinancialPoints(20,'Paid a bill');
-    save();renderFinance();renderHome();
-    showBackupToast('✓ Bill paid · $'+b.a.toFixed(2)+' logged as expense');
-  }
+  openBillPayModal(id,month||currentMonth);
 }
 function markDebtPaid(id){
   const p=S.otherPayments.find(p=>p.id===id);
@@ -4374,14 +4365,11 @@ function cycleBill(id,month){
   if(b.ds==='Auto-pay')return;
   const m=month||currentMonth;
   const cur=getBillStatus(b,m);
-  const next=cur==='Unpaid'?'Paid':'Unpaid';
+  // Going Unpaid→Paid: open date modal; going Paid→Unpaid: toggle immediately
+  if(cur==='Unpaid'){openBillPayModal(id,m);return;}
+  const next='Unpaid';
   if(!b.payments)b.payments={};
   b.payments[m]=next;
-  if(next==='Paid'){
-    S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:today,id:Date.now()});
-    addFinancialPoints(20,'Paid a bill');
-    showBackupToast('✓ '+b.n+' paid · $'+b.a.toFixed(2)+' logged as expense');
-  }
   save();renderBills();renderFinance();renderHome();
 }
 function blFilterCat(cat,el){
@@ -4600,7 +4588,55 @@ function renderBillsLivingMini(){
       }).join('')}
     </div>`;
 }
-function bqPayBill(id,month){cycleBill(id,month);renderBudgetQuadrant();}
+function bqPayBill(id,month){openBillPayModal(id,month);}
+
+// ── BILL PAY DATE MODAL ──
+let _bpId=null,_bpMonth=null;
+function openBillPayModal(id,month){
+  const b=S.bills.find(b=>b.id===id);if(!b)return;
+  if(b.ds==='Auto-pay')return;
+  const m=month||currentMonth;
+  const st=getBillStatus(b,m);
+  // If already paid, toggle unpaid immediately (no date needed)
+  if(st==='Paid'){cycleBill(id,m);renderBudgetQuadrant();return;}
+  _bpId=id;_bpMonth=m;
+  // Pre-fill date: use bill due day in the displayed month, fallback to today
+  let defaultDate=today;
+  if(b.d){
+    // b.d is a full date like "2025-04-15" — extract the day and apply to displayed month
+    const dueDay=b.d.slice(8,10);
+    const candidate=m+'-'+dueDay;
+    // validate it's a real date
+    if(!isNaN(new Date(candidate).getTime()))defaultDate=candidate;
+  }
+  const titleEl=G('bill-pay-modal-title');
+  const subEl=G('bill-pay-modal-sub');
+  if(titleEl)titleEl.textContent='Pay — '+b.n;
+  if(subEl)subEl.textContent=fmt(b.a)+' · What date did you pay this bill?';
+  const dateEl=G('bill-pay-date');
+  if(dateEl)dateEl.value=defaultDate;
+  G('bill-pay-overlay').classList.remove('hidden');
+}
+function closeBillPayModal(){
+  G('bill-pay-overlay').classList.add('hidden');
+  _bpId=null;_bpMonth=null;
+}
+function confirmBillPay(){
+  if(!_bpId)return;
+  const dateVal=G('bill-pay-date').value||today;
+  const b=S.bills.find(b=>b.id===_bpId);
+  if(!b){closeBillPayModal();return;}
+  const m=_bpMonth||currentMonth;
+  if(!b.payments)b.payments={};
+  b.payments[m]='Paid';
+  S.finance.push({d:b.n,a:b.a,t:'expense',c:b.cat||'Bills',biz:'personal',dt:dateVal,id:Date.now()});
+  autoLinkToLivingBudget(b.cat,b.a,dateVal);
+  addFinancialPoints(20,'Paid a bill');
+  save();renderBills();renderFinance();renderHome();
+  showBackupToast('✓ '+b.n+' paid · '+fmt(b.a)+' logged on '+dateVal);
+  closeBillPayModal();
+  renderBudgetQuadrant();
+}
 function bqLogSpend(catId,amt){
   if(!amt||isNaN(amt))return;
   if(!S.liveSpend)S.liveSpend=[];
@@ -9786,6 +9822,25 @@ function resetAllData(){
     <div class="em-footer">
       <button class="em-btn" onclick="G('new-page-modal-wrap').classList.remove('open')">Cancel</button>
       <button class="em-btn pri" onclick="createCustomPage()">Create page</button>
+    </div>
+  </div>
+</div>
+
+<!-- BILL PAY DATE MODAL -->
+<div class="em-overlay hidden" id="bill-pay-overlay" onclick="if(event.target===this)closeBillPayModal()">
+  <div class="em-box" style="max-width:360px;">
+    <div class="em-hdr">
+      <div class="em-ttl" id="bill-pay-modal-title">Log Bill Payment</div>
+      <button class="em-close" onclick="closeBillPayModal()">✕</button>
+    </div>
+    <div class="em-body" style="padding:20px;">
+      <div style="font-size:13px;color:var(--ts);margin-bottom:16px;" id="bill-pay-modal-sub">What date did you pay this bill?</div>
+      <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:600;color:var(--ts);">Payment Date</label>
+      <input class="fi" type="date" id="bill-pay-date" style="width:100%;box-sizing:border-box;font-size:15px;">
+      <div style="display:flex;gap:8px;margin-top:18px;">
+        <button class="btn" onclick="closeBillPayModal()" style="flex:1;">Cancel</button>
+        <button class="btn pri" onclick="confirmBillPay()" style="flex:2;">✓ Confirm Payment</button>
+      </div>
     </div>
   </div>
 </div>
