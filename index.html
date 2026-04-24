@@ -1510,6 +1510,8 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
   /* Bills & Budgets: single column, no horizontal overflow */
   .bq-grid{grid-template-columns:1fr;}
   .bills-main-grid{grid-template-columns:1fr;}
+  .fin-hub-grid{grid-template-columns:1fr;}
+  .fin-hub-sidebar{flex-direction:column;}
   .bills-sum-chip{min-width:70px;}
   .bills-sum-chip-val{font-size:15px;}
   .fin-qa-btn{font-size:13px;padding:12px 14px;}
@@ -1806,6 +1808,10 @@ input:-webkit-autofill,input:-webkit-autofill:focus{
 .bills-sum-chip{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--rl);padding:10px 14px;flex:1;min-width:80px;}
 .bills-sum-chip-lbl{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;}
 .bills-sum-chip-val{font-size:18px;font-weight:800;letter-spacing:-0.02em;margin-top:2px;}
+/* ── FINANCE HUB — merged calendar+bills layout ── */
+.fin-hub-grid{display:grid;grid-template-columns:1fr 290px;gap:14px;margin-top:14px;align-items:start;}
+.fin-hub-sidebar{display:flex;flex-direction:column;gap:12px;}
+.fin-period-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--bd);margin-top:14px;}
 
 /* ── SUBSCRIPTION CARDS ── */
 .sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin:10px 0 16px;}
@@ -2322,8 +2328,8 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         <div class="fin-page-header-left">
           <div class="fin-page-icon">🧾</div>
           <div>
-            <div class="fin-page-title">Bills &amp; Budgets</div>
-            <div class="fin-page-sub">Bills · Subscriptions · Living Expenses · Tracking</div>
+            <div class="fin-page-title">Personal Finance</div>
+            <div class="fin-page-sub">Income · Bills · Budget · Savings · Tracking</div>
           </div>
         </div>
         <div class="fin-page-header-right" id="fin-header-meta"></div>
@@ -2331,8 +2337,7 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
 
       <!-- PILL TABS — above everything -->
       <div class="fin-tabs" id="fin-tabs">
-        <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">🏠 Overview</button>
-        <button class="fin-tab"   id="ftab-bills"       onclick="switchFinTab('bills',this)">🧾 My Bills</button>
+        <button class="fin-tab on" id="ftab-overview"   onclick="switchFinTab('overview',this)">💰 Finance</button>
         <button class="fin-tab"   id="ftab-living"      onclick="switchFinTab('living',this)">🛒 Living Budget</button>
         <button class="fin-tab"   id="ftab-entries"     onclick="switchFinTab('entries',this)">📋 Transactions</button>
         <button class="fin-tab"   id="ftab-payments"    onclick="switchFinTab('payments',this)">💸 Debts</button>
@@ -2341,135 +2346,78 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!-- TAB: OVERVIEW                               -->
+      <!-- TAB: FINANCE HUB (Overview + Bills merged)  -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="ftab-overview-body">
 
-        <!-- KPI CARDS (period-aware) -->
-        <div class="fd-kpi-grid" id="fd-kpis" style="margin-top:14px;"></div>
-
-        <!-- CALENDAR — period selector merged into top bar -->
-        <div id="fd-cal-section">
-          <div class="fd-cal-wrap">
-            <div class="fd-cal-top-bar">
-              <!-- Period controls row -->
-              <div class="fd-cal-period-row">
-                <div class="fd-cal-period-pills">
-                  <button class="fd-period-btn on" id="fpb-monthly"   onclick="setFinPeriod('monthly',this)">Monthly</button>
-                  <button class="fd-period-btn"    id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
-                  <button class="fd-period-btn"    id="fpb-yearly"    onclick="setFinPeriod('yearly',this)">Yearly</button>
-                </div>
-                <div class="fd-period-nav">
-                  <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
-                  <div class="fd-month-label" id="fd-month-label"></div>
-                  <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
-                </div>
-              </div>
-              <!-- Month title + legend row -->
-              <div class="fd-cal-title-row">
-                <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
-                <div class="fd-cal-legend">
-                  <span><span class="fd-cal-dot-legend income"></span>Income</span>
-                  <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
-                  <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
-                  <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
-                </div>
-              </div>
-            </div>
-            <div id="fd-cal-body">
-              <div class="fd-cal-header">
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                <div class="fd-cal-hdr-week">Week</div>
-              </div>
-              <div class="fd-cal-grid" id="fd-cal-grid"></div>
-            </div>
+        <!-- PERIOD BAR + KPI GRID -->
+        <div class="fin-period-bar">
+          <div class="fd-cal-period-pills">
+            <button class="fd-period-btn on" id="fpb-monthly"   onclick="setFinPeriod('monthly',this)">Monthly</button>
+            <button class="fd-period-btn"    id="fpb-quarterly" onclick="setFinPeriod('quarterly',this)">Quarterly</button>
+            <button class="fd-period-btn"    id="fpb-yearly"    onclick="setFinPeriod('yearly',this)">Yearly</button>
+          </div>
+          <div class="fd-period-nav">
+            <button class="fd-nav-btn" onclick="finNavPeriod(-1)">←</button>
+            <div class="fd-month-label" id="fd-month-label"></div>
+            <button class="fd-nav-btn" onclick="finNavPeriod(1)">→</button>
           </div>
         </div>
+        <div class="fd-kpi-grid" id="fd-kpis"></div>
 
-        <!-- MONEY OWED — sticky total, scrollable list, sorted by due date -->
-        <div class="fd-owed-section">
-          <div class="fd-owed-hdr">
-            <div class="fd-panel-hdr" style="margin-bottom:0;">
-              <div class="fd-panel-title">💳 Money Owed</div>
-              <div style="display:flex;gap:8px;">
-                <button class="ov-see-all" onclick="switchFinTab('bills',G('ftab-bills'))">Bills →</button>
-                <button class="ov-see-all" onclick="switchFinTab('payments',G('ftab-payments'))">Debts →</button>
+        <!-- BILLS STATUS CHIPS -->
+        <div class="bills-sum-bar" id="b-sum" style="margin-top:10px;"></div>
+
+        <!-- MAIN GRID: CALENDAR LEFT, BILLS SIDEBAR RIGHT -->
+        <div class="fin-hub-grid">
+
+          <!-- LEFT: Full calendar — income / expenses / bills / debts -->
+          <div id="fd-cal-section">
+            <div class="fd-cal-wrap">
+              <div class="fd-cal-top-bar">
+                <div class="fd-cal-title-row">
+                  <div class="fd-cal-month-title" id="fd-cal-month-title"></div>
+                  <div class="fd-cal-legend">
+                    <span><span class="fd-cal-dot-legend income"></span>Income</span>
+                    <span><span class="fd-cal-dot-legend expense"></span>Expense</span>
+                    <span><span class="fd-cal-dot-legend bill"></span>Bill</span>
+                    <span><span class="fd-cal-dot-legend debt"></span>Debt</span>
+                  </div>
+                </div>
+              </div>
+              <div id="fd-cal-body">
+                <div class="fd-cal-header">
+                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                  <div class="fd-cal-hdr-week">Week</div>
+                </div>
+                <div class="fd-cal-grid" id="fd-cal-grid"></div>
               </div>
             </div>
           </div>
-          <!-- Static total — always visible above the scroll -->
-          <div class="fd-owed-sticky" id="fd-owed-total-bar"></div>
-          <!-- Scrollable item list -->
-          <div id="fd-owed-list" class="fd-owed-scroll"></div>
-        </div>
 
-        <!-- CASH FLOW CHART — below money owed -->
-        <div class="chart-box" style="margin:0 0 14px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
-            <div class="legend" style="margin:0;">
-              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
-              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
-            </div>
-          </div>
-          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
-        </div>
+          <!-- RIGHT SIDEBAR: bills status panels -->
+          <div class="fin-hub-sidebar">
 
-        <!-- FINANCIAL MILESTONE -->
-        <div id="finance-milestone"></div>
-
-      </div>
-
-      <!-- ═══════════════════════════════════════════ -->
-      <!-- TAB: MY BILLS                               -->
-      <!-- ═══════════════════════════════════════════ -->
-      <div id="ftab-bills-body" style="display:none;">
-
-        <!-- BILLS SUMMARY CHIPS -->
-        <div class="bills-sum-bar" id="b-sum"></div>
-
-        <!-- TWO-COLUMN: CALENDAR + UNPAID/DUE PANELS -->
-        <div class="bills-main-grid">
-
-          <!-- LEFT: BILL DUE-DATE CALENDAR -->
-          <div class="bq-card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-              <span class="bq-ttl" style="margin:0;">📅 Due Date Calendar</span>
-              <div style="display:flex;align-items:center;gap:4px;">
-                <button class="fd-nav-btn" onclick="blCalNav(-1)">←</button>
-                <span id="bl-cal-lbl" style="font-size:12px;font-weight:700;min-width:108px;text-align:center;"></span>
-                <button class="fd-nav-btn" onclick="blCalNav(1)">→</button>
-                <button class="fd-nav-btn" onclick="blCalNav(0)" title="Current month" style="font-size:10px;padding:4px 7px;">●</button>
-              </div>
-            </div>
-            <div class="bl-cal-legend">
-              <span><span style="width:9px;height:9px;border-radius:3px;background:var(--rbg);border:1px solid var(--red);display:inline-block;"></span> Unpaid</span>
-              <span><span style="width:9px;height:9px;border-radius:3px;background:var(--gbg);border:1px solid var(--green);display:inline-block;"></span> Paid</span>
-              <span><span style="width:9px;height:9px;border-radius:3px;background:var(--bbg);border:1px solid var(--blue);display:inline-block;"></span> Auto</span>
-            </div>
-            <div id="bl-calendar"></div>
-          </div>
-
-          <!-- RIGHT: UNPAID + DUE SOON -->
-          <div class="bills-right-col">
-
-            <!-- UNPAID THIS MONTH -->
             <div class="bq-card">
               <div class="bq-ttl" style="margin-bottom:8px;">🔴 Unpaid This Month</div>
               <div id="bq-unpaid"></div>
             </div>
 
-            <!-- DUE NEXT 14 DAYS -->
             <div class="bq-card">
               <div class="bq-ttl" style="margin-bottom:8px;">⏰ Due Next 14 Days</div>
               <div id="bq-due"></div>
             </div>
 
+            <div class="bq-card">
+              <div class="bq-ttl" style="margin-bottom:8px;">📊 Monthly Snapshot</div>
+              <div id="bq-snap"></div>
+            </div>
+
           </div>
         </div>
 
-        <!-- QUICK INCOME / EXPENSE LOG -->
-        <div class="nf" style="margin-top:12px;">
+        <!-- QUICK LOG: INCOME / EXPENSE -->
+        <div class="nf" style="margin-top:14px;">
           <div class="nf-ttl">⚡ Quick Log — Income / Expense</div>
           <div class="fr">
             <input class="fi" type="text" id="blq-desc" placeholder="Description" style="min-width:140px;">
@@ -2484,10 +2432,20 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
           </div>
         </div>
 
-        <!-- CATEGORY TOTALS OVERVIEW -->
-        <div id="bl-cat-totals" class="bl-cat-summary" style="margin-top:14px;"></div>
+        <!-- CASH FLOW CHART -->
+        <div class="chart-box" style="margin:14px 0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div class="chart-ttl" style="margin:0;" id="fd-chart-title">Daily cash flow</div>
+            <div class="legend" style="margin:0;">
+              <div class="li"><div class="ld" style="background:var(--green);"></div>Income</div>
+              <div class="li"><div class="ld" style="background:var(--red);"></div>Expense</div>
+            </div>
+          </div>
+          <div class="cw" style="height:160px;"><canvas id="fc"></canvas></div>
+        </div>
 
-        <!-- CATEGORY FILTERS + BILLS TABLE -->
+        <!-- ALL BILLS: category tiles + filter + table -->
+        <div id="bl-cat-totals" class="bl-cat-summary"></div>
         <div class="db-hdr" style="margin-top:4px;">
           <div class="db-ttl">🧾 All Bills &amp; Subscriptions</div>
           <div class="db-acts" id="bl-cat-filters">
@@ -2533,7 +2491,19 @@ html,body{font-feature-settings:"tnum" 1,"lnum" 1;-webkit-font-smoothing:antiali
         </div>
         <div id="bl-living-mini"></div>
 
+        <!-- FINANCIAL MILESTONE -->
+        <div id="finance-milestone"></div>
+
+        <!-- Ghost elements needed by renderFinOverview (not visible) -->
+        <div style="display:none;">
+          <div id="fd-owed-total-bar"></div>
+          <div id="fd-owed-list"></div>
+        </div>
+
       </div>
+
+      <!-- Bills tab merged into Finance hub above -->
+      <div id="ftab-bills-body" style="display:none;"></div>
 
       <!-- ═══════════════════════════════════════════ -->
       <!-- TAB: LIVING BUDGET                          -->
@@ -3580,6 +3550,7 @@ function delFin(id){S.finance=S.finance.filter(f=>f.id!==id);save();renderFinanc
 // ── FINANCE TABS ──
 let activeFinTab='overview';
 function switchFinTab(tab,btn){
+  if(tab==='bills'){tab='overview';btn=G('ftab-overview');}
   activeFinTab=tab;
   document.querySelectorAll('.fin-tab').forEach(b=>{b.classList.remove('on');});
   if(btn)btn.classList.add('on');
@@ -3588,7 +3559,7 @@ function switchFinTab(tab,btn){
   });
   setTimeout(()=>{renderFinOverview();renderFinancialMilestone();},30);
   if(tab==='entries'){buildCatSelect('fi-c','expense');}
-  if(tab==='bills'){buildCatSelect('blq-cat',G('blq-type')&&G('blq-type').value||'income');}
+  if(tab==='overview'||tab==='bills'){buildCatSelect('blq-cat',G('blq-type')&&G('blq-type').value||'income');}
   if(tab==='savings'){renderSavingsAccounts();}
   if(tab==='wants'){renderWantsNeeds();}
   if(tab==='living'){renderLivingTabHero();}
